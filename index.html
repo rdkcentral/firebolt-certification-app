@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+html, body {margin: 0; height: 100%; overflow: hidden}
+</style>
+<head>
+    <meta charset="UTF-8" />
+    <title><%= htmlWebpackPlugin.options.title %> - <%= htmlWebpackPlugin.options.version %></title>
+    
+    <script>
+        window.COMMITHASH = '<%= htmlWebpackPlugin.options.commithash %>';
+        window.APP_VERSION = '<%= htmlWebpackPlugin.options.version %>';
+        
+        console.log('appVersion=' + window.APP_VERSION + ' commitHash=' + window.COMMITHASH)
+    </script>
+    <script type="text/javascript">
+        const fbEndpoint = new URLSearchParams(window.location.search).get('__firebolt_endpoint')
+        if (fbEndpoint) {
+            window.__firebolt = window.__firebolt || {}
+            window.__firebolt.endpoint = fbEndpoint
+        }
+    </script>
+</head>
+<body>
+    <% if (htmlWebpackPlugin.options.useInspector) { %>
+        <script type="text/javascript" src="./lib/lightning-inspect.js"></script>
+    <% } %>
+<!--
+<%= htmlWebpackPlugin.options.version %>
+-->
+</body>
+</html>

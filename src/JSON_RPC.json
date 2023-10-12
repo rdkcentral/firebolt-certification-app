@@ -1,0 +1,505 @@
+{
+    "jsonrpc": "2.0",
+    "definitions": {
+        "Network.interface": {
+            "summary": "An interface, such as `ETHERNET` or `WIFI`, depending upon availability of the given interface in `getInterfaces`",
+            "type": "string",
+            "example": "WIFI"
+        },
+        "Network.ipversion": {
+            "summary": "either IPv4 or IPv6",
+            "type": "string",
+            "example": "IPv4"
+        },
+        "Network.autoconfig": {
+            "summary": "`true` if DHCP is used, `false` if IP is configured manually",
+            "type": "boolean",
+            "example": true
+        },
+        "Network.ipaddr": {
+            "summary": "The IP address",
+            "type": "string",
+            "example": "192.168.1.101"
+        },
+        "Network.netmask": {
+            "summary": "The network mask address",
+            "type": "string",
+            "example": "255.255.255.0"
+        },
+        "Network.gateway": {
+            "summary": "The gateway address",
+            "type": "string",
+            "example": "192.168.1.1"
+        },
+        "Network.primarydns": {
+            "summary": "The primary DNS address",
+            "type": "string",
+            "example": "192.168.1.1"
+        },
+        "Network.secondarydns": {
+            "summary": "The secondary DNS address",
+            "type": "string",
+            "example": "192.168.1.2"
+        },
+        "Network.error": {
+            "summary": "An error message",
+            "type": "string",
+            "example": ""
+        },
+        "Network.result": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "$ref": "#/definitions/Network.success"
+                }
+            },
+            "required": [
+                "success"
+            ]
+        },
+        "Network.success": {
+            "summary": "Whether the request succeeded",
+            "type": "boolean",
+            "example": "true"
+        },
+        "Network.quirks": {
+            "summary": "Update `RDK-20093` string",
+            "type": "string",
+            "example": "RDK-20093"
+        },
+        "Wifi.result_int": {
+            "summary": "The result of the operation",
+            "enum": [
+                0,
+                1
+            ],
+            "type": "integer",
+            "example": 0
+        },
+        "Wifi.ssid": {
+            "summary": "The paired SSID",
+            "type": "string",
+            "example": "123412341234"
+        },
+        "Wifi.bssid": {
+            "summary": "The paired BSSID",
+            "type": "string",
+            "example": "ff:ff:ff:ff:ff:ff"
+        },
+        "Wifi.state": {
+            "summary": "The Wifi operational state",
+            "type": "integer",
+            "example": 2
+        },
+        "Wifi.signalStrength": {
+            "summary": "The RSSI value in dBm",
+            "type": "string",
+            "example": "-27.000000"
+        },
+        "Wifi.frequency": {
+            "summary": "The supported frequency for this SSID in GHz",
+            "type": "string",
+            "example": "2.442000"
+        },
+        "Wifi.result": {
+            "type": "object",
+            "properties": {
+                "success": {
+                    "$ref": "#/definitions/Wifi.success"
+                }
+            },
+            "required": [
+                "success"
+            ]
+        },
+        "Wifi.success": {
+            "summary": "Whether the request succeeded",
+            "type": "boolean",
+            "example": "true"
+        }
+    },
+    "methods": {
+        "Network.getDefaultInterface": {
+            "summary": "Gets the default network interface. The active network interface is defined as the one that can make requests to the external network. Returns one of the supported interfaces as per `getInterfaces`, or an empty value which indicates that there is no default network interface.",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "interface": {
+                        "$ref": "#/definitions/Network.interface"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Network.success"
+                    }
+                },
+                "required": [
+                    "interface",
+                    "success"
+                ]
+            }
+        },
+        "Network.getInterfaces": {
+            "summary": "Returns a list of interfaces supported by this device including their state",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "Interfaces": {
+                        "summary": "An interface",
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "interface": {
+                                    "$ref": "#/definitions/Network.interface"
+                                },
+                                "macAddress": {
+                                    "summary": "Interface MAC address",
+                                    "type": "string",
+                                    "example": "AA:AA:AA:AA:AA:AA"
+                                },
+                                "enabled": {
+                                    "summary": "Whether the interface is currently enabled",
+                                    "type": "boolean",
+                                    "example": true
+                                },
+                                "connected": {
+                                    "summary": "Whether the interface is currently connected",
+                                    "type": "boolean",
+                                    "example": true
+                                }
+                            },
+                            "required": [
+                                "interface",
+                                "macAddress",
+                                "enabled",
+                                "connected"
+                            ]
+                        }
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Network.success"
+                    }
+                },
+                "required": [
+                    "interfaces",
+                    "success"
+                ]
+            }
+        },
+        "Network.getIPSettings": {
+            "summary": "Gets the IP setting for the given interface",
+            "params": {
+                "type": "object",
+                "properties": {
+                    "interface": {
+                        "$ref": "#/definitions/Network.interface"
+                    },
+                    "ipversion": {
+                        "$ref": "#/definitions/Network.ipversion"
+                    }
+                },
+                "required": [
+                    "interface"
+                ]
+            },
+            "result": {
+                "type": "object",
+                "properties": {
+                    "interface": {
+                        "$ref": "#/definitions/Network.interface"
+                    },
+                    "ipversion": {
+                        "$ref": "#/definitions/Network.ipversion"
+                    },
+                    "autoconfig": {
+                        "$ref": "#/definitions/Network.autoconfig"
+                    },
+                    "ipaddr": {
+                        "$ref": "#/definitions/Network.ipaddr"
+                    },
+                    "netmask": {
+                        "$ref": "#/definitions/Network.netmask"
+                    },
+                    "gateway": {
+                        "$ref": "#/definitions/Network.gateway"
+                    },
+                    "primarydns": {
+                        "$ref": "#/definitions/Network.primarydns"
+                    },
+                    "secondarydns": {
+                        "$ref": "#/definitions/Network.secondarydns"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Network.success"
+                    }
+                },
+                "required": [
+                    "interface",
+                    "ipversion",
+                    "autoconfig",
+                    "ipaddr",
+                    "netmask",
+                    "gateway",
+                    "primarydns",
+                    "secondarydns",
+                    "success"
+                ]
+            }
+        },
+        "Network.getNamedEndpoints": {
+            "summary": "Returns a list of endpoint names. Currently supported endpoint names are: `CMTS`.",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "endpoints": {
+                        "summary": "A list of supported endpoint names",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "CMTS"
+                        }
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Network.success"
+                    }
+                },
+                "required": [
+                    "endpoints",
+                    "success"
+                ]
+            }
+        },
+        "Network.getQuirks": {
+            "summary": "Get standard string `RDK-20093`",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "quirks": {
+                        "$ref": "#/definitions/Network.quirks"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Network.success"
+                    }
+                },
+                "required": [
+                    "quirks",
+                    "success"
+                ]
+            }
+        },
+        "Network.getStbIp": {
+            "summary": "Gets the IP address of the default interface",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "ip": {
+                        "summary": "The IP address",
+                        "type": "string",
+                        "example": "192.168.1.101"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Network.success"
+                    }
+                },
+                "required": [
+                    "ip",
+                    "success"
+                ]
+            }
+        },
+        "Network.getSTBIPFamily": {
+            "summary": "Gets the IP address of the default interface by address family",
+            "params": {
+                "type": "object",
+                "properties": {
+                    "family": {
+                        "summary": "The address family to query",
+                        "type": "string",
+                        "example": "AF_INET6"
+                    }
+                },
+                "required": [
+                    "family"
+                ]
+            },
+            "result": {
+                "type": "object",
+                "properties": {
+                    "ip": {
+                        "summary": "The IP address",
+                        "type": "string",
+                        "example": "192.168.1.101"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Network.success"
+                    }
+                },
+                "required": [
+                    "ip",
+                    "success"
+                ]
+            }
+        },
+        "Network.isConnectedToInternet": {
+            "summary": "Whether the device has internet connectivity. This API might take up to 2s to validate internet connectivity.",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "connectedToInternet": {
+                        "summary": "`true` if internet connectivity is detected, otherwise `false`",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Network.success"
+                    }
+                },
+                "required": [
+                    "connectedToInternet",
+                    "success"
+                ]
+            }
+        },
+        "Wifi.getConnectedSSID": {
+            "summary": "Returns the connected SSID information",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "ssid": {
+                        "$ref": "#/definitions/Wifi.ssid"
+                    },
+                    "bssid": {
+                        "$ref": "#/definitions/Wifi.bssid"
+                    },
+                    "rate": {
+                        "summary": "The physical data rate in Mbps",
+                        "type": "string",
+                        "example": "144.000000"
+                    },
+                    "noise": {
+                        "summary": "The average noise strength in dBm",
+                        "type": "string",
+                        "example": "-121.000000"
+                    },
+                    "security": {
+                        "summary": "The security mode. See the `connect` method",
+                        "type": "string",
+                        "example": "5"
+                    },
+                    "signalStrength": {
+                        "$ref": "#/definitions/Wifi.signalStrength"
+                    },
+                    "frequency": {
+                        "$ref": "#/definitions/Wifi.frequency"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Wifi.success"
+                    }
+                },
+                "required": [
+                    "ssid",
+                    "bssid",
+                    "rate",
+                    "noise",
+                    "security",
+                    "signalStrength",
+                    "frequency",
+                    "success"
+                ]
+            }
+        },
+        "Wifi.getCurrentState": {
+            "summary": "Returns the current Wifi state.  \n**Wifi States**  \n* `0`: UNINSTALLED - The device was in an installed state and was uninstalled; or, the device does not have a Wifi radio installed  \n* `1`: DISABLED - The device is installed (or was just installed) and has not yet been enabled  \n* `2`: DISCONNECTED - The device is installed and enabled, but not yet connected to a network  \n* `3`: PAIRING - The device is in the process of pairing, but not yet connected to a network  \n* `4`: CONNECTING - The device is attempting to connect to a network  \n* `5`: CONNECTED - The device is successfully connected to a network  \n* `6`: FAILED - The device has encountered an unrecoverable error with the Wifi adapter",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "state": {
+                        "$ref": "#/definitions/Wifi.state"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Wifi.success"
+                    }
+                },
+                "required": [
+                    "state",
+                    "success"
+                ]
+            }
+        },
+        "Wifi.getPairedSSID": {
+            "summary": "Returns the SSID to which the device is currently paired",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "ssid": {
+                        "$ref": "#/definitions/Wifi.ssid"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Wifi.success"
+                    }
+                },
+                "required": [
+                    "ssid",
+                    "success"
+                ]
+            }
+        },
+        "Wifi.getPairedSSIDInfo": {
+            "summary": "Returns the SSID and BSSID to which the device is currently paired",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "ssid": {
+                        "$ref": "#/definitions/Wifi.ssid"
+                    },
+                    "bssid": {
+                        "$ref": "#/definitions/Wifi.bssid"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Wifi.success"
+                    }
+                },
+                "required": [
+                    "ssid",
+                    "bssid",
+                    "success"
+                ]
+            }
+        },
+        "Wifi.isPaired": {
+            "summary": "Determines if the device is paired to an SSID. A `result` value of `0` indicates that this device has been previously paired (calling `saveSSID` marks this device as paired). A nonzero value indicates that the device is not paired.",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "$ref": "#/definitions/Wifi.result_int"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Wifi.success"
+                    }
+                },
+                "required": [
+                    "result",
+                    "success"
+                ]
+            }
+        },
+        "Wifi.isSignalThresholdChangeEnabled": {
+            "summary": "Returns whether threshold changes are enabled. A `0` value indicates that this device has been previously paired (calling `saveSSID` marks this device as paired ). A nonzero value indicates that the device is not paired.",
+            "result": {
+                "type": "object",
+                "properties": {
+                    "result": {
+                        "$ref": "#/definitions/Wifi.result_int"
+                    },
+                    "success": {
+                        "$ref": "#/definitions/Wifi.success"
+                    }
+                },
+                "required": [
+                    "result",
+                    "success"
+                ]
+            }
+        }
+    }
+}

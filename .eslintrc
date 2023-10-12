@@ -1,0 +1,30 @@
+{
+  "root": true,
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "extends": ["eslint:recommended", "prettier"],
+  "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": true,
+    "ecmaVersion": 11
+  },
+  "plugins": ["prettier"],
+  "rules": {
+    "func-names": "off",
+    "max-len": "off",
+    "no-async-promise-executor": "off",
+    "no-case-declarations": "off",
+    "no-console": "off",
+    "no-global-assign": "off",
+    "no-prototype-builtins": "off",
+    "no-undef": "off",
+    "no-unused-vars": "off",
+    "no-var": "error",
+    "prefer-const": "error",
+    "prettier/prettier": "warn",
+    "spaced-comment":"error"
+  }
+}

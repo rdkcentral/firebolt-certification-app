@@ -107,7 +107,7 @@ export default class MenuBuilder {
           view: module.default,
           params: module.params || {},
         };
-        if (process.env.SYSTEMUI != 'true' && title == CONSTANTS.VERSIONS) {
+        if (process.env.SYSTEMUI != 'true') {
           menuItems.push(externalLauncher);
         }
       }

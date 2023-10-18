@@ -52,6 +52,7 @@ jobs:
 
       - name: Run Whitesource/Mend scan
         run: |
+         echo "$MEND_PROJECT"
          curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar
          java -jar wss-unified-agent.jar -apiKey ${{ secrets.MEND_API_KEY }} -product FireboltCertificationApp -project $MEND_PROJECT -resolveAllDependencies false -npm_resolveDependencies true
 

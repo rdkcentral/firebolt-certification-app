@@ -20,21 +20,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
-
-      - name: Set Run Variables
-        run: |
-          if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
-            if [[ "${{ github.base_ref }}" == 'dev' ]]; then
-              echo "MEND_PROJECT=os-dev-prs" >> $GITHUB_ENV
-            elif [[ "${{ github.base_ref }}" == 'main' ]]; then
-              echo "MEND_PROJECT=os-prod-prs" >> $GITHUB_ENV
-            fi
-          elif [[ "${{ github.ref }}" == 'refs/heads/main' ]]; then
-            echo "MEND_PROJECT=os-prod" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == 'refs/heads/dev' ]]; then
-            echo "MEND_PROJECT=os-edge" >> $GITHUB_ENV
-          fi
-
+        
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -49,12 +35,6 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Run Whitesource/Mend scan
-        run: |
-         echo "$MEND_PROJECT"
-         curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/latest/download/wss-unified-agent.jar
-         java -jar wss-unified-agent.jar -apiKey ${{ secrets.MEND_API_KEY }} -product FireboltCertificationApp -project $MEND_PROJECT -resolveAllDependencies false -npm_resolveDependencies true
 
       - name: Set failure comment if failed for prs
         if: ${{ failure() && github.event_name == 'pull_request' }}

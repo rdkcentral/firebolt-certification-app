@@ -322,7 +322,6 @@ export default class App extends Base {
   async accessibilityCheck(voiceAnnouncementVal) {
     const closedCaptionsMethodVal = await Accessibility.voiceGuidance();
     if (closedCaptionsMethodVal && closedCaptionsMethodVal.enabled == true) {
-      this.announcerEnabled = true;
       this.announcerEnabled = voiceAnnouncementVal;
     }
   }

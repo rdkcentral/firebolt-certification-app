@@ -191,7 +191,7 @@ export default class App extends Base {
       },
 
       class ErrorState extends this {
-        $enter() { }
+        $enter() {}
       },
 
       class LoadedState extends this {

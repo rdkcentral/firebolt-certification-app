@@ -82,7 +82,6 @@ export default class App extends Base {
 
   async _init() {
     Settings.setLogLevel('DEBUG');
-    this.accessibilityCheck(CONSTANTS.ENABLE_VOICE_ANNOUNCEMENT);
     eventEmitter.on('showToast', (message, state, tagName, color) => {
       this.showToast(message, state, tagName, color);
     });
@@ -96,6 +95,7 @@ export default class App extends Base {
     const lifecycle = new URLSearchParams(appUrl.search).get('lifecycle_validation');
     const mfValue = new URLSearchParams(window.location.search).get('mf');
     const voiceGuidanceOverride = new URLSearchParams(window.location.search).get('voiceGuidance');
+    this.accessibilityCheck(voiceGuidanceOverride === 'false' ? CONSTANTS.DISABLE_VOICE_ANNOUNCEMENT : CONSTANTS.ENABLE_VOICE_ANNOUNCEMENT);
     const platform = new URLSearchParams(appUrl.search).get('platform');
     const testContext = new URLSearchParams(window.location.search).get('testContext');
     const reportingId = new URLSearchParams(appUrl.search).get('reportingId');
@@ -137,9 +137,6 @@ export default class App extends Base {
         process.env.MOCKOS = true;
       };
       this.pubSubListener();
-    }
-    if (voiceGuidanceOverride === 'false') {
-      this.accessibilityCheck(CONSTANTS.DISABLE_VOICE_ANNOUNCEMENT);
     }
     const pubSubTopicUUID = new URLSearchParams(appUrl.search).get('pubsub_uuid');
     if (pubSubTopicUUID) {
@@ -324,8 +321,7 @@ export default class App extends Base {
   // Fetching closedCaptions value and setting the announcer to true if the closed caption is enabled
   async accessibilityCheck(voiceAnnouncementVal) {
     const closedCaptionsMethodVal = await Accessibility.voiceGuidance();
-    if (closedCaptionsMethodVal && closedCaptionsMethodVal.enabled == true) {
-      this.announcerEnabled = true;
+    if (closedCaptionsMethodVal && closedCaptionsMethodVal.enabled == true && voiceAnnouncementVal) {
       this.announcerEnabled = voiceAnnouncementVal;
     }
   }

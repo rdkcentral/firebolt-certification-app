@@ -81,6 +81,7 @@ export default class App extends Base {
   }
 
   async _init() {
+    Settings.setLogLevel('DEBUG');
     eventEmitter.on('showToast', (message, state, tagName, color) => {
       this.showToast(message, state, tagName, color);
     });
@@ -193,7 +194,6 @@ export default class App extends Base {
       class LoadedState extends this {
         $enter() {
           if (!this.appContinue) {
-            Settings.setLogLevel('DEBUG');
             const systemui = new URLSearchParams(window.location.search).get('systemui');
 
             if (systemui) {

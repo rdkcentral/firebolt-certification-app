@@ -53,7 +53,7 @@ export default class MenuBuilder {
 
     const menuItems = [
       {
-        title: 'APIs',
+        title: 'DEMO PRs',
         menus: this.buildMenusFromOpenRpc(),
       },
       {

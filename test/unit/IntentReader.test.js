@@ -45,6 +45,38 @@ process.env = {
   },
 };
 
+const mockFireboltExampleInvoker = {
+  invoke: () => {},
+};
+jest.mock('../../src/FireboltExampleInvoker', () => {
+  return {
+    get: () => {
+      return mockFireboltExampleInvoker;
+    },
+  };
+});
+
+jest.mock('@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
+  return {
+    send: () => {
+      return {};
+    },
+  };
+});
+
+const mockFireboltTransportInvoker = {
+  invoke: jest.fn().mockImplementation(() => {
+    return Promise.resolve('success');
+  }),
+};
+jest.mock('../../src/FireboltTransportInvoker', () => {
+  return {
+    get: () => {
+      return mockFireboltTransportInvoker;
+    },
+  };
+});
+
 jest.mock('../../src/Toast', () => {
   const eventEmitter = {
     emit: jest.fn(),

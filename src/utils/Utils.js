@@ -390,15 +390,18 @@ async function overrideParamsFromTestData(methodObj) {
       // Checking if any data present for the passed appId
       const parsedMethod = paramsJson[appID];
       // Fetching the examples from the parsedMethod
-      const result = parsedMethod.find((res) => res.name == methodObj.name);
-      if (result) {
-        // Overriding the params of copy of OPENRPC from the testData
-        result.examples.forEach((example) => {
-          const extractedMethod = methodObj.examples.find((exampleName) => exampleName.name == example.name);
-          if (extractedMethod) {
-            extractedMethod.params = example.params;
-          }
-        });
+      if (parsedMethod) {
+        // Fetching the examples from the parsedMethod
+        const result = parsedMethod.find((res) => res.name == methodObj.name);
+        if (result) {
+          // Overriding the params of copy of OPENRPC from the testData
+          result.examples.forEach((example) => {
+            const extractedMethod = methodObj.examples.find((exampleName) => exampleName.name == example.name);
+            if (extractedMethod) {
+              extractedMethod.params = example.params;
+            }
+          });
+        }
       }
     }
   } catch (error) {

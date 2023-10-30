@@ -15,7 +15,7 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-
+    
 import lng from '@lightningjs/core';
 import Menu from './Menu';
 import MenuBuilder from './MenuBuilder';

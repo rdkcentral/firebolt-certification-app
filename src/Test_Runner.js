@@ -534,7 +534,7 @@ export class Test_Runner {
       contentResult;
     const method = methods.methodName;
     const params = {};
-    process.env.APP_TYPE = process.env.APP_TYPE ? process.env.APP_TYPE : CONSTANTS.FIREBOLT_CONST;
+    process.env.APP_TYPE = process.env.APP_TYPE ? process.env.APP_TYPE : CONSTANTS.FIREBOLT_CONST; 
     const openRpc = CONSTANTS.defaultSDKs.find((sdk) => sdk.name.toUpperCase().includes(CONSTANTS.CORE)).openRpc;
     try {
       this.dereferenceSchemaList = await $RefParser.dereference(openRpc);

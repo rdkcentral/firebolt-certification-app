@@ -1,4 +1,4 @@
-# Linting in FCS
+# Linting in FCA
 
 ### Introduction
 This project uses both `eslint` and `prettier` for linting and formatting the code. This document provides a summary of the linting setup and the rules that are enforced.

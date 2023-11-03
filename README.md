@@ -1,158 +1,163 @@
-# firebolt-certification-app
+<p align="center">
+  <a href="" rel="noopener">
+ <img width=200px height=200px src="https://static.wikia.nocookie.net/harrypotter/images/7/74/Firebolt.jpg/revision/latest?cb=20141122220040" alt="Project logo"></a>
+</p>
 
-## Brief overview
+<h3 align="center">Firebolt Certification App</h3>
 
-FCA is a lightning based application which can be launched on STB's/TV's.
-It has the following features -
+<div align="center">
 
-- API’s: This option allows a user to invoke Firebolt API's on device and view the API response in UI.
-- Lifecycle History: Consists of lifecycle state transition of firecert app.
-- Demos: Having a media player with sample video.
-- Start: This feature enables a user to run Firebolt API's Sanity suite. Results of the suite run will be displayed in UI.
-- FCA can be launched as systemui by adding the url parameter systemui=true. When this parameter is added, system UI acts as the base app or UI in RIPPLE device.
+  [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
+  [![GitHub Issues](https://img.shields.io/github/issues/comcast-fireboltCertification/firebolt-certification-app)](https://github.com/comcast-fireboltCertification/firebolt-certification-app/issues)
+  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/comcast-fireboltCertification/firebolt-certification-app)](https://github.com/comcast-fireboltCertification/firebolt-certification-app/pulls)
+  [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+</div>
+
+---
+
+<p align="center"> 
+
+  The Firebolt Certification Application (FCA) is a lightning-based HTML5 application designed to be used on integrated devices (TVs/STBs/etc.) wishing to become compliant with the [Firebolt SDK](https://developer.rdkcentral.com/firebolt/overview/).
+  
+When launched, a GUI is rendered containing various options to, among others, send a Firebolt command, begin listening for a Firebolt event, and run the [Certification Suite](docs/Execution.md#certification-suite).
+    <br> 
+</p>
+
+
+
+
+
+
+<!-- The abilities of FCA can be expanded by plugins including but not limited to
+* Generic startup scripts
+* API support via Pub/Sub
+* Additional SDKs
+* Modified behavior during the Certification Suite -->
 
 ## Table of Contents
 
-- [Brief overview](#brief-overview)
-- [Setup](#setup)
-  - [FCA URL deployed and available in the S3](#fca-url-deployed-and-available-in-the-s3)
-  - [Below are the steps to run FCA in local system](#below-are-the-steps-to-run-fca-in-local-system)
-- [Supported ways of Execution](#supported-ways-of-execution)
-- [Supported targets](#supported-targets)
-- [Supported Modes of execution](#supported-modes-of-execution)
-- [Supported validations](#supported-validations)
-- [Supported ways of retrieving reports](#supported-ways-of-retrieving-reports)
-- [Supported Report Parameters](#supported-report-parameters)
-- [PR and merge process](#pr-and-merge-process)
-- [Supported URL parameters](#supported-url-parameters)
-- [Supported PubSub Handlers](#supported-pubsub-handlers)
-- [Plugins](#plugins)
-- [Connect to mock Firebolt OS](#connect-to-mock-firebolt-os)
-  - [Timeout in UI prompt](#timeout-in-ui-prompt)
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Repo Contents](#repo-contents)
+- [Documentation](#documentation)
+- [Usage](#usage)
+- [Contribution Guidelines](#contribution-guidelines)
 
-## Setup
+## Overview
 
-Use a recent version of node. At the time of writing, Node 14.15.x was LTS. An `.nvmrc` file is included for those using a node version manager. Everyone else, swim at your own risk.
+**Project Purpose:** The Firebolt Certification Application (FCA) is a web-based tool designed to facilitate the validation process for integrated devices, ensuring their compliance with the [Firebolt SDK](https://developer.rdkcentral.com/firebolt/overview/).
 
-### FCA URL deployed and available in the S3
+Examples of various use-cases:
 
-- Dev Branch
+  - Developers seeking to validate Firebolt SDK on integrated devices.
+  - To facilitate automated Firebolt SDK compliance testing.
+  - To conduct testing across multiple devices with varying Firebolt SDK versions.
+  - To assess various Firebolt call inputs comprehensively.
 
-  - Development branch
-  - S3 Edge URL - `https://s3-bucket.s3.amazonaws.com/index.html`
+**Features:**
+  - Testing Firebolt SDK calls on integrated devices.
+  - Automate Firebolt SDK tests.
+  - Generate detailed compliance reports.
+  - Supports Firebolt SDKs: core and manage.
+  - Customizable test parameters and validation rules.
+  - Deploy on various platforms with ease.
+  - Graphical User Interface (GUI) for intuitive interactions.
+  - Enable integration of a pub-sub communication system for remote call triggering and event handling.
+  - Robust logging capabilities for monitoring and troubleshooting.
 
-- Master Branch
-  - Production branch
-  - S3 Prod URL - `https://s3-prod-bucket.s3.amazonaws.com/index.html`
+**Technology Stack:** Built with Node.js and LightningJS.
 
-### Below are the steps to run FCA in local system
+## Architecture
 
-1. Cloning the FCA Repo
-2. Do `npm install`
-3. Run `npm start` to launch the App in browser
-4. By default, it will be launched as localhost.
-   - Example URL: `http://localhost:8081`
-     To change it to the system Ip address, go to `Webpack.dev.js` file and update the host value to the system Ip address. Then restart the App.
+![Architecture Diagram](./Architecture.png)
 
-## Supported ways of Execution
+## Repo Contents
 
-  It is possible to run the sanity suite in other platforms.
-## Supported targets
+This repo contains these elements:
 
-- MFOS - `https://github.com/rdkcentral/mock-firebolt`
-## Supported Modes of execution
+- **docs/**
+  - [Documentation](./docs/Documentation.md)
+- **src/**
+  - A NodeJS application that acts as a Firebolt compliant app
+    - Makes Firebolt calls with various params
+    - Validates Firebolt responses
+    - Listens for Firebolt events
+    - A GUI for interacting with the app
+    - A test runner for running the [Certification Suite](docs/Execution.md#certification-suite).
+    - Handlers for pub-sub communications
+- **test/**
+  - Unit tests
+- **plugins/**
+  - An optional set tools that enable custom functionality to be added to FCA
+    - For more info please see the [plugin documentation](docs/plugins/Plugins.md)
 
-Mode of execution implies the way in which an API is invoked. There are 2 modes of execution -
+## Documentation
 
-- SDK - Api's are invoked using Firebolt SDK.
-- Transport - Api's are invoked by using Transport layer and thus bypassing SDK.
+See [Documentation](./docs/Documentation.md).
 
-## Supported validations
+## Usage
 
-- Schema Validation 
-- Behavioural Validation 
-## Supported ways of retrieving reports
+Before you begin using FCA, there are a few important steps to consider.
 
-- From UI
+### API Access
 
-  - After executing suite from the UI in FCA, mocha json will uploaded to S3.
-  - Download the `json report` from S3 and convert it to `html report`
-    - `arn:aws:s3:::your-s3-Bucket-name`
-  - Steps to convert into `html report`
-    1.  Move the `json report` to root folder
-    2.  Run the command `yarn marge filename.json -f report -o /destination_path`
-    3.  Check the `html report` on the destination path.
+By default, the API is disabled, and FCA can only be used through the GUI. To enable API access, you need to implement a PubSub plugin. Refer to our [PubSub Documentation](docs/plugins/PubSub.md) for more info.
 
-## Supported Report Parameters
+### Pre-requisites
 
-- Schema: Schema validation response of each API’s. whether it passed/failed. Validation is done based on the Open RPC document
-- Content: Behavioural validation can be done.
-- Message: Defines the Schema of the API from the Open RPC document.
-- Actual: The API response which is invoked by FCA on the device is stored in actuals.
-- Error: Based on the schema validation done by FCA, if the schema validation fails then reason of failure is stored in error.
+FCA is a Node.js application, and it relies on Node and NPM. Make sure you have Node installed; at the time of writing, Node 16.x was confirmed to work seamlessly with FCA.
 
-## PR and merge process
+**NOTE**: For newer node versions you can use `export NODE_OPTIONS=--openssl-legacy-provider` to work around any version restraints.
 
-- PR should contain the description about Implementation, test steps etc.
-- PR need to be approved by Peer reviewers.
-- PR should be assigned to Team Manager for PO Acceptance.
-- After approval from reviewers, PR is ready to be merged.
-- Dev to master PR – Every Thursday, a dev to master PR is created. Once it is tested across platforms, the PR is merged to master. Then the dev changes will be available in master branch.
+### Building FCA
 
-## Supported URL parameters
+FCA is built and compiled with [Webpack](webpack.dev.js). For more information on our Webpack configuration please see this [documentation](docs/Webpack.md).
 
-- Platform: platform=`<platform>`
-  - The supported TARGET values are passed. While executing the test suite, if we provide wrong platform it will not execute the suite and will show "Unsupported target used." error
-- Lifecycle Validation: lifecycle_validation=true
-  - When we give lifecycle_validation=true it blocks the default execution of lifecycle.ready and lifecycle.finished method.
-  - This will help us to validate lifecycle api's as per our need
-- MFOS: mf=true
-  - When we are passing mf=true or with userId, FCA will connect to MFOS server and when we invoke any api in FCA it will return the response fron MFOS.
-- System Ui: systemui=true
-  - If FCA systemui=true, FCA acts as the base app in case of ripple. The background color will be changed to purple and it will display one more button as "Launch FCA app" to launch FCA as third-party app on Ripple devices.
-- TestContext: testContext=true
-  - If testContext=true, it will add the field context in mocha report generated
+Follow these steps to build FCA:
 
-## Supported PubSub Handlers
+1. Clone the FCA repository.
+2. Run `npm install`.
+3. Execute `npm run build` to build the application.
+4. The built application can be found in the `dist` directory, and you can access it by opening `dist/web/index.html`.
 
-The code for handling different types of PubSub requests is located in `./src/pubsub/handlers`. Below are the supported handlers for various types of PubSub requests.
+### Running FCA Locally
 
-* [GetPubSubStatusHandler](./src/pubsub/handlers/GetPubSubStatusHandler.md)
-* [GetTestHandler](./src/pubsub/handlers/GetTestHandler.md)
-* [RunTestHandler](./src/pubsub/handlers/RunTestHandler.md)
-* [RegisterEventHandler](./src/pubsub/handlers/RegisterEventHandler.md)
-* [CallMethodHandler](./src/pubsub/handlers/CallMethodHandler.md)
-* [ClearEventHandler](./src/pubsub/handlers/clearEventHandler.md)
-* [GetEventResponse](./src/pubsub/handlers/GetEventResponse.md)
-* [HealthCheckHandler](./src/pubsub/handlers/HealthCheckHandler.md)
-* [LifecycleRecordHandler](./src/pubsub/handlers/lifecycleRecordHandler.md)
-* [RegisterProviderHandler](./src/pubsub/handlers/RegisterProviderHandler.md)
-* [SetApiResponseHandler](./src/pubsub/handlers/setApiResponseHandler.md)
-* [DataFetchHandler](./src/pubsub/handlers/DataFetchHandler.md)
-* [ClearEventListeners](./src/pubsub/handlers/ClearEventListeners.md)
-* [FireboltCommandHandler](./src/pubsub/handlers/FireboltCommandHandler.md)
+To run FCA on your local system, use the following steps:
 
-## Plugins
-Plugins are powerful tools that enable custom functionality to be added to FCA. They are optional. They are available for those who wish to extend or override FCA's capabilities. All plugins are located in the `/plugins` directory and use webpack to be added to the application during build time. Full overview of the Plugins functionalites can be found [here](./plugins/README.md).
+1. Clone the FCA repository.
+2. Run `npm install`.
+3. Launch the application in your browser by executing `npm start`.
+    - **NOTE**: If you see a `code: 'ERR_OSSL_EVP_UNSUPPORTED'` error you can use `export NODE_OPTIONS=--openssl-legacy-provider` to work around Node version restraints.
 
+FCA is launched with the default host as `localhost` and port as `8081`, but these settings can be adjusted in the [Webpack](webpack.dev.js) configuration.
 
-## Connect to mock Firebolt OS
+### Hosting FCA
 
-To activate Mock Firebolt, there are specific start-up scripts that exist inside of the directory `/plugins/startupScripts`. These scripts along with other scripts that are necessary during start-up are first bundled by webpack during the build process and are loaded in when the application is first loaded.
+FCA can be easily hosted to enable access beyond your local environment. To do so, follow these simple steps:
 
-    - Clone the mock firebolt OS repository` https://github.com/rdkcentral/mock-firebolt`
-    - Start the mock Firebolt OS based on steps mentioned in the repository.
-    - Start the Firebolt Certification App with `npm start`
-    - On launch add the `mf=true` queryParameter to the app launch url and relaunch the app.
-    The above steps will by default connect the Firebolt Certification App to the mock Firebolt OS running on localhost at port 9998
-    Note: To change the hosted location of the mock Firebolt OS use the guidelines as mentioned in `https://github.com/rdkcentral/mock-firebolt/blob/main/docs/UsageWithinApps.md#activating-mock-firebolt`
+1. Build: build FCA using the necessary [build process](#building-fca).
+2. Choose host: since FCA is built into an HTML file, you have flexibility in choosing the remote host. It can be a virtual machine (VM) or something as simple as an AWS S3 bucket exposed via CloudFront.
+3. Upload: upload the contents located in the `dist/web` folder to the chosen host. While taking the entire dist folder is an option, ensuring the inclusion of everything in the web folder is essential.
 
+## Contribution Guidelines
 
-### Timeout in UI prompt
+Welcome to the Firebolt Certification Application (FCA) project! We appreciate your interest in contributing to the development and improvement of FCA.
 
-For pinChallenge and acknowledgeChallenge UI prompts , a timeout of 15s is added so that, if no action is taken when the prompts displays on the screen (i.e; neither yes/no/back button ), the prompts will be automatically dismissed with "null" value as the response.
-The prompt is displayed when the user needs to grant/deny a particular api, or the user has to enter a pin in-case of pinChallenge.
-If user wants to grant an api, yes button is pressed, for deniel - no button, and incase if the user wants to dismiss the prompt without any action, back button is pressed.
+If you would like to contribute code to this project you can do so through GitHub by forking the repository and sending a pull request. Before RDK accepts your code into the project you must sign the RDK Contributor License Agreement (CLA).
 
+To ensure a smooth and collaborative contribution process, please adhere to the following guidelines:
 
+### Code Style and Standards
 
+  - Maintain coding consistency by following the existing code style and conventions (see our [Linting Guide](Linting-Guide.md)) used in the project. This includes naming conventions, indentation, and code organization.
+  - Ensure that your code changes are well-documented. Comments and documentation should be clear, concise, and follow established documentation standards (see our [Documenting Guide](docs/templates/DocumentingGuide.md)).
+  - Write unit tests for new code whenever applicable. Ensure that existing tests are not broken by your changes. Testing is essential to maintain code quality and reliability.
+
+### Pull Request (PR) Process
+
+  - When submitting a PR, provide a clear and detailed description. Explain the implementation, changes made, and the purpose of the PR. Include any relevant context that can help reviewers understand your contribution.
+  - Clearly outline the test steps you have taken to verify your changes. Ensure that your code changes do not introduce regressions and maintain the overall quality of the application.
+  - All PRs must undergo a peer review process. Your PR should be reviewed by one or more team members. Reviewers will assess the quality, correctness, and adherence to coding standards.
+  - After successfully passing the peer review, assign the PR to the FCA Manager for Product Owner (PO) acceptance. The FCA Manager will review the changes in the context of project goals and requirements.
+  - Dev to main PRs follow a scheduled process. Every Thursday, a dev to master PR is created. After thorough testing across platforms, the PR is ready to be merged into the master branch. This ensures that changes are introduced into the master branch in a controlled and tested manner.

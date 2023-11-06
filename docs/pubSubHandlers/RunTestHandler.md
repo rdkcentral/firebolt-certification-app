@@ -5,6 +5,7 @@ For example if we are running a test suite an array of method parameters are pas
 
 * [Valid Intent and Response](#valid-intent-and-response)
 * [Invalid Intent and Response](#invalid-intent-and-response)
+* [Passing List of Not Supported API's in Intent](#passing-list-of-not-supported-apis-in-intent)
 
 ## Valid Intent and Response
 
@@ -82,3 +83,20 @@ For example if we are running a test suite an array of method parameters are pas
 - Sample response
 
             Invalid lifecycle method passed
+
+## Passing List of Not Supported API's in Intent
+
+- Sample intent for passing list of not supported api's - *exceptionMethods* in the intent received contains the list of not supported api's
+
+    ```
+    {
+        "action": "search",
+        "data": {
+            "query": "{\"task\": \"runTest\",\"params\": {\"certification\": true,\"exceptionMethods\": [{\"method\": \"apiName1\",\"param\": {\"key\": \"value\"}},{\"method\": \"apiName2\"}]},\"action\": \"CORE\",\"metadata\": {}}"
+        },
+        "context": {
+            "source": "device"
+        }
+    }
+    ```
+    TO DO : More details to be added here

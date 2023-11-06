@@ -4,6 +4,7 @@ Handler used to invoke the api and return the response along with schema validat
 
 * [Valid Intent and Response](#valid-intent-and-response)
 * [Invalid Intent and Response](#invalid-intent-and-response)
+* [Intent for a Not Supported API](#intent-for-a-not-supported-api)
 
 ## Valid Intent and Response
 
@@ -214,3 +215,18 @@ Handler used to invoke the api and return the response along with schema validat
                     "disableFormat": false
                 }
             }
+
+## Intent for a Not Supported API
+
+- Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api responsewill be validated against errorSchema. 
+    ```
+    {
+	    "task":"callMethod",
+	    "params":{
+		    "method":"APIName",
+		    "methodParams":{"key":"value"}
+	    },
+	    "isNotSupportedApi":true,
+    }
+    ```
+    TODO - More details to be added

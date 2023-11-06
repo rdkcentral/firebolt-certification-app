@@ -32,7 +32,7 @@ To learn more about how to execute tests please see the [execution documentation
 
 ## Validations
 
-To learn more about validation options see the [validation documentation](./Validations.md).
+FCA has the ability to make firebolt api calls to the device when it's launched. FCA supports Schema Validation which can be used to validate that a firebolt api response is adhering to the firebolt open rpc schema. For more details about the Validations please read the [validation documentation](./Validations.md).
 
 ## Reporting
 

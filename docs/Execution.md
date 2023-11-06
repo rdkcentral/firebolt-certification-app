@@ -6,6 +6,8 @@ TODO: add intro
 
 - [Certification Suite](#certification-suite)
 - [Supported Ways of Execution](#supported-ways-of-execution)
+  - [Sanity Test Execution](#sanity-test-execution)
+  - [Regression Test Execution](#regression-test-execution)
 - [Supported Modes of Execution](#supported-modes-of-execution)
 - [Executing Remotely](#executing-remotely)
 
@@ -27,6 +29,13 @@ TODO: add details
 
 EXISTING CONTENTS(needs revision):
 > It is possible to run the sanity suite in other platforms.
+#### Sanity Test Execution
+
+TODO: add details
+
+#### Regression Test Execution
+
+TODO: add details
 
 ### Background
 

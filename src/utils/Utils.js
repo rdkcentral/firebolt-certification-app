@@ -172,6 +172,10 @@ function pushReportToS3(report) {
         });
       }
 
+      if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {
+        reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;
+      }
+
       if (!parsingSuccessful) {
         reportName =
           process.env.REPORTINGID && process.env.STANDALONE

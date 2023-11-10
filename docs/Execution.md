@@ -34,7 +34,7 @@ Tests, including the sanity Test Suite, can be executed manually through the use
 2. After communication mode choose CoreSDK, ManageSDK or All SDKs
 3. Select 'Invoke' to start the sanity suite, running all predefined API calls under each API.
 
-Standalone Execution
+#### Standalone Execution
 
 FCA cab ve run with standalone=true parameter in the URL or with standalone:'true' in the intent message. This enables generation of Mochawesome reports in FCA. The JSON report is uploaded to an endpoint/standalone, places in an S3 bucket, and an AWS lambda function generates an HTML report in another publicly available S3 bucket.
 

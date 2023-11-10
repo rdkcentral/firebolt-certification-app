@@ -27,66 +27,73 @@ TODO: add details
 
 ## Supported ways of Execution
 
-EXISTING CONTENTS(needs revision):
-> It is possible to run the sanity suite in other platforms.
+Manual Execution via UI
+Tests, including the sanity Test Suite, can be executed manually through the user interface. To do this, navigate as follows:
+
+1. Start >SDK or Transport (Select communication mode).
+2. After communication mode choose CoreSDK, ManageSDK or All SDKs
+3. Select 'Invoke' to start the sanity suite, running all predefined API calls under each API.
+
+Standalone Execution
+
+FCA cab ve run with standalone=true parameter in the URL or with standalone:'true' in the intent message. This enables generation of Mochawesome reports in FCA. The JSON report is uploaded to an endpoint/standalone, places in an S3 bucket, and an AWS lambda function generates an HTML report in another publicly available S3 bucket.
+
+
+
 #### Sanity Test Execution
 
-TODO: add details
+The Sanity Test Suite, executable from the UI, tests all APIs by invoking predefined calls under each API.
 
 #### Regression Test Execution
 
-TODO: add details
-
-### Background
-
-TODO: add details
-
-### Setup
-
-TODO: add details
-
-### Usage
-
-TODO: add details
+For more in depth regression testing, users can create custom test cases, where they send requests with custom params and verify responses against a predefined data set. This allows for more targeted and specific testing of new features or changes.
 
 ## Supported Modes of execution
 
-EXISTING CONTENTS(needs revision): 
-> Mode of execution implies the way in which an API is invoked. There are 2 modes of execution -
->
-> - SDK - APIs are invoked using Firebolt SDK.
-> - Transport - APIs are invoked by using Transport layer and thus bypassing SDK.
+SDK and Transport Modes ( can be passed via cli)
 
-### Background
-
-TODO: add details
-
-### Setup
-
-TODO: add details
-
-### Usage
-
-TODO: add details
-
+- *SDK*: APIs are invoked using the Firebolt SDK
+- *Transport* : APIs are invoked using the Transport layer, bypassing the SDK. 
 
 ## Executing Remotely
 
 ### Background
 
-FCA extends its capabilities by offering remote accessibility through API access, presenting automation opportunities for users responsible for managing test suites, as well as those without direct device access. By utilizing a PubSub client, users can dispatch requests to integrated devices running FCA, enabling the initiation of various tests, Firebolt calls, and other tasks (see [PubSub Handlers documentation](pubSubHandlers/PubSubHandlers.md)). However, it's essential to note that implementing a PubSub client is a prerequisite (refer to the [PubSub documentation](plugins/PubSub.md) for guidance). This remote communication feature provides distinct advantages, including the ability to schedule automated test suites, reduce the dependency on physical devices for developers, and more.
+FCA extends its capabilities by offering remote accessibility through API access,benefiting users managing test suites or without direct device access.
 
-### Setup
+- **PubSub Client**: 
+A PubSub client is necessary to trigger FCA remotely.
+Users can also send messages via WebStock (WSS) on local area network (LAN).
 
-Before you begin using FCA with API Access, there is one essential pre-requisite:
+- **Sample Intent Message**:
+A sample intent message to trigger FCA remotely is provided below:
 
-  - **PubSub Client**: In order to use the API access of FCA you first need to implement a PubSub client to handle incoming and outgoing calls. For information on setting up your own PubSub client please see the [PubSub documentation](plugins/PubSub.md).
+```
+{
+    "jsonrpc": "2.0",
+    "id": 1,
+    "method": "ApiName1",
+    "params": {
+        "appId": "AppId",
+        "intent": {
+            "action": "search",
+            "data": {
+                "query": "{    \"task\": \"runTest\",    \"params\": {        \"certification\": true,        \"exceptionMethods\": [            {                \"method\": \"ApiName2.session\"            },            {                \"method\": \"Localization.latlon\"            },            {                \"method\": \"ApiName3.token\",                \"param\": {                    \"type\": \"distributor\"                }            },            {                \"method\": \"ApiName3.token\",                \"param\": {                    \"type\": \"distributor\",                    \"options\": {                        \"clientId\": \"CIMA\"                    }                }            },            {                \"method\": \"Authentication.token\",                \"param\": {                    \"type\": \"distributor\",                    \"options\": {                        \"clientId\": \"OAT\"                    }                }            }        ],        \"methodsToBeExcluded\": [            \"Accessory.pair\",            \"Device.provision\",            \"ApiName4.session\",            \"Power.sleep\",            \"Wifi.connect\",            \"Wifi.disconnect\",            \"Wifi.wps\",            \"Rpc.discover\",            \"badger.shutdown\",            \"badger.appAuth\",            \"APiName.approveContentRating\",            \"Profile.approvePurchase\",            \"badger.deeplink\",            \"badger.navigateToCompanyPage\",            \"badger.navigateToEntityPage\",            \"badger.navigateToFullScreenVideo\",            \"badger.promptEmail\",            \"badger.showPinOverlay\",            \"Discovery.launch\",            \"Lifecycle.finished\",            \"badger.dismissLoadingScreen\",            \"badger.compareAppSettings\",            \"badger.xscd\",            \"badger.getOat\",            \"badger.resizeVideo\",            \"badger.getSystemInfo\",            \"APiName.email\",            \"Keyboard.password\",            \"APIName.standard\",            \"Keyboard.standardFocus\",            \"Keyboard.passwordFocus\",            \"Keyboard.emailFocus\",            \"APiName.standardResponse\",            \"APiName.standardError\",            \"Keyboard.passwordResponse\",            \"Keyboard.passwordError\",            \"Keyboard.emailResponse\",            \"APiName.emailError\",            \"APiName.challengeFocus\",            \"AcknowledgeChallenge.challengeResponse\",            \"AcknowledgeChallenge.challengeError\",            \"PinChallenge.challengeFocus\",            \"PinChallenge.challengeResponse\",            \"PinChallenge.challengeError\",            \"APiName.grant\",            \"UserGrants.deny\",            \"UserGrants.clear\",            \"Discovery.purchasedContent\",            \"Discovery.entityInfo\",            \"Discovery.onPullPurchasedContent\",            \"Discovery.onPullEntityInfo\"        ]    },    \"action\": \"CORE\",    \"context\": {        \"communicationMode\": \"Transport\"    },    \"metadata\": {        \"target\": \"RIPPLE\",        \"targetVersion\": \"7836e61\",        \"deviceModel\": \"DeviceModel\",        \"devicePartner\": \"PartnerName\",        \"fbVersion\": \"NA\"    },    \"asynchronous\": false,    \"appType\": \"firebolt\"}"
+            },
+            "context": {
+                "source": "device"
+            }
+        }
+    }
+}
+```
 
-TODO: add details for how to configure FCA's PubSub client topics, listeners/subscriptions, compressions, etc...
-TODO: add details for how to configure a PubSub client to talk to FCA's PubSub Client.
+**Setup**
+Before using FCA with API access, implement a PubSub client as per the [PubSub documentation](plugins/PubSub.md).
+
+
 
 ### Usage
 
-TODO: Add details for how to send a PubSub message to FCA's PubSub client
-
-FCA includes supported PubSub handlers designed to manage various incoming PubSub methods. For more information on the supported PubSub please see the [PubSub Handlers documentation](pubSubHandlers/PubSubHandlers.md).
+- Send a PubSub message to FCA's client follwoing the instructions in the [PubSub Handlers documentation](pubSubHandlers/PubSubHandlers.md).
+- TODO: ADD further details for configurations and usage.

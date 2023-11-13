@@ -1,12 +1,37 @@
 # RegisterProviderHandler 
-This handler is invoked to trigger the provider.This handler is triggered once an entity that provides services to another/external party.This handler intent is identified with field as task and value as "registerProviderHandler" alone with the provider name in the param field of the payload.
 
-* [Valid Intent and Response](#valid-intent-and-response)
-* [Invalid Intent and Response](#invalid-intent-and-response)
+## Overview
 
-## Valid Intent and Response
+This handler is invoked to trigger the provider.This handler is triggered once an entity provides services to another/external party.This handler intent is identified with field as task and value as "registerProviderHandler" alone with the provider name in the param field of the payload.
+## Usage
 
-- Sample Intent
+```json
+{
+                    "action": "search",
+                    "data": {
+                        "query": "{\"task\":\"registerProviderHandler\",\"params\":{\"provider\":\"keyboard\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+                    },
+                    "context": {
+                        "source": "device"
+                    }
+                }
+```
+
+### Parameters
+
+| Key                           | Description                                       | Required? |
+|-------------------------------|-------------------------------------------------  |-----------|
+| registerProviderHandler       | corresponding intent for the task                 | Y         |
+| params                        | required provider params for  the intent          | Y         |
+| appType                       | corresponding intent is launching on which app    | Y         |
+
+## Examples
+
+### Valid Intent and Response
+
+<details>
+    <summary> Request </summary>
+</details>
 
             {
                     "action": "search",
@@ -18,22 +43,17 @@ This handler is invoked to trigger the provider.This handler is triggered once a
                     }
                 }
 
-- Sample Response 
+<details>
+    <summary> Response </summary>
+</details>
             
             "Keyboard provider registered successfully"
 
-- Required Intent Fields : 
-    - action: "search"
-    - data: { query: "{"task":"registerProviderHandler","params":{"provider":"keyboard","params":[]},"appType":"firebolt"}"}
-    - context: { "source": "device"}
-
-- Optional Intent Fields :
-    - data: { query: "{"action":"NA"}"}
-
-## Invalid Intent and Response
-
-- Scenario: If we pass invalid provider name.
-- Sample error intent 
+### Invalid Intent and Response
+### Invalid Provider Name
+<details>
+    <summary>Request if we pass invalid provider name </summary>
+</details>
 
             {
                 "action": "search",
@@ -45,6 +65,29 @@ This handler is invoked to trigger the provider.This handler is triggered once a
                 }
             }
 
-- Sample response
+<details>
+    <summary> Response </summary>
+</details>
 
-            No provider has been specified...
+            Provider registeration failed
+
+### Empty Provider Name
+<details>
+    <summary>Request if we pass invalid provider name </summary>
+</details>
+
+            {
+                "action": "search",
+                "data": {
+                    "query": "{\"task\":\"registerProviderHandler\",\"params\":{\"provider\":\"\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+                },
+                "context": {
+                    "source": "device"
+                }
+            }
+
+<details>
+    <summary> Response </summary>
+</details>
+
+            Provider registeration failed

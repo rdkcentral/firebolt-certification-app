@@ -1,15 +1,14 @@
 # SetApiResponseHandler 
 
+## Overview
+
 This handler is invoked to assign the response value to an environment variable in FCA.This handler intent is identified with field as task and value as "setApiResponse" alone with the apiResponse in the param field of the payload.
 
-* [Valid Intent and Response](#valid-intent-and-response)
-* [Invalid Intent and Response](#invalid-intent-and-response)
+## Usage
+* This handler is invoked to assign the response value to an environment variable in FCA
 
-## Valid Intent and Response
-
-- Sample Intent
-
-            {
+```json
+{
                     "action": "search",
                     "data": {
                         "query": "{\"task\":\"setApiResponse\",\"params\":{\"apiResponse\":{\"module\":\"keyboard\",\"methodName\":\"keyboard.email\",\"type\":\"method\",\"attributes\":[{\"ApiText\":\"john@doe.com\",\"isCancelled\":false,\"withUi\":false,\"result\":\"john@doe.com\"}]}},\"action\":\"NA\",\"appType\":\"firebolt\"}"
@@ -18,26 +17,44 @@ This handler is invoked to assign the response value to an environment variable 
                         "source": "device"
                     }
                 }
+```
+### Parameters
 
+| Key                   | Description                                       | Required? |
+|-----------------------|-------------------------------------------------- |-----------|
+| setApiResponse        | corresponding intent for the task                 | Y         |
+| params                | required event params for the intent              | Y         |
+| appType               | corresponding intent is launching on which app    | Y         |
 
-- Sample Response 
+## Examples
+### Valid Intent and Response
+
+<details>
+    <summary>Request</summary>
+</details>
+
+{
+  "action": "search",
+  "data": {
+    "query": "{\"task\":\"setApiResponse\",\"params\":{\"apiResponse\":{\"module\":\"keyboard\",\"methodName\":\"keyboard.email\",\"type\":\"method\",\"attributes\":[{\"ApiText\":\"john@doe.com\",\"isCancelled\":false,\"withUi\":false,\"result\":\"john@doe.com\"}]}},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+  },
+  "context": {
+    "source": "device"
+  }
+}
+
+<details>
+    <summary> Response </summary>
+</details>
 
             "Received ApiResponse parameters"
 
-- Required Intent Fields : 
-    - action: "search"
-    - data: { query: "{"task":"setApiResponse","params":{"apiResponse":{"module":"keyboard","methodName":"keyboard.email","type":"method","attributes":[{"ApiText":"john@doe.com","isCancelled":false,"withUi":false,"result":"john@doe.com"}]}},"appType":"firebolt"}"}
-    - context: { "source": "device"}
+### Invalid Intent and Response
 
-- Optional Intent Fields :
-    - data: { query: "{"action":"NA"}"}
-
-## Invalid Intent and Response
-
-- Scenario: If we pass invalid parameter.
-- Sample error intent 
-
-
+<details>
+    <summary>Request if we pass invalid parameter </summary>
+</details>
+    
         {
             "action": "search",
             "data": {
@@ -48,6 +65,8 @@ This handler is invoked to assign the response value to an environment variable 
             }
         }
 
-- Sample response
+<details>
+    <summary> Response </summary>
+</details>
 
         Received ApiResponse parameters

@@ -1,16 +1,14 @@
 # CallMethodHandler 
 
-Handler used to invoke the api and return the response along with schema validation result in FCA. In each test call method handler is used,to invoke all the method required to get the response as per the schema defined.This handler intent is identified with field as task and value as "callMethod" alone with the method this handler going to call in the param field of the payload. In this payload another field called communicationMode is passed to tell the FCA,from which mode this method should be invoked.
+## Oveview
 
-* [Valid Intent and Response](#valid-intent-and-response)
-* [Invalid Intent and Response](#invalid-intent-and-response)
-* [Intent for a Not Supported API](#intent-for-a-not-supported-api)
+Handler used to invoke the api and return the response along with schema validation result in FCA. In each test call methodhandler is used to invoke all the method required to get the response as per the schema defined.This handler intent is identified with field as task and value as "callMethod" along with the method this handler going to call in the param field of the payload. In this payload another field called communicationMode is passed to tell the FCA,from which mode this method should be invoked.
 
-## Valid Intent and Response
+## Usage
+* This handler is used to invoke all the methods required to get the response as per the predefined schema.
 
-- Sample Intent
-		
-        {
+```json
+{
 			"action": "search",
 			"data": {
 				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"device.version\",\"methodParams\":{}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
@@ -19,32 +17,68 @@ Handler used to invoke the api and return the response along with schema validat
 				"source": "device"
 			}
 		}
+```
 
-- Sample Response with empty params
-        
-        {
-            "method": "callMethod",
-            "params": [],
-            "responseCode": 0,
-            "apiResponse": {
-                "result": "4300568572992702016",
-                "error": null
-            },
-            "schemaValidationStatus": "PASS",
-            "schemaValidationResponse": {
-                "instance": "4300568572992702016",
-                "schema": {
-                    "type": "string"
+### Parameters
+
+| Key               | Description                                      | Required? |
+|-------------------|--------------------------------------------------|-----------|
+| callMethod        | corresponding intent for the task                | Y         |
+| params            | required params for call method intent           | Y         |
+| appType           | corresponding intent is launching on which app   | Y         |
+    
+
+
+## Examples
+
+### Valid Intent and Response
+
+<details>
+    <summary>Sample Request</summary>
+</details>
+
+    {
+			"action": "search",
+			"data": {
+				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<methodName>\",\"methodParams\":{}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+			},
+			"context": {
+				"source": "device"
+			}
+		}
+
+
+<details>
+    <summary>Response With Empty Params</summary>
+</details>
+
+    {
+                "method": "callMethod",
+                "params": [],
+                "responseCode": 0,
+                "apiResponse": {
+                    "result": "4300568572992702016",
+                    "error": null
                 },
-                "options": {},
-                "path": [],
-                "propertyPath": "instance",
-                "errors": [],
-                "disableFormat": false
+                "schemaValidationStatus": "PASS",
+                "schemaValidationResponse": {
+                    "instance": "4300568572992702016",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "options": {},
+                    "path": [],
+                    "propertyPath": "instance",
+                    "errors": [],
+                    "disableFormat": false
+                }
             }
-        }
 
-- Sample Response with params
+
+
+<details>
+    <summary>Response With Params</summary>
+</details>      
 
         {
             "method": "callMethod",
@@ -71,30 +105,27 @@ Handler used to invoke the api and return the response along with schema validat
             }
         }
 
-- Required Intent Fields : 
-    - action: "search"
-    - data: { query: "{"task":"callMethod","params":{"method":"device.version"},"context":{"communicationMode":"SDK"},"appType":"firebolt"}"}
-    - context: { "source": "device"}
 
-- Optional Intent Fields :
-    - data: { query: {"params":{"methodParams":{}},"action":"NA"}}
+### Invalid Intent and Response
 
-## Invalid Intent and Response
+<details>
+    <summary>Request with invalid method params</summary>
+</details>
 
-- Scenario 1:  If we pass invalid method params
-- Sample error intent 
-                
-                {
+    {
                     "action": "search",
                     "data": {
-                        "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"authentication.token\",\"methodParams\":{\"type\":\"platform1\"}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+                        "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<methodName>\",\"methodParams\":{\"type\":\"platform1\"}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
                     },
                     "context": {
                         "source": "device"
                     }
                 }
-- Sample response
-            
+
+<details>
+    <summary>Response with unknown variant error</summary>
+</details>    
+
             {
                 "method": "callMethod",
                 "params": [
@@ -139,87 +170,83 @@ Handler used to invoke the api and return the response along with schema validat
 
 
 
-- Scenario 2 :  If we pass invalid method name
-- Sample error intent 
-            
-            {
-                "action": "search",
+
+
+<details>
+    <summary>Request with invalid method name</summary>
+</details>
+
+    {
+            "action": "search",
                 "data": {
-                    "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"keyboardtesting.email\",\"methodParams\":{\"type\":\"signIn\",\"message\":\"Enter your email to sign into this app\"}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+                    "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<Invalid methodName>\",\"methodParams\":\"\"},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
                 },
                 "context": {
                     "source": "device"
-                }
-            }
+                 }
+    }
 
-- Sample response
+<details>
+    <summary>Response</summary>
+</details>  
 
-            {
-                "method": "callMethod",
-                "params": [
-                    "signIn",
-                    "Enter your email to sign into this app"
-                ],
-                "responseCode": 1,
-                "apiResponse": {
-                    "result": null,
-                    "error": {}
+    {
+        "result": null,
+        "error": {
+            "code": -32601,
+            "message": "Wrong Method Name"
+        }
+    }
+
+<details>
+    <summary>Request with empty method name</summary>
+</details>
+
+    {
+            "action": "search",
+                "data": {
+                    "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"\",\"methodParams\":\"\"},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
                 },
-                "schemaValidationStatus": "FAIL",
-                "schemaValidationResponse": {
-                    "instance": {},
-                    "schema": {
-                        "type": "object",
-                        "properties": {
-                            "code": {
-                                "type": "number"
-                            },
-                            "message": {
-                                "type": "string"
-                            }
-                        },
-                        "required": [
-                            "code",
-                            "message"
-                        ]
-                    },
-                    "options": {},
-                    "path": [],
-                    "propertyPath": "instance",
-                    "errors": [
-                        {
-                            "path": [],
-                            "property": "instance",
-                            "message": "requires property \"code\"",
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "code": {
-                                        "type": "number"
-                                    },
-                                    "message": {
-                                        "type": "string"
-                                    }
-                                },
-                                "required": [
-                                    "code",
-                                    "message"
-                                ]
-                            },
-                            "instance": {},
-                            "name": "required",
-                            "argument": "code",
-                            "stack": "instance requires property \"code\""
-                        }
-                    ],
-                    "disableFormat": false
-                }
-            }
+                "context": {
+                    "source": "device"
+                 }
+    }
 
+<details>
+    <summary>Response</summary>
+</details>  
+    undefined
+    
+<details>
+    <summary>Request with empty methodParams for setters</summary>
+</details>
+
+    {
+            "action": "search",
+                "data": {
+                    "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<setMethodName>\",\"methodParams\":\"\"},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+                },
+                "context": {
+                    "source": "device"
+                 }
+    }
+
+<details>
+    <summary>Response</summary>
+</details>  
+ - Returns the default value
+    {
+        "result": false,
+        "error": null
+    }
+ 
 ## Intent for a Not Supported API
 
-- Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api responsewill be validated against errorSchema. 
-    ```
+- Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api responsewill be validated against errorSchema.
+
+<details>
+    <summary>Request with isNotSupportedApi true</summary>
+</details>
     {
 	    "task":"callMethod",
 	    "params":{
@@ -228,5 +255,3 @@ Handler used to invoke the api and return the response along with schema validat
 	    },
 	    "isNotSupportedApi":true,
     }
-    ```
-    TODO - More details to be added

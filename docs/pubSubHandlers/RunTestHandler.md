@@ -1,15 +1,38 @@
 # RunTestHandler 
 
-Handler that trigger a test in FCA.This handler run on each test case. Additional test parameters can be added to params field in payload.
-For example if we are running a test suite an array of method parameters are passed in param field of the payload.While in a single test run only the required method is passed.
+## Overview
 
-* [Valid Intent and Response](#valid-intent-and-response)
-* [Invalid Intent and Response](#invalid-intent-and-response)
-* [Passing List of Not Supported API's in Intent](#passing-list-of-not-supported-apis-in-intent)
+Handler that triggers a test in FCA.This handler run on each test cases. Additional test parameters can be added to params field in payload.
+For example if we are running a test suite, an array of method parameters are passed in param field of the payload while in a single test run only the required method is passed.
+## Usage
 
-## Valid Intent and Response
+```json
+{
+                    "action": "search",
+                    "data": {
+                        "query": "{\"task\":\"runTest\",\"params\":{\"mode\":\"Lifecycle.validation\",\"methodName\":\"lifecycle.close\",\"methodParams\":\"userExit\"},\"context\":{\"communicationMode\":\"Lifecycle.validation\"},\"action\":\"Lifecycle.validation\",\"appType\":\"firebolt\"}"
+                    },
+                    "context": {
+                        "source": "device"
+                }
+            }
+```
 
-- Sample Intent of single test
+### Parameters
+
+| Key                       | Description                                               | Required? |
+|---------------------------|-----------------------------------------------------------|-----------|
+| runTest                   | corresponding intent for the task                         | Y         |
+| params                    | required  params for  the intent                          | optional  |
+| appType                   | corresponding intent is launching on which app            | Y         |
+
+## Examples
+
+### Valid Intent and Response
+
+<details>
+    <summary> Request of single test</summary>
+</details>
 
             {
                     "action": "search",
@@ -20,8 +43,9 @@ For example if we are running a test suite an array of method parameters are pas
                         "source": "device"
                 }
             }
-
-- Sample Response
+<details>
+    <summary> Response </summary>
+</details>
 
         {
             "result": null,
@@ -41,22 +65,12 @@ For example if we are running a test suite an array of method parameters are pas
                 }
             }
         }
+### Invalid Intent and Response
 
-
-
-- Required Intent Fields : 
-    - action: "search"
-    - data: { query: "{"task":"runTest","params":{"methodName":"lifecycle.close}"appType":"firebolt",action":"CORE","context":{"communicationMode":"SDK"}}"}
-    - context: { "source": "device"}
-
-- Optional Intent Fields :
-    - data: { query: {"params": {"certification":true,"exceptionMethods": [{{"method":"authentication.token","param":{"type":"distributor"}},"options":{"clientId":"your-client"}},.......],"methodsToBeExcluded":["accessory.pair",...],"modulesToBeExcluded":["keyboard",....],"metadata": {"target":"your-Target-device","targetVersion":"1c238a16","fireboltVersion":"0.10.0","deviceModel":"your-device-model","devicePartner":"your-device-Partner","fbVersion":"0.10.0"},"asynchronous":false}}
-
-## Invalid Intent and Response
-
-- Scenario 1: If we pass invalid parameter.
-- Sample error intent 
-
+<details>
+    <summary>Request if we pass invalid parameter </summary>
+</details>
+    
         {
             "action": "search",
             "data": {
@@ -67,36 +81,61 @@ For example if we are running a test suite an array of method parameters are pas
             }
         }
 
-- Scenario 2: If we pass invalid lifecycle method.
-- Sample error intent 
+<details>
+    <summary> Response </summary>
+</details>
+
+        {
+    "result": "undefined",
+    "error": {
+        "code": -32602,
+        "message": "unknown variant e, expected one of remoteButton, userExit, error, appNotReady, resourceContention, done at line 1 column 13"
+    },
+    "schemaResult": {
+        "status": "FAIL",
+        "schemaValidationResult": {
+            "instance": "undefined",
+            "schema": {
+                "const": null
+            },
+            "options": {},
+            "path": [],
+            "propertyPath": "instance",
+            "errors": [
+                {
+                    "path": [],
+                    "property": "instance",
+                    "message": "does not exactly match expected constant: null",
+                    "schema": {
+                        "const": null
+                    },
+                    "instance": "undefined",
+                    "name": "const",
+                    "argument": null,
+                    "stack": "instance does not exactly match expected constant: null"
+                }
+            ],
+            "disableFormat": false
+        }
+    }
+}
+
+<details>
+    <summary>Request if we pass invalid method </summary>
+</details>
 
             {
             "action": "search",
             "data": {
-                "query": "{\"task\":\"runTest\",\"params\":{\"mode\":\"Lifecycle.validation\",\"methodName\":\"lifecycle.close\",\"methodParams\":\"userExit\"},\"context\":{\"communicationMode\":\"Lifecycle.validation\"},\"action\":\"Lifecycle.validation\",\"appType\":\"firebolt\"}"
+                "query": "{\"task\":\"runTest\",\"params\":{\"mode\":\"Lifecycle.validation\",\"methodName\":\"<Invalid methodName\",\"methodParams\":\"userExit\"},\"context\":{\"communicationMode\":\"Lifecycle.validation\"},\"action\":\"Lifecycle.validation\",\"appType\":\"firebolt\"}"
             },
             "context": {
                 "source": "device"
             }
         }
-
-- Sample response
+        
+<details>
+    <summary> Response </summary>
+</details>
 
             Invalid lifecycle method passed
-
-## Passing List of Not Supported API's in Intent
-
-- Sample intent for passing list of not supported api's - *exceptionMethods* in the intent received contains the list of not supported api's
-
-    ```
-    {
-        "action": "search",
-        "data": {
-            "query": "{\"task\": \"runTest\",\"params\": {\"certification\": true,\"exceptionMethods\": [{\"method\": \"apiName1\",\"param\": {\"key\": \"value\"}},{\"method\": \"apiName2\"}]},\"action\": \"CORE\",\"metadata\": {}}"
-        },
-        "context": {
-            "source": "device"
-        }
-    }
-    ```
-    TO DO : More details to be added here

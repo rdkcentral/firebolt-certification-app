@@ -1,13 +1,38 @@
 # GetPubSubStatusHandler
 
-Handler that check the status of PubSub connection in FCA.This handler intent is identified with task parameter as "getPubSubStatus" is the mandatory parameter.There are few optional parameters like action,appType.
+## Overview
 
-* [Valid Intent and Response](#valid-intent-and-response)
-* [Invalid Intent and Response](#invalid-intent-and-response)
+Handler that checks the status of PubSub connection in FCA.This handler intent is identified with task parameter as "getPubSubStatus" and is a mandatory parameter in the data passed.There are few optional parameters like action,appType.
 
-## Valid Intent and Response
+## Usage
+* This handler is used to check the status of PubSub connection in FCA.
 
-- Sample Intent
+```json
+{
+                "action": "search",
+                "data": {
+                    "query": "{\"task\":\"getPubSubStatus\",\"action\":\"NA\",\"appType\":\"firebolt\"}"
+                },
+                "context": {
+                    "source": "device"
+                }
+            }
+```
+
+### Parameters
+
+| Key               | Description                                       | Required? |
+|-------------------|---------------------------------------------------|-----------|
+| getPubSubStatus   | corresponding intent for the task                 | Y         |
+| appType           | corresponding intent is launching on which app    | Y         |
+
+## Examples
+
+### Valid Intent and Response
+
+<details>
+    <summary> Request </summary>
+</details>
 
         {
                 "action": "search",
@@ -19,27 +44,22 @@ Handler that check the status of PubSub connection in FCA.This handler intent is
                 }
             }
 
-- Sample Response
+
+<details>
+    <summary> Response </summary>
+</details>
 
         [
             true,
             null
         ]
 
+### Invalid Intent and Response
 
-- Required Intent Fields : 
-    - action: "search"
-    - data: { query: "{"task":"getPubSubStatus","appType":"firebolt"}"}
-    - context: { "source": "device"}
+<details>
+    <summary>Request when we are not able to connect to PubSub </summary>
+</details>
 
-- Optional Intent Fields :
-    - data: { query: "{"action":"NA"}"}
-
-## Invalid Intent and Response
-
-- Scenario: If we are not able to connect to PubSub 
-- Sample error intent 
-    
             {
             "action": "search",
             "data": {
@@ -49,8 +69,8 @@ Handler that check the status of PubSub connection in FCA.This handler intent is
                 "source": "device"
             }
         }
-
-
-- Sample response
+<details>
+    <summary> Response </summary>
+</details>
 
             PubSub ACK not received from FCA. App not launched in 30000 ms

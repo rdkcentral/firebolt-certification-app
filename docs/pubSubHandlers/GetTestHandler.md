@@ -1,13 +1,37 @@
 # GetTestHandler 
 
-Handler that fetch mochawesome report from FCA with the additional parameter as jobId is added to params field in the payload.By using in conjunction with asynchronous as "true" in runTest.This handler intent is identified with field as task and value as "getTest" alone with jobId as param in the payload.There are few optional parameters like action,appType.
+## Overview
 
-* [Valid Intent and Response](#valid-intent-and-response)
-* [Invalid Intent and Response](#invalid-intent-and-response)
+Handler that fetches mochawesome report from FCA. An additional parameter as jobId is added to params field in the payload.This handler intent is identified with field as task and value as "getTest" along with jobId as param in the payload.There are few optional parameters like action,appType.
+## Usage
 
-## Valid Intent and Response
+```json
+{
+            "action": "search",
+            "data": {
+                "query": "{\"task\":\"getTest\",\"params\":{\"jobId\":\"85e5d9c7-420c-4272-96ca-3616ced55564\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+            },
+            "context": {
+                "source": "device"
+            }
+        }
+```
 
-Sample Intent
+### Parameters
+
+| Key               | Description                                       | Required? |
+|-------------------|---------------------------------------------------|-----------|
+| getTest           | corresponding intent for the task                 | Y         |
+| params            | required jobId params for  the intent             | Y         |
+| appType           | corresponding intent is launching on which app    | Y         |
+
+## Examples
+
+### Valid Intent and Response
+
+<details>
+    <summary> Request </summary>
+</details>
 
 	{
             "action": "search",
@@ -19,18 +43,17 @@ Sample Intent
             }
         }
 
-- Required Intent Fields : 
-    - action: "search"
-    - data: { query: "{"task":"getTest","params":{"jobId":"85e5d9c7-420c-4272-96ca-3616ced55564"}"appType":"firebolt"}"}
-    - context: { "source": "device"}
+<details>
+    <summary> Response </summary>
+</details>
 
-- Optional Intent Fields :
-    - data: { query: "{"action":"NA"}"}
+            Report generated.
 
-## Invalid Intent and Response
-
-- Scenario: If we are not able to generate report ,that is jobId is not passed and isReportGenerated is "false" 
-- Sample error intent 
+### Invalid Intent and Response
+### Empty JobId
+<details>
+    <summary>Request when we are not able to generate report ,that is jobId is not passed and isReportGenerated is "false"  </summary>
+</details>
     
             {
             "action": "search",
@@ -42,6 +65,8 @@ Sample Intent
             }
         }
 
-- Sample response
+<details>
+    <summary> Response  </summary>
+</details>
 
             Report not generated from firebolt

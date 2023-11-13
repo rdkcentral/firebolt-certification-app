@@ -1,15 +1,15 @@
 # GetEventResponse
 
-Handler used to get event response after triggering each event.The response is fetch only after the event is triggered.This handler intent is identified with field as task and value as "getEventResponse" alone with the event name for which response need to fetch in the param field of the payload.
+## Overview
 
-* [Valid Intent and Response](#valid-intent-and-response)
-* [Invalid Intent and Response](#invalid-intent-and-response)
+Handler used to get event response after triggering each event.The response is fetched only after the event is triggered.This handler intent is identified with field as task and value as "getEventResponse" along with the event name for which response needs to be fetched in the param field of the payload.
 
-## Valid Intent and Response
 
-- Sample Intent
+## Usage
+* This handler is to get event response after triggering each event.
 
-            {
+```json
+{
                     "action": "search",
                     "data": {
                         "query": "{\"task\":\"getEventResponse\",\"params\":{\"event\":\"advertising.onPolicyChanged-8\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
@@ -18,52 +18,115 @@ Handler used to get event response after triggering each event.The response is f
                         "source": "device"
                     }
                 }
+```
 
-- Sample Response
+### Parameters
+
+| Key                   | Description                                       | Required? |
+|-----------------------|---------------------------------------------------|-----------|
+| getEventResponse      | corresponding intent for the task                 | Y         |
+| params                | required event params for the intent              | Y         |
+| appType               | corresponding intent is launching on which app    | Y         |
+
+## Examples
+
+### Valid Intent and Response
+
+<details>
+    <summary> Request </summary>
+</details>
+
+    {
+        "action": "search",
+            "data": {
+                "query": {
+                    "task": "getEventResponse",
+                    "params": {
+                        "event": "<eventName>"
+                    },
+                    "action": "NA",
+                    "appType": "firebolt"
+                }
+            },
+            "context": {
+                "source": "device"
+            }
+    }
+
+<details>
+    <summary> Response </summary>
+</details>
 
                 {
-                "eventName": "navigateTo",
-                "eventListenerId": "discovery.onNavigateTo-7",
+                "eventName": "<eventName>",
+                "eventListenerId": "<eventName>-id",
                 "eventResponse": {
-                    "action": "home",
-                    "context": {
-                        "source": "voice"
-                    }
+                    <eventResponse>
                 },
                 "eventSchemaResult": {
                     "status": "PASS",
                     "eventSchemaResult": []
                 },
-                "eventTime": "2023-04-26T12:09:35.910Z"
+                "eventTime": "<Time>"
             }
 
-- Required Intent Fields : 
-    - action: "search"
-    - data: { query: "{"task":"getEventResponse","params":{"event":"advertising.onPolicyChanged-8"}"appType":"firebolt"}"}
-    - context: { "source": "device"}
+### Invalid Intent and Response
+### Without Event Name
+<details>
+    <summary>Request without event name </summary>
+</details>
 
-- Optional Intent Fields :
-    - data: { query: "{"action":"NA"}"}
-
-## Invalid Intent and Response
-
-- Scenario: If no event name is passed
-- Sample error intent 
-    
-            {
-                "action": "search",
-                "data": {
-                    "query": "{\"task\":\"getEventResponse\",\"params\":{\"event\":\"\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                },
-                "context": {
-                    "source": "device"
+    {
+        "action": "search",
+            "data": {
+                "query": {
+                    "task": "getEventResponse",
+                    "params": {
+                        "event": ""
+                    },
+                    "action": "NA",
+                    "appType": "firebolt"
                 }
+            },
+            "context": {
+                "source": "device"
             }
+    }
 
-- Sample response
+<details>
+    <summary> Response as null </summary>
+</details>
 
             {
                 "": null
             }
 
- 
+### With Invalid Event Name
+
+<details>
+    <summary>Request with invalid event name </summary>
+</details>
+
+    {
+        "action": "search",
+            "data": {
+                "query": {
+                    "task": "getEventResponse",
+                    "params": {
+                        "event": "<Invalid eventName>"
+                    },
+                    "action": "NA",
+                    "appType": "firebolt"
+                }
+            },
+            "context": {
+                "source": "device"
+            }
+    }
+
+<details>
+    <summary> Response as null </summary>
+</details>
+
+            No Response
+

@@ -1,15 +1,13 @@
 # ClearEventHandler 
 
-Handler used to clear event Listener.This handler is invoked to clear a single event at a time.This handler intent is identified with field as task and value as "clearEventHandler" alone with the event name which need to clear from the test in the param field of the payload.
+## Overview
 
-* [Valid Intent and Response](#valid-intent-and-response)
-* [Invalid Intent and Response](#invalid-intent-and-response)
+Handler used to clear event listeners. This handler is invoked to clear a single event at a time.This handler intent is identified with field as task and value as "clearEventHandler" along with the event name which needs to be cleared in the params field of the payload.
+## Usage
+* This handler is invoked to clear a single event at a time.
 
-## Valid Intent and Response
-
-- Sample Intent
-
-            {
+```json
+{
                     "action": "search",
                     "data": {
                         "query": "{\"task\":\"clearEventHandler\",\"params\":{\"event\":\"advertising.onPolicyChanged\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
@@ -18,34 +16,108 @@ Handler used to clear event Listener.This handler is invoked to clear a single e
                         "source": "device"
                     }
                 }
+```
 
-- Sample Response
+### Parameters
 
-                true
-            
+| Key                   | Description                                       | Required? |
+|-----------------------|-------------------------------------------------- |-----------|
+| clearEventHandler     | corresponding intent for the task                 | Y         |
+| params                | required event params for the intent              | Y         |
+| appType               | corresponding intent is launching on which app    | Y         |
 
-- Required Intent Fields : 
-    - action: "search"
-    - data: { query: "{"task":"clearEventHandler","params":{"event":"advertising.onPolicyChanged"}"appType":"firebolt"}"}
-    - context: { "source": "device"}
 
-- Optional Intent Fields :
-    - data: { query: "{"action":"NA"}"}
+## Examples
 
-## Invalid Intent and Response
+### Valid Intent and Response
 
-- Scenario: If we are not passing event name
-- Sample error intent 
-    
-            {
-            "action": "search",
+<details>
+    <summary>Request</summary>
+</details>
+
+{
+    "action": "search",
+    "data": {
+        "query": {
+            "task": "clearEventHandler",
+            "params": {
+                "event": "<eventName>"
+            },
+            "action": "NA",
+            "appType": "firebolt"
+        }
+    },
+    "context": {
+        "source": "device"
+    }
+}
+
+
+<details>
+    <summary>Response as true</summary>
+</details>
+
+            true
+
+
+### Invalid Intent and Response
+### Request without event name
+<details>
+    <summary>Request without event name </summary>
+</details>
+    {
+        "action": "search",
             "data": {
-                "query": "{\"task\":\"clearEventHandler\",\"params\":{\"event\":\"\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+                "query": {
+                    "task": "clearEventHandler",
+                    "params": {
+                        "event": ""
+                    },
+                    "action": "NA",
+                    "appType": "firebolt"
+                }
             },
             "context": {
                 "source": "device"
             }
+    }
+<details>
+    <summary>Response</summary>
+</details> 
+    {
+        "error": {
+            "code": "FCAError",
+            "message": "Error while clearing event listeners: undefined is not an object (evaluating 'eventName.slice')"
         }
-- Sample response
+    }
 
-        false
+### Request with invalid event name
+<details>
+    <summary>Request without event name </summary>
+</details>
+    {
+        "action": "search",
+            "data": {
+                "query": {
+                    "task": "clearEventHandler",
+                    "params": {
+                        "event": "<Invalid eventName>"
+                    },
+                    "action": "NA",
+                    "appType": "firebolt"
+                }
+            },
+            "context": {
+                "source": "device"
+            }
+    }
+
+<details>
+    <summary>Response</summary>
+</details> 
+    {
+        "error": {
+            "code": "FCAError",
+            "message": "Error while clearing event listeners: undefined is not an object (evaluating 'eventName.slice')"
+        }
+    }

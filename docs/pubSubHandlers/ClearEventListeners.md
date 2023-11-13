@@ -1,13 +1,39 @@
 # ClearEventListeners
 
+## Overview
+
 This handler will clear the eventListeners and the event history for the listener as a part of FCA.This handler is invoked to clear all the event listeners at a time. Once all event listeners are cleared, there will be no remaining history of the event listeners that were used.
 
-* [Valid Intent and Response](#valid-intent-and-response)
-* [Invalid Intent and Response](#invalid-intent-and-response)
+## Usage
+* This handler is invoked to clear all the event listeners at a time.
 
-## Valid Intent and Response
+```json
+ {
+            "action": "search",
+            "data": {
+                "query": "{\"task\":\"clearAllListeners\",\"action\":\"NA\",\"appType\":\"firebolt\"}"
+            },
+            "context": {
+                "source": "device"
+            }
+        }
+```
 
-- Sample Intent
+### Parameters
+
+| Key                   | Description                                       | Required? |
+|-----------------------|---------------------------------------------------|-----------|
+| clearAllListeners     | corresponding intent for the task                 | Y         |
+| appType               | corresponding intent is launching on which app    | Y         |
+
+
+## Examples
+
+### Valid Intent and Response
+
+<details>
+    <summary> Request </summary>
+</details>
 
         {
             "action": "search",
@@ -19,34 +45,8 @@ This handler will clear the eventListeners and the event history for the listene
             }
         }
 
-- Sample Response 
+<details>
+    <summary> Response </summary>
+</details>
 
         Cleared Listeners
-
-- Required Intent Fields : 
-    - action: "search"
-    - data: { query: "{"task":"clearAllListeners","appType":"firebolt"}"}
-    - context: { "source": "device"}
-
-- Optional Intent Fields :
-    - data: { query: "{"action":"NA"}"}
-
-## Invalid Intent and Response
-
-- Scenario: If no event name passed
-- Sample error intent 
-        
-        {
-            "method": "clearAllListeners",
-            "params": {
-                "event": "/",
-                "params": []
-            }
-        }
-
-
-- Sample response
-            
-            {
-                "accessibility.onClosedCaptionsSettingsChanged-473": null
-            }

@@ -33,6 +33,7 @@ module.exports = {
     '^Test_Runner$': '<rootDir>/../src/Test_Runner.js',
     '^EventInvocation$': '<rootDir>/../src//EventInvocation.js',
     "axios": "axios/dist/node/axios.cjs",
+    "change-case": "change-case/dist/node",
   },
   collectCoverage: true,
   coverageThreshold: {

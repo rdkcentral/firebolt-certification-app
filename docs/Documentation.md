@@ -17,6 +17,7 @@ The basic idea of FCA is:
   - [Validations](#validations)
   - [Reporting](#reporting)
   - [Plugins](#plugins)
+  - [Intent Reader](#intent-reader)
 
 ## Graphical User Interface
 
@@ -40,3 +41,8 @@ If you are interested in taking advantage of the built-in reporting please see t
 
 ## Plugins
 Plugins are powerful tools that enable custom functionality to be added to FCA. They are optional. They are available for those who wish to extend or override FCA's capabilities. All plugins are located in the `/plugins` directory and use webpack to be added to the application during build time. Full overview of the Plugins functionalities can be found [here](plugins/Plugins.md).
+
+## Intent Reader
+If you are interested in taking advantage of the built-in reporting please see the [intent reader documentation](./IntentReader.md).
+
+

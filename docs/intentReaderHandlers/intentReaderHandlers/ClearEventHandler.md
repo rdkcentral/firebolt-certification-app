@@ -10,7 +10,7 @@ Handler used to clear event listeners. This handler is invoked to clear a single
 {
                     "action": "search",
                     "data": {
-                        "query": "{\"task\":\"clearEventHandler\",\"params\":{\"event\":\"advertising.onPolicyChanged\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+                        "query": "{\"task\":\"clearEventHandler\",\"params\":{\"event\":\"<eventName>\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
                     },
                     "context": {
                         "source": "device"
@@ -20,11 +20,11 @@ Handler used to clear event listeners. This handler is invoked to clear a single
 
 ### Parameters
 
-| Key                   | Description                                       | Required? |
-|-----------------------|-------------------------------------------------- |-----------|
-| clearEventHandler     | corresponding intent for the task                 | Y         |
-| params                | required event params for the intent              | Y         |
-| appType               | corresponding intent is launching on which app    | Y         |
+| Key                   | Description                                                                           | Required? |
+|-----------------------|---------------------------------------------------------------------------------------|-----------|
+| task                  | "clearEventHandler"- Its a static value and should not be changed for this handler    | Y         |
+| params                | required event params for the intent                                                  | Y         |
+| appType               | corresponding intent is launching on which app                                        | Y         |
 
 
 ## Examples

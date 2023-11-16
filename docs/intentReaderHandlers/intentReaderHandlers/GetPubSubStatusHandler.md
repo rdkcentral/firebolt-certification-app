@@ -21,10 +21,10 @@ Handler that checks the status of PubSub connection in FCA.This handler intent i
 
 ### Parameters
 
-| Key               | Description                                       | Required? |
-|-------------------|---------------------------------------------------|-----------|
-| getPubSubStatus   | corresponding intent for the task                 | Y         |
-| appType           | corresponding intent is launching on which app    | Y         |
+| Key               | Description                                                                           | Required? |
+|-------------------|---------------------------------------------------------------------------------------|-----------|
+| task              | "getPubSubStatus"- Its a static value and should not be changed for this handler      | Y         |
+| appType           | corresponding intent is launching on which app                                        | Y         |
 
 ## Examples
 

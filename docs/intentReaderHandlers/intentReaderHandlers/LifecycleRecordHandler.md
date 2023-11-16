@@ -22,14 +22,13 @@ They are startLifecycleRecording and stopLifecycleRecording.
     }
 }
 ```
-
 ### Parameters
 
-| Key                                                   | Description                                       | Required? |
-|-------------------------------------------------------|-------------------------------------------------- |-----------|
-| startLifecycleRecording / stopLifecycleRecording      | corresponding intent for the task                 | Y         |
-| params                                                | required appId params for  the intent             | Y         |
-| appType                                               | corresponding intent is launching on which app    | Y         |
+| Key      | Description                                                                                                       | Required? |
+|----------|-------------------------------------------------------------------------------------------------------------------|-----------|
+| task     | "startLifecycleRecording / stopLifecycleRecording"- Its a static value and should not be changed for this handler | Y         |
+| params   | required appId params for  the intent                                                                             | Y         |
+| appType  | corresponding intent is launching on which app                                                                    | Y         |
 
 ## Examples
 

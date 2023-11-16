@@ -20,10 +20,10 @@ This handler is invoked once healthcheck is done.This handler is responsible for
 
 ### Parameters
 
-| Key               | Description                                       | Required? |
-|-------------------|---------------------------------------------------|-----------|
-| healthCheck       | corresponding intent for the task                 | Y         |
-| appType           | corresponding intent is launching on which app    | Y         |
+| Key               | Description                                                                       | Required? |
+|-------------------|-----------------------------------------------------------------------------------|-----------|
+| task              | "healthCheck"- Its a static value and should not be changed for this handler      | Y         |
+| appType           | corresponding intent is launching on which app                                    | Y         |
 
 ## Examples
 

@@ -9,7 +9,7 @@ This handler is invoked to trigger the provider.This handler is triggered once a
 {
                     "action": "search",
                     "data": {
-                        "query": "{\"task\":\"registerProviderHandler\",\"params\":{\"provider\":\"keyboard\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+                        "query": "{\"task\":\"registerProviderHandler\",\"params\":{\"provider\":\"<providerName>\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
                     },
                     "context": {
                         "source": "device"
@@ -19,11 +19,11 @@ This handler is invoked to trigger the provider.This handler is triggered once a
 
 ### Parameters
 
-| Key                           | Description                                       | Required? |
-|-------------------------------|-------------------------------------------------  |-----------|
-| registerProviderHandler       | corresponding intent for the task                 | Y         |
-| params                        | required provider params for  the intent          | Y         |
-| appType                       | corresponding intent is launching on which app    | Y         |
+| Key               | Description                                                                                   | Required? |
+|-------------------|-----------------------------------------------------------------------------------------------|-----------|
+| task              | "registerProviderHandler"- Its a static value and should not be changed for this handler      | Y         |
+| params            | required provider params for  the intent                                                      | Y         |
+| appType           | corresponding intent is launching on which app                                                | Y         |
 
 ## Examples
 

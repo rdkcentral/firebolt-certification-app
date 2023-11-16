@@ -21,10 +21,10 @@ This handler will clear the eventListeners and the event history for the listene
 
 ### Parameters
 
-| Key                   | Description                                       | Required? |
-|-----------------------|---------------------------------------------------|-----------|
-| clearAllListeners     | corresponding intent for the task                 | Y         |
-| appType               | corresponding intent is launching on which app    | Y         |
+| Key                   | Description                                                                           | Required? |
+|-----------------------|---------------------------------------------------------------------------------------|-----------|
+| task                  | "clearAllListeners"- Its a static value and should not be changed for this handler    | Y         |
+| appType               | corresponding intent is launching on which app                                        | Y         |
 
 
 ## Examples

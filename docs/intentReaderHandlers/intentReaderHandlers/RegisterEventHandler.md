@@ -10,7 +10,7 @@ Handler used to register the event in FCA.This handler intent is identified with
 {
                     "action": "search",
                     "data": {
-                        "query": "{\"task\":\"registerEvent\",\"params\":{\"event\":\"advertising.onPolicyChanged\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+                        "query": "{\"task\":\"registerEvent\",\"params\":{\"event\":\"<eventName>\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
                     },
                     "context": {
                         "source": "device"
@@ -20,11 +20,11 @@ Handler used to register the event in FCA.This handler intent is identified with
 
 ### Parameters
 
-| Key               | Description                                       | Required? |
-|-------------------|---------------------------------------------------|-----------|
-| registerEvent     | corresponding intent for the task                 | Y         |
-| params            | required event params for  the intent             | Y         |
-| appType           | corresponding intent is launching on which app    | Y         |
+| Key               | Description                                                                         | Required? |
+|-------------------|-------------------------------------------------------------------------------------|-----------|
+| task              | "registerEvent"- Its a static value and should not be changed for this handler      | Y         |
+| params            | required event params for  the intent                                               | Y         |
+| appType           | corresponding intent is launching on which app                                      | Y         |
 
 ## Examples
 
@@ -250,18 +250,37 @@ Handler used to register the event in FCA.This handler intent is identified with
 
 ### Empty Event 
 <details>
-    <summary>Request for a Not Supported Event </summary>
+    <summary>Request with isNotSupportedApi true for a supported event</summary>
 </details>
-- Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that event registration response will be validated against errorSchema. Detailed information on sending intent is given [here](docs/pubSubHandlers/RegisterEventHandler.md).
-
-{
-	    "task":"registerEvent",
-	    "params":{
-		    "method":"eventName",
-		    "methodParams":{"key":"value"}
-	    },
-	    "isNotSupportedApi":true,
-    }
-
+- If there is a key *isNotSupportedApi* with value *true* in the intent received, that event registration response will be validated against errorSchema. Detailed information on sending intent is given [here](docs/pubSubHandlers/RegisterEventHandler.md).
 
     
+{
+    "action": "search",
+        "data": {
+            "query": {
+                "task": "registerEvent",
+                "params": {
+                    "event": "<eventName>",
+                    "params": {}
+                },
+                "isNotSupportedApi":true,
+                "action": "NA",
+                "context": {
+                    "communicationMode": "SDK"
+                },
+                "appType": "firebolt"
+            }
+        }
+}
+
+<details>
+    <summary>Response</summary>
+</details>
+- Event response is validated against errorSchema.
+
+    {
+        "listenerResponse":9,
+        "error":null
+    }
+-Event listener schema validation: FAIL

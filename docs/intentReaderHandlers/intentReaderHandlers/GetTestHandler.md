@@ -9,7 +9,7 @@ Handler that fetches mochawesome report from FCA. An additional parameter as job
 {
             "action": "search",
             "data": {
-                "query": "{\"task\":\"getTest\",\"params\":{\"jobId\":\"85e5d9c7-420c-4272-96ca-3616ced55564\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+                "query": "{\"task\":\"getTest\",\"params\":{\"jobId\":<jobId>},\"action\":\"NA\",\"appType\":\"firebolt\"}"
             },
             "context": {
                 "source": "device"
@@ -19,11 +19,11 @@ Handler that fetches mochawesome report from FCA. An additional parameter as job
 
 ### Parameters
 
-| Key               | Description                                       | Required? |
-|-------------------|---------------------------------------------------|-----------|
-| getTest           | corresponding intent for the task                 | Y         |
-| params            | required jobId params for  the intent             | Y         |
-| appType           | corresponding intent is launching on which app    | Y         |
+| Key               | Description                                                                   | Required? |
+|-------------------|-------------------------------------------------------------------------------|-----------|
+| task              | "getTest"- Its a static value and should not be changed for this handler      | Y         |
+| params            | required jobId params for  the intent                                         | Y         |
+| appType           | corresponding intent is launching on which app                                | Y         |
 
 ## Examples
 

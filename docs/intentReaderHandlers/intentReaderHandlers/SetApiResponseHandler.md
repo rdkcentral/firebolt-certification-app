@@ -11,7 +11,7 @@ This handler is invoked to assign the response value to an environment variable 
 {
                     "action": "search",
                     "data": {
-                        "query": "{\"task\":\"setApiResponse\",\"params\":{\"apiResponse\":{\"module\":\"keyboard\",\"methodName\":\"keyboard.email\",\"type\":\"method\",\"attributes\":[{\"ApiText\":\"john@doe.com\",\"isCancelled\":false,\"withUi\":false,\"result\":\"john@doe.com\"}]}},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+                        "query": "{\"task\":\"setApiResponse\",\"params\":{\"apiResponse\":{\"module\":\"<moduleName>\",\"methodName\":\"<methodName>\",\"type\":\"method\",\"attributes\":[{}]}},\"action\":\"NA\",\"appType\":\"firebolt\"}"
                     },
                     "context": {
                         "source": "device"
@@ -20,11 +20,11 @@ This handler is invoked to assign the response value to an environment variable 
 ```
 ### Parameters
 
-| Key                   | Description                                       | Required? |
-|-----------------------|-------------------------------------------------- |-----------|
-| setApiResponse        | corresponding intent for the task                 | Y         |
-| params                | required event params for the intent              | Y         |
-| appType               | corresponding intent is launching on which app    | Y         |
+| Key                   | Description                                                                          | Required? |
+|-----------------------|--------------------------------------------------------------------------------------|-----------|
+| task                  | "setApiResponse"- Its a static value and should not be changed for this handler      | Y         |
+| params                | required event params for the intent                                                 | Y         |
+| appType               | corresponding intent is launching on which app                                       | Y         |
 
 ## Examples
 ### Valid Intent and Response

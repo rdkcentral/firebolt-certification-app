@@ -10,7 +10,7 @@ For example if we are running a test suite, an array of method parameters are pa
 {
                     "action": "search",
                     "data": {
-                        "query": "{\"task\":\"runTest\",\"params\":{\"mode\":\"Lifecycle.validation\",\"methodName\":\"lifecycle.close\",\"methodParams\":\"userExit\"},\"context\":{\"communicationMode\":\"Lifecycle.validation\"},\"action\":\"Lifecycle.validation\",\"appType\":\"firebolt\"}"
+                        "query": "{\"task\":\"runTest\",\"params\":{\"methodName\":\"<methodName>\",\"methodParams\":{}},\"action\":\"NA\",\"appType\":\"firebolt\"}"
                     },
                     "context": {
                         "source": "device"
@@ -20,11 +20,11 @@ For example if we are running a test suite, an array of method parameters are pa
 
 ### Parameters
 
-| Key                       | Description                                               | Required? |
-|---------------------------|-----------------------------------------------------------|-----------|
-| runTest                   | corresponding intent for the task                         | Y         |
-| params                    | required  params for  the intent                          | optional  |
-| appType                   | corresponding intent is launching on which app            | Y         |
+| Key                       | Description                                                                   | Required? |
+|---------------------------|-------------------------------------------------------------------------------|-----------|
+| task                      | "runTest"- Its a static value and should not be changed for this handler      | Y         |
+| params                    | required  params for  the intent                                              | optional  |
+| appType                   | corresponding intent is launching on which app                                | Y         |
 
 ## Examples
 

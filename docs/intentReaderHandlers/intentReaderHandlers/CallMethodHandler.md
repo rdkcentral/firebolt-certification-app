@@ -2,7 +2,7 @@
 
 ## Oveview
 
-Handler used to invoke the api and return the response along with schema validation result in FCA. In each test call methodhandler is used to invoke all the method required to get the response as per the schema defined.This handler intent is identified with field as task and value as "callMethod" along with the method this handler going to call in the param field of the payload. In this payload another field called communicationMode is passed to tell the FCA,from which mode this method should be invoked.
+CallMethodHandler is used to invoke any apis and return the response in FCA. The response includes schema validation result of each api call. In each test, methodhandler is used to invoke all the methods required to get the response as per the schema defined. This handler intent is identified with field as task and value as "callMethod" along with the method this handler going to call in the param field of the payload. In this payload another field called communicationMode is passed to tell the FCA,from which mode this method should be invoked.
 
 ## Usage
 * This handler is used to invoke all the methods required to get the response as per the predefined schema.
@@ -10,8 +10,8 @@ Handler used to invoke the api and return the response along with schema validat
 ```json
 {
 			"action": "search",
-			"data": {
-				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"device.version\",\"methodParams\":{}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+            "data": {
+				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<methodName>\",\"methodParams\":{}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
 			},
 			"context": {
 				"source": "device"
@@ -21,11 +21,11 @@ Handler used to invoke the api and return the response along with schema validat
 
 ### Parameters
 
-| Key               | Description                                      | Required? |
-|-------------------|--------------------------------------------------|-----------|
-| callMethod        | corresponding intent for the task                | Y         |
-| params            | required params for call method intent           | Y         |
-| appType           | corresponding intent is launching on which app   | Y         |
+| Key               | Description                                                                                | Required? |
+|-------------------|--------------------------------------------------------------------------------------------|-----------|
+| task              | "callMethod"- Its a static value and should not be changed for this handler                | Y         |
+| params            | required params for call method intent                                                     | Y         |
+| appType           | corresponding intent is launching on which app                                             | Y         |
     
 
 
@@ -40,7 +40,7 @@ Handler used to invoke the api and return the response along with schema validat
     {
 			"action": "search",
 			"data": {
-				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<methodName>\",\"methodParams\":{}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"device.version\",\"methodParams\":{}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
 			},
 			"context": {
 				"source": "device"
@@ -57,12 +57,12 @@ Handler used to invoke the api and return the response along with schema validat
                 "params": [],
                 "responseCode": 0,
                 "apiResponse": {
-                    "result": "4300568572992702016",
+                    "result": "<value>",
                     "error": null
                 },
                 "schemaValidationStatus": "PASS",
                 "schemaValidationResponse": {
-                    "instance": "4300568572992702016",
+                    "instance": "<value>",
                     "schema": {
                         "type": "string"
                     },
@@ -88,12 +88,12 @@ Handler used to invoke the api and return the response along with schema validat
             ],
             "responseCode": 0,
             "apiResponse": {
-                "result": "john@doe.com",
+                "result": "<email>",
                 "error": null
             },
             "schemaValidationStatus": "PASS",
             "schemaValidationResponse": {
-                "instance": "john@doe.com",
+                "instance": "<email>",
                 "schema": {
                     "type": "string"
                 },
@@ -242,16 +242,74 @@ Handler used to invoke the api and return the response along with schema validat
  
 ## Intent for a Not Supported API
 
-- Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api responsewill be validated against errorSchema.
+- Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api response will be validated against errorSchema.
+
+ 
+## Examples
+<details>
+    <summary>Request with isNotSupportedApi true for a supportedApi</summary>
+</details>
+        {
+        "action": "search",
+            "data": {
+                "query": {
+                    "task": "callMethod",
+                    "params": {
+                        "method":"accessibility.closedCaptionsSettings",
+                        "methodParams":{
+                            "key":"value"
+                        }
+                    },
+                    "isNotSupportedApi":true,
+                    "action": "NA",
+                    "appType": "firebolt"
+                }
+            },
+            "context": {
+                "source": "device"
+            }
+    }
 
 <details>
-    <summary>Request with isNotSupportedApi true</summary>
+    <summary>Response</summary>
 </details>
-    {
-	    "task":"callMethod",
-	    "params":{
-		    "method":"APIName",
-		    "methodParams":{"key":"value"}
-	    },
-	    "isNotSupportedApi":true,
+- Api response is validated against errorSchema.
+- Schema validation Check: FAIL. 
+
+<details>
+    <summary>Request with isNotSupportedApi true for a notSupportedApi</summary>
+</details>
+        {
+        "action": "search",
+            "data": {
+                "query": {
+                    "task": "callMethod",
+                    "params": {
+                        "method":"authentication.token",
+                        "methodParams":{
+                            "type":"distributor"
+                        }
+                    },
+                    "isNotSupportedApi":true,
+                    "action": "NA",
+                    "appType": "firebolt"
+                }
+            },
+            "context": {
+                "source": "device"
+            }
     }
+
+<details>
+    <summary>Response</summary>
+</details>
+- Api response is validated against errorSchema.
+- Schema validation Check: PASS. 
+
+{
+    "result": null,
+    "error": {
+        "code": -50100,
+        "message": "capability xrn:firebolt:capability:token:session is not supported"
+    }
+}

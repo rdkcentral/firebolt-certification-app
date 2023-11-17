@@ -48,6 +48,9 @@ You can find the code for handling different types of PubSub requests in the [./
 For pubSub scenarios, initially linchpin communication is established, and then after getting the linchpin response message, FCA processes the incoming intents and corresponding handler responses are returned as per the task in the intent.
 PubSub scenario supports both cold launch and hot launch of FCA. 
 
+### Setup
+
+[./pubSubHandlers directory](./pubSubHandlers)
 ## Standalone
 ### Background
 
@@ -56,6 +59,10 @@ Standalone is the case where intent is directly sent to FCA without any pubSub d
 Standalone scenario supports both cold launch and hot launch of FCA. 
 In cold launch scenarios, Parameters.initialization api is called along with the app launch and later process the corresponding intents.
 In hot launch scenarios, after FCA is launched, we register the "navigateTo" event and process the intent.
+
+### Setup
+
+No additional setup required
 
 ## Handlers
 Once the PubSub plugin is integrated into FCA, it can send or receive messages by publishing and listening to various topics( firebolt-api and events). Messages received by FCA is parsed and formatted by using various Pubsub  Handlers.

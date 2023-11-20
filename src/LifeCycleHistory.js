@@ -105,7 +105,7 @@ export default class LifecycleHistory {
         if (event.data.query != undefined) {
           const intentReader = new IntentReader();
           const query = JSON.parse(event.data.query);
-          if (query.task) {
+          if (query.params.task) {
             intentReader.processIntent(query);
           }
         }

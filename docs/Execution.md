@@ -50,7 +50,7 @@ Reports are uploaded to a specific endpoint, processed, and made accessible as H
 
 
 
-#### Sanity Test Execution
+## Sanity Test Execution
 
 ### Background
 

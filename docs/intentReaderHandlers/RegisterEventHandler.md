@@ -4,7 +4,14 @@
 
 Handler used to register the event in FCA.This handler intent is identified with field as task and value as "registerEvent" along with the event name in the param field of the payload.
 
+It performs the following actions :
+1. Parse the input message received to get the event.
+2. Register the event passed in params 
+3. Save the response/error and perform schema validations
+4. Format the result and send the response back to the IntentReader
+
 ## Usage
+* Request
 
 ```json
 {
@@ -23,8 +30,34 @@ Handler used to register the event in FCA.This handler intent is identified with
 | Key               | Description                                                                         | Required? |
 |-------------------|-------------------------------------------------------------------------------------|-----------|
 | task              | "registerEvent"- Its a static value and should not be changed for this handler      | Y         |
-| params            | required event params for  the intent                                               | Y         |
-| appType           | corresponding intent is launching on which app                                      | Y         |
+| params            | Required event params for  the intent. Here, "event" is a mandatory parameter       | Y         |
+| appType           | Corresponding intent is launching on which app                                      | Y         |
+
+
+* Response
+
+```json
+
+        {
+            "eventName": "<eventName>",
+            "eventListenerId": "<eventName>-146",
+            "eventListenerResponse": {
+                "listenerResponse": 146,
+                "error": null
+            },
+            "eventListenerSchemaResult": {
+                "status": "PASS",
+                "eventSchemaResult": {}
+            }
+        }
+```
+
+| Key                   | Description                                     | 
+|-----------------------|-------------------------------------------------|
+| eventName             | The name of the triggered event                 |
+| eventListenerId       | ListenerId of the triggered event               | 
+| eventResponse         | Response of the triggered event                 | 
+| eventSchemaResult     | Schema result of the event                      |    
 
 ## Examples
 

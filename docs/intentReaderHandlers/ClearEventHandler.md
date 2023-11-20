@@ -3,6 +3,13 @@
 ## Overview
 
 Handler used to clear event listeners. This handler is invoked to clear a single event at a time.This handler intent is identified with field as task and value as "clearEventHandler" along with the event name which needs to be cleared in the params field of the payload.
+
+It performs the following actions :
+1. Parse the input message received to get the event to be cleared
+2. Clear the single event passed in the params field 
+3. Save the response/error and perform schema validations
+4. Format the result and send the response back to the IntentReader
+
 ## Usage
 * This handler is invoked to clear a single event at a time.
 
@@ -23,8 +30,8 @@ Handler used to clear event listeners. This handler is invoked to clear a single
 | Key                   | Description                                                                           | Required? |
 |-----------------------|---------------------------------------------------------------------------------------|-----------|
 | task                  | "clearEventHandler"- Its a static value and should not be changed for this handler    | Y         |
-| params                | required event params for the intent                                                  | Y         |
-| appType               | corresponding intent is launching on which app                                        | Y         |
+| params                | Required event params for the intent. Here, "event" is the mandatory parameter        | Y         |
+| appType               | Corresponding intent is launching on which app                                        | Y         |
 
 
 ## Examples

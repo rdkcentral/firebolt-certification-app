@@ -4,10 +4,15 @@
 
 Handler used to get event response after triggering each event.The response is fetched only after the event is triggered.This handler intent is identified with field as task and value as "getEventResponse" along with the event name for which response needs to be fetched in the param field of the payload.
 
+It performs the following actions :
+1. Parse the input message received to get the event name
+2. Fetch the response of the triggered event
+3. Save the response/error and perform schema validations
+4. Format the result and send the response back to the IntentReader
+
 
 ## Usage
 * This handler is to get event response after triggering each event.
-
 ```json
 {
                     "action": "search",
@@ -25,8 +30,34 @@ Handler used to get event response after triggering each event.The response is f
 | Key                   | Description                                                                          | Required? |
 |-----------------------|--------------------------------------------------------------------------------------|-----------|
 | task                  | "getEventResponse"- Its a static value and should not be changed for this handler    | Y         |
-| params                | required event params for the intent                                                 | Y         |
-| appType               | corresponding intent is launching on which app                                       | Y         |
+| params                | Required event params for the intent. Here, "event" is a mandatory parameter         | Y         |
+| appType               | Corresponding intent is launching on which app                                       | Y         |
+
+* Response
+```json
+                {
+                "eventName": "<eventName>",
+                "eventListenerId": "<eventName>-id",
+                "eventResponse": {
+                    "<eventResponse>"
+                },
+                "eventSchemaResult": {
+                    "status": "PASS",
+                    "eventSchemaResult": []
+                },
+                "eventTime": "<Time>"
+            }
+
+```
+
+| Key                   | Description                                     | 
+|-----------------------|-------------------------------------------------|
+| eventName             | The name of the triggered event                 |
+| eventListenerId       | ListenerId of the triggered event               | 
+| eventResponse         | Response of the triggered event                 | 
+| eventSchemaResult     | Schema result of the event                      |    
+| eventTime             | Event triggered time                            |         
+
 
 ## Examples
 

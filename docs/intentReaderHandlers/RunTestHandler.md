@@ -4,6 +4,7 @@
 
 Handler that triggers a test in FCA.This handler run on each test cases. Additional test parameters can be added to params field in payload.
 For example if we are running a test suite, an array of method parameters are passed in param field of the payload while in a single test run only the required method is passed.
+
 ## Usage
 
 ```json
@@ -23,8 +24,8 @@ For example if we are running a test suite, an array of method parameters are pa
 | Key                       | Description                                                                   | Required? |
 |---------------------------|-------------------------------------------------------------------------------|-----------|
 | task                      | "runTest"- Its a static value and should not be changed for this handler      | Y         |
-| params                    | required  params for  the intent                                              | optional  |
-| appType                   | corresponding intent is launching on which app                                | Y         |
+| params                    | Required  params for  the intent.                                             | optional  |
+| appType                   | Corresponding intent is launching on which app                                | Y         |
 
 ## Examples
 
@@ -68,7 +69,7 @@ For example if we are running a test suite, an array of method parameters are pa
 ### Invalid Intent and Response
 
 <details>
-    <summary>Request if we pass invalid parameter </summary>
+    <summary>Request when we pass invalid parameter- methodParams as "error" </summary>
 </details>
     
         {
@@ -121,7 +122,7 @@ For example if we are running a test suite, an array of method parameters are pa
 }
 
 <details>
-    <summary>Request if we pass invalid method </summary>
+    <summary>Request when we pass invalid methodName </summary>
 </details>
 
             {

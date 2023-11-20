@@ -3,10 +3,18 @@
 ## Oveview
 
 CallMethodHandler is used to invoke any apis and return the response in FCA. The response includes schema validation result of each api call. In each test, methodhandler is used to invoke all the methods required to get the response as per the schema defined. This handler intent is identified with field as task and value as "callMethod" along with the method this handler going to call in the param field of the payload. In this payload another field called communicationMode is passed to tell the FCA,from which mode this method should be invoked.
+ 
+CallMethodHandler is invoked when the task specified in the intent has the value "callMethod". This handler is used to make firebolt api calls to the device and perform schema validations on the response. More about schema validations here : 
+
+It performs the following actions :
+1. Parse the input message received to get the API to be called.
+2. Call the API with the parameters required for the api call 
+3. Save the response/error and perform schema validations
+4. Format the result and send the response back to the IntentReader
 
 ## Usage
 * This handler is used to invoke all the methods required to get the response as per the predefined schema.
-
+* Request Format
 ```json
 {
 			"action": "search",
@@ -21,12 +29,50 @@ CallMethodHandler is used to invoke any apis and return the response in FCA. The
 
 ### Parameters
 
-| Key               | Description                                                                                | Required? |
-|-------------------|--------------------------------------------------------------------------------------------|-----------|
-| task              | "callMethod"- Its a static value and should not be changed for this handler                | Y         |
-| params            | required params for call method intent                                                     | Y         |
-| appType           | corresponding intent is launching on which app                                             | Y         |
-    
+| Key               | Description                                                                                			| Required? |
+|-------------------|-------------------------------------------------------------------------------------------------------|-----------|
+| task              | "callMethod"- Its a static value and should not be changed for this handler                			| Y         |
+| params            | Required params for call method intent. Here, "method" and "methodParams" are mandatory fields        | Y         |
+| appType           | Corresponding intent is launching on which app                                             			| Y         |    
+
+
+* Response Format
+```json
+{
+    "method": "callMethod",
+    "params": [],
+    "responseCode": 0,
+    "apiResponse": {
+        "result": "<value>",
+        "error": null
+    },
+    "schemaValidationStatus": "PASS",
+    "schemaValidationResponse": {
+        "instance": "<value>",
+        "schema": {
+            "type": "string"
+        },
+        "options": {},
+        "path": [],
+        "propertyPath": "instance",
+        "errors": [],
+        "disableFormat": false
+    }
+}
+
+```
+### Parameters
+
+| Key                       | Description                                                                                			                     |
+|---------------------------|----------------------------------------------------------------------------------------------------------------------------|
+| method                    | The name of event/method we are invoking                			                                                         |
+| params                    | The params we passed for invoking the apis                                                                                 |
+| responseCode              | The responseCode can be 0,1,2.. which indicates whether the request successful or not                                      |    
+| apiResponse               | The apiResponse field reflects the response of the api we invoked. It contains "result" and "error" as the inner fields    |    
+| result                    | The inner field "result" indicates the success result if the invoked api is successful                                     |    
+| error                     | The inner field "error" indicates the error response if the invoked api is not successful                                  |    
+| schemaValidationStatus    | The status of the invoked api. It can be either "PASS" or "FAIL"                                             	             |    
+| schemaValidationResponse  | The validation schema of the response we received                                             	                         |    
 
 
 ## Examples
@@ -34,7 +80,7 @@ CallMethodHandler is used to invoke any apis and return the response in FCA. The
 ### Valid Intent and Response
 
 <details>
-    <summary>Sample Request</summary>
+    <summary>Request with Empty methodParams</summary>
 </details>
 
     {
@@ -74,6 +120,19 @@ CallMethodHandler is used to invoke any apis and return the response in FCA. The
                 }
             }
 
+<details>
+    <summary>Request with valid methodParams</summary>
+</details>
+
+    {
+			"action": "search",
+			"data": {
+				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"keyboard.email\",\"methodParams\":{ "type": "signIn", "message": "Enter your email to sign into this app"}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+			},
+			"context": {
+				"source": "device"
+			}
+		}
 
 
 <details>
@@ -109,7 +168,7 @@ CallMethodHandler is used to invoke any apis and return the response in FCA. The
 ### Invalid Intent and Response
 
 <details>
-    <summary>Request with invalid method params</summary>
+    <summary>Request with invalid methodParams (invalid type passed)</summary>
 </details>
 
     {
@@ -215,41 +274,25 @@ CallMethodHandler is used to invoke any apis and return the response in FCA. The
 <details>
     <summary>Response</summary>
 </details>  
-    undefined
+    {
+        "responseCode": 1,
+        "error": {
+            "message": "FCA in exception block: undefined is not an object (evaluating 'method.includes')",
+            "code": "FCAError"
+        }
+    }
     
-<details>
-    <summary>Request with empty methodParams for setters</summary>
-</details>
-
-    {
-            "action": "search",
-                "data": {
-                    "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<setMethodName>\",\"methodParams\":\"\"},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
-                },
-                "context": {
-                    "source": "device"
-                 }
-    }
-
-<details>
-    <summary>Response</summary>
-</details>  
- - Returns the default value
-    {
-        "result": false,
-        "error": null
-    }
  
-## Intent for a Not Supported API
+### Intent for a Not Supported API
 
-- Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api response will be validated against errorSchema.
+- "notSupportedApi" are the ones which are not supported by platform and the response of these apis will be always w=validated against errorSchema.
+Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api response will be validated against errorSchema.
 
- 
-## Examples
 <details>
     <summary>Request with isNotSupportedApi true for a supportedApi</summary>
 </details>
-        {
+
+    {
         "action": "search",
             "data": {
                 "query": {
@@ -273,12 +316,14 @@ CallMethodHandler is used to invoke any apis and return the response in FCA. The
 <details>
     <summary>Response</summary>
 </details>
+
 - Api response is validated against errorSchema.
 - Schema validation Check: FAIL. 
 
 <details>
     <summary>Request with isNotSupportedApi true for a notSupportedApi</summary>
 </details>
+
         {
         "action": "search",
             "data": {
@@ -303,6 +348,7 @@ CallMethodHandler is used to invoke any apis and return the response in FCA. The
 <details>
     <summary>Response</summary>
 </details>
+
 - Api response is validated against errorSchema.
 - Schema validation Check: PASS. 
 

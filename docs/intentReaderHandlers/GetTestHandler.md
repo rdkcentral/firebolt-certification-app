@@ -3,6 +3,12 @@
 ## Overview
 
 Handler that fetches mochawesome report from FCA. An additional parameter as jobId is added to params field in the payload.This handler intent is identified with field as task and value as "getTest" along with jobId as param in the payload.There are few optional parameters like action,appType.
+
+It performs the following actions :
+1. Parse the input message received to get the jobId.
+2. Fetch the mochawesome report
+3. Send the response back to the IntentReader
+
 ## Usage
 
 ```json
@@ -22,8 +28,8 @@ Handler that fetches mochawesome report from FCA. An additional parameter as job
 | Key               | Description                                                                   | Required? |
 |-------------------|-------------------------------------------------------------------------------|-----------|
 | task              | "getTest"- Its a static value and should not be changed for this handler      | Y         |
-| params            | required jobId params for  the intent                                         | Y         |
-| appType           | corresponding intent is launching on which app                                | Y         |
+| params            | Required jobId params for the intent. Here, "jobId" is a mandatory parameter  | Y         |
+| appType           | Corresponding intent is launching on which app                                | Y         |
 
 ## Examples
 

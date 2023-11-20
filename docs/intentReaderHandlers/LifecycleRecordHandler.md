@@ -11,7 +11,7 @@ This handler is invoked to record the lifecycle history of each test cases. Ther
 It performs the following actions :
 1. Parse the input message received to get the appId.
 2. Start/Stop the lifecycle recording 
-3. Save the response/error and perform schema validations
+3. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
 4. Format the result and send the response back to the IntentReader
 
 ## Usage

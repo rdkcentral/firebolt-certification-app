@@ -7,7 +7,7 @@ Handler used to get event response after triggering each event.The response is f
 It performs the following actions :
 1. Parse the input message received to get the event name
 2. Fetch the response of the triggered event
-3. Save the response/error and perform schema validations
+3. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
 4. Format the result and send the response back to the IntentReader
 
 

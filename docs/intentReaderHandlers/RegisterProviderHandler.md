@@ -7,7 +7,7 @@ This handler is invoked to trigger the provider.This handler is triggered once a
 It performs the following actions :
 1. Parse the input message received to get the provider.
 2. Trigger the provider passed in params
-3. Save the response/error and perform schema validations
+3. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
 4. Format the result and send the response back to the IntentReader
 
 ## Usage

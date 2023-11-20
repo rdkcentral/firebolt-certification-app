@@ -7,7 +7,7 @@ Handler used to clear event listeners. This handler is invoked to clear a single
 It performs the following actions :
 1. Parse the input message received to get the event to be cleared
 2. Clear the single event passed in the params field 
-3. Save the response/error and perform schema validations
+3. Save the response/error and perform schema validations. (More about schema validations here : [validation documentation](../Validations.md).)
 4. Format the result and send the response back to the IntentReader
 
 ## Usage

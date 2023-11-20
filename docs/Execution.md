@@ -17,7 +17,7 @@ This document provides a detailed guide on the various methods of executing test
 
 Understanding the different execution modes to efficiently conduct testing on integrated devices. 
 
-- **Manual Execution via UI**
+### Manual Execution via UI
 ### Background
 Manual execution via the user interface allows for interactive and immediate testing, giving testers direct control over the test process.
 

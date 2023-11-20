@@ -78,11 +78,11 @@ Create custom test cases with specific parameters tailored to the features or ch
 
 Send requests with custom parameters and verify responses against predefined data sets for targeted testing.
 
-## Supported Modes of Execution
+## Supported Modes of communication
 
 ### Background
 
-Different modes of execution offer flexibility in test approach, tailored to specific testing needs.
+Different modes of communication offer flexibility in test approach, tailored to specific testing needs.
 
 ### Setup and Usage
 

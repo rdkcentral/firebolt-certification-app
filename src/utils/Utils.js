@@ -201,9 +201,6 @@ function pushReportToS3(report) {
       logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${reportId}/report.html`, 'pushReportToS3');
     }
 
-    console.log('=====REPORT JSON BELOW=====');
-    console.log(report);
-
     logger.info('URL: ' + restApiUrl, 'pushReportToS3');
     request.open('POST', restApiUrl);
     request.setRequestHeader('content-type', 'application/json');

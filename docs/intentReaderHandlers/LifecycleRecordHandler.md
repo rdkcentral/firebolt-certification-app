@@ -15,18 +15,48 @@ It performs the following actions :
 4. Format the result and send the response back to the IntentReader
 
 ## Usage
-* Request
+* Request for startLifecycleRecording
 ```json
-	{
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "startLifecycleRecording",
+                "params": {
+                    "appId": "<appId>",
+                    "params": []
+                },
+                "action": "NA",
+                "appType": "<appType>"
+            }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
+```
+
+* Request for stopLifecycleRecording
+```json
+{
     "action": "search",
     "data": {
-        "query": "{\"task\":\"startLifecycleRecording\",\"params\":{\"appId\":\"fireboltCertificationSystemUI\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+        "query": {
+            "task": "stopLifecycleRecording",
+            "params": {
+                "appId": "<appId>",
+                "params": []
+            },
+            "action": "NA",
+            "appType": "<appType>"
+        }
     },
     "context": {
         "source": "device"
     }
 }
 ```
+
 ### Parameters
 
 | Key      | Description                                                                                                       | Required? |

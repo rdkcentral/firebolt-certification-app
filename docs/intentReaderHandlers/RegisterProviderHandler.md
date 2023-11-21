@@ -13,15 +13,23 @@ It performs the following actions :
 ## Usage
 
 ```json
-{
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"registerProviderHandler\",\"params\":{\"provider\":\"<providerName>\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
-                    }
-                }
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "registerProviderHandler",
+                "params": {
+                    "provider": "<providerName>",
+                    "params": []
+                },
+                "action": "NA",
+                "appType": "<appType>"
+            }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 ```
 
 ### Parameters

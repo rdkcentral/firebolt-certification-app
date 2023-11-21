@@ -8,15 +8,19 @@ Handler that checks the status of PubSub connection in FCA.This handler intent i
 * This handler is used to check the status of PubSub connection in FCA.
 
 ```json
-{
-                "action": "search",
-                "data": {
-                    "query": "{\"task\":\"getPubSubStatus\",\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                },
-                "context": {
-                    "source": "device"
-                }
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "getPubSubStatus",
+                "action": "NA",
+                "appType": "<appType>"
             }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 ```
 
 ### Parameters

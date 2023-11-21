@@ -7,15 +7,19 @@ This handler is invoked once healthcheck is done.This handler is responsible for
 ## Usage
 
 ```json
-{
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"healthCheck\",\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
-                    }
-                }
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "healthCheck",
+                "action": "NA",
+                "appType": "<appType>"
+            }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 ```
 
 ### Parameters

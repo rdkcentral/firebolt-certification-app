@@ -8,15 +8,35 @@ For example if we are running a test suite, an array of method parameters are pa
 ## Usage
 
 ```json
-{
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"runTest\",\"params\":{\"methodName\":\"<methodName>\",\"methodParams\":{}},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
-                }
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "runTest",
+                "params": {
+                    "certification": true,
+                    "exceptionMethods": [
+                        {
+                            "method": "<methodName>",
+                            "param": {}
+                        }
+                    ],
+                    "methodsToBeExcluded": [],
+                    "modulesToBeExcluded": []
+                },
+                "action": "<CORE/MANAGE/FIREBOLT-ALL>",
+                "context": {
+                    "communicationMode": "<mode>"
+                },
+                "metadata": {},
+                "asynchronous": false,
+                "appType": "<appType>"
             }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 ```
 
 ### Parameters
@@ -25,6 +45,7 @@ For example if we are running a test suite, an array of method parameters are pa
 |---------------------------|-------------------------------------------------------------------------------|-----------|
 | task                      | "runTest"- Its a static value and should not be changed for this handler      | Y         |
 | params                    | Required  params for  the intent.                                             | optional  |
+| action                    | It indicates whether it core, manage or all suite run                         | Y  |
 | appType                   | Corresponding intent is launching on which app                                | Y         |
 
 ## Examples
@@ -32,111 +53,46 @@ For example if we are running a test suite, an array of method parameters are pa
 ### Valid Intent and Response
 
 <details>
-    <summary> Request of single test</summary>
+    <summary> Request of core suite run</summary>
 </details>
 
-            {
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"runTest\",\"params\":{\"mode\":\"Lifecycle.validation\",\"methodName\":\"lifecycle.close\",\"methodParams\":\"userExit\"},\"context\":{\"communicationMode\":\"Lifecycle.validation\"},\"action\":\"Lifecycle.validation\",\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
-                }
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "runTest",
+                "params": {
+                    "certification": true,
+                    "exceptionMethods": [
+                        {
+                            "method": "Authentication.token",
+                            "param": {
+                                "type": "distributor"
+                            }
+                        },
+                        "..."
+                    ],
+                    "methodsToBeExcluded": [
+                        "Accessory.pair",
+                        "Device.provision",
+                        "..."
+                    ],
+                    "modulesToBeExcluded": []
+                },
+                "action": "CORE",
+                "context": {
+                    "communicationMode": "SDK"
+                },
+                "metadata": {
+                    "target": "RIPPLE",
+                    "targetVersion": "470d26a",
+                    "..."
+                },
+                "asynchronous": false,
+                "appType": "firebolt"
             }
-<details>
-    <summary> Response </summary>
-</details>
-
-        {
-            "result": null,
-            "error": null,
-            "schemaResult": {
-                "status": "PASS",
-                "schemaValidationResult": {
-                    "instance": null,
-                    "schema": {
-                        "const": null
-                    },
-                    "options": {},
-                    "path": [],
-                    "propertyPath": "instance",
-                    "errors": [],
-                    "disableFormat": false
-                }
-            }
-        }
-### Invalid Intent and Response
-
-<details>
-    <summary>Request when we pass invalid parameter- methodParams as "error" </summary>
-</details>
-    
-        {
-            "action": "search",
-            "data": {
-                "query": "{\"task\":\"runTest\",\"params\":{\"mode\":\"Lifecycle.validation\",\"methodName\":\"lifecycle.close\",\"methodParams\":\"error\"},\"context\":{\"communicationMode\":\"Lifecycle.validation\"},\"action\":\"Lifecycle.validation\",\"appType\":\"firebolt\"}"
-            },
-            "context": {
-                "source": "device"
-            }
-        }
-
-<details>
-    <summary> Response </summary>
-</details>
-
-        {
-    "result": "undefined",
-    "error": {
-        "code": -32602,
-        "message": "unknown variant e, expected one of remoteButton, userExit, error, appNotReady, resourceContention, done at line 1 column 13"
-    },
-    "schemaResult": {
-        "status": "FAIL",
-        "schemaValidationResult": {
-            "instance": "undefined",
-            "schema": {
-                "const": null
-            },
-            "options": {},
-            "path": [],
-            "propertyPath": "instance",
-            "errors": [
-                {
-                    "path": [],
-                    "property": "instance",
-                    "message": "does not exactly match expected constant: null",
-                    "schema": {
-                        "const": null
-                    },
-                    "instance": "undefined",
-                    "name": "const",
-                    "argument": null,
-                    "stack": "instance does not exactly match expected constant: null"
-                }
-            ],
-            "disableFormat": false
+        },
+        "context": {
+            "source": "device"
         }
     }
-}
-
-<details>
-    <summary>Request when we pass invalid methodName </summary>
-</details>
-
-            {
-            "action": "search",
-            "data": {
-                "query": "{\"task\":\"runTest\",\"params\":{\"mode\":\"Lifecycle.validation\",\"methodName\":\"<Invalid methodName\",\"methodParams\":\"userExit\"},\"context\":{\"communicationMode\":\"Lifecycle.validation\"},\"action\":\"Lifecycle.validation\",\"appType\":\"firebolt\"}"
-            },
-            "context": {
-                "source": "device"
-            }
-        }
-        
-<details>
-    <summary> Response </summary>
-</details>
-
-            Invalid lifecycle method passed

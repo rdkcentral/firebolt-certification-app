@@ -14,15 +14,27 @@ It performs the following actions :
 
 * Request Format
 ```json
-{
-			"action": "search",
-            "data": {
-				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<methodName>\",\"methodParams\":{}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
-			},
-			"context": {
-				"source": "device"
-			}
-		}
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "callMethod",
+                "params": {
+                    "method": "<methodName>",
+                    "methodParams": {}
+                },
+                "action": "NA",
+                "context": {
+                    "communicationMode": "<mode>"
+                },
+                "isNotSupportedApi": false,
+                "appType": "<appType>"
+            }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 ```
 
 ### Parameters

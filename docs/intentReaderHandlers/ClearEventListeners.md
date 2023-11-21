@@ -6,22 +6,26 @@ This handler will clear the eventListeners and the event history for the listene
 
 It performs the following actions :
 1. Clear all the eventListeners and eventHistory 
-2. Save the response/error and perform schema validations
+2. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
 3. Format the result and send the response back to the IntentReader
 
 ## Usage
 * This handler is invoked to clear all the event listeners at a time.
 
 ```json
- {
-            "action": "search",
-            "data": {
-                "query": "{\"task\":\"clearAllListeners\",\"action\":\"NA\",\"appType\":\"firebolt\"}"
-            },
-            "context": {
-                "source": "device"
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "clearAllListeners",
+                "action": "NA",
+                "appType": "<appType>"
             }
+        },
+        "context": {
+            "source": "device"
         }
+    }
 ```
 
 ### Parameters

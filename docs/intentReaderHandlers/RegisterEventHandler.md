@@ -14,15 +14,26 @@ It performs the following actions :
 * Request
 
 ```json
-{
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"registerEvent\",\"params\":{\"event\":\"<eventName>\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
-                    }
-                }
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "registerEvent",
+                "params": {
+                    "event": "<event>",
+                    "params": {}
+                },
+                "action": "NA",
+                "context": {
+                    "communicationMode": "<mode>"
+                },
+                "appType": "<appType>"
+            }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 ```
 
 ### Parameters

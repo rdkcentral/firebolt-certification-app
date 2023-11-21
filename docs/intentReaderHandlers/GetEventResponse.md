@@ -14,15 +14,22 @@ It performs the following actions :
 ## Usage
 * This handler is to get event response after triggering each event.
 ```json
-{
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"getEventResponse\",\"params\":{\"event\":<eventName>},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
-                    }
-                }
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "getEventResponse",
+                "params": {
+                    "event": "<eventName>"
+                },
+                "action": "NA",
+                "appType": "<appType>"
+            }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 ```
 
 ### Parameters

@@ -14,15 +14,24 @@ It performs the following actions :
 * This handler is invoked to clear a single event at a time.
 
 ```json
-{
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"clearEventHandler\",\"params\":{\"event\":\"<eventName>\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "query": {
+                    "task": "clearEventHandler",
+                    "params": {
+                        "event": "<eventName>"
                     },
-                    "context": {
-                        "source": "device"
-                    }
+                    "action": "NA",
+                    "appType": "<appType>"
                 }
+            }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 ```
 
 ### Parameters

@@ -12,15 +12,22 @@ It performs the following actions :
 ## Usage
 
 ```json
-{
-            "action": "search",
-            "data": {
-                "query": "{\"task\":\"getTest\",\"params\":{\"jobId\":<jobId>},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-            },
-            "context": {
-                "source": "device"
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "getTest",
+                "params": {
+                    "jobId": "<jobId>"
+                },
+                "action": "NA",
+                "appType": "firebolt"
             }
+        },
+        "context": {
+            "source": "device"
         }
+    }
 ```
 
 ### Parameters
@@ -39,15 +46,22 @@ It performs the following actions :
     <summary> Request </summary>
 </details>
 
-	{
-            "action": "search",
-            "data": {
-                "query": "{\"task\":\"getTest\",\"params\":{\"jobId\":\"85e5d9c7-420c-4272-96ca-3616ced55564\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-            },
-            "context": {
-                "source": "device"
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "getTest",
+                "params": {
+                    "jobId": "85e5d9c......"
+                },
+                "action": "NA",
+                "appType": "firebolt"
             }
+        },
+        "context": {
+            "source": "device"
         }
+    }
 
 <details>
     <summary> Response </summary>
@@ -57,19 +71,28 @@ It performs the following actions :
 
 ### Invalid Intent and Response
 ### Empty JobId
+
 <details>
     <summary>Request when we are not able to generate report ,that is jobId is not passed and isReportGenerated is "false"  </summary>
 </details>
     
-            {
-            "action": "search",
-            "data": {
-                "query": "{\"task\":\"getTest\",\"params\":{\"jobId\":\"\"},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-            },
-            "context": {
-                "source": "device"
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "getTest",
+                "params": {
+                    "jobId": ""
+                },
+                "action": "NA",
+                "appType": "firebolt"
             }
+        },
+        "context": {
+            "source": "device"
         }
+    }
+
 
 <details>
     <summary> Response  </summary>

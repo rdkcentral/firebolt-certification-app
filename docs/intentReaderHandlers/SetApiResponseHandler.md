@@ -13,15 +13,31 @@ It performs the following actions :
 * This handler is invoked to assign the response value to an environment variable in FCA
 
 ```json
-{
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"setApiResponse\",\"params\":{\"apiResponse\":{\"module\":\"<moduleName>\",\"methodName\":\"<methodName>\",\"type\":\"method\",\"attributes\":[{}]}},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "setApiResponse",
+                "params": {
+                    "apiResponse": {
+                        "module": "<moduleName>",
+                        "methodName": "<methodName>",
+                        "type": "method",
+                        "attributes": [
+                            {
+                                "..."
+                            }
+                        ]
                     }
-                }
+                },
+                "action": "NA",
+                "appType": "<appType>"
+            }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 ```
 ### Parameters
 
@@ -35,21 +51,40 @@ It performs the following actions :
 ### Valid Intent and Response
 
 <details>
-    <summary>Request</summary>
+    <summary>Request for setApiResponse of keyboard.email api</summary>
 </details>
 
 {
-  "action": "search",
-  "data": {
-    "query": "{\"task\":\"setApiResponse\",\"params\":{\"apiResponse\":{\"module\":\"keyboard\",\"methodName\":\"keyboard.email\",\"type\":\"method\",\"attributes\":[{\"ApiText\":\"john@doe.com\",\"isCancelled\":false,\"withUi\":false,\"result\":\"john@doe.com\"}]}},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-  },
-  "context": {
-    "source": "device"
-  }
+    "action": "search",
+    "data": {
+        "query": {
+            "task": "setApiResponse",
+            "params": {
+                "apiResponse": {
+                    "module": "keyboard",
+                    "methodName": "keyboard.email",
+                    "type": "method",
+                    "attributes": [
+                        {
+                            "ApiText": "john@doe.com",
+                            "isCancelled": false,
+                            "withUi": false,
+                            "result": "john@doe.com"
+                        }
+                    ]
+                }
+            },
+            "action": "NA",
+            "appType": "firebolt"
+        }
+    },
+    "context": {
+        "source": "device"
+    }
 }
 
 <details>
     <summary> Response </summary>
 </details>
 
-            "Received ApiResponse parameters"
+            "Received keyboard ApiResponse parameters"

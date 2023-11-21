@@ -1,10 +1,8 @@
 # CallMethodHandler 
 
 ## Oveview
-
-CallMethodHandler is used to invoke any apis and return the response in FCA. The response includes schema validation result of each api call. In each test, methodhandler is used to invoke all the methods required to get the response as per the schema defined. This handler intent is identified with field as task and value as "callMethod" along with the method this handler going to call in the param field of the payload. In this payload another field called communicationMode is passed to tell the FCA,from which mode this method should be invoked.
  
-CallMethodHandler is invoked when the task specified in the intent has the value "callMethod". This handler is used to make firebolt api calls to the device and perform schema validations on the response. More about schema validations here : 
+CallMethodHandler is invoked when the task specified in the intent has the value "callMethod". This handler is used to make firebolt api calls to the device and perform schema validations on the response. More about schema validations here : [validation documentation](../Validations.md).
 
 It performs the following actions :
 1. Parse the input message received to get the API to be called.
@@ -13,7 +11,7 @@ It performs the following actions :
 4. Format the result and send the response back to the IntentReader
 
 ## Usage
-* This handler is used to invoke all the methods required to get the response as per the predefined schema.
+
 * Request Format
 ```json
 {
@@ -274,6 +272,7 @@ It performs the following actions :
 <details>
     <summary>Response</summary>
 </details>  
+
     {
         "responseCode": 1,
         "error": {
@@ -285,7 +284,8 @@ It performs the following actions :
  
 ### Intent for a Not Supported API
 
-- "notSupportedApi" are the ones which are not supported by platform and the response of these apis will be always w=validated against errorSchema.
+"notSupportedApi" are the ones which are not supported by platform and the response of these apis will be always validated against errorSchema.
+
 Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api response will be validated against errorSchema.
 
 <details>

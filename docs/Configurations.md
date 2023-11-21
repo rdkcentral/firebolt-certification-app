@@ -34,7 +34,7 @@ Connecting to Mock Firebolt enables testing against a simulated Firebolt OS, pro
 
 ### Setup
 
-- Clone the `https://github.com/rdkcentral/mock-firebolt`
+- Clone the Mock Firebolt Repository `https://github.com/rdkcentral/mock-firebolt`
 - Follow the instructions provided in the repository to start the Mock Firebolt OS.
 - Launch the Firebolt Cretification App and add `mf=true` to the app launch URL to connect to the mock environment.
 

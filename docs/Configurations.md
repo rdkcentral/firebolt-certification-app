@@ -1,6 +1,7 @@
 # FCA: Configurations
 
-TODO: add intro
+This document gives the various configurations available for Firebolt Certification App ( FCA). It provides insights into setting up and utiizing different environemtns, parameters, and app types to facilitate effective testing and certification of applications using firebolt technology. 
+
 
 ## Table of Contents
 
@@ -11,89 +12,67 @@ TODO: add intro
 
 ## Supported targets
 
-EXISTING CONTENTS(needs revision):
-> - MFOS - `https://github.com/rdkcentral/mock-firebolt`
-
 ### Background
 
-TODO: add details
+Supported targets refer to the environments or platofrms that the FCA can interact with. 
+This includes both real and simulated environments like Mock Firebolt OS (MFOS).
 
 ### Setup
 
-TODO: add details
+- *MFOS*: Accessible at `https://github.com/rdkcentral/mock-firebolt`
+- Follow the instructions provided in the repository to setup the MFOS environment 
 
 ### Usage
 
-TODO: add details
+Utilize MFOS for testing in a controled , simulated environment, ideal for early-stage dvelopment and testing.
 
 ## Connect to Mock Firebolt
 
-
-EXISTING CONTENTS(needs revision):
-```
-To activate Mock Firebolt, there are specific start-up scripts that exist inside the directory `/plugins/startupScripts`. These scripts along with other scripts that are necessary during start-up are first bundled by webpack during the build process and are loaded in when the application is first loaded.
-
-    - Clone the mock firebolt OS repository` https://github.com/rdkcentral/mock-firebolt`
-    - Start the mock Firebolt OS based on steps mentioned in the repository.
-    - Start the Firebolt Certification App with `npm start`
-    - On launch add the `mf=true` queryParameter to the app launch url and relaunch the app.
-    The above steps will by default connect the Firebolt Certification App to the mock Firebolt OS running on localhost at port 9998
-    Note: To change the hosted location of the mock Firebolt OS use the guidelines as mentioned in `https://github.com/rdkcentral/mock-firebolt/blob/main/docs/UsageWithinApps.md#activating-mock-firebolt
-```
-
 ### Background
 
-TODO: add details
+Connecting to Mock Firebolt enables testing against a simulated Firebolt OS, providing a safe and flexible enviroment for development and testing.
 
 ### Setup
 
-TODO: add details
+- Clone the `https://github.com/rdkcentral/mock-firebolt`
+- Follow the instructions provided in the repository to start the Mock Firebolt OS.
+- Launch the Firebolt Cretification App and add `mf=true` to the app launch URL to connect to the mock environment.
 
 ### Usage
 
-TODO: add details
+- Use Mock Firebolt for testing API integrations and app behavior in a simulated Firebolt environment.
+
 
 ## Supported URL parameters
- 
-EXISTING CONTENTS(needs revision):
-```
-- Platform: platform=`<platform>`
-  - The supported TARGET values are passed. While executing the test suite, if we provide wrong platform it will not execute the suite and will show "Unsupported target used." error
-- Lifecycle Validation: lifecycle_validation=true
-  - When we give lifecycle_validation=true it blocks the default execution of `lifecycle.ready` and `lifecycle.finished` method.
-  - This will help us to validate lifecycle API's as per our need
-- MFOS: mf=true
-  - When we are passing mf=true or with userId, FCA will connect to MFOS server and when we invoke any api in FCA it will return the response from MFOS.
-- System Ui: systemui=true
-  - If FCA systemui=true, FCA acts as the base app in case of ripple. The background color will be changed to purple, and it will display one more button as "Launch FCA app" to launch FCA as third-party app on Ripple devices.
-- TestContext: testContext=true
-  - If testContext=true, it will add the field context in mocha report generated
-```
+
 
 ### Background
 
-TODO: add details
+URL parameters allow customization of the FCA's behavior, enabling testers to tailor the testing environemt to specific needs.
 
 ### Setup
 
-TODO: add details
+- Use various parameters like 'platform', 'lifecycle_validation','mf','systemui' and 'testContext' as per the requirment.
+- These parameters modify how the FCA interacts with the environemtn and the test suite.
 
 ### Usage
 
-TODO: add details
+- Customize the test execution and reporting based on the provided URL parameters for targeted testing scenarios.
+
 
 ## App Types
- 
-TODO: add details
 
 ### Background
 
-TODO: add details
+Different app types in FCA denote various categories or classifications of applications that can be tested using the platform. 
 
 ### Setup
 
-TODO: add details
+- Define the app types as part of the configuration before initiating tests.
+- This may involve specifying the type of applocation under test, such as media apps, utility apps, etc.
 
 ### Usage
 
-TODO: add details
+- Select the appropriate app type to ensure that tests are relevant and effective for the specific category of the application.
+
+

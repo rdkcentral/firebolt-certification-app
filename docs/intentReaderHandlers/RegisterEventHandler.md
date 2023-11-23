@@ -2,13 +2,13 @@
 
 ## Overview
 
-Handler used to register the event in FCA.This handler intent is identified with field as task and value as "registerEvent" along with the event name in the param field of the payload.
+RegisterEventHandler is invoked when the task specified in the intent has the value "registerEvent". This handler is used to register for the event in FCA.
 
 It performs the following actions :
 1. Parse the input message received to get the event.
-2. Register the event passed in params 
+2. Register the event passed in params. 
 3. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
-4. Format the result and send the response back to the IntentReader
+4. Format the result and send the response back to the IntentReader.
 
 ## Usage
 * Request
@@ -157,6 +157,7 @@ It performs the following actions :
 <details>
     <summary>Request when we pass empty params </summary>
 </details>
+
     {
         "action": "search",
         "data": {
@@ -175,6 +176,7 @@ It performs the following actions :
 <details>
     <summary> Response </summary>
 </details>
+
     {
         "Unable to find the response for the current request" 
     }
@@ -183,6 +185,7 @@ It performs the following actions :
 <details>
     <summary>Request when we pass invalid params </summary>
 </details>
+
     {
         "action": "search",
         "data": {
@@ -201,6 +204,7 @@ It performs the following actions :
 <details>
     <summary> Response </summary>
 </details>
+
     {
         "Unable to find the response for the current request" 
     }
@@ -209,6 +213,7 @@ It performs the following actions :
 <details>
     <summary>Request when we pass empty task </summary>
 </details>
+
     {
         "action": "search",
         "data": {
@@ -230,6 +235,7 @@ It performs the following actions :
 <details>
     <summary> Response </summary>
 </details>
+
     {
         "Unable to find the response for the current request" 
     }
@@ -238,27 +244,29 @@ It performs the following actions :
 <details>
     <summary>Request when we pass invalid task </summary>
 </details>
-{
-    "action": "search",
-        "data": {
-            "query": {
-                "task": "<Invalid Task>",
-                "params": {
-                    "event": "<eventName>",
-                    "params": {}
-                },
-                "action": "NA",
-                "context": {
-                    "communicationMode": "SDK"
-                },
-                "appType": "firebolt"
+
+    {
+        "action": "search",
+            "data": {
+                "query": {
+                    "task": "<Invalid Task>",
+                    "params": {
+                        "event": "<eventName>",
+                        "params": {}
+                    },
+                    "action": "NA",
+                    "context": {
+                        "communicationMode": "SDK"
+                    },
+                    "appType": "firebolt"
+                }
             }
-        }
-}
+    }
 
 <details>
     <summary> Response </summary>
 </details>
+
     {
         "Unable to find the response for the current request" 
     }
@@ -267,64 +275,68 @@ It performs the following actions :
 <details>
     <summary>Request when we pass empty event </summary>
 </details>
-{
-    "action": "search",
-        "data": {
-            "query": {
-                "task": "registerEvent",
-                "params": {
-                    "event": "",
-                    "params": {}
-                },
-                "action": "NA",
-                "context": {
-                    "communicationMode": "SDK"
-                },
-                "appType": "firebolt"
+
+    {
+        "action": "search",
+            "data": {
+                "query": {
+                    "task": "registerEvent",
+                    "params": {
+                        "event": "",
+                        "params": {}
+                    },
+                    "action": "NA",
+                    "context": {
+                        "communicationMode": "SDK"
+                    },
+                    "appType": "firebolt"
+                }
             }
-        }
-}
+    }
 
 <details>
     <summary> Response </summary>
 </details>
+
     {
         "Unable to find the response for the current request" 
     }
 
-### Empty Event 
+### Event with isNotSupportedApi
+
+notSupportedApi : If the intent has "isNotSupportedApi" = true, it indicates that the api is not implemented on the platform and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema and then will be returned. Detailed information on sending intent is given [here](docs/pubSubHandlers/RegisterEventHandler.md).
+
 <details>
     <summary>Request with isNotSupportedApi true for a supported event</summary>
 </details>
-- If there is a key *isNotSupportedApi* with value *true* in the intent received, that event registration response will be validated against errorSchema. Detailed information on sending intent is given [here](docs/pubSubHandlers/RegisterEventHandler.md).
-
     
-{
-    "action": "search",
-        "data": {
-            "query": {
-                "task": "registerEvent",
-                "params": {
-                    "event": "<eventName>",
-                    "params": {}
-                },
-                "isNotSupportedApi":true,
-                "action": "NA",
-                "context": {
-                    "communicationMode": "SDK"
-                },
-                "appType": "firebolt"
+    {
+        "action": "search",
+            "data": {
+                "query": {
+                    "task": "registerEvent",
+                    "params": {
+                        "event": "<eventName>",
+                        "params": {}
+                    },
+                    "isNotSupportedApi":true,
+                    "action": "NA",
+                    "context": {
+                        "communicationMode": "SDK"
+                    },
+                    "appType": "firebolt"
+                }
             }
-        }
-}
+    }
 
 <details>
     <summary>Response</summary>
 </details>
-- Event response is validated against errorSchema.
 
     {
         "listenerResponse":9,
         "error":null
     }
--Event listener schema validation: FAIL
+
+- Event response is validated against errorSchema.
+- Event listener schema validation: FAIL

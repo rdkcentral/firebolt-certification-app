@@ -2,12 +2,12 @@
 
 ## Overview
 
-This handler is invoked to trigger the provider.This handler is triggered once an entity provides services to another/external party.This handler intent is identified with field as task and value as "registerProviderHandler" alone with the provider name in the param field of the payload.
+RegisterProviderHandler is invoked when the task specified in the intent has the value "registerProviderHandler". This handler is used to trigger the provider and is invoked once an entity provides services to another/external party.
 
 It performs the following actions :
 1. Parse the input message received to get the provider.
-2. Trigger the provider passed in params
-3. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
+2. Trigger the provider passed in params.
+3. Save the response/error.
 4. Format the result and send the response back to the IntentReader
 
 ## Usage

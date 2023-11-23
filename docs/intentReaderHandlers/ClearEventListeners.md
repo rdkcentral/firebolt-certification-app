@@ -2,12 +2,12 @@
 
 ## Overview
 
-This handler will clear the eventListeners and the event history for the listener as a part of FCA.This handler is invoked to clear all the event listeners at a time. Once all event listeners are cleared, there will be no remaining history of the event listeners that were used.
+ClearEventListeners handler is invoked when the task specified in the intent has the value "clearAllListeners". This handler is used to deregister all the events that are registered already. 
 
 It performs the following actions :
-1. Clear all the eventListeners and eventHistory 
-2. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
-3. Format the result and send the response back to the IntentReader
+1. Deregister all the events.
+2. Save the response/error.
+3. Format the result and send the response back to IntentReader
 
 ## Usage
 * This handler is invoked to clear all the event listeners at a time.

@@ -2,8 +2,8 @@
 
 ## Overview
 
-Handler that triggers a test in FCA.This handler run on each test cases. Additional test parameters can be added to params field in payload.
-For example if we are running a test suite, an array of method parameters are passed in param field of the payload while in a single test run only the required method is passed.
+RunTestHandler is invoked when the task specified in the intent has the value "runTest". This handler is used to trigger tests in FCA. Additional test parameters can be added to params field in the intent.
+For example if we are running a test suite, an array of method parameters are passed in param field of the intent while in a single test run only the required methodParam is passed.
 
 ## Usage
 

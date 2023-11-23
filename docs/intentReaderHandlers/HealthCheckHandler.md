@@ -2,7 +2,7 @@
 
 ## Overview
 
-This handler is invoked once healthcheck is done.This handler is responsible for sending healthCheck command and validate whether FCA launched as 3rd party app or not.This handler intent is identified with field as task and value as "healthCheck" in the payload.
+HealthCheckHandler is invoked when the task specified in the intent has the value "healthCheck". This handler is responsible for sending the healthCheck command and validating whether FCA is launched as a 3rd party app or not
 
 ## Usage
 
@@ -27,7 +27,7 @@ This handler is invoked once healthcheck is done.This handler is responsible for
 | Key               | Description                                                                       | Required? |
 |-------------------|-----------------------------------------------------------------------------------|-----------|
 | task              | "healthCheck"- Its a static value and should not be changed for this handler      | Y         |
-| appType           | corresponding intent is launching on which app                                    | Y         |
+| appType           | Corresponding intent is launching on which app                                    | Y         |
 
 ## Examples
 

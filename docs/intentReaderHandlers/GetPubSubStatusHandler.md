@@ -2,7 +2,7 @@
 
 ## Overview
 
-Handler that checks the status of PubSub connection in FCA.This handler intent is identified with task parameter as "getPubSubStatus" and is a mandatory parameter in the data passed.There are few optional parameters like action,appType.
+GetPubSubStatusHandler is invoked when the task specified in the intent has the value "getPubSubStatus". This handler is used to check the status of PubSub connection in FCA.
 
 ## Usage
 * This handler is used to check the status of PubSub connection in FCA.
@@ -28,7 +28,7 @@ Handler that checks the status of PubSub connection in FCA.This handler intent i
 | Key               | Description                                                                           | Required? |
 |-------------------|---------------------------------------------------------------------------------------|-----------|
 | task              | "getPubSubStatus"- Its a static value and should not be changed for this handler      | Y         |
-| appType           | corresponding intent is launching on which app                                        | Y         |
+| appType           | Corresponding intent is launching on which app                                        | Y         |
 
 ## Examples
 

@@ -2,16 +2,16 @@
 
 ## Overview
 
-This handler is invoked to record the lifecycle history of each test cases. There are two stage of lifecycleRecordHandler. They are startLifecycleRecording and stopLifecycleRecording.
+LifecycleRecordHandler is invoked when the task specified in the intent has the value "startLifecycleRecording/stopLifecycleRecording". This handler is used to record the lifecycle history of each test case. There are two stages of lifecycleRecordHandler. They are startLifecycleRecording and stopLifecycleRecording
 
-**`StartLifecycleRecording`** - This handler is invoked once a lifecycle state is fetched. This handler intent is identified with field as task and value as "startLifecycleRecording" in the payload.
+**`StartLifecycleRecording`** - This handler intent is identified when the task field has value as "startLifecycleRecording". This handler is used to start fetching lifecycle states. 
 
-**`StopLifecycleRecording`** - This handler is invoked once a recording is started and it needs to stop for the identification of the current lifecycle state. This handler is used to stop the recording of the lifecycle history. This handler intent is identified with field as task and value as "stopLifecycleRecording" in the payload.
+**`StopLifecycleRecording`** - This handler intent is identified when the task field has value as "stopLifecycleRecording". This handler is used to stop recording of the lifecycle history. 
 
 It performs the following actions :
 1. Parse the input message received to get the appId.
-2. Start/Stop the lifecycle recording 
-3. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
+2. Start/Stop the lifecycle recording. 
+3. Save the response/error.
 4. Format the result and send the response back to the IntentReader
 
 ## Usage

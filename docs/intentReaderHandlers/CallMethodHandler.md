@@ -2,14 +2,13 @@
 
 ## Oveview
  
-CallMethodHandler is invoked when the task specified in the intent has the value "callMethod". This handler is used to make firebolt api calls to the device and perform schema validations on the response. More about schema validations here : [validation documentation](../Validations.md).
+CallMethodHandler is invoked when the task specified in the intent has the value "callMethod". This handler is used to make firebolt api calls to the device and perform schema validation on the response. More about schema validation here : [Validation documentation](../Validations.md).
 
 It performs the following actions :
-1. Parse the input message received to get the API to be called.
-2. Call the API with the parameters required for the api call 
-3. Save the response/error and perform schema validations
-4. Format the result and send the response back to the IntentReader
-
+1. Parse the input message received to get the API.
+2. Call the API with the parameters required for the API call. 
+3. Save the API response/error and perform schema validation.
+4. Format the result and send the response back to IntentReader.
 ## Usage
 
 * Request Format
@@ -82,7 +81,7 @@ It performs the following actions :
 | result                    | The inner field "result" indicates the success result if the invoked api is successful                                     |    
 | error                     | The inner field "error" indicates the error response if the invoked api is not successful                                  |    
 | schemaValidationStatus    | The status of the invoked api. It can be either "PASS" or "FAIL"                                             	             |    
-| schemaValidationResponse  | The validation schema of the response we received                                             	                         |    
+| schemaValidationResponse  | The validation schema of the response received                                             	                         |    
 
 
 ## Examples
@@ -296,9 +295,7 @@ It performs the following actions :
  
 ### Intent for a Not Supported API
 
-"notSupportedApi" are the ones which are not supported by platform and the response of these apis will be always validated against errorSchema.
-
-Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api response will be validated against errorSchema.
+notSupportedApi : If the intent has "isNotSupportedApi" = true, it indicates that the api is not implemented on the platform and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema and then will be returned.
 
 <details>
     <summary>Request with isNotSupportedApi true for a supportedApi</summary>
@@ -361,13 +358,10 @@ Sample Intent - Here, if there is a key *isNotSupportedApi* with value *true* in
     <summary>Response</summary>
 </details>
 
-- Api response is validated against errorSchema.
-- Schema validation Check: PASS. 
-
-{
-    "result": null,
-    "error": {
-        "code": -50100,
-        "message": "capability xrn:firebolt:capability:token:session is not supported"
+    {
+        "result": null,
+        "error": {
+            "code": -50100,
+            "message": "capability xrn:firebolt:capability:token:session is not supported"
+        }
     }
-}

@@ -2,12 +2,11 @@
 
 ## Overview
 
-This handler is invoked to assign the response value to an environment variable in FCA.This handler intent is identified with field as task and 
-value as "setApiResponse" alone with the apiResponse in the param field of the payload.
+SetApiResponseHandler is invoked when the task specified in the intent has the value "setApiResponse". This handler is used to assign the apiResponse value to an environment variable in FCA.
 
 It performs the following actions :
 1. Parse the input message received to get the apiResponse.
-2. Assign the value to an environment variable
+2. Assign the value to an environment variable.
 
 ## Usage
 * This handler is invoked to assign the response value to an environment variable in FCA

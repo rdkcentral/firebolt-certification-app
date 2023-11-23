@@ -2,13 +2,14 @@
 
 ## Overview
 
-Handler used to get event response after triggering each event.The response is fetched only after the event is triggered.This handler intent is identified with field as task and value as "getEventResponse" along with the event name for which response needs to be fetched in the param field of the payload.
+GetEventResponse handler is invoked when the task specified in the intent has the value "getEventResponse". This handler is used to getting event responses after triggering each event.
+
 
 It performs the following actions :
-1. Parse the input message received to get the event name
-2. Fetch the response of the triggered event
+1. Parse the input message received to get the event name.
+2. Fetch the response of the triggered event.
 3. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
-4. Format the result and send the response back to the IntentReader
+4. Format the result and send the response back to the IntentReader.
 
 
 ## Usage

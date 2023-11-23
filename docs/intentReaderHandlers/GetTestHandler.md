@@ -2,12 +2,12 @@
 
 ## Overview
 
-Handler that fetches mochawesome report from FCA. An additional parameter as jobId is added to params field in the payload.This handler intent is identified with field as task and value as "getTest" along with jobId as param in the payload.There are few optional parameters like action,appType.
+GetTestHandler is invoked when the task specified in the intent has the value "getTest". This handler is used to fetch mochawesome report from FCA.
 
 It performs the following actions :
 1. Parse the input message received to get the jobId.
-2. Fetch the mochawesome report
-3. Send the response back to the IntentReader
+2. Fetch the mochawesome report of the jobId received.
+3. Send the response back to the IntentReader.
 
 ## Usage
 

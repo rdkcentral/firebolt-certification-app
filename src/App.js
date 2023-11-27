@@ -405,10 +405,10 @@ export default class App extends Base {
             logger.error('No Mac Address Found in Parameter Initialization response...', 'getParameterInitializationValues');
           }
 
-          if (query.params.task) {
+          if (query.task) {
             setTimeout(() => {
               const intentReader = new IntentReader();
-              intentReader.processIntent(query.params);
+              intentReader.processIntent(query);
             }, 8000);
           }
         }

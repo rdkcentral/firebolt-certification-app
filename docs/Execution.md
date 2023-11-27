@@ -152,4 +152,4 @@ Different modes of communication offer flexibility in test approach, tailored to
 ## SDK Mode
  Invoking APIs using the Firebolt SDK.
 ## Transport Mode
- Bypassing the SDK ( directly communication with the device, skipping SDK layer), by setting communicationMode param in the intent to Transport and using the Transport layer for API invocation.
+ Bypassing the SDK ( directly communicating with the device, skipping SDK layer), by setting communicationMode param in the intent to Transport and using the Transport layer for API invocation. All validations or data messaging is handled directly between FCA and the device.

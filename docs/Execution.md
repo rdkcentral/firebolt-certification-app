@@ -5,7 +5,6 @@ This document provides a detailed guide on the various methods of executing test
 ## Table of Contents
 - [Supported Ways of Execution](#supported-ways-of-execution)
   - [UI](#ui)
-  - [Standalone](#standalone)
   - [Remotely](#remotely)
 - [Test Types](#test-types)
   - [Sanity](#sanity)
@@ -31,27 +30,6 @@ Select the desired SDK mode: CoreSDK, ManageSDK, or All SDKs.
 Invoke the sanity suite or specific tests manually.
 Useful for quick checks and immediate feedback on the test results.
 For specific instructions on navigation, visit this doc [GUI](GUI.md).
-
-## Standalone
-
-### Background
-
-Standalone execution is designed for automated testing scenarios, where generating detailed reports and logs is crucial to be within FCA independantly of any other apps or frameworks.
-
-### Setup
-
-Enable standalone execution by setting the standalone=true parameter in the URL example:(https://firecertapp.firecert.com/edge/index.html?standalond=true) or within the intent message example:(intent>data>query>params>"standalone":true).
-
-This mode is particularly useful for integrating testing into automated workflows.
-For more info check 
-[Intent Reader](IntentReader.md).
-
-### Usage
-
-Upon execution, Mochawesome reports are generated.
-Reports are uploaded to a specific endpoint, processed, and made accessible as HTML reports in an S3 bucket.
-For more info check [Reporting](Reporting.md).
-
 
 ## Remotely
 

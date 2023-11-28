@@ -96,7 +96,7 @@ export class MethodInvoker {
         err = CONSTANTS.ERROR_MESSAGE_WRONG_METHOD_NAME;
       }
       // if the method is not supported and it gives a valid response, validate against errorschema instead of api schema
-      if (message.isNotSupportedApi == true && response != undefined) {
+      if (message.params.isNotSupportedApi == true && response != undefined) {
         schemaValidationResult = errorSchemaCheck(response);
       }
     } catch (error) {

@@ -46,11 +46,10 @@ If there is a requirement to validate firebolt api response against a different 
             ```
     -   Validation Result will be PASS if API Response is a string. eg - "1234".
     -   Validation Result will be FAIL if API Response is not a string. eg - {"id" : "1234"}.
-
 * There is an exception where open rpc schema is not used to validate schema. Instead [errorSchema.json](../src/source/errorSchema.json) is used for validation. In case of a not supported api (An api maybe not supported according to the platform in which FCA is launched), we are expecting to get an error as response as the api is not supported by the platform. FCA identifies whether an api is not supported or not based on the intents received in [IntentReader](IntentReader.md). The 3 intents/instances where an api response is validated against errorSchema are listed below :
-    - **Sanity test execution** - Here, if there is a field *exceptionMethods* in the intent received, responses of those api's will be validated against errorSchema. Detailed information on sending intent is given [here](pubSubHandlers/RunTestHandler.md#passing-list-of-not-supported-apis-in-intent).
-    - **Regression test execution for firebolt api call** - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api responsewill be validated against errorSchema. Detailed information on sending intent is given [here](pubSubHandlers/CallMethodHandler.md#intent-for-a-not-supported-api).
-    - **Regression test execution for firebolt event registration** - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that event registration response will be validated against errorSchema. Detailed information on sending intent is given [here](pubSubHandlers/RegisterEventHandler.md#intent-for-a-not-supported-event).
+    - **Sanity test execution** - Here, if there is a field *exceptionMethods* in the intent received, responses of those api's will be validated against errorSchema. Detailed information on sending intent is given [here](intentReaderHandlers/RunTestHandler.md#passing-list-of-not-supported-apis-in-intent).
+    - **Regression test execution for firebolt api call** - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that api responsewill be validated against errorSchema. Detailed information on sending intent is given [here](intentReaderHandlers/CallMethodHandler.md#intent-for-a-not-supported-api).
+    - **Regression test execution for firebolt event registration** - Here, if there is a key *isNotSupportedApi* with value *true* in the intent received, that event registration response will be validated against errorSchema. Detailed information on sending intent is given [here](intentReaderHandlers/RegisterEventHandler.md#intent-for-a-not-supported-event).
 
 * Example : Schema Validation against Error schema
     -   Sample error schema 

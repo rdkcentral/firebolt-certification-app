@@ -44,6 +44,9 @@ It performs the following actions :
 |-----------------------|------------------------------------------------------------------------------------------|-----------|
 | task                  | "setApiResponse"- Its a static value and should not be changed for this handler          | Y         |
 | params                | Required response params for the intent. Here, "apiResponse" is a mandatory parameter    | Y         |
+| module                | Corresponding module name for which the api is called                                    | Y         |
+| methodName            | The name of the invoked method                                                           | Y         |
+| type                  | It indicates whether the response is of method/event                                     | Y         |
 | appType               | Corresponding intent is launching on which app                                           | Y         |
 
 ## Examples

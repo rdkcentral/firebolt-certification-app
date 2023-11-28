@@ -4,6 +4,12 @@
 
 GetPubSubStatusHandler is invoked when the task specified in the intent has the value "getPubSubStatus". This handler is used to check the status of PubSub connection in FCA.
 
+It performs the following actions :
+1. Parse the input message received.
+2. Check the status of pubSub connection. 
+3. Save the response/error.
+4. Format the result and send the response back to IntentReader.
+
 ## Usage
 * This handler is used to check the status of PubSub connection in FCA.
 

@@ -8,7 +8,7 @@ It performs the following actions :
 1. Parse the input message received to get the provider.
 2. Trigger the provider passed in params.
 3. Save the response/error.
-4. Format the result and send the response back to the IntentReader
+4. Format the result and send the response back to the IntentReader.
 
 ## Usage
 

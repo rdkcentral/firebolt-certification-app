@@ -7,7 +7,7 @@ ClearEventListeners handler is invoked when the task specified in the intent has
 It performs the following actions :
 1. Deregister all the events.
 2. Save the response/error.
-3. Format the result and send the response back to IntentReader
+3. Format the result and send the response back to IntentReader.
 
 ## Usage
 * This handler is invoked to clear all the event listeners at a time.

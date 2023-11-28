@@ -1,6 +1,6 @@
 # FCA: Intent Reader
 
-IntentReader is a powerful feature of FCA which accepts an input command or intent and perform various actions/tasks based on the command received. This is possible with the help of multiple  handlers implemented in FCA. IntentReader is the decision maker which would choose which handler to call based on the input command. Input command/intent is used interchangeably throughout this document.
+IntentReader is a powerful feature of FCA which accepts an input command or intent and performs various actions/tasks based on the command received. This is possible with the help of multiple  handlers implemented in FCA. IntentReader is the decision maker which would choose which handler to call based on the input command. Input command/intent is used interchangeably throughout this document.
 
 For eg: if the task is "clearAllListeners", it will be calling the "clearEventListeners" handler to clear all the eventListeners and the event history. Similarly if the task is "callMethod", "CallMethodHandler" will be called which is used to invoke any apis.
 
@@ -10,11 +10,10 @@ IntentReader is called mainly in 2 scenarios.
 
 Details about each scenario is given below.
 ## Table of Contents
-
-- Acceptable Inputs
-- Pub Sub
-- Standalone
-- Handlers
+- [Acceptable Inputs](#acceptable-inputs)
+- [Pub Sub](#pub-sub)
+- [Standalone](#standalone)
+- [Handlers](#handlers)
 
 ## Acceptable Inputs
 FCA accepts input commands only in json format. Here intentReader uses the value of task to determine which handler to call.  
@@ -49,9 +48,7 @@ Once the PubSub plugin is integrated into FCA, it can send or receive messages b
 We can send commands/intents to FCA which will be parsed and formatted by using various handlers.
 
 You can find the code for handling different types of PubSub requests in the [./intentReaderHandlers directory](./intentReaderHandlers).
-For pubSub scenarios, initially pubSub client communication is established, and then after getting the client response message, FCA processes the incoming intents and corresponding handler responses are called as per the task in the intent.
-PubSub scenario supports both cold launch and hot launch of FCA. 
-
+For pubSub scenarios, initially pubSub client communication is established, and then after getting the client response message, FCA processes the incoming intents and corresponding handlers are called as per the task in the intent.
 ### Setup
 
 PubSub plugin has to be integrated with FCA to call IntentReader with PubSub communication. Setup details here: [PubSub plugin](../plugins/PubSub.md).

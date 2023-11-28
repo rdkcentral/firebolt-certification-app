@@ -56,7 +56,8 @@ URL parameters allow customization of the FCA's behavior, enabling testers to ta
 
 ### Usage
 
-- Customize the test execution and reporting based on the provided URL parameters for targeted testing scenarios.
+Customize the test execution and reporting based on the provided URL parameters for targeted testing scenarios.
+
 **Parameters usage:**
 - **platform**: name of targeted platform
 - **lifecycle_validation**: When user passes lifecycle_validation=true it blocks the default execution of lifecycle.ready and lifecycle.finished method.

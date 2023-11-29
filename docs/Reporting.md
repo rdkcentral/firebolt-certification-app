@@ -1,58 +1,66 @@
 # FCA: Reporting
 
-TODO: add intro
+FCA is pre-configured to generate detailed mochawesome JSON reports following the completion of [sanity tests](./Execution.md). This functionality not only provides users with immediate test results but also enables sending these reports to AWS or any other URL endpoint for further processing and analysis. Reporting needs will vary on a case-by-case basis and users have the flexibility to utilize the generated mochawesome report JSON in various ways, including transforming the JSON data into an HTML report.
 
 ## Table of Contents
 
-- [Supported Ways of Retrieving Reports](#supported-ways-of-retrieving-reports)
-- [Supported Report Parameters](#supported-report-parameters)
+- [Using the Existing Reporting Logic](#using-the-existing-reporting-logic)
+- [Creating Your Own Reporting Logic](#creating-your-own-reporting-logic)
 
-## Supported ways of retrieving reports
-
-EXISTING CONTENTS(needs revision):
-```
-- From UI
-
-  - After executing suite from the UI in FCA, the mocha json will upload to S3.
-  - Download the `json report` from S3 and convert it to `html report`
-    - `arn:aws:s3:::your-s3-Bucket-name`
-  - Steps to convert into `html report`
-    1.  Move the `json report` to root folder
-    2.  Run the command `yarn marge filename.json -f report -o /destination_path`
-    3.  Check the `html report` on the destination path.
-```
+## Using the Existing Reporting Logic
 
 ### Background
 
-TODO: add details
+The default reporting mechanism in FCA is designed to streamline your test analysis process. Post-execution of sanity tests, the app generates detailed mochawesome JSON reports. These reports are crucial for reviewing test outcomes. The `northBoundSchemaValidationAndReportGeneration()` function in [Test_Runner.js](../src/Test_Runner.js) orchestrates this process. Additionally, for users leveraging `IntentReader`, the [runTestHandler](../src/pubsub/handlers/RunTestHandler.js) class can be utilized to execute a sanity test and obtain a reports.
+
+#### Standalone Mode
+
+Furthermore, FCA supports `standalone` report generation. Standalone reporting posts to a different endpoint which allows for more diverse report management and usage.
+
+In order to activate `standalone` mode, include the following paramaters:
+
+- `standalone` (string: required): Set to `true` to enable standalone mode.
+
+- `reportingId` (string: optional): string - An identifier for naming the generated report JSON file.
+
+Parameters can be provided via intent or as URL query parameters. This mode is particularly useful for specialized report handling or when integrating with unique endpoint requirements.
 
 ### Setup
 
-TODO: add details
+To initiate the built-in reporting, follow the preliminary steps below.
+
+**NOTES**:
+
+- The steps below are tailored for AWS configurations. For other platforms, adjustments will be necessary.
+
+- `pushReportToS3()` is a veratile function that can interface with non-AWS POST endpoints to transfer your mochawesome JSON.
+
+1. Create a POST endpoint in AWS API Gateway to accept incoming JSON.
+
+2. Configure your endpoints in [config.js](../plugins/config.js) as follows, to set up the report publishing process:
+
+```
+REPORT_PUBLISH_URL: '', // Endpoint for standard report publishing
+REPORT_PUBLISH_STANDALONE_URL: '', // Endpoint for standalone report publishing
+REPORT_PUBLISH_STANDALONE_REPORT_URL: '', // Optional: Endpoint for hosting a live HTML report
+```
 
 ### Usage
 
-TODO: add details
+Initiate a sanity test run to activate the reporting function. Upon completion, FCA automatically processes and generates the mochawesome JSON report.
 
-## Supported Report Parameters
-
-EXISTING CONTENTS(needs revision):
-```
-- Schema: Schema validation response of each API’s. whether it passed/failed. Validation is done based on the Open RPC document
-- Content: Behavioural validation can be done.
-- Message: Defines the Schema of the API from the Open RPC document.
-- Actual: The API response which is invoked by FCA on the device is stored in actual.
-- Error: Based on the schema validation done by FCA, if the schema validation fails then reason of failure is stored in error.
-```
+## Creating Your Own Reporting Logic
 
 ### Background
 
-TODO: add details
+Enhancing FCA's reporting functionality allows for tailored insights and expanded data usage. Custom reporting might include HTML report generation for easy visualization, or integration with analytics tools for historical test performance tracking. These customizations offer deeper insights and more granular control over test data.
 
-### Setup
+Consider modifying `northBoundSchemaValidationAndReportGeneration()` for custom report processing. Additionally, use [Utils.js](../src/utils/Utils.js) to include any helper reporting functions.
 
-TODO: add details
+### Setup & Usage
 
-### Usage
+Custom reporting setups will vary based on your specific requirements and the tools you integrate with. Be prepared for a unique configuration journey as you tailor FCA’s reporting to your needs.
 
-TODO: add details
+---
+
+Remember, effective reporting is key to understanding and improving your application's performance. With FCA, you have the flexibility to use default settings for quick setup or delve into custom configurations for deeper data insights.

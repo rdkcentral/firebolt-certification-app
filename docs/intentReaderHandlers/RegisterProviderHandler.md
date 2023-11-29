@@ -4,13 +4,14 @@
 
 RegisterProviderHandler is invoked when the task specified in the intent has the value "registerProviderHandler". This handler is used to trigger the provider and is invoked once an entity provides services to another/external party.
 
-It performs the following actions :
-1. Parse the input message received to get the provider.
-2. Trigger the provider passed in params.
-3. Save the response/error.
-4. Format the result and send the response back to the IntentReader.
+It performs the following actions:
+1. Parses the input message received to get the provider.
+2. Triggers the provider passed in parameters.
+3. Saves the response or error.
+4. Formats the result and sends the response back to the IntentReader.
 
 ## Usage
+* Request Format
 
 ```json
     {
@@ -40,6 +41,19 @@ It performs the following actions :
 | params            | Required provider params for  the intent. Here, "provider" is a mandatory parameter           | Y         |
 | appType           | Corresponding intent is launching on which app                                                | Y         |
 
+* Response Format
+* Response can be either "true" or an error response
+
+```json
+    true/Keyboard provider registered successfully
+```
+### Parameters
+
+| Key                         | Description                                                                  |
+| --------------------------- | -----------------------------------------------------------------------------|
+| true                        | It indicates whether the mochawesome report from FCA is fetched or not       |
+
+
 ## Examples
 
 ### Valid Intent and Response
@@ -64,6 +78,9 @@ It performs the following actions :
             
             "Keyboard provider registered successfully"
 
+----------------------------------------------------------------------------------------------------------------------
+
+
 ### Invalid Intent and Response
 ### Invalid Provider Name
 <details>
@@ -85,6 +102,8 @@ It performs the following actions :
 </details>
 
             Provider registeration failed
+
+----------------------------------------------------------------------------------------------------------------------
 
 ### Empty Provider Name
 <details>

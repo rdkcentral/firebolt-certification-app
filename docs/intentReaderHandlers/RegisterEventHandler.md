@@ -4,14 +4,14 @@
 
 RegisterEventHandler is invoked when the task specified in the intent has the value "registerEvent". This handler is used to register for the event in FCA.
 
-It performs the following actions :
-1. Parse the input message received to get the event.
-2. Register the event passed in params. 
-3. Save the response/error and perform schema validations. More about schema validations here : [validation documentation](../Validations.md).
-4. Format the result and send the response back to the IntentReader.
+It performs the following actions:
+1. Parses the input message received to get the event.
+2. Registers the event passed in params. 
+3. Saves the response or error and performs schema validations. More about schema validations [here.](../Validations.md).
+4. Formats the result and sends the response back to the IntentReader.
 
 ## Usage
-* Request
+* Request Format
 
 ```json
     {
@@ -104,6 +104,9 @@ It performs the following actions :
                 "eventSchemaResult": {}
             }
         }
+
+----------------------------------------------------------------------------------------------------------------------
+
 ### Invalid Intent and Response
 ### Invalid Event
 <details>
@@ -153,6 +156,8 @@ It performs the following actions :
         }
     }
 
+----------------------------------------------------------------------------------------------------------------------
+
 ### Empty params
 <details>
     <summary>Request when we pass empty params </summary>
@@ -181,6 +186,8 @@ It performs the following actions :
         "Unable to find the response for the current request" 
     }
 
+----------------------------------------------------------------------------------------------------------------------
+
 ### Invalid params
 <details>
     <summary>Request when we pass invalid params </summary>
@@ -208,6 +215,8 @@ It performs the following actions :
     {
         "Unable to find the response for the current request" 
     }
+
+----------------------------------------------------------------------------------------------------------------------
 
 ### Empty task
 <details>
@@ -240,6 +249,8 @@ It performs the following actions :
         "Unable to find the response for the current request" 
     }
 
+----------------------------------------------------------------------------------------------------------------------
+
 ### Invalid task
 <details>
     <summary>Request when we pass invalid task </summary>
@@ -270,6 +281,8 @@ It performs the following actions :
     {
         "Unable to find the response for the current request" 
     }
+
+----------------------------------------------------------------------------------------------------------------------
 
 ### Empty Event 
 <details>
@@ -302,9 +315,11 @@ It performs the following actions :
         "Unable to find the response for the current request" 
     }
 
+----------------------------------------------------------------------------------------------------------------------
+
 ### Event with isNotSupportedApi
 
-notSupportedApi : If the intent has "isNotSupportedApi" = true, it indicates that the api is not implemented on the platform and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema and then will be returned. Detailed information on sending intent is given [here](docs/pubSubHandlers/RegisterEventHandler.md).
+notSupportedApi : If the intent has "isNotSupportedApi" = true, it indicates that the API is not implemented on the platform and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema and then will be returned. Detailed information on sending intent is given [here.](docs/pubSubHandlers/RegisterEventHandler.md).
 
 <details>
     <summary>Request with isNotSupportedApi true for a supported event</summary>

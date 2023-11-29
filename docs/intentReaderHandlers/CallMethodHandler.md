@@ -2,13 +2,13 @@
 
 ## Oveview
  
-CallMethodHandler is invoked when the task specified in the intent has the value "callMethod". This handler is used to make firebolt api calls to the device and perform schema validation on the response. More about schema validation [here](../Validations.md#schema-validation)
+CallMethodHandler is invoked when the task specified in the intent has the value "callMethod". This handler is used to make FIREBOLT API calls to the device and perform schema validation on the response. More about schema validation [here.](../Validations.md#schema-validation)
 
-It performs the following actions :
-1. Parse the input message received to fetch the api name and the parameters required.
-2. Call the API with the parameters required for the API call. 
-3. Save the API response/error and perform schema validation.
-4. Format the result and send the response back to IntentReader.
+It performs the following actions:
+1. Parses the input message received to fetch the API name and the parameters required.
+2. Calls the API with the parameters required for the API call.
+3. Saves the API response or error and performs schema validation.
+4. Formats the result and sends the response back to IntentReader.
 ## Usage
 
 * Request Format
@@ -44,7 +44,7 @@ It performs the following actions :
 | params                    | Required params for call method intent. Here, "method" and "methodParams" are mandatory fields        | Y         |
 | appType                   | Corresponding intent is launching on which app                                             			| Y         |    
 | communicationMode         | It indicates whether the test is run on transport or sdk mode mode.                                   | optional  |
-| isNotSupportedApi         | It indicates whether the passed api is supported or not by the platform.                              | optional  |
+| isNotSupportedApi         | It indicates whether the passed API is supported or not by the platform.                              | optional  |
 
 
 * Response Format
@@ -77,9 +77,9 @@ It performs the following actions :
 | Key                       | Description                                                                                			                                      |
 |---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | method                    | The name of method we are invoking                			                                                                              |
-| params                    | The params we passed for invoking the apis                                                                                                  |
+| params                    | The params we passed for invoking the APIs                                                                                                  |
 | responseCode              | The responseCode can be 0,1,2 or 3, which indicates whether the request successful or not. 0-PASS, 1-FAIL, 2-SKIPPED, 3- PENDING            |    
-| apiResponse               | The apiResponse field reflects the response of the api we invoked. It contains "result" and "error" as the inner fields                     |    
+| apiResponse               | The apiResponse field reflects the response of the API we invoked. It contains "result" and "error" as the inner fields                     |    
 | result                    | The inner field "result" contains a successful response if FCA receives a response from the device.                                         |    
 | error                     | The inner field "error" contains a failure response if FCA receives an error from the device.                                               |    
 | schemaValidationStatus    | Indicates whether schema validation is PASS/FAIL.                                            	                                              |    
@@ -130,7 +130,7 @@ It performs the following actions :
                     "disableFormat": false
                 }
             }
-
+----------------------------------------------------------------------------------------------------------------------
 <details>
     <summary>Request with valid methodParams</summary>
 </details>
@@ -175,6 +175,7 @@ It performs the following actions :
             }
         }
 
+----------------------------------------------------------------------------------------------------------------------
 
 ### Invalid Intent and Response
 
@@ -238,9 +239,7 @@ It performs the following actions :
                 }
             }
 
-
-
-
+----------------------------------------------------------------------------------------------------------------------
 
 <details>
     <summary>Request with invalid method name</summary>
@@ -268,6 +267,8 @@ It performs the following actions :
         }
     }
 
+----------------------------------------------------------------------------------------------------------------------
+
 <details>
     <summary>Request with empty method name</summary>
 </details>
@@ -294,13 +295,14 @@ It performs the following actions :
         }
     }
     
- 
+----------------------------------------------------------------------------------------------------------------------
+
 ### Intent for a Not Supported API
 
-If the intent has "isNotSupportedApi" = true, it indicates that the api is not implemented on the platform and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema and the response will be returned.
+If the intent has "isNotSupportedApi" = true, it indicates that the API is not implemented on the platform, and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema, and the response will be returned.
 
 <details>
-    <summary>Request with isNotSupportedApi true for a supported api</summary>
+    <summary>Request with isNotSupportedApi true for a supported API</summary>
 </details>
 
     {
@@ -351,9 +353,10 @@ If the intent has "isNotSupportedApi" = true, it indicates that the api is not i
 }
 
 
-- Api response is validated against errorSchema.
+- API response is validated against errorSchema.
 - Schema validation Check: FAIL. 
 
+----------------------------------------------------------------------------------------------------------------------
 
 <details>
     <summary>Request with isNotSupportedApi true for a not supported api</summary>

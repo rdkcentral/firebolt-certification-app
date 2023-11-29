@@ -2,15 +2,16 @@
 
 ## Overview
 
-RunTestHandler is invoked when the task specified in the intent has the value "runTest". This handler is used to run sanity tests in FCA. Whent this handler is invoked, it will loop through all the apis in openRpc schema, invoke the apis and perform schema validations on the responses. Once the execution is over, a test report is generated. For more about execution [here](../Execution.md#sanity-test-execution) and for reporting [here](../Reporting.md#supported-ways-of-retrieving-reports) 
+RunTestHandler is invoked when the task specified in the intent has the value "runTest". This handler is used to run sanity tests in FCA. When this handler is invoked, it will loop through all the APIs in the openRpc schema, invoke the APIs, and perform schema validations on the responses. Once the execution is over, a test report is generated. For more about execution, [click here](../Execution.md#sanity-test-execution) and for reporting [here.](../Reporting.md#supported-ways-of-retrieving-reports) 
 
-It performs the following actions :
-1. Parse the input message received to fetch the action and parameters.
-2. Loop through the apis in openRpc. 
-3. Save the API response/error and perform schema validation.
-4. Format the result and send the response back to IntentReader.
+It performs the following actions:
+1. Parses the input message received to fetch the action and parameters.
+2. Loops through the APIs in openRpc. 
+3. Saves the API response or error and performs schema validation.
+4. Formats the result and sends the response back to IntentReader.
 
 ## Usage
+* Request Format
 
 ```json
     {
@@ -53,10 +54,37 @@ It performs the following actions :
 | exceptionMethods          | Inner field of params where we pass the list of methods and corresponding params to be excluded from sanity suite runs.           | optional  |
 | methodsToBeExcluded       | Inner field of params where we pass the list of methods to be excluded for test execution.                                        | optional  |
 | modulesToBeExcluded       | Inner field of params where we pass the list of modules to be excluded for test execution.                                        | optional  |
-| action                    | It indicates whether it core, manage or all suite run.                                                                            | Y         |
+| action                    | It indicates whether its core, manage or all suite run.                                                                           | Y         |
 | communicationMode         | It indicates whether the test is run on transport or sdk mode mode.                                                               | optional  |
 | metadata                  | The info: related to target platform like deviceModel, devicePartner.                                                             | optional  |
 | appType                   | Corresponding intent is launching on which app.                                                                                   | Y         |
+
+* Response Format
+
+```json
+    {
+        "stats": {
+            "pending": 0,
+            "pendingPercent": 0,
+            "..."
+        },
+        "results": [
+            {
+                "uuid": "<uuid>",
+                "title": "Summary",
+                "..."
+            }
+        ]
+
+    }
+```
+
+### Parameters
+
+| Key                         | Description                                                                                    |
+| --------------------------- | -----------------------------------------------------------------------------------------------|
+| stats                       | It indicates the status of the test run like the pass percentage, number of failures etc       |
+| results                     | It gives the details about each test in the suite run                                          |
 
 ## Examples
 
@@ -191,6 +219,9 @@ It performs the following actions :
         ]
     }
 
+----------------------------------------------------------------------------------------------------------------------
+
+
 <details>
     <summary> Invalid request with empty params </summary>
 </details>
@@ -224,6 +255,9 @@ It performs the following actions :
 </details>
 
     Unable to get Response from FCA
+
+----------------------------------------------------------------------------------------------------------------------
+
 
 <details>
     <summary> Request of Lifecycle Validation </summary>

@@ -2,15 +2,17 @@
 
 ## Overview
 
-HealthCheckHandler is invoked when the task specified in the intent has the value "healthCheck". This handler is responsible for sending the healthCheck command and validating whether FCA is launched as a 3rd party app or not
+HealthCheckHandler is invoked when the task specified in the intent has the value "healthCheck". This handler is responsible for sending the healthCheck command and validating whether FCA is launched as a third-party app or not.
 
-It performs the following actions :
-1. Parse the input message received.
-2. Confirm the healthCheck status. 
-3. Save the response/error.
-4. Format the result and send the response back to IntentReader.
+It performs the following actions:
+1. Parses the input message received.
+2. Confirms the healthCheck status.
+3. Saves the response or error.
+4. Formats the result and sends the response back to IntentReader.
 
 ## Usage
+
+* Request Format
 
 ```json
     {
@@ -34,6 +36,22 @@ It performs the following actions :
 |-------------------|-----------------------------------------------------------------------------------|-----------|
 | task              | "healthCheck"- Its a static value and should not be changed for this handler      | Y         |
 | appType           | Corresponding intent is launching on which app                                    | Y         |
+
+
+* Response Format
+* Response can be either "true" or an error response
+
+```json
+    true
+```
+### Parameters
+
+| Key                         | Description                                                          |
+| --------------------------- | ---------------------------------------------------------------------|
+| true/null                   | It indicates whether FCA is launched as third party app or not       |
+
+
+
 
 ## Examples
 
@@ -61,8 +79,9 @@ It performs the following actions :
     <summary> Response </summary>
 </details>
 
-            OK
+           True/OK
 
+----------------------------------------------------------------------------------------------------------------------
 
 ### Invalid Intent and Response
 

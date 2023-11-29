@@ -2,17 +2,18 @@
 
 ## Overview
 
-LifecycleRecordHandler is invoked when the task specified in the intent has the value "startLifecycleRecording/stopLifecycleRecording". This handler is used to record the lifecycle history of each test case. There are two stages of lifecycleRecordHandler. They are startLifecycleRecording and stopLifecycleRecording
+LifecycleRecordHandler is invoked when the task specified in the intent has the value "startLifecycleRecording/stopLifecycleRecording". This handler is used to record the lifecycle history of each test case. There are two stages of lifecycleRecordHandler. They are startLifecycleRecording and stopLifecycleRecording.
 
-**`StartLifecycleRecording`** - This handler intent is identified when the task field has value as "startLifecycleRecording". This handler is used to start fetching lifecycle states. 
+**`StartLifecycleRecording`** - This handler intent is identified when the task field has value as "startLifecycleRecording". This handler is used to start fetching lifecycle states.
 
 **`StopLifecycleRecording`** - This handler intent is identified when the task field has value as "stopLifecycleRecording". This handler is used to stop recording of the lifecycle history. 
 
-It performs the following actions :
-1. Parse the input message received to get the appId.
-2. Start/Stop the lifecycle recording. 
-3. Save the response/error.
-4. Format the result and send the response back to the IntentReader.
+It performs the following actions:
+1. Parses the input message received to get the appId.
+2. Starts or stops the lifecycle recording.
+3. Saves the response or error.
+4. Formats the result and sends the response back to the IntentReader.
+
 
 ## Usage
 * Request for startLifecycleRecording
@@ -153,6 +154,8 @@ It performs the following actions :
                 }
             ]
         }
+
+----------------------------------------------------------------------------------------------------------------------
 
 ### Invalid Intent and Response
 

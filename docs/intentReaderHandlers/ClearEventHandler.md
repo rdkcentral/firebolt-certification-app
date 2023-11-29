@@ -4,14 +4,15 @@
 
 ClearEventHandler is invoked when the task specified in the intent has the value "clearEventHandler". This handler is used to deregister an event that has been registered already.
 
-It performs the following actions :
-1. Parse the input message received to get the event.
-2. Deregister the single event passed in the params field. 
-3. Save the response/error.
-4. Format the result and send the response back to IntentReader.
+It performs the following actions:
+1. Parses the input message received to get the event.
+2. Deregisters the single event passed in the params field.
+3. Saves the response or error.
+4. Formats the result and sends the response back to IntentReader
 
 ## Usage
 * This handler is invoked to clear a single event at a time.
+* Request Format
 
 ```json
     {
@@ -42,6 +43,17 @@ It performs the following actions :
 | params                | Required event params for the intent. Here, "event" is the mandatory parameter        | Y         |
 | appType               | Corresponding intent is launching on which app                                        | Y         |
 
+* Response Format
+* Response can be either "true" or an error response
+
+```json
+    true
+```
+### Parameters
+
+| Key                         | Description                                                                                                                                   |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| true                        | It indicates whether the passed event is cleared or not                                                                                       |
 
 ## Examples
 
@@ -51,22 +63,22 @@ It performs the following actions :
     <summary>Request</summary>
 </details>
 
-{
-    "action": "search",
-    "data": {
-        "query": {
-            "task": "clearEventHandler",
-            "params": {
-                "event": "<eventName>"
-            },
-            "action": "NA",
-            "appType": "firebolt"
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "clearEventHandler",
+                "params": {
+                    "event": "<eventName>"
+                },
+                "action": "NA",
+                "appType": "firebolt"
+            }
+        },
+        "context": {
+            "source": "device"
         }
-    },
-    "context": {
-        "source": "device"
     }
-}
 
 
 <details>
@@ -75,12 +87,14 @@ It performs the following actions :
 
             true
 
+----------------------------------------------------------------------------------------------------------------------
 
 ### Invalid Intent and Response
 ### Request without event name
 <details>
     <summary>Request without event name </summary>
 </details>
+
     {
         "action": "search",
             "data": {
@@ -97,9 +111,11 @@ It performs the following actions :
                 "source": "device"
             }
     }
+
 <details>
     <summary>Response</summary>
 </details> 
+
     {
         "error": {
             "code": "FCAError",
@@ -107,10 +123,13 @@ It performs the following actions :
         }
     }
 
+----------------------------------------------------------------------------------------------------------------------
+
 ### Request with invalid event name
 <details>
-    <summary>Request without event name </summary>
+    <summary>Request with invalid event name </summary>
 </details>
+
     {
         "action": "search",
             "data": {
@@ -131,6 +150,7 @@ It performs the following actions :
 <details>
     <summary>Response</summary>
 </details> 
+
     {
         "error": {
             "code": "FCAError",

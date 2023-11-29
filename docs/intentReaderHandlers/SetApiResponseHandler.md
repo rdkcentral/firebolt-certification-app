@@ -2,14 +2,16 @@
 
 ## Overview
 
-SetApiResponseHandler is invoked when the task specified in the intent has the value "setApiResponse". This handler is used to assign the apiResponse value to an environment variable in FCA.
+SetApiResponseHandler is invoked when the task specified in the intent has the value "setApiResponse". This handler is used to assign the apiResponse value to an environment variable in FCA.
 
-It performs the following actions :
-1. Parse the input message received to get the apiResponse.
-2. Assign the value to an environment variable.
+It performs the following actions:
+1. Parses the input message received to get the API response.
+2. Assigns the value to an environment variable.
+
 
 ## Usage
-* This handler is invoked to assign the response value to an environment variable in FCA
+* This handler is invoked to assign the response value to an environment variable in FCA.
+* Request Format
 
 ```json
     {
@@ -44,10 +46,22 @@ It performs the following actions :
 |-----------------------|------------------------------------------------------------------------------------------|-----------|
 | task                  | "setApiResponse"- Its a static value and should not be changed for this handler          | Y         |
 | params                | Required response params for the intent. Here, "apiResponse" is a mandatory parameter    | Y         |
-| module                | Corresponding module name for which the api is called                                    | Y         |
+| module                | Corresponding module name for which the API is called                                    | Y         |
 | methodName            | The name of the invoked method                                                           | Y         |
 | type                  | It indicates whether the response is of method/event                                     | Y         |
 | appType               | Corresponding intent is launching on which app                                           | Y         |
+
+* Response Format
+* Response can be either "true" or an error response
+
+```json
+    true
+```
+### Parameters
+
+| Key                         | Description                                                                                                     |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------|
+| true/null                   | It indicates whether assigning the apiResponse value to an environment variable in FCA was successful or not.   |
 
 ## Examples
 ### Valid Intent and Response

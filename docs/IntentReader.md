@@ -47,11 +47,11 @@ FCA has the capability to send and receive messages by making use of a PubSub (P
 Once the PubSub plugin is integrated into FCA, it can send or receive messages by publishing and listening to various topics.
 We can send commands/intents to FCA, which will be parsed and formatted by using various handlers.
 
-You can find the code for handling different types of PubSub requests in the [intentReaderHandlers directory](./intentReaderHandlers).
+You can find the code for handling different types of PubSub requests in the [intentReaderHandlers directory.](./intentReaderHandlers)
 For pubSub scenarios, initially pubSub client communication is established, and then after getting the client response message, FCA processes the incoming intents, and corresponding handlers are called as per the task in the intent.
 ### Setup
 
-The PubSub plugin has to be integrated with FCA to call IntentReader with PubSub communication. Setup details [here](../plugins/PubSub.md).
+The PubSub plugin has to be integrated with FCA to call IntentReader with PubSub communication. Setup details [here.](../plugins/PubSub.md)
 
 ### Usage
 
@@ -59,6 +59,8 @@ With the configuration and setup in place, we can perform any actions or tasks w
 For performing a particular task, give the required task name in the "task" field and the corresponding task parameters required to perform the task.
 For example:
 To invoke any APIs, the task will be "callMethod", and the corresponding methodName, methodParams, etc. should be passed.
+Here, pubSub communication status is established first and then intent is passed.
+
 ## Standalone
 ### Background
 
@@ -75,7 +77,38 @@ The standalone scenario supports both the cold launch and the hot launch of FCA.
 No additional setup is required. 
 
 ### Usage
-With the configuration and setup in place, we can perform any actions or tasks without having a PubSub messaging system integrated. The format of the request remains the same as in pubSub, as we have to pass the task name and corresponding parameters required to perform the task. We have to follow the same format for intents.
+With the configuration and setup in place, we can perform any actions or tasks without having a PubSub messaging system integrated. The format of the request remains the same as in pubSub, as we have to pass the task name and corresponding parameters required to perform the task.
+For standalones, the intent format will be like the following example:
+
+<details>
+    <summary>Standalone Intent Format</summary>
+</details>
+
+
+    {
+      task: 'runTest',
+      standalone: 'true',
+      params: {
+        appId: params.appId,
+        certification: true,
+        exceptionMethods: [
+          '...'
+        ],
+        methodsToBeExcluded: [
+          '...'
+        ],
+        modulesToBeExcluded: [],
+        appType: 'firebolt',
+      },
+      action: 'CORE',
+      context: { communicationMode: 'SDK' },
+      metadata: {
+        target: 'RIPPLE',
+        targetVersion: '<version>',
+        '...'
+      },
+      asynchronous: false
+    }
 
 ## Handlers
 

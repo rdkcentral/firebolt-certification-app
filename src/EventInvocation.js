@@ -124,7 +124,7 @@ export class EventInvocation {
       // Handling not supported api to check error schema if it gives a valid response
       let schemaValidationResult = {};
       let schemaValidationStatus = CONSTANTS.PASS;
-      if (message.params.isNotSupportedApi == true) {
+      if (message.isNotSupportedApi == true) {
         schemaValidationResult = errorSchemaCheck(listenerResponse);
         schemaValidationStatus = CONSTANTS.FAIL;
       }

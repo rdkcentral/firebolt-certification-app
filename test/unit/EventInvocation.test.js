@@ -587,7 +587,8 @@ describe('EventInvocation', () => {
 
     test('should fail if not supported api returns a valid response and not error object', async () => {
       const eventParams = {
-        params: { event: 'mocksdk_mockmodule.onmodulechanged', isNotSupportedApi: true },
+        params: { event: 'mocksdk_mockmodule.onmodulechanged' },
+        isNotSupportedApi: true,
       };
       const expectedResponse = {
         eventName: 'mocksdk_mockmodule.onmodulechanged',

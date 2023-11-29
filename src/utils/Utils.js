@@ -172,6 +172,10 @@ function pushReportToS3(report) {
         });
       }
 
+      if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {
+        reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;
+      }
+
       if (!parsingSuccessful) {
         reportName =
           process.env.REPORTINGID && process.env.STANDALONE
@@ -182,7 +186,7 @@ function pushReportToS3(report) {
       }
     } catch (error) {
       logger.error(error, 'pushReportToS3');
-      reportName = 'refAppExecReport' + '-' + fileNameAppend;
+      reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : 'refAppExecReport' + '-' + fileNameAppend;
     }
 
     let restApiUrl = CONSTANTS.REPORT_PUBLISH_URL + reportName + '.json';
@@ -196,9 +200,6 @@ function pushReportToS3(report) {
       restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + reportName + '.json';
       logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${reportId}/report.html`, 'pushReportToS3');
     }
-
-    console.log('=====REPORT JSON BELOW=====');
-    console.log(report);
 
     logger.info('URL: ' + restApiUrl, 'pushReportToS3');
     request.open('POST', restApiUrl);

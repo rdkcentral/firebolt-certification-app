@@ -74,6 +74,15 @@ export default class IntentReader {
       return;
     }
 
+    // Check for standalone and reportingId in the message and set them in process.env
+    if ('standalone' in message) {
+      process.env.STANDALONE = message.standalone;
+    }
+
+    if ('reportingId' in message) {
+      process.env.REPORTINGID = message.reportingId;
+    }
+
     const handler = handlers[message.task];
     if (handler === undefined) {
       logger.info('Undefined handler: ' + message.task);

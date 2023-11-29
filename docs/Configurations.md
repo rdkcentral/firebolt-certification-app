@@ -65,11 +65,9 @@ This will help  to validate lifecycle api's as needed.
 - **mf**: If mf=true is passed in the URL, FCA will connect to MFOS server and when we invoke any api in FCA it will return the response fron MFOS.
 - **systemui**: If FCA systemui=true, FCA acts as the base app in case of ripple. The background color will be changed to purple and it will display one more button as "Launch FCA app" to launch FCA as third-party app on Ripple devices.
 - **testContext**: If testContext=true, it will add the field context in mocha report generated
-- **voiceGuidance** : if FCA voiceGuidance=true app will voice out navigated menu options.
-- **reportingId**:
+- **voiceGuidance** : If FCA voiceGuidance=true app will voice out navigated menu options.
+- **reportingId**: If passed in the URL, it will get appended to the report name and eventually form the reporting URL.
 - **standalone**: Standalone execution is designed for automated testing scenarios, where generating detailed reports and logs is crucial to be within FCA independantly of any other apps or frameworks. Enable standalone execution by setting the standalone=true parameter in the URL example:(https://firecertapp.firecert.com/edge/index.html?standalond=true) or within the intent message example:(intent>data>query>params>"standalone":true).
-- **testtoken**: 
-- **pubsub_uuid**: 
 
 
 ## App Types

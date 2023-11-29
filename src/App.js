@@ -378,17 +378,13 @@ export default class App extends Base {
             process.env.LIFECYCLE_VALIDATION = 'true';
           }
 
-          if (query.params.appType) {
-            const appType = query.params.appType;
-            process.env.APP_TYPE = appType.toLowerCase();
-          }
+          process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
 
           try {
             if (query.params.appId) {
               process.env.CURRENT_APPID = query.params.appId;
               this.tag('Title').patch({ text: { text: process.env.CURRENT_APPID, fontSize: 33 } });
             } else {
-              process.env.APP_TYPE = CONSTANTS.FIREBOLT_CONST;
               getCurrentAppID().then((res) => {
                 this.setAppId(res);
               });
@@ -409,10 +405,10 @@ export default class App extends Base {
             logger.error('No Mac Address Found in Parameter Initialization response...', 'getParameterInitializationValues');
           }
 
-          if (query.params.task) {
+          if (query.task) {
             setTimeout(() => {
               const intentReader = new IntentReader();
-              intentReader.processIntent(query.params);
+              intentReader.processIntent(query);
             }, 8000);
           }
         }

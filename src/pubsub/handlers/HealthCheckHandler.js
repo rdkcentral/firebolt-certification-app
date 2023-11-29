@@ -26,7 +26,7 @@ export default class HealthCheckHandler extends BaseHandler {
   }
 
   async handle(message) {
-    if (message.params && message.params.appType) process.env.APP_TYPE = message.params.appType;
+    process.env.APP_TYPE = message.appType;
     return JSON.stringify({ status: 'OK' });
   }
 }

@@ -44,9 +44,10 @@ It performs the following actions:
 ```
 #### Parameters
 
-| Key                         | Description                                                                                                |
-| --------------------------- | -----------------------------------------------------------------------------------------------------------|
-| true                        | It indicates whether all events are cleared or not                                                         |
+| Key                         | Description                                                                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| true                        | It indicates that all events got deregistered successfully.                                                                                    |
+| error                       | It indicates the response where deregistering the events were not successful.                                                                  |
 
 ## Examples
 

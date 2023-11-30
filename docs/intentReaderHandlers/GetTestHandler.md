@@ -49,9 +49,12 @@ It performs the following actions:
 ```
 #### Parameters
 
-| Key                         | Description                                                                  |
-| --------------------------- | -----------------------------------------------------------------------------|
-| true/null                   | It indicates whether the mochawesome report from FCA is fetched or not       |
+| Key                         | Description                                                                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| true                        | It indicates that the mochawesome report from FCA was successfully retrieved.                                                                  |
+| error                       | It indicates that the mochawesome report fetch from FCA was unsuccessful.                                                                      |
+
+
 
 
 

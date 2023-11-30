@@ -51,9 +51,10 @@ It performs the following actions:
 ```
 #### Parameters
 
-| Key                         | Description                                                                                                                                   |
-| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| true                        | It indicates whether the passed event is cleared or not                                                                                       |
+| Key                         | Description                                                                                                                                    |
+| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| true                        | It indicates that the passed event got deregistered successfully.                                                                              |
+| error                       | It indicates the response where deregistering the event was not successful.                                                                    |
 
 ## Examples
 

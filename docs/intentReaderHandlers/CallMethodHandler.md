@@ -5,11 +5,10 @@
 CallMethodHandler is invoked when the task specified in the intent has the value "callMethod". This handler is used to make FIREBOLT API calls to the device and perform schema validation on the response. More about schema validation [here.](../Validations.md#schema-validation)
 
 It performs the following actions:
-1. Parses the input message received to fetch the API name and the parameters required.
-2. Calls the API with the parameters required for the API call.
-3. Saves the API response or error and performs schema validation.
-4. Formats the result and sends the response back to IntentReader.
-
+1. Parses the input message received to fetch the API name and the parameters required.
+2. Calls the API with the parameters required for the API call.
+3. Saves the API response or error and performs schema validation.
+4. Formats the result and sends the response back to IntentReader.
 ## Usage
 
 ### Request Format

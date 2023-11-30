@@ -2,11 +2,11 @@
 
 ## Overview
 
-RegisterEventHandler is invoked when the task specified in the intent has the value "registerEvent". This handler is used to register for the event in FCA.
+RegisterEventHandler is invoked when the task specified in the intent has the value "registerEvent". This handler is used to register an event in FCA.
 
 It performs the following actions:
 1. Parses the input message received to get the event.
-2. Registers the event passed in params.
+2. FCA registers the event received in the input command.
 3. Saves the response or error and performs schema validations. More about schema validations [here.](../Validations.md)
 4. Formats the result and sends the response back to the IntentReader.
 
@@ -315,9 +315,9 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
-### Event with isNotSupportedApi
+### Intent for a Not Supported Event
 
-If the intent has "isNotSupportedApi" = true, it indicates that the API is not implemented on the platform and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema and then will be returned. Detailed information on sending intent is given [here.](docs/pubSubHandlers/RegisterEventHandler.md).
+If the intent has "isNotSupportedApi" = true, it indicates that the event is not implemented on the platform and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema and then will be returned. Detailed information on sending intent is given [here.](docs/pubSubHandlers/RegisterEventHandler.md).
 
 <details>
     <summary>Request with isNotSupportedApi true for a supported event</summary>

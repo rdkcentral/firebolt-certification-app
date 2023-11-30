@@ -2,15 +2,15 @@
 
 ## Overview
 
-LifecycleRecordHandler is invoked when the task specified in the intent has the value "startLifecycleRecording/stopLifecycleRecording". This handler is used to record the lifecycle history of each test case. There are two stages of lifecycleRecordHandler. They are startLifecycleRecording and stopLifecycleRecording.
+LifecycleRecordHandler is invoked when the task specified in the intent has the value "startLifecycleRecording/stopLifecycleRecording". When the intent received has the task "startLifecycleRecording", FCA starts listening for lifecycle events and will stop listening once it gets the intent with the task "StopLifecycleRecording", and the event list will be saved.
 
-**`StartLifecycleRecording`** - This handler intent is identified when the task field has value as "startLifecycleRecording". This handler is used to start fetching lifecycle states.
+**`StartLifecycleRecording`** - This handler intent is identified when the task field has value as "startLifecycleRecording". This handler is used to start listening lifecycle events.
 
-**`StopLifecycleRecording`** - This handler intent is identified when the task field has value as "stopLifecycleRecording". This handler is used to stop recording of the lifecycle history. 
+**`StopLifecycleRecording`** - This handler intent is identified when the task field has a value of "stopLifecycleRecording". This handler is used to stop listening to lifecycle events that was started once and then save the event list.
 
 It performs the following actions:
 1. Parses the input message received to get the appId.
-2. Starts or stops the lifecycle recording.
+2. Starts or stops listening to lifecycle events.
 3. Saves the response or error.
 4. Formats the result and sends the response back to the IntentReader.
 
@@ -95,8 +95,8 @@ It performs the following actions:
 
 #### Parameters
 
-| Key      | Description                                                        |
-|----------|--------------------------------------------------------------------|
+| Key       | Description                                                       |
+|-----------|-------------------------------------------------------------------|
 | appId     | The appId whose lifecycle state is recorded                       |
 | history   | An array of lifecycle events and states                           | 
 

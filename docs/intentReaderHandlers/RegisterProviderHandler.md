@@ -2,13 +2,12 @@
 
 ## Overview
 
-RegisterProviderHandler is invoked when the task specified in the intent has the value "registerProviderHandler". This handler is used to trigger the provider and is invoked once an entity provides services to another/external party.
+RegisterProviderHandler is invoked when the task specified in the intent has the value "registerProviderHandler". This handler helps to inform FCA to use testProviders instead of the actual provider so that we can set the responses for different api's like keyboard, profile etc.
 
 It performs the following actions:
 1. Parses the input message received to get the provider.
-2. Triggers the provider passed in parameters.
-3. Saves the response or error.
-4. Formats the result and sends the response back to the IntentReader.
+2. Informs FCA to use testProviders for setting the responses.
+3. Formats and sends the response back to the IntentReader.
 
 ## Usage
 

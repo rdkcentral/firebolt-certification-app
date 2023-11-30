@@ -55,7 +55,7 @@ The PubSub plugin has to be integrated with FCA to call IntentReader with PubSub
 
 ### Usage
 
-With the configuration and setup in place, we can send messages to FCA through any pubsub mechanism like Linchpin, Websocket, etc. First, we have to initialise a pubsub connection, then publish and subscribe messages to send or receive messages from FCA.
+With the configuration and setup in place, we can send messages to FCA through any pubsub mechanism like Websocket, etc. First, we have to initialise a pubsub connection, then publish and subscribe topics to send or receive messages from FCA.
 We can perform any action or task with intentReaders and with the help of multiple handlers. For performing a particular task, give the required task name in the "task" field and the corresponding task parameters required to perform the task.
 For example:
 To invoke any APIs, the task will be "callMethod", and the corresponding methodName, methodParams, etc. should be passed.

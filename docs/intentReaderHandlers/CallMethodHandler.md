@@ -11,7 +11,7 @@ It performs the following actions:
 4. Formats the result and sends the response back to IntentReader.
 ## Usage
 
-* Request Format
+### Request Format
 ```json
     {
         "action": "search",
@@ -36,7 +36,7 @@ It performs the following actions:
     }
 ```
 
-### Parameters
+#### Parameters
 
 | Key                       | Description                                                                                			| Required? |
 |---------------------------|-------------------------------------------------------------------------------------------------------|-----------|

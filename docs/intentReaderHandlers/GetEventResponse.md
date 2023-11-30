@@ -6,7 +6,7 @@ The GetEventResponse handler is invoked when the task specified in the intent ha
 
 It performs the following actions:
 1. Parse the input message received to get the event name.
-2. Fetches the response of the triggered event.
+2. Fetches the response of the triggered event in FCA.
 3. Saves the response or error and performs schema validations. More about schema validations [here.](../Validations.md).
 4. Formats the result and sends the response back to the IntentReader.
 

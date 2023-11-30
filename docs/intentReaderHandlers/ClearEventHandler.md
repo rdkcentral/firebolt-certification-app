@@ -7,7 +7,7 @@ ClearEventHandler is invoked when the task specified in the intent has the value
 It performs the following actions:
 1. Parses the input message received to get the event.
 2. Deregisters the single event passed in the params field.
-3. Saves the response or error.
+3. FCA saves the response or error.
 4. Formats the result and sends the response back to IntentReader.
 
 ## Usage

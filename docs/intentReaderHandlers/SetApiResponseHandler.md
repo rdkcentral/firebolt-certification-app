@@ -5,7 +5,7 @@
 SetApiResponseHandler is invoked when the task specified in the intent has the value "setApiResponse". This handler is used to assign the apiResponse value to an environment variable in FCA.
 
 It performs the following actions:
-1. Parses the input message received to get the API response.
+1. Parses the input message received to get the API response, which is to be assigned.
 2. Assigns the value to an environment variable.
 
 ## Usage

@@ -6,8 +6,8 @@ GetPubSubStatusHandler is invoked when the task specified in the intent has the 
 
 It performs the following actions:
 1. Parses the input message received.
-2. Checks the status of the pubSub connection.
-3. Saves the response or error.
+2. Checks whether the pubSub communication is successful or not.
+3. Saves the response or error based on pubSub connection status.
 4. Formats the result and sends the response back to IntentReader.
 
 ## Usage

@@ -5,9 +5,9 @@
 RunTestHandler is invoked when the task specified in the intent has the value "runTest". This handler is used to run sanity tests in FCA. When this handler is invoked, it will loop through all the APIs in the openRpc schema, invoke the APIs, and perform schema validations on the responses. Once the execution is over, a test report is generated. For more about execution, [click here](../Execution.md#sanity-test-execution) and for reporting [here.](../Reporting.md#supported-ways-of-retrieving-reports) 
 
 It performs the following actions:
-1. Parses the input message received to fetch the action and parameters.
-2. Loops through the APIs in openRpc. 
-3. Saves the API response or error and performs schema validation.
+1. Parses the input message received to fetch the action and corresponding parameters.
+2. FCA loops through the APIs in openRpc. 
+3. Executes and saves the API response or error and performs schema validation.
 4. Formats the result and sends the response back to IntentReader.
 
 ## Usage

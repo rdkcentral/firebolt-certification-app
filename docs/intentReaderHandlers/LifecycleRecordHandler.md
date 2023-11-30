@@ -9,9 +9,9 @@ LifecycleRecordHandler is invoked when the task specified in the intent has the 
 **`StopLifecycleRecording`** - This handler intent is identified when the task field has a value of "stopLifecycleRecording". This handler is used to stop listening to lifecycle events that was started once and then save the event list.
 
 It performs the following actions:
-1. Parses the input message received to get the appId.
-2. Starts or stops listening to lifecycle events.
-3. Saves the response or error.
+1. Parses the input message received to get the appId whose lifecycle events are to be recorded.
+2. Starts or stops listening to lifecycle events for the appId received in intent.
+3. FCA saves the response or error.
 4. Formats the result and sends the response back to the IntentReader.
 
 ## Usage

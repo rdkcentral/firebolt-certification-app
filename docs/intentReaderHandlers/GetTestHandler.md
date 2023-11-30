@@ -5,8 +5,8 @@
 GetTestHandler is invoked when the task specified in the intent has the value "getTest". This handler is used to fetch mochawesome report from FCA.
 
 It performs the following actions:
-1. Parses the input message received to get the job ID.
-2. Fetches the mochawesome report of the job ID received.
+1. Parses the input message received to get the job ID of the report to be fetched.
+2. Fetches the mochawesome report based on the job ID received.
 3. Sends the response back to the IntentReader.
 
 ## Usage

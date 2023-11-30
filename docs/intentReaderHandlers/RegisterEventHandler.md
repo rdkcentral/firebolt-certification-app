@@ -5,7 +5,7 @@
 RegisterEventHandler is invoked when the task specified in the intent has the value "registerEvent". This handler is used to register an event in FCA.
 
 It performs the following actions:
-1. Parses the input message received to get the event.
+1. Parses the input message received to get the event to be registered.
 2. FCA registers the event received in the input command.
 3. Saves the response or error and performs schema validations. More about schema validations [here.](../Validations.md)
 4. Formats the result and sends the response back to the IntentReader.

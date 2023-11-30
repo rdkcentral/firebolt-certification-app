@@ -11,7 +11,8 @@ It performs the following actions:
 4. Formats the result and sends the response back to the IntentReader.
 
 ## Usage
-* Request Format
+
+### Request Format
 
 ```json
     {
@@ -33,7 +34,7 @@ It performs the following actions:
     }
 ```
 
-### Parameters
+#### Parameters
 
 | Key               | Description                                                                                   | Required? |
 |-------------------|-----------------------------------------------------------------------------------------------|-----------|
@@ -41,13 +42,13 @@ It performs the following actions:
 | params            | Required provider params for  the intent. Here, "provider" is a mandatory parameter           | Y         |
 | appType           | Corresponding intent is launching on which app                                                | Y         |
 
-* Response Format
+### Response Format
 * Response can be either "true" or an error response
 
 ```json
     true/Keyboard provider registered successfully
 ```
-### Parameters
+#### Parameters
 
 | Key                         | Description                                                                  |
 | --------------------------- | -----------------------------------------------------------------------------|
@@ -82,7 +83,7 @@ It performs the following actions:
 
 
 ### Invalid Intent and Response
-### Invalid Provider Name
+
 <details>
     <summary>Request when we pass invalid provider name </summary>
 </details>
@@ -105,9 +106,8 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
-### Empty Provider Name
 <details>
-    <summary>Request when we pass invalid provider name </summary>
+    <summary>Request when we pass empty provider name </summary>
 </details>
 
             {

@@ -6,14 +6,13 @@ The GetEventResponse handler is invoked when the task specified in the intent ha
 
 It performs the following actions:
 1. Parse the input message received to get the event name.
-2. Fetches the response of the triggered event.
+2. Fetches the response of the triggered event.
 3. Saves the response or error and performs schema validations. More about schema validations [here.](../Validations.md).
-4. Formats the result and sends the response back to the IntentReader.
-
+4. Formats the result and sends the response back to the IntentReader.
 
 ## Usage
 * This handler is to get event response after triggering each event.
-* Request Format
+### Request Format
 
 ```json
     {
@@ -34,7 +33,7 @@ It performs the following actions:
     }
 ```
 
-### Parameters
+#### Parameters
 
 | Key                   | Description                                                                          | Required? |
 |-----------------------|--------------------------------------------------------------------------------------|-----------|
@@ -42,7 +41,7 @@ It performs the following actions:
 | params                | Required event params for the intent. Here, "event" is a mandatory parameter         | Y         |
 | appType               | Corresponding intent is launching on which app                                       | Y         |
 
-* Response Format
+### Response Format
 
 ```json
             {
@@ -59,6 +58,8 @@ It performs the following actions:
             }
 
 ```
+
+#### Parameters
 
 | Key                   | Description                                     | 
 |-----------------------|-------------------------------------------------|
@@ -114,7 +115,7 @@ It performs the following actions:
 ----------------------------------------------------------------------------------------------------------------------
 
 ### Invalid Intent and Response
-### Without Event Name
+
 <details>
     <summary>Request without event name </summary>
 </details>
@@ -145,8 +146,6 @@ It performs the following actions:
             }
 
 ----------------------------------------------------------------------------------------------------------------------
-
-### With Invalid Event Name
 
 <details>
     <summary>Request with invalid event name </summary>

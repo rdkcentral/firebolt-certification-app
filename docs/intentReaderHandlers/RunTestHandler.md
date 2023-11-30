@@ -5,13 +5,14 @@
 RunTestHandler is invoked when the task specified in the intent has the value "runTest". This handler is used to run sanity tests in FCA. When this handler is invoked, it will loop through all the APIs in the openRpc schema, invoke the APIs, and perform schema validations on the responses. Once the execution is over, a test report is generated. For more about execution, [click here](../Execution.md#sanity-test-execution) and for reporting [here.](../Reporting.md#supported-ways-of-retrieving-reports) 
 
 It performs the following actions:
-1. Parses the input message received to fetch the action and parameters.
+1. Parses the input message received to fetch the action and parameters.
 2. Loops through the APIs in openRpc. 
 3. Saves the API response or error and performs schema validation.
-4. Formats the result and sends the response back to IntentReader.
+4. Formats the result and sends the response back to IntentReader.
 
 ## Usage
-* Request Format
+
+### Request Format
 
 ```json
     {
@@ -45,7 +46,7 @@ It performs the following actions:
     }
 ```
 
-### Parameters
+#### Parameters
 
 | Key                       | Description                                                                                                                       | Required? |
 |---------------------------|-----------------------------------------------------------------------------------------------------------------------------------|-----------|
@@ -59,7 +60,7 @@ It performs the following actions:
 | metadata                  | The info: related to target platform like deviceModel, devicePartner.                                                             | optional  |
 | appType                   | Corresponding intent is launching on which app.                                                                                   | Y         |
 
-* Response Format
+### Response Format
 
 ```json
     {
@@ -79,7 +80,7 @@ It performs the following actions:
     }
 ```
 
-### Parameters
+#### Parameters
 
 | Key                         | Description                                                                                    |
 | --------------------------- | -----------------------------------------------------------------------------------------------|

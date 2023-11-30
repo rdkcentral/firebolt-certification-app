@@ -6,12 +6,13 @@ RegisterEventHandler is invoked when the task specified in the intent has the va
 
 It performs the following actions:
 1. Parses the input message received to get the event.
-2. Registers the event passed in params. 
-3. Saves the response or error and performs schema validations. More about schema validations [here.](../Validations.md).
+2. Registers the event passed in params.
+3. Saves the response or error and performs schema validations. More about schema validations [here.](../Validations.md)
 4. Formats the result and sends the response back to the IntentReader.
 
 ## Usage
-* Request Format
+
+### Request Format
 
 ```json
     {
@@ -36,7 +37,7 @@ It performs the following actions:
     }
 ```
 
-### Parameters
+#### Parameters
 
 | Key               | Description                                                                         | Required? |
 |-------------------|-------------------------------------------------------------------------------------|-----------|
@@ -45,7 +46,7 @@ It performs the following actions:
 | appType           | Corresponding intent is launching on which app                                      | Y         |
 
 
-* Response
+### Response
 
 ```json
 
@@ -62,6 +63,8 @@ It performs the following actions:
             }
         }
 ```
+
+#### Parameters
 
 | Key                   | Description                                     | 
 |-----------------------|-------------------------------------------------|
@@ -108,7 +111,7 @@ It performs the following actions:
 ----------------------------------------------------------------------------------------------------------------------
 
 ### Invalid Intent and Response
-### Invalid Event
+
 <details>
     <summary>Request when we pass invalid event name </summary>
 </details>
@@ -158,7 +161,6 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
-### Empty params
 <details>
     <summary>Request when we pass empty params </summary>
 </details>
@@ -188,7 +190,6 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
-### Invalid params
 <details>
     <summary>Request when we pass invalid params </summary>
 </details>
@@ -218,7 +219,6 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
-### Empty task
 <details>
     <summary>Request when we pass empty task </summary>
 </details>
@@ -251,7 +251,6 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
-### Invalid task
 <details>
     <summary>Request when we pass invalid task </summary>
 </details>
@@ -284,7 +283,6 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
-### Empty Event 
 <details>
     <summary>Request when we pass empty event </summary>
 </details>
@@ -319,7 +317,7 @@ It performs the following actions:
 
 ### Event with isNotSupportedApi
 
-notSupportedApi : If the intent has "isNotSupportedApi" = true, it indicates that the API is not implemented on the platform and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema and then will be returned. Detailed information on sending intent is given [here.](docs/pubSubHandlers/RegisterEventHandler.md).
+If the intent has "isNotSupportedApi" = true, it indicates that the API is not implemented on the platform and we are expecting an error for the same. The error response will be validated against errorSchema instead of the openRpc schema and then will be returned. Detailed information on sending intent is given [here.](docs/pubSubHandlers/RegisterEventHandler.md).
 
 <details>
     <summary>Request with isNotSupportedApi true for a supported event</summary>

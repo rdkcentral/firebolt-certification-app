@@ -6,12 +6,12 @@ SetApiResponseHandler is invoked when the task specified in the intent�
 
 It performs the following actions:
 1. Parses the input message received to get the API response.
-2. Assigns the value to an environment variable.
-
+2. Assigns the value to an environment variable.
 
 ## Usage
 * This handler is invoked to assign the response value to an environment variable in FCA.
-* Request Format
+
+### Request Format
 
 ```json
     {
@@ -40,7 +40,7 @@ It performs the following actions:
         }
     }
 ```
-### Parameters
+#### Parameters
 
 | Key                   | Description                                                                              | Required? |
 |-----------------------|------------------------------------------------------------------------------------------|-----------|
@@ -51,13 +51,13 @@ It performs the following actions:
 | type                  | It indicates whether the response is of method/event                                     | Y         |
 | appType               | Corresponding intent is launching on which app                                           | Y         |
 
-* Response Format
+### Response Format
 * Response can be either "true" or an error response
 
 ```json
     true
 ```
-### Parameters
+#### Parameters
 
 | Key                         | Description                                                                                                     |
 | --------------------------- | ----------------------------------------------------------------------------------------------------------------|

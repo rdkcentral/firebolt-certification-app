@@ -8,11 +8,11 @@ It performs the following actions:
 1. Parses the input message received to get the event.
 2. Deregisters the single event passed in the params field.
 3. Saves the response or error.
-4. Formats the result and sends the response back to IntentReader
+4. Formats the result and sends the response back to IntentReader.
 
 ## Usage
 * This handler is invoked to clear a single event at a time.
-* Request Format
+### Request Format
 
 ```json
     {
@@ -35,7 +35,7 @@ It performs the following actions:
     }
 ```
 
-### Parameters
+#### Parameters
 
 | Key                   | Description                                                                           | Required? |
 |-----------------------|---------------------------------------------------------------------------------------|-----------|
@@ -43,13 +43,13 @@ It performs the following actions:
 | params                | Required event params for the intent. Here, "event" is the mandatory parameter        | Y         |
 | appType               | Corresponding intent is launching on which app                                        | Y         |
 
-* Response Format
+### Response Format
 * Response can be either "true" or an error response
 
 ```json
     true
 ```
-### Parameters
+#### Parameters
 
 | Key                         | Description                                                                                                                                   |
 | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -90,7 +90,7 @@ It performs the following actions:
 ----------------------------------------------------------------------------------------------------------------------
 
 ### Invalid Intent and Response
-### Request without event name
+
 <details>
     <summary>Request without event name </summary>
 </details>
@@ -125,7 +125,6 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
-### Request with invalid event name
 <details>
     <summary>Request with invalid event name </summary>
 </details>

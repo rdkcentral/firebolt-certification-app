@@ -5,14 +5,14 @@
 HealthCheckHandler is invoked when the task specified in the intent has the value "healthCheck". This handler is responsible for sending the healthCheck command and validating whether FCA is launched as a third-party app or not.
 
 It performs the following actions:
-1. Parses the input message received.
+1. Parses the input message received.
 2. Confirms the healthCheck status.
 3. Saves the response or error.
 4. Formats the result and sends the response back to IntentReader.
 
 ## Usage
 
-* Request Format
+### Request Format
 
 ```json
     {
@@ -30,7 +30,7 @@ It performs the following actions:
     }
 ```
 
-### Parameters
+#### Parameters
 
 | Key               | Description                                                                       | Required? |
 |-------------------|-----------------------------------------------------------------------------------|-----------|
@@ -38,13 +38,13 @@ It performs the following actions:
 | appType           | Corresponding intent is launching on which app                                    | Y         |
 
 
-* Response Format
+### Response Format
 * Response can be either "true" or an error response
 
 ```json
     true
 ```
-### Parameters
+#### Parameters
 
 | Key                         | Description                                                          |
 | --------------------------- | ---------------------------------------------------------------------|

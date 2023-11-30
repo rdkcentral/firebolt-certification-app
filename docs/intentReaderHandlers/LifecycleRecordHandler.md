@@ -9,14 +9,15 @@ LifecycleRecordHandler is invoked when the task specified in the intent has the 
 **`StopLifecycleRecording`** - This handler intent is identified when the task field has value as "stopLifecycleRecording". This handler is used to stop recording of the lifecycle history. 
 
 It performs the following actions:
-1. Parses the input message received to get the appId.
+1. Parses the input message received to get the appId.
 2. Starts or stops the lifecycle recording.
 3. Saves the response or error.
-4. Formats the result and sends the response back to the IntentReader.
-
+4. Formats the result and sends the response back to the IntentReader.
 
 ## Usage
-* Request for startLifecycleRecording
+
+### Request for startLifecycleRecording
+
 ```json
     {
         "action": "search",
@@ -37,7 +38,8 @@ It performs the following actions:
     }
 ```
 
-* Request for stopLifecycleRecording
+### Request for stopLifecycleRecording
+
 ```json
 {
     "action": "search",
@@ -58,7 +60,7 @@ It performs the following actions:
 }
 ```
 
-### Parameters
+#### Parameters
 
 | Key      | Description                                                                                                       | Required? |
 |----------|-------------------------------------------------------------------------------------------------------------------|-----------|
@@ -66,7 +68,7 @@ It performs the following actions:
 | params   | Required appId params for  the intent. Here, "appId" is a mandatory parameter                                     | Y         |
 | appType  | Corresponding intent is launching on which app                                                                    | Y         |
 
-* Response
+### Response
 
 ```json
         {
@@ -91,7 +93,7 @@ It performs the following actions:
 
 ```
 
-### Parameters
+#### Parameters
 
 | Key      | Description                                                        |
 |----------|--------------------------------------------------------------------|
@@ -174,7 +176,15 @@ It performs the following actions:
         }
 
 <details>
-    <summary>Request error Intent of stopLifecycleRecordin </summary>
+    <summary> Response  </summary>
+</details>
+
+            AppId fireboltCertificationSystemUIs passed does not match launched app "your-generic-appid".
+
+----------------------------------------------------------------------------------------------------------------------
+
+<details>
+    <summary>Request if we pass invalid appID for stopLifecycleRecording </summary>
 </details>
 
             {

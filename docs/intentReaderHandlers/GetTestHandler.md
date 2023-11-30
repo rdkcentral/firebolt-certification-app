@@ -5,13 +5,13 @@
 GetTestHandler is invoked when the task specified in the intent has the value "getTest". This handler is used to fetch mochawesome report from FCA.
 
 It performs the following actions:
-1. Parses the input message received to get the job ID.
+1. Parses the input message received to get the job ID.
 2. Fetches the mochawesome report of the job ID received.
 3. Sends the response back to the IntentReader.
 
 ## Usage
 
-* Request Format
+### Request Format
 
 ```json
     {
@@ -32,7 +32,7 @@ It performs the following actions:
     }
 ```
 
-### Parameters
+#### Parameters
 
 | Key               | Description                                                                   | Required? |
 |-------------------|-------------------------------------------------------------------------------|-----------|
@@ -41,13 +41,13 @@ It performs the following actions:
 | appType           | Corresponding intent is launching on which app                                | Y         |
 
 
-* Response Format
+### Response Format
 * Response can be either "true" or an error response
 
 ```json
     true
 ```
-### Parameters
+#### Parameters
 
 | Key                         | Description                                                                  |
 | --------------------------- | -----------------------------------------------------------------------------|
@@ -89,10 +89,9 @@ It performs the following actions:
 ----------------------------------------------------------------------------------------------------------------------
 
 ### Invalid Intent and Response
-### Empty JobId
 
 <details>
-    <summary>Request when we are not able to generate report ,that is jobId is not passed and isReportGenerated is "false"  </summary>
+    <summary> Empty JobId  </summary>
 </details>
     
     {

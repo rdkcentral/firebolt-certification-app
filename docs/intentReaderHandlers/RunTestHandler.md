@@ -222,6 +222,7 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
+### Invalid Intent and Response
 
 <details>
     <summary> Invalid request with empty params </summary>
@@ -258,7 +259,7 @@ It performs the following actions:
     Unable to get Response from FCA
 
 ----------------------------------------------------------------------------------------------------------------------
-
+### Valid Intent and Response of lifecycle validation
 
 <details>
     <summary> Request of Lifecycle Validation </summary>
@@ -335,5 +336,44 @@ It performs the following actions:
                     "disableFormat": false
                 }
             }
+        }
+    }
+
+----------------------------------------------------------------------------------------------------------------------
+
+### Invalid Intent and Response of lifecycle validation
+
+<details>
+    <summary> Request of Lifecycle Validation with wrong methodName </summary>
+</details>
+
+        {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "runTest",
+                "params": {
+                    "mode": "Lifecycle.validation",
+                    "methodName": "Lifecycle.testName"
+                },
+                "context": {
+                    "communicationMode": "SDK"
+                },
+                "action": "Lifecycle.validation",
+                "appType": "firebolt"
+            }
+        }
+    }
+
+
+<details>
+    <summary>Response</summary>
+</details>  
+
+    {
+        "result": null,
+        "error": {
+            "code": -32601,
+            "message": "Wrong Method Name"
         }
     }

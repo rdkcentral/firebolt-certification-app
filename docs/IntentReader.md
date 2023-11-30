@@ -55,11 +55,11 @@ The PubSub plugin has to be integrated with FCA to call IntentReader with PubSub
 
 ### Usage
 
-With the configuration and setup in place, we can perform any actions or tasks with intentReaders and with the help of multiple handlers.
-For performing a particular task, give the required task name in the "task" field and the corresponding task parameters required to perform the task.
-For example:
-To invoke any APIs, the task will be "callMethod", and the corresponding methodName, methodParams, etc. should be passed.
-Here, pubSub communication status is established first and then intent is passed.
+With the configuration and setup in place, we can send messages to FCA through any pubsub mechanism like Linchpin, Websocket, etc. First, we have to initialise a pubsub connection, then publish and subscribe messages to send or receive messages from FCA.
+We can perform any action or task with intentReaders and with the help of multiple handlers. For performing a particular task, give the required task name in the "task" field and the corresponding task parameters required to perform the task.
+For example:
+To invoke any APIs, the task will be "callMethod", and the corresponding methodName, methodParams, etc. should be passed.
+Here, pubSub communication status is established first, and then intent is passed.
 
 ## Standalone
 ### Background
@@ -77,8 +77,8 @@ The standalone scenario supports both the cold launch and the hot launch of FCA.
 No additional setup is required. 
 
 ### Usage
-With the configuration and setup in place, we can perform any actions or tasks without having a PubSub messaging system integrated. The format of the request remains the same as in pubSub, as we have to pass the task name and corresponding parameters required to perform the task.
-For standalones, the intent format will be like the following example:
+With the configuration and setup in place, we can perform any actions or tasks without having a PubSub messaging system integrated. For standalone, we can directly send the request in the below-given format with "standalone" as true and corresponding parameters given without initialising a pubsub connection.
+The format of the request remains the same as in pubSub, as we have to pass the task name and corresponding parameters required to perform the task.For standalones, the intent format will be like the following example:
 
 <details>
     <summary>Standalone Intent Format</summary>

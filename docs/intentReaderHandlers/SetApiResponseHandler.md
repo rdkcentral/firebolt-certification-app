@@ -59,9 +59,10 @@ It performs the following actions:
 ```
 #### Parameters
 
-| Key                         | Description                                                                                                     |
-| --------------------------- | ----------------------------------------------------------------------------------------------------------------|
-| true/null                   | It indicates whether assigning the apiResponse value to an environment variable in FCA was successful or not.   |
+| Key                         | Description                                                                                                            |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------       |
+| true                        | It indicates that assigning the apiResponse value to an environment variable in FCA was successful.                    |
+| error                       | It indicates the response where  assigning the apiResponse value to an environment variable in FCA was not successful. |
 
 ## Examples
 ### Valid Intent and Response
@@ -70,37 +71,43 @@ It performs the following actions:
     <summary>Request for setApiResponse of keyboard.email api</summary>
 </details>
 
-{
-    "action": "search",
-    "data": {
-        "query": {
-            "task": "setApiResponse",
-            "params": {
-                "apiResponse": {
-                    "module": "keyboard",
-                    "methodName": "keyboard.email",
-                    "type": "method",
-                    "attributes": [
-                        {
-                            "ApiText": "john@doe.com",
-                            "isCancelled": false,
-                            "withUi": false,
-                            "result": "john@doe.com"
-                        }
-                    ]
-                }
-            },
-            "action": "NA",
-            "appType": "firebolt"
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "setApiResponse",
+                "params": {
+                    "apiResponse": {
+                        "module": "keyboard",
+                        "methodName": "keyboard.email",
+                        "type": "method",
+                        "attributes": [
+                            {
+                                "ApiText": "john@doe.com",
+                                "isCancelled": false,
+                                "withUi": false,
+                                "result": "john@doe.com"
+                            }
+                        ]
+                    }
+                },
+                "action": "NA",
+                "appType": "firebolt"
+            }
+        },
+        "context": {
+            "source": "device"
         }
-    },
-    "context": {
-        "source": "device"
     }
-}
 
 <details>
     <summary> Response </summary>
 </details>
 
             "Received keyboard ApiResponse parameters"
+
+----------------------------------------------------------------------------------------------------------------------
+
+### Valid Intent and Response
+
+An invalid scenario is not possible for this handler as whatever the apiResponse value we are passing is assigned to an environment variable.

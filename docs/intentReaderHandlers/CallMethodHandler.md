@@ -130,7 +130,9 @@ It performs the following actions:
                     "disableFormat": false
                 }
             }
+            
 ----------------------------------------------------------------------------------------------------------------------
+
 <details>
     <summary>Request with valid methodParams</summary>
 </details>

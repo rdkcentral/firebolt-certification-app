@@ -48,17 +48,17 @@ It performs the following actions:
 
 #### Parameters
 
-| Key                       | Description                                                                                                                       | Required? |
-|---------------------------|-----------------------------------------------------------------------------------------------------------------------------------|-----------|
-| task                      | "runTest"- Its a static value and should not be changed for this handler.                                                         | Y         |
-| params                    | Required  params for  the intent.                                                                                                 | optional  |
-| exceptionMethods          | Inner field of params where we pass the list of methods and corresponding params to be excluded from sanity suite runs.           | optional  |
-| methodsToBeExcluded       | Inner field of params where we pass the list of methods to be excluded for test execution.                                        | optional  |
-| modulesToBeExcluded       | Inner field of params where we pass the list of modules to be excluded for test execution.                                        | optional  |
-| action                    | It indicates whether its core, manage or all suite run.                                                                           | Y         |
-| communicationMode         | It indicates whether the test is run on transport or sdk mode mode.                                                               | optional  |
-| metadata                  | The info: related to target platform like deviceModel, devicePartner.                                                             | optional  |
-| appType                   | Corresponding intent is launching on which app.                                                                                   | Y         |
+| Key                         | Description                                                                                                                              | Required?   |
+| --------------------------- | -----------------------------------------------------------------------------------------------------------------------------------------| ----------- |
+| task                        | "runTest"- Its a static value and should not be changed for this handler.                                                                | Y           |
+| params                      | Required  params for  the intent.                                                                                                        | optional    |
+| exceptionMethods            | Inner field of params where we pass the list of not supported methods and these method responses will be validated against error schema. | optional    |
+| methodsToBeExcluded         | Inner field of params where we pass the list of methods which are likely to interupt the normal sanity execution                         | optional    |
+| modulesToBeExcluded         | Inner field of params where we pass the list of modules to be excluded for test execution.                                               | optional    |
+| action                      | It indicates whether its core, manage or all suite run.                                                                                  | Y           |
+| communicationMode           | It indicates whether the test is run on transport or sdk mode mode.                                                                      | optional    |
+| metadata                    | The info: related to target platform like deviceModel, devicePartner.                                                                    | optional    |
+| appType                     | Corresponding intent is launching on which app.                                                                                          | Y           |
 
 ### Response Format
 

@@ -43,6 +43,6 @@ If you are interested in taking advantage of the built-in reporting please see t
 Plugins are powerful tools that enable custom functionality to be added to FCA. They are optional. They are available for those who wish to extend or override FCA's capabilities. All plugins are located in the `/plugins` directory and use webpack to be added to the application during build time. Full overview of the Plugins functionalities can be found [here](plugins/Plugins.md).
 
 ## Intent Reader
-If you are interested in taking advantage of the built-in reporting please see the [intent reader documentation](./IntentReader.md).
+IntentReader is a powerful feature of FCA that accepts an input command or intent and performs various actions and tasks based on the command received. This is possible with the help of multiple handlers implemented in FCA. The intent reader is the decision-maker who would choose which handler to call based on the input command.[intent reader documentation](./IntentReader.md).
 
 

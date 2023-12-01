@@ -103,7 +103,6 @@ export const CONSTANTS = {
   PLATFORM: 'platform',
   NOT_PROVISIONED_ERROR: 'Custom error: Failed to fetch token from distribution platform',
   SKIPPED_MESSAGE: 'Method Skipped by Certification Suite',
-  MODULES_TO_BE_EXCLUDED: [],
   EXCEPTION_METHODS: [],
   CORE: 'CORE',
   MANAGE: 'MANAGE',

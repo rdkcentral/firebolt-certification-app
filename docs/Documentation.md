@@ -30,10 +30,6 @@ This document gives the various configurations available for Firebolt Certificat
 ## Test Executions
 
 This document provides a detailed guide on the various methods of executing tests on integrated devices using the Firebolt SDK. It is designed to give developers and testers clear insights into the functionality, setup, and usage of different test execution methods.
-Supported Modes of Execution
-UI
-Standalone
-Remotely
 
 Test Types
 Modes of Communication

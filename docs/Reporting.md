@@ -6,7 +6,7 @@ FCA is pre-configured to generate detailed mochawesome JSON reports following th
 
 - [Standard Reporting Logic](#standard-reporting-logic)
 - [Standalone Reporting Logic](#standalone-reporting-logic)
-- [Creating Your Own Reporting Logic](#creating-your-own-reporting-logic)
+- [Extending Report Processing](#extending-report-processing)
 
 ## Standard Reporting Logic
 
@@ -44,7 +44,7 @@ Furthermore, FCA supports `standalone` report generation. This mode is particula
 
 1. `Reporting ID`: In standalone mode, users can specify a `reportingId` that will take precedence over the default JSON report filename when it is sent to an endpoint.
 
-2. `Flexible Endpoint Posting`: Users have the flexibility to post the report JSON to an alternative endpoint. This means you have two distinct methods for handling the report JSON, offering versatility in your reporting process.
+2. `Flexible Endpoint Posting`: Users have the flexibility to post the report JSON to an alternative endpoint. This means you have two distinct methods for handling the report JSON, offering versatility in your reporting process. For example, you can configure Endpoint A to perform the initial report generation, while Endpoint B, a lambda function or API, can be set up to perform additional post-report generation data manipulation. This dual-endpoint approach allows you to efficiently customize and extend your reporting workflow, ensuring that your data is processed and analyzed exactly as needed.
 
 ### Setup
 
@@ -69,17 +69,21 @@ To make use of `standalone` mode follow these steps:
 
 2. Once you have configured the necessary parameters for `standalone` mode, initiate a sanity test run. Ensure that the `standalone` parameter is set to `true`. The system will generate and handle the report accordingly.
 
-## Creating Your Own Reporting Logic
+## Extending Report Processing
 
 ### Background
 
-Enhancing FCA's reporting functionality allows for tailored insights and expanded data usage. Custom reporting might include HTML report generation for easy visualization, or integration with analytics tools for historical test performance tracking. These customizations offer deeper insights and more granular control over test data.
-
-Consider modifying `northBoundSchemaValidationAndReportGeneration()` for custom report processing. Additionally, use [Utils.js](../src/utils/Utils.js) to include any helper reporting functions.
+Enhancing FCA's reporting functionality opens up a world of possibilities for tailoring insights and expanding data utilization. Custom reporting can involve various actions such as generating HTML reports for visual clarity or seamlessly integrating with analytics tools for tracking historical test performance. These customizations empower you with deeper insights and finer control over your test data.
 
 ### Setup & Usage
 
-Custom reporting setups will vary based on your specific requirements and the tools you integrate with. Be prepared for a unique configuration journey as you tailor FCA’s reporting to your needs.
+Work will be required by the user to configure their own API endpoints. Once that is complete, users can harness the power of those endpoints to shape their reporting process. Here are some posibilities:
+
+- `S3 Bucket Storage`: Set up a lambda function to receive the report JSON and automatically place it in an S3 bucket for safekeeping and further analysis.
+
+- `Long-Term Reporting`: Establish connections to services that specialize in long-term recording and analysis of your reports. This ensures that you have a comprehensive record of your testing history.
+
+By embracing these flexible endpoint options, you can craft a reporting workflow that perfectly aligns with your unique requirements. Each endpoint can be tailored to perform specific actions, providing a highly adaptable reporting system. Be prepared for a journey of configuration and customization as you fine-tune FCA's reporting to meet your needs.
 
 ---
 

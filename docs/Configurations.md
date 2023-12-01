@@ -1,6 +1,6 @@
 # FCA: Configurations
 
-This document gives the various configurations available for Firebolt Certification App ( FCA). It provides insights into setting up and utiizing different environemtns, parameters, and app types to facilitate effective testing and certification of applications using firebolt technology. 
+This document gives the various configurations available for Firebolt Certification App (FCA). It provides insights into setting up and utiizing different environments, parameters, and app types to facilitate effective testing and certification of applications using firebolt technology. 
 
 
 ## Table of Contents
@@ -14,16 +14,16 @@ This document gives the various configurations available for Firebolt Certificat
 
 ### Background
 
-Mock Firebolt OS (MFOS) is a simulated environment that FCA can interact with.
+Mock Firebolt (MFOS) is a simulated environment that FCA can interact with.
 
 ### Setup
 
-- *MFOS*: Accessible at `https://github.com/rdkcentral/mock-firebolt`
-- Follow the instructions provided in the repository to setup the MFOS environment 
+- *MFOS*: Accessible at [Mock-Firebolt](https://github.com/rdkcentral/mock-firebolt)
+- Use Mock Firebolt's [usage documentation](https://github.com/rdkcentral/mock-firebolt#usage-local) to get set up. 
 
 ### Usage
 
-Utilize MFOS for testing in a controled , simulated environment, ideal for early-stage dvelopment and testing.
+Utilize MFOS for testing in a controlled, simulated environment. MFOS can be ideal for early-stage development and testing.
 
 ## Connect to Mock Firebolt
 
@@ -33,8 +33,8 @@ Connecting to Mock Firebolt enables testing against a simulated Firebolt OS, pro
 
 ### Setup
 
-- Clone the Mock Firebolt Repository `https://github.com/rdkcentral/mock-firebolt`
-- Follow the instructions provided in the repository to start the Mock Firebolt OS.
+- Clone the Repository [Mock-Firebolt](https://github.com/rdkcentral/mock-firebolt)
+- Follow the instructions provided in the repository to start the Mock Firebolt.
 - Launch the Firebolt Cretification App and add `mf=true` to the app launch URL to connect to the mock environment.
 
 ### Usage
@@ -84,5 +84,3 @@ Different app types in FCA denote various categories or classifications of appli
 ### Usage
 
 - Select the appropriate app type to ensure that tests are relevant and effective for the specific category of the application.
-
-

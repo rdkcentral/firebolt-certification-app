@@ -1,6 +1,6 @@
 # FCA: Reporting
 
-FCA is pre-configured to generate detailed mochawesome JSON reports following the completion of [sanity tests](./Execution.md). This functionality not only provides users with immediate test results but also enables sending these reports to AWS or any other URL endpoint for further processing and analysis. Reporting needs will vary on a case-by-case basis and users have the flexibility to utilize the generated mochawesome report JSON in various ways, including transforming the JSON data into an HTML report.
+FCA is pre-configured to generate detailed mochawesome JSON reports following the completion of [sanity tests](./Execution.md#sanity). This functionality not only provides users with immediate test results. It also enables sending these reports to AWS or any other URL endpoint for further processing and analysis. Users have the flexibility to utilize the generated mochawesome report JSON in various ways, including transforming the JSON data into an HTML report.
 
 ## Table of Contents
 
@@ -11,7 +11,7 @@ FCA is pre-configured to generate detailed mochawesome JSON reports following th
 
 ### Background
 
-The default reporting mechanism in FCA is designed to streamline your test analysis process. Post-execution of sanity tests, the app generates detailed mochawesome JSON reports. These reports are crucial for reviewing test outcomes. The `northBoundSchemaValidationAndReportGeneration()` function in [Test_Runner.js](../src/Test_Runner.js) orchestrates this process. Additionally, for users leveraging `IntentReader`, the [runTestHandler](../src/pubsub/handlers/RunTestHandler.js) class can be utilized to execute a sanity test and obtain a reports.
+The default reporting mechanism in FCA is designed to streamline your test analysis process. Post-execution of sanity tests, the app generates detailed mochawesome JSON. The `northBoundSchemaValidationAndReportGeneration()` function in [Test_Runner.js](../src/Test_Runner.js) orchestrates this entire process. The function returns the report data as an object. Additionally, for users leveraging `IntentReader`, the [runTestHandler](../src/pubsub/handlers/RunTestHandler.js) class can be utilized to execute a sanity test and the [getTestHandler](../src/pubsub/GetTestHandler.js) can be used to receive the generated report.
 
 #### Standalone Mode
 
@@ -33,7 +33,7 @@ To initiate the built-in reporting, follow the preliminary steps below.
 
 - The steps below are tailored for AWS configurations. For other platforms, adjustments will be necessary.
 
-- `pushReportToS3()` is a veratile function that can interface with non-AWS POST endpoints to transfer your mochawesome JSON.
+- `pushReportToS3()` is a versatile function that can interface with non-AWS POST endpoints to transfer your mochawesome JSON.
 
 1. Create a POST endpoint in AWS API Gateway to accept incoming JSON.
 

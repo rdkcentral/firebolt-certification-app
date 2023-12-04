@@ -29,7 +29,7 @@ There are various configurations available for Firebolt Certification App (FCA),
 
 ## Test Executions
 
-FCA has various methods of executing tests on integrated devices using the Firebolt SDK. Each of those methods requires steps of setup and usage.
+FCA has various methods of executing tests on integrated devices using the Firebolt SDK. Each of those methods require steps of setup and usage.
 [execution documentation](./Execution.md).
 
 ## Validations

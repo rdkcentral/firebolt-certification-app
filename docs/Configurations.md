@@ -58,17 +58,16 @@ URL parameters allow customization of the FCA's behavior, enabling testers to ta
 
 Customize the test execution and reporting based on the provided URL parameters for targeted testing scenarios.
 
-**Parameters usage:**
-- **platform**: name of targeted platform
-- **lifecycle_validation**: When user passes lifecycle_validation=true it blocks the default execution of lifecycle.ready and lifecycle.finished method.
-This will help  to validate lifecycle api's as needed.
-- **mf**: If mf=true is passed in the URL, FCA will connect to MFOS server and when we invoke any api in FCA it will return the response fron MFOS.
-- **systemui**: If FCA systemui=true, FCA acts as the base app in case of ripple. The background color will be changed to purple and it will display one more button as "Launch FCA app" to launch FCA as third-party app on Ripple devices.
-- **testContext**: If testContext=true, it will add the field context in mocha report generated
-- **voiceGuidance** : If FCA voiceGuidance=true app will voice out navigated menu options.
-- **reportingId**: If passed in the URL, it will get appended to the report name and eventually form the reporting URL.
-- **standalone**: Standalone execution is designed for automated testing scenarios, where generating detailed reports and logs is crucial to be within FCA independantly of any other apps or frameworks. Enable standalone execution by setting the standalone=true parameter in the URL example:(https://firecertapp.firecert.com/edge/index.html?standalond=true) or within the intent message example:(intent>data>query>params>"standalone":true).
-
+| Parameter            | Description                                                                                                                                                                  | Possible Values           | Notes                                                                                                               |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------|
+| **platform**         | Name of targeted platform.                                                                                                                                                   | (platform name)           | Specify the platform for which the testing is targeted.                                                             |
+| **lifecycle_validation** | Blocks the default execution of lifecycle.ready and lifecycle.finished methods when set to true.                                                                             | true / false              | Useful for validating lifecycle API’s as needed.                                                                    |
+| **mf**               | Connects to MFOS server when set to true; affects how APIs in FCA respond.                                                                                                   | true / false              | Use when testing integration with MFOS server.                                                                      |
+| **systemui**         | Changes the background color to purple and adds a “Launch FCA app” button when set to true, in the context of Ripple devices.                                                | true / false              | Relevant for testing FCA as a base app in Ripple environment.                                                       |
+| **testContext**      | Adds the field ‘context’ in the mocha report generated when set to true.                                                                                                     | true / false              | Useful for including additional context in test reports.                                                             |
+| **voiceGuidance**    | Enables voice output for navigated menu options in the FCA app when set to true.                                                                                             | true / false              | Enhances accessibility by providing voice guidance for menu navigation.                                              |
+| **reportingId**      | Appends this ID to the report name to form the reporting URL.                                                                                                                | (custom ID)               | Customize the report name for easier identification and tracking.                                                    |
+| **standalone**       | Designed for automated testing scenarios, enabling detailed reports and logs within FCA independently of other apps or frameworks. Set to true for standalone execution.     | true / false              | Essential for tests requiring independence from other apps or frameworks, with detailed reporting and logging needs. |
 
 ## App Types
 

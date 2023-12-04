@@ -24,10 +24,10 @@ Manual execution via the user interface allows for interactive and immediate tes
 Launch the app on the device.
 
 **Usage**:
-Navigate through the Firebolt UI.
-Choose the communication mode: SDK or Transport.
-Select the desired SDK mode: CoreSDK, ManageSDK, or All SDKs.
-Invoke the sanity suite or specific tests manually.
+- Navigate through the Firebolt UI.
+- Choose the communication mode: SDK or Transport.
+- Select the desired SDK mode: CoreSDK, ManageSDK, or All SDKs.
+- Invoke the sanity suite or specific tests manually.
 Useful for quick checks and immediate feedback on the test results.
 For specific instructions on navigation, visit this doc [GUI](GUI.md).
 

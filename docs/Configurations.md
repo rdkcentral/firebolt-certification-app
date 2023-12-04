@@ -73,12 +73,11 @@ Customize the test execution and reporting based on the provided URL parameters 
 
 ### Background
 
-Different app types in FCA denote various categories or classifications of applications that can be tested using the platform. 
+Different app types in FCA denote various SDK's of applications that can be tested using the platform. 
 
 ### Setup
 
-- Define the app types as part of the configuration before initiating tests.
-- This may involve specifying the type of applocation under test, such as media apps, utility apps, etc.
+- Define the app types as part of the configuration before initiating tests (AppType can be sent via the intent message) [Remote Execution](https://github.com/rdkcentral/firebolt-certification-app/blob/docs/Execution.md#remotely).
 
 ### Usage
 

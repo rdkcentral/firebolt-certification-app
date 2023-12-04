@@ -28,6 +28,7 @@ Launch the app on the device.
 - Choose the communication mode: SDK or Transport.
 - Select the desired SDK mode: CoreSDK, ManageSDK, or All SDKs.
 - Invoke the sanity suite or specific tests manually.
+
 Useful for quick checks and immediate feedback on the test results.
 For specific instructions on navigation, visit this doc [GUI](GUI.md).
 

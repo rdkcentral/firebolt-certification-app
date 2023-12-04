@@ -56,25 +56,33 @@ It performs the following actions:
 #### Use case - Requirement is to return abc@gmail.com for keyboard.email api
 
 * Register for the Keyboard Test Provider by sending the below intent - src/providers/KeyboardUIProviderTest.js
-*  {
-    "action": "search",
-    "data": {
-        "query": {
-            "task": "registerProviderHandler",
-            "params": {
-                "provider": "keyboard",
-                "params": []
-            },
-            "action": "NA",
-            "appType": "firebolt"
+*  
+```json
+
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "registerProviderHandler",
+                "params": {
+                    "provider": "keyboard",
+                    "params": []
+                },
+                "action": "NA",
+                "appType": "firebolt"
+            }
+        },
+        "context": {
+            "source": "device"
         }
-    },
-    "context": {
-        "source": "device"
     }
-}
+
+```
 * Set the response for keyboard.email using the SetApiResponseHandler by sending the below intent
-*   {
+*   
+```json
+
+    {
         "action": "search",
         "data": {
             "query": {
@@ -102,6 +110,8 @@ It performs the following actions:
             "source": "device"
         }
     }
+
+```
 * Call Keyboard.email api from UI .
 * With the intents sent to RegisterProviderHandler and SetApiResponseHandler , keyboard.email will return abc@gmail.com
 ## Examples

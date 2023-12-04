@@ -11,7 +11,7 @@ This document provides a detailed guide on the various methods of executing test
   - [Regression](#regression)
 - [Modes of Communication](#modes-of-communication)
 
-## Supported ways of Execution
+## Supported Ways of Execution
 
 ### UI
 

@@ -36,23 +36,111 @@ It performs the following actions:
 
 | Key               | Description                                                                   | Required? |
 |-------------------|-------------------------------------------------------------------------------|-----------|
-| task              | "getTest"- Its a static value and should not be changed for this handler      | Y         |
+| task              | "getTest"- It is a static value and should not be changed for this handler      | Y         |
 | params            | Required job ID params for the intent. Here, "jobId" is a mandatory parameter  | Y         |
 | appType           | Corresponding intent is launching on which app                                | Y         |
 
 
 ### Response Format
-* Response can be either "true" or an error response
+* Response can be either the valid report in json format or an error response object
 
 ```json
-    true
+    {
+    "stats": {
+        "pending": 0,
+        "pendingPercent": 0,
+        "other": 0,
+        "hasOther": false,
+        "skipped": 13,
+        "hasSkipped": true,
+        "suites": 1,
+        "duration": 97019,
+        "tests": 199,
+        "start": "<startTime>",
+        "end": "<endTime>",
+        "testsRegistered": 199,
+        "passes": 178,
+        "failures": 8,
+        "passPercent": 89
+    },
+    "results": [
+        {
+            "uuid": "4e1e...",
+            "title": "Firebolt SDK Version : <version> , Mode : <Mode> , Firmware : <Firmware> , Hash : <Hash> , AppId : <AppId",
+            "fullFile": "",
+            "file": "",
+            "beforeHooks": [],
+            "afterHooks": [],
+            "tests": [],
+            "suites": [
+                {
+                    "uuid": "cef6...",
+                    "title": "CORE",
+                    "fullFile": "",
+                    "file": "",
+                    "beforeHooks": [],
+                    "afterHooks": [],
+                    "tests": [
+                        {
+                            "title": "",
+                            "fullTitle": "",
+                            "duration": 81,
+                            "state": "passed",
+                            "pass": true,
+                            "fail": false,
+                            "code": "{}",
+                            "err": {
+                                "err": "No error found"
+                            },
+                            "uuid": "0913...",
+                            "parentUUID": "cef6...",
+                            "timedOut": false,
+                            "speed": "fast",
+                            "pending": false,
+                            "context": "{}",
+                            "isHook": false,
+                            "skipped": false
+                        },
+                        "..."
+                    ],
+                    "suites": [],
+                    "passes": [
+                        "0913...",
+                        "..."
+                    ],
+                    "failures": [
+                        "1717...",
+                        "..."
+                    ],
+                    "pending": [],
+                    "skipped": [
+                        "affe...",
+                        "..."
+                    ],
+                    "duration": 96856,
+                    "root": false,
+                    "rootEmpty": false,
+                    "_timeout": 0
+                }
+            ],
+            "passes": [],
+            "failures": [],
+            "pending": [],
+            "skipped": [],
+            "duration": 0,
+            "root": false,
+            "rootEmpty": false,
+            "_timeout": 0
+        }
+    ]
+}
 ```
 #### Parameters
 
-| Key                         | Description                                                                                                                                    |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| true                        | It indicates that the mochawesome report from FCA was successfully retrieved.                                                                  |
-| error                       | It indicates that the mochawesome report fetch from FCA was unsuccessful.                                                                      |
+| Key                          | Description                                                                                           |
+| -----------------------------| ------------------------------------------------------------------------------------------------------|
+| stats                        | It indicates the overall status of the suite run like count of pending, skipped, failures etc.        |
+| results                      | It is an array which indicates the individual status of each test                                     |
 
 
 
@@ -87,7 +175,96 @@ It performs the following actions:
     <summary> Response </summary>
 </details>
 
-            True/Report generated.
+    {
+        "stats": {
+            "pending": 0,
+            "pendingPercent": 0,
+            "other": 0,
+            "hasOther": false,
+            "skipped": 13,
+            "hasSkipped": true,
+            "suites": 1,
+            "duration": 97019,
+            "tests": 199,
+            "start": "<startTime>",
+            "end": "<endTime>",
+            "testsRegistered": 199,
+            "passes": 178,
+            "failures": 8,
+            "passPercent": 89
+        },
+        "results": [
+            {
+                "uuid": "4e1e...",
+                "title": "Firebolt SDK Version : <version> , Mode : <Mode> , Firmware : <Firmware> , Hash : <Hash> , AppId : <AppId",
+                "fullFile": "",
+                "file": "",
+                "beforeHooks": [],
+                "afterHooks": [],
+                "tests": [],
+                "suites": [
+                    {
+                        "uuid": "cef6...",
+                        "title": "CORE",
+                        "fullFile": "",
+                        "file": "",
+                        "beforeHooks": [],
+                        "afterHooks": [],
+                        "tests": [
+                            {
+                                "title": "",
+                                "fullTitle": "",
+                                "duration": 81,
+                                "state": "passed",
+                                "pass": true,
+                                "fail": false,
+                                "code": "{}",
+                                "err": {
+                                    "err": "No error found"
+                                },
+                                "uuid": "0913...",
+                                "parentUUID": "cef6...",
+                                "timedOut": false,
+                                "speed": "fast",
+                                "pending": false,
+                                "context": "{}",
+                                "isHook": false,
+                                "skipped": false
+                            },
+                            "..."
+                        ],
+                        "suites": [],
+                        "passes": [
+                            "0913...",
+                            "..."
+                        ],
+                        "failures": [
+                            "1717...",
+                            "..."
+                        ],
+                        "pending": [],
+                        "skipped": [
+                            "affe...",
+                            "..."
+                        ],
+                        "duration": 96856,
+                        "root": false,
+                        "rootEmpty": false,
+                        "_timeout": 0
+                    }
+                ],
+                "passes": [],
+                "failures": [],
+                "pending": [],
+                "skipped": [],
+                "duration": 0,
+                "root": false,
+                "rootEmpty": false,
+                "_timeout": 0
+            }
+        ]
+    }
+
 
 ----------------------------------------------------------------------------------------------------------------------
 

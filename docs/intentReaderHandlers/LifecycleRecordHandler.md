@@ -2,9 +2,9 @@
 
 ## Overview
 
-LifecycleRecordHandler is invoked when the task specified in the intent has the value "startLifecycleRecording/stopLifecycleRecording". When the intent received has the task "startLifecycleRecording", FCA starts listening for lifecycle events and will stop listening once it gets the intent with the task "StopLifecycleRecording", and the event list will be saved.
+LifecycleRecordHandler is invoked when the task specified in the intent has the value "startLifecycleRecording/stopLifecycleRecording". When the intent received has the task "startLifecycleRecording", FCA will start listening to lifecycle events and will stop listening once it gets the intent with the task "StopLifecycleRecording". The list of events received in the time frame is saved in a list and returned to the intentReader.
 
-**`StartLifecycleRecording`** - This handler intent is identified when the task field has value as "startLifecycleRecording". This handler is used to start listening lifecycle events.
+**`StartLifecycleRecording`** - This handler intent is identified when the task field has value as "startLifecycleRecording". This handler is used to start listening to lifecycle events.
 
 **`StopLifecycleRecording`** - This handler intent is identified when the task field has a value of "stopLifecycleRecording". This handler is used to stop listening to lifecycle events that was started once and then save the event list.
 
@@ -64,7 +64,7 @@ It performs the following actions:
 
 | Key      | Description                                                                                                       | Required? |
 |----------|-------------------------------------------------------------------------------------------------------------------|-----------|
-| task     | "startLifecycleRecording / stopLifecycleRecording"- Its a static value and should not be changed for this handler | Y         |
+| task     | "startLifecycleRecording / stopLifecycleRecording"- It is a static value and should not be changed for this handler | Y         |
 | params   | Required appId params for  the intent. Here, "appId" is a mandatory parameter                                     | Y         |
 | appType  | Corresponding intent is launching on which app                                                                    | Y         |
 

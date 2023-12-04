@@ -50,7 +50,7 @@ It performs the following actions:
 
 | Key                         | Description                                                                                                                              | Required?   |
 | --------------------------- | -----------------------------------------------------------------------------------------------------------------------------------------| ----------- |
-| task                        | "runTest"- Its a static value and should not be changed for this handler.                                                                | Y           |
+| task                        | "runTest"- It is a static value and should not be changed for this handler.                                                                | Y           |
 | params                      | Required  params for  the intent.                                                                                                        | optional    |
 | exceptionMethods            | Inner field of params where we pass the list of not supported methods and these method responses will be validated against error schema. | optional    |
 | methodsToBeExcluded         | Inner field of params where we pass the list of methods which are likely to interupt the normal sanity execution                         | optional    |

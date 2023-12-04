@@ -34,7 +34,7 @@ It performs the following actions:
 
 | Key               | Description                                                                       | Required? |
 |-------------------|-----------------------------------------------------------------------------------|-----------|
-| task              | "healthCheck"- Its a static value and should not be changed for this handler      | Y         |
+| task              | "healthCheck"- It is a static value and should not be changed for this handler      | Y         |
 | appType           | Corresponding intent is launching on which app                                    | Y         |
 
 
@@ -48,8 +48,8 @@ It performs the following actions:
 
 | Key                         | Description                                             |
 | --------------------------- | --------------------------------------------------------|
-| true                        | It indicates that the FCA is launched successfully      |
-| error                       | It indicates that FCA is not launched successfully      |
+| true                        | It indicates that the FCA launched successfully         |
+| error                       | It indicates that FCA did not launch successfully       |
 
 
 
@@ -62,19 +62,19 @@ It performs the following actions:
     <summary> Request </summary>
 </details>
 
-{
-    "action": "search",
-    "data": {
-        "query": {
-            "task": "healthCheck",
-            "action": "NA",
-            "appType": "firebolt"
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "healthCheck",
+                "action": "NA",
+                "appType": "firebolt"
+            }
+        },
+        "context": {
+            "source": "device"
         }
-    },
-    "context": {
-        "source": "device"
     }
-}
 
 <details>
     <summary> Response </summary>

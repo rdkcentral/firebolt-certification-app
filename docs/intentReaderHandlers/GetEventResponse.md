@@ -37,7 +37,7 @@ It performs the following actions:
 
 | Key                   | Description                                                                          | Required? |
 |-----------------------|--------------------------------------------------------------------------------------|-----------|
-| task                  | "getEventResponse"- Its a static value and should not be changed for this handler    | Y         |
+| task                  | "getEventResponse"- It is a static value and should not be changed for this handler    | Y         |
 | params                | Required event params for the intent. Here, "event" is a mandatory parameter         | Y         |
 | appType               | Corresponding intent is launching on which app                                       | Y         |
 

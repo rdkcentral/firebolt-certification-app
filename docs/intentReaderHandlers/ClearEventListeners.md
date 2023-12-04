@@ -33,7 +33,7 @@ It performs the following actions:
 
 | Key                   | Description                                                                           | Required? |
 |-----------------------|---------------------------------------------------------------------------------------|-----------|
-| task                  | "clearAllListeners"- Its a static value and should not be changed for this handler    | Y         |
+| task                  | "clearAllListeners"- It is a static value and should not be changed for this handler    | Y         |
 | appType               | Corresponding intent is launching on which app                                        | Y         |
 
 ### Response Format
@@ -76,3 +76,4 @@ It performs the following actions:
 ### Invalid Intent and Response
 
 An invalid scenario is not possible for this handler as it is not accepting parameters or additional information for deregistering all events.
+If we pass any additional parameters for this handler, those will be ignored by default.

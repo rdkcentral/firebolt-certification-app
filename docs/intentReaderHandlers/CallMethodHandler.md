@@ -40,7 +40,7 @@ It performs the following actions:
 
 | Key                       | Description                                                                                			| Required? |
 |---------------------------|-------------------------------------------------------------------------------------------------------|-----------|
-| task                      | "callMethod"- Its a static value and should not be changed for this handler                			| Y         |
+| task                      | "callMethod"- It is a static value and should not be changed for this handler                			| Y         |
 | params                    | Required params for call method intent. Here, "method" and "methodParams" are mandatory fields        | Y         |
 | appType                   | Corresponding intent is launching on which app                                             			| Y         |    
 | communicationMode         | It indicates whether the test is run on transport or sdk mode mode.                                   | optional  |

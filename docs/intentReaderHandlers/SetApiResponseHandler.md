@@ -44,7 +44,7 @@ It performs the following actions:
 
 | Key                   | Description                                                                              | Required? |
 |-----------------------|------------------------------------------------------------------------------------------|-----------|
-| task                  | "setApiResponse"- Its a static value and should not be changed for this handler          | Y         |
+| task                  | "setApiResponse"- It is a static value and should not be changed for this handler          | Y         |
 | params                | Required response params for the intent. Here, "apiResponse" is a mandatory parameter    | Y         |
 | module                | Corresponding module name for which the API is called                                    | Y         |
 | methodName            | The name of the invoked method                                                           | Y         |
@@ -108,6 +108,33 @@ It performs the following actions:
 
 ----------------------------------------------------------------------------------------------------------------------
 
-### Valid Intent and Response
+### Invalid Intent and Response
 
-An invalid scenario is not possible for this handler as whatever the apiResponse value we are passing is assigned to an environment variable.
+<details>
+    <summary>Request for setApiResponse with empty params</summary>
+</details>
+
+    {
+        "action": "search",
+        "data": {
+            "query": {
+                "task": "setApiResponse",
+                "params": "",
+                "action": "NA",
+                "appType": "firebolt"
+            }
+        },
+        "context": {
+            "source": "device"
+        }
+    }
+
+<details>
+    <summary>Request for setApiResponse with empty params</summary>
+</details>
+
+    {
+        "result": null,
+        "error": {
+        }
+    }

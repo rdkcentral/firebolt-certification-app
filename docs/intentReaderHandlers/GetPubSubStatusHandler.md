@@ -35,16 +35,20 @@ It performs the following actions:
 
 | Key               | Description                                                                           | Required? |
 |-------------------|---------------------------------------------------------------------------------------|-----------|
-| task              | "getPubSubStatus"- Its a static value and should not be changed for this handler      | Y         |
+| task              | "getPubSubStatus"- It is a static value and should not be changed for this handler      | Y         |
 | appType           | Corresponding intent is launching on which app                                        | Y         |
 
 ### Response Format
 
 ```json
         [
-            true,
+            true
+        ]
+        or 
+        [
             null
         ]
+
 ```
 
 #### Parameters
@@ -79,9 +83,7 @@ It performs the following actions:
 </details>
 
         [
-            true,
-            null
-        ]
+            true        ]
 
 ----------------------------------------------------------------------------------------------------------------------
 

@@ -55,8 +55,10 @@ The PubSub plugin has to be integrated with FCA to call IntentReader with PubSub
 
 ### Usage
 
-With the configuration and setup in place, we can send messages to FCA through any pubsub mechanism like Websocket, etc. First, we have to initialise a pubsub connection, then publish and subscribe topics to send or receive messages from FCA.
-We can perform any action or task with intentReaders and with the help of multiple handlers. For performing a particular task, give the required task name in the "task" field and the corresponding task parameters required to perform the task.
+* The sender (which can be a framework, server, or application) needs to have the PubSub plugin integrated into it.
+* Once the Pubsub plugin is integrated into the sender, it has to subscribe to the topic FCA will be publishing.
+* The server can then publish the intent on the same topic to which FCA has subscribed.
+
 For example:
 To invoke any APIs, the task will be "callMethod", and the corresponding methodName, methodParams, etc. should be passed.
 Here, pubSub communication status is established first, and then intent is passed.
@@ -77,8 +79,13 @@ The standalone scenario supports both the cold launch and the hot launch of FCA.
 No additional setup is required. 
 
 ### Usage
-With the configuration and setup in place, we can perform any actions or tasks without having a PubSub messaging system integrated. For standalone, we can directly send the request in the below-given format with "standalone" as true and corresponding parameters given without initialising a pubsub connection.
+With the configuration and setup in place, we can perform any actions or tasks without having a PubSub messaging system integrated. For standalone, we can directly send the request in the below-given format.
 The format of the request remains the same as in pubSub, as we have to pass the task name and corresponding parameters required to perform the task.For standalones, the intent format will be like the following example:
+
+* The sender need not have a pubsub messaging system integrated.
+* Sender can directly send the intent to FCA in the format given [here](#standalone-intent-format)
+
+#### Standalone Intent Format
 
 <details>
     <summary>Standalone Intent Format</summary>

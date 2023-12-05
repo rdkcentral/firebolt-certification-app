@@ -39,6 +39,7 @@ For specific instructions on navigation, visit this doc [GUI](GUI.md).
 FCA extends its capabilities by offering remote accessibility through API access, benefiting users managing test suites or without direct device access.
 
 **Setup**:
+
 A pre-requisite for running executions remotely is implementing a PubSub client.
 - **PubSub Client**: 
 A PubSub client is necessary to trigger FCA remotely.

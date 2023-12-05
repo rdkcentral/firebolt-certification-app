@@ -278,7 +278,7 @@ export class EventInvocation {
       module = moduleWithEventName.split('.')[0].toLowerCase();
       module = module.split('_')[1];
     }
-    sdkType = (process.env.SDK_TYPE)? process.env.SDK_TYPE: sdkType
+    sdkType = process.env.SDK_TYPE ? process.env.SDK_TYPE : sdkType;
     return [sdkType, module];
   }
 

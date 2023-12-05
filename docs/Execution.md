@@ -48,6 +48,7 @@ Before using FCA with API access, implement a PubSub client as per the [PubSub d
 **Usage**:
 
 - Send a PubSub message to FCA's client follwoing the instructions in the [PubSub Handlers documentation](pubSubHandlers/PubSubHandlers.md).
+- FCA supports numerous intents, one of which is `runTest` whcih can be used to trigger a test.
 
 - **Sample Intent Message**:
 A sample intent message to trigger FCA remotely is provided below:

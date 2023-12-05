@@ -52,6 +52,7 @@ URL parameters allow customization of the FCA's behavior, enabling testers to ta
 ### Setup
 
 - Use various parameters like 'platform', 'lifecycle_validation','mf','systemui' and more as per the requirment.
+- Parameters are passed in the app url, example: `https://firecertapp.firecert.com/edge/index.html?voiceGuidance=true`
 - These parameters modify how the FCA interacts with the environemtn and the test suite.
 
 ### Usage

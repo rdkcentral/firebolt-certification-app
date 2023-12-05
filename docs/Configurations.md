@@ -6,7 +6,7 @@ This document gives the various configurations available for Firebolt Certificat
 ## Table of Contents
 
 - [Running with MFOS](#running-with-mfos)
-- [Connect to Mock Firebolt](#connect-to-mock-firebolt)
+  - [How to Connect with Mock Firebolt?](#connect-to-mock-firebolt)
 - [Supported URL Parameters](#supported-url-parameters)
 - [App Types](#app-types)
 
@@ -25,19 +25,19 @@ Mock Firebolt (MFOS) is a simulated environment representing (real Firebolt runn
 
 Utilize MFOS for testing in a controlled, simulated environment. MFOS can be ideal for early-stage development and testing.
 
-## Connect to Mock Firebolt
+### Connect to Mock Firebolt
 
-### Background
+**Background**
 
 Connecting to Mock Firebolt enables testing against a simulated Firebolt OS, providing a safe and flexible enviroment for development and testing.
 
-### Setup
+**Setup**
 
 - Clone the Repository [Mock-Firebolt](https://github.com/rdkcentral/mock-firebolt)
 - Follow the instructions provided in the repository to start the Mock Firebolt.
 - Launch the Firebolt Cretification App and add `mf=true` to the app launch URL to connect to the mock environment.
 
-### Usage
+**Usage**
 
 - Use Mock Firebolt for testing API integrations and app behavior in a simulated Firebolt environment.
 

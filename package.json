@@ -32,7 +32,7 @@
     "testCoverage": "NODE_ENV=test jest --config test/jest.config.js",
     "postinstall": "npm update @firebolt-js/manage-sdk",
     "format": "prettier --write '**/*.js'",
-    "lint": "eslint 'src/**/*.js' 'test/**/*.js' --no-fix"
+    "lint": "eslint 'src/**/*.js' 'test/**/*.js'"
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.5",

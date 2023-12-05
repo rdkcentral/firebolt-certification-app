@@ -18,7 +18,7 @@ Mock Firebolt (MFOS) is a simulated environment that FCA can interact with.
 
 ### Setup
 
-- *MFOS*: Accessible at [Mock-Firebolt](https://github.com/rdkcentral/mock-firebolt)
+- *MFOS*: The open source GitHub project is accessible at [Mock-Firebolt](https://github.com/rdkcentral/mock-firebolt)
 - Use Mock Firebolt's [usage documentation](https://github.com/rdkcentral/mock-firebolt#usage-local) to get set up. 
 
 ### Usage

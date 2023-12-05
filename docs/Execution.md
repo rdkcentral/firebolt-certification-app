@@ -50,64 +50,8 @@ Before using FCA with API access, implement a PubSub client as per the [PubSub d
 - Send a PubSub message to FCA's client follwoing the instructions in the [PubSub Handlers documentation](pubSubHandlers/PubSubHandlers.md).
 - FCA supports numerous intents, one of which is `runTest` whcih can be used to trigger a test.
 
-- **Sample Intent Message**:
-A sample intent message to trigger FCA remotely is provided below:
-
-```
-{
-    "jsonrpc": "2.0",
-    "id": 1,
-    "method": "APIName",
-    "params": {
-        "appId": "AppId",
-        "intent": {
-            "action": "search",
-            "data": {
-                "query": {
-                    "task": "runTest",
-                    "params": {
-                        "certification": true,
-                        "exceptionMethods": [
-                            {
-                                "method": "Api.method",
-                                "param": {
-                                    "type": "distributor"
-                                }
-                            },
-                            "..."
-                        ],
-                        "methodsToBeExcluded": [
-                            "Api.method",
-                            "Api.method",
-                            "..."
-                        ],
-                        "modulesToBeExcluded": []
-                    },
-                    "action": "CORE",
-                    "context": {
-                        "communicationMode": "SDK"
-                    },
-                    "metadata": {
-                        "target": "targetName",
-                        "targetVersion": "targetVersion",
-                        "...": "..."
-                    },
-                    "asynchronous": false,
-                    "appType": "firebolt"
-                }
-            },
-            "context": {
-                "source": "device"
-            }
-        }
-    }
-}
-
-```
-
 For more specific triggering follow instructions 
 [RunTest Handler documentation](intentReaderHandlers/RunTestHandler.md).
-
 
 ## Test Types
 

@@ -68,7 +68,7 @@ For regression testing a user may want to send requests with custom parameters a
 
 ## Modes of communication
 
-Different modes of communication offer flexibility in test approach, tailored to specific testing needs.
+Different modes of communication offer flexibility in test approach, tailored to specific testing needs, for example invoking a device.version request would return SDK version if ran via SDK communication mode, and it'll be skipped if invoked in communication mode.
 
 ## SDK Mode
  Invoking APIs using the Firebolt SDK.

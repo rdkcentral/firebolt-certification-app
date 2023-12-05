@@ -16,28 +16,28 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import lng from '@lightningjs/core'
-import Menu from './Menu'
-import MenuBuilder from './MenuBuilder'
-import LifecycleHistory from './LifeCycleHistory'
-import { Settings, Accessibility } from '@firebolt-js/sdk'
-import FireboltExampleInvoker from './FireboltExampleInvoker'
-import Modal from './Modal'
-import PubSubCommunication from './PubSubCommunication'
-import { CONSTANTS } from './constant'
+import lng from '@lightningjs/core';
+import Menu from './Menu';
+import MenuBuilder from './MenuBuilder';
+import LifecycleHistory from './LifeCycleHistory';
+import { Settings, Accessibility } from '@firebolt-js/sdk';
+import FireboltExampleInvoker from './FireboltExampleInvoker';
+import Modal from './Modal';
+import PubSubCommunication from './PubSubCommunication';
+import { CONSTANTS } from './constant';
 require('dotenv').config({ override: true });
-import { checkMockOSRestInterface, TRUE_VALUES, getCurrentAppID } from './utils/Utils'
-import { AcknowledgeChallenge, Keyboard, PinChallenge } from '@firebolt-js/manage-sdk'
-import PinChallengeProviderDelegater from './providers/PinChallengeDelegater'
-import KeyboardProviderDelegater from './providers/KeyboardProviderDelegater'
-import AckChallengeProviderDelegater from './providers/AckChallengeDelegater'
-const logger = require('./utils/Logger')('App.js')
-import FireboltTransportInvoker from './FireboltTransportInvoker'
-import { handleAsyncFunction } from './utils/Utils'
-import { withAnnouncer } from '@lightningjs/ui-components'
-const Base = withAnnouncer(lng.Application)
-import Toast, { eventEmitter } from './Toast'
-import IntentReader from './IntentReader'
+import { checkMockOSRestInterface, TRUE_VALUES, getCurrentAppID } from './utils/Utils';
+import { AcknowledgeChallenge, Keyboard, PinChallenge } from '@firebolt-js/manage-sdk';
+import PinChallengeProviderDelegater from './providers/PinChallengeDelegater';
+import KeyboardProviderDelegater from './providers/KeyboardProviderDelegater';
+import AckChallengeProviderDelegater from './providers/AckChallengeDelegater';
+const logger = require('./utils/Logger')('App.js');
+import FireboltTransportInvoker from './FireboltTransportInvoker';
+import { handleAsyncFunction } from './utils/Utils';
+import { withAnnouncer } from '@lightningjs/ui-components';
+const Base = withAnnouncer(lng.Application);
+import Toast, { eventEmitter } from './Toast';
+import IntentReader from './IntentReader';
 
 export default class App extends Base {
   static _template() {

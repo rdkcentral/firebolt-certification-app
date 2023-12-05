@@ -14,7 +14,7 @@ This document gives the various configurations available for Firebolt Certificat
 
 ### Background
 
-Mock Firebolt (MFOS) is a simulated environment that FCA can interact with.
+Mock Firebolt (MFOS) is a simulated environment representing (real Firebolt running on device) that FCA can interact with.
 
 ### Setup
 

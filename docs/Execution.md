@@ -41,7 +41,9 @@ FCA extends its capabilities by offering remote accessibility through API access
 **Setup**:
 
 A pre-requisite for running executions remotely is implementing a PubSub client.
+
 - **PubSub Client**: 
+
 A PubSub client is necessary to trigger FCA remotely.
 Before using FCA with API access, implement a PubSub client as per the [PubSub documentation](plugins/PubSub.md).
 

@@ -30,10 +30,10 @@ jobs:
         run: npm ci
 
       - name: Check for linting errors
-        run: npm run lint > lint-results.txt 2>&1 || echo "Linting failed" >> lint-results.txt
+        run: npm run lint
 
       - name: Run tests
-        run: npm run testCoverage > test-results.txt 2>&1 || echo "Testing failed" >> test-results.txt
+        run: npm run testCoverage
 
       - name: Set failure comment if failed for prs
         if: ${{ failure() && github.event_name == 'pull_request' }}

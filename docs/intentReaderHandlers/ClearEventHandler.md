@@ -37,11 +37,11 @@ It performs the following actions:
 
 #### Parameters
 
-| Key                   | Description                                                                           | Required? |
-|-----------------------|---------------------------------------------------------------------------------------|-----------|
-| task                  | "clearEventHandler"- It is a static value and should not be changed for this handler    | Y         |
-| params                | Required event params for the intent. Here, "event" is the mandatory parameter        | Y         |
-| appType               | Corresponding intent is launching on which app                                        | Y         |
+| Key                     | Description                                                                             | Required?   |
+| ----------------------- | --------------------------------------------------------------------------------------- | ----------- |
+| task                    | "clearEventHandler"- It is a static value and should not be changed for this handler    | Y           |
+| params                  | Required event params for the intent. Here, "event" is the mandatory parameter          | Y           |
+| appType                 | Corresponding intent is launching on which app                                          | Y           |
 
 ### Response Format
 * Response can be either "true" or an error response
@@ -86,7 +86,7 @@ It performs the following actions:
     <summary>Response as true</summary>
 </details>
 
-            true
+    true
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -98,19 +98,19 @@ It performs the following actions:
 
     {
         "action": "search",
-            "data": {
-                "query": {
-                    "task": "clearEventHandler",
-                    "params": {
-                        "event": ""
-                    },
-                    "action": "NA",
-                    "appType": "firebolt"
-                }
-            },
-            "context": {
-                "source": "device"
+        "data": {
+            "query": {
+                "task": "clearEventHandler",
+                "params": {
+                    "event": ""
+                },
+                "action": "NA",
+                "appType": "firebolt"
             }
+        },
+        "context": {
+            "source": "device"
+        }
     }
 
 <details>
@@ -132,19 +132,19 @@ It performs the following actions:
 
     {
         "action": "search",
-            "data": {
-                "query": {
-                    "task": "clearEventHandler",
-                    "params": {
-                        "event": "<Invalid eventName>"
-                    },
-                    "action": "NA",
-                    "appType": "firebolt"
-                }
-            },
-            "context": {
-                "source": "device"
+        "data": {
+            "query": {
+                "task": "clearEventHandler",
+                "params": {
+                    "event": "<Invalid eventName>"
+                },
+                "action": "NA",
+                "appType": "firebolt"
             }
+        },
+        "context": {
+            "source": "device"
+        }
     }
 
 <details>

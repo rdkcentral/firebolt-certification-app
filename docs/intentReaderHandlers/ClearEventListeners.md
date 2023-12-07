@@ -31,10 +31,10 @@ It performs the following actions:
 
 #### Parameters
 
-| Key                   | Description                                                                           | Required? |
-|-----------------------|---------------------------------------------------------------------------------------|-----------|
-| task                  | "clearAllListeners"- It is a static value and should not be changed for this handler    | Y         |
-| appType               | Corresponding intent is launching on which app                                        | Y         |
+| Key                     | Description                                                                             | Required?   |
+| ----------------------- | --------------------------------------------------------------------------------------- | ----------- |
+| task                    | "clearAllListeners"- It is a static value and should not be changed for this handler    | Y           |
+| appType                 | Corresponding intent is launching on which app                                          | Y           |
 
 ### Response Format
 * Response can be either "true" or an error response
@@ -57,15 +57,15 @@ It performs the following actions:
     <summary> Request </summary>
 </details>
 
-        {
-            "action": "search",
-            "data": {
-                "query": "{\"task\":\"clearAllListeners\",\"action\":\"NA\",\"appType\":\"firebolt\"}"
-            },
-            "context": {
-                "source": "device"
-            }
+    {
+        "action": "search",
+        "data": {
+            "query": "{\"task\":\"clearAllListeners\",\"action\":\"NA\"\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
         }
+    }
 
 <details>
     <summary> Response </summary>

@@ -33,22 +33,17 @@ It performs the following actions:
 
 #### Parameters
 
-| Key               | Description                                                                           | Required? |
-|-------------------|---------------------------------------------------------------------------------------|-----------|
-| task              | "getPubSubStatus"- It is a static value and should not be changed for this handler      | Y         |
-| appType           | Corresponding intent is launching on which app                                        | Y         |
+| Key                 | Description                                                                             | Required?   |
+| ------------------- | --------------------------------------------------------------------------------------- | ----------- |
+| task                | "getPubSubStatus"- It is a static value and should not be changed for this handler      | Y           |
+| appType             | Corresponding intent is launching on which app                                          | Y           |
 
 ### Response Format
 
 ```json
         [
-            true
+            true/null
         ]
-        or 
-        [
-            null
-        ]
-
 ```
 
 #### Parameters
@@ -67,22 +62,22 @@ It performs the following actions:
     <summary> Request </summary>
 </details>
 
-        {
-                "action": "search",
-                "data": {
-                    "query": "{\"task\":\"getPubSubStatus\",\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                },
-                "context": {
-                    "source": "device"
-                }
-            }
+    {
+        "action": "search",
+        "data": {
+            "query": "{\"task\":\"getPubSubStatus\",\"action\":\"NA\",\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 
 
 <details>
     <summary> Response </summary>
 </details>
 
-        [ true ]
+    [ true ]
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -92,17 +87,18 @@ It performs the following actions:
     <summary>Request when we are not able to connect to PubSub </summary>
 </details>
 
-            {
-            "action": "search",
-            "data": {
-                "query": "{\"task\":\"getPubSubStatus\",\"action\":\"NA\",\"appType\":\"firebolt\"}"
-            },
-            "context": {
-                "source": "device"
-            }
+    {
+        "action": "search",
+        "data": {
+            "query": "{\"task\":\"getPubSubStatus\",\"action\":\"NA\\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
         }
+    }
+
 <details>
     <summary> Response </summary>
 </details>
 
-            PubSub ACK not received from FCA. App not launched in 30000 ms
+    PubSub ACK not received from FCA. App not launched in 30000 ms

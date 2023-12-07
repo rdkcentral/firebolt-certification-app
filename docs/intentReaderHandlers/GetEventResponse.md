@@ -35,27 +35,27 @@ It performs the following actions:
 
 #### Parameters
 
-| Key                   | Description                                                                          | Required? |
-|-----------------------|--------------------------------------------------------------------------------------|-----------|
-| task                  | "getEventResponse"- It is a static value and should not be changed for this handler    | Y         |
-| params                | Required event params for the intent. Here, "event" is a mandatory parameter         | Y         |
-| appType               | Corresponding intent is launching on which app                                       | Y         |
+| Key                     | Description                                                                            | Required?   |
+| ----------------------- | -------------------------------------------------------------------------------------- | ----------- |
+| task                    | "getEventResponse"- It is a static value and should not be changed for this handler    | Y           |
+| params                  | Required event params for the intent. Here, "event" is a mandatory parameter           | Y           |
+| appType                 | Corresponding intent is launching on which app                                         | Y           |
 
 ### Response Format
 
 ```json
-            {
-                "eventName": "<eventName>",
-                "eventListenerId": "<eventName>-id",
-                "eventResponse": {
-                    "<eventResponse>"
-                },
-                "eventSchemaResult": {
-                    "status": "PASS",
-                    "eventSchemaResult": []
-                },
-                "eventTime": "<Time>"
-            }
+    {
+        "eventName": "<eventName>",
+        "eventListenerId": "<eventName>-id",
+        "eventResponse": {
+            "<eventResponse>"
+        },
+        "eventSchemaResult": {
+            "status": "PASS",
+            "eventSchemaResult": []
+        },
+        "eventTime": "<Time>"
+    }
 
 ```
 
@@ -80,37 +80,37 @@ It performs the following actions:
 
     {
         "action": "search",
-            "data": {
-                "query": {
-                    "task": "getEventResponse",
-                    "params": {
-                        "event": "<eventName>"
-                    },
-                    "action": "NA",
-                    "appType": "firebolt"
-                }
-            },
-            "context": {
-                "source": "device"
+        "data": {
+            "query": {
+                "task": "getEventResponse",
+                "params": {
+                    "event": "<eventName>"
+                },
+                "action": "NA",
+                "appType": "firebolt"
             }
+        },
+        "context": {
+            "source": "device"
+        }
     }
 
 <details>
     <summary> Response </summary>
 </details>
 
-                {
-                "eventName": "<eventName>",
-                "eventListenerId": "<eventName>-id",
-                "eventResponse": {
-                    <eventResponse>
-                },
-                "eventSchemaResult": {
-                    "status": "PASS",
-                    "eventSchemaResult": []
-                },
-                "eventTime": "<Time>"
-            }
+    {
+        "eventName": "<eventName>",
+        "eventListenerId": "<eventName>-id",
+        "eventResponse": {
+            <eventResponse>
+        },
+        "eventSchemaResult": {
+            "status": "PASS",
+            "eventSchemaResult": []
+        },
+        "eventTime": "<Time>"
+    }
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -122,28 +122,28 @@ It performs the following actions:
 
     {
         "action": "search",
-            "data": {
-                "query": {
-                    "task": "getEventResponse",
-                    "params": {
-                        "event": ""
-                    },
-                    "action": "NA",
-                    "appType": "firebolt"
-                }
-            },
-            "context": {
-                "source": "device"
+        "data": {
+            "query": {
+                "task": "getEventResponse",
+                "params": {
+                    "event": ""
+                },
+                "action": "NA",
+                "appType": "firebolt"
             }
+        },
+        "context": {
+            "source": "device"
+        }
     }
 
 <details>
     <summary> Response as null </summary>
 </details>
 
-            {
-                "": null
-            }
+    {
+        null
+    }
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -153,24 +153,26 @@ It performs the following actions:
 
     {
         "action": "search",
-            "data": {
-                "query": {
-                    "task": "getEventResponse",
-                    "params": {
-                        "event": "<Invalid eventName>"
-                    },
-                    "action": "NA",
-                    "appType": "firebolt"
-                }
-            },
-            "context": {
-                "source": "device"
+        "data": {
+            "query": {
+                "task": "getEventResponse",
+                "params": {
+                    "event": "<Invalid eventName>"
+                },
+                "action": "NA",
+                "appType": "firebolt"
             }
+        },
+        "context": {
+            "source": "device"
+        }
     }
 
 <details>
     <summary> Response as null </summary>
 </details>
 
-            No Response
+    {
+        null
+    }
 

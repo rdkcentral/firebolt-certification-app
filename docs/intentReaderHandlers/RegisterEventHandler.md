@@ -39,29 +39,30 @@ It performs the following actions:
 
 #### Parameters
 
-| Key               | Description                                                                         | Required? |
-|-------------------|-------------------------------------------------------------------------------------|-----------|
-| task              | "registerEvent"- It is a static value and should not be changed for this handler      | Y         |
-| params            | Required event params for  the intent. Here, "event" is a mandatory parameter       | Y         |
-| appType           | Corresponding intent is launching on which app                                      | Y         |
+| Key                 | Description                                                                           | Required?   |
+| ------------------- | ------------------------------------------------------------------------------------- | ----------- |
+| task                | "registerEvent"- It is a static value and should not be changed for this handler      | Y           |
+| params              | Required event params for  the intent. Here, "event" is a mandatory parameter         | Y           |
+| appType             | Corresponding intent is launching on which app                                        | Y           |
 
 
 ### Response
+* Response can be either a valid json response or error string/object
 
 ```json
 
-        {
-            "eventName": "<eventName>",
-            "eventListenerId": "<eventName>-146",
-            "eventListenerResponse": {
-                "listenerResponse": 146,
-                "error": null
-            },
-            "eventListenerSchemaResult": {
-                "status": "PASS",
-                "eventSchemaResult": {}
-            }
+    {
+        "eventName": "<eventName>",
+        "eventListenerId": "<eventName>-146",
+        "eventListenerResponse": {
+            "listenerResponse": 146,
+            "error": null
+        },
+        "eventListenerSchemaResult": {
+            "status": "PASS",
+            "eventSchemaResult": {}
         }
+    }
 ```
 
 #### Parameters
@@ -81,32 +82,32 @@ It performs the following actions:
     <summary> Request </summary>
 </details>
           
-            {
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"registerEvent\",\"params\":{\"event\":\"<eventName>\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
-                    }
-                }
+    {
+        "action": "search",
+        "data": {
+            "query": "{\"task\":\"registerEvent\",\"params\{\"event\":\"<eventName>\"\"params\":[]},\"action\":\"NA\\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 
 <details>
     <summary> Response </summary>
 </details>
 
-        {
-            "eventName": "<eventName>",
-            "eventListenerId": "<eventName>-146",
-            "eventListenerResponse": {
-                "listenerResponse": 146,
-                "error": null
-            },
-            "eventListenerSchemaResult": {
-                "status": "PASS",
-                "eventSchemaResult": {}
-            }
+    {
+        "eventName": "<eventName>",
+        "eventListenerId": "<eventName>-146",
+        "eventListenerResponse": {
+            "listenerResponse": 146,
+            "error": null
+        },
+        "eventListenerSchemaResult": {
+            "status": "PASS",
+            "eventSchemaResult": {}
         }
+    }
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -325,21 +326,21 @@ If the intent has "isNotSupportedApi" = true, it indicates that the event is not
     
     {
         "action": "search",
-            "data": {
-                "query": {
-                    "task": "registerEvent",
-                    "params": {
-                        "event": "<eventName>",
-                        "params": {}
-                    },
-                    "isNotSupportedApi":true,
-                    "action": "NA",
-                    "context": {
-                        "communicationMode": "SDK"
-                    },
-                    "appType": "firebolt"
-                }
+        "data": {
+            "query": {
+                "task": "registerEvent",
+                "params": {
+                    "event": "<eventName>",
+                    "params": {}
+                },
+                "isNotSupportedApi":true,
+                "action": "NA",
+                "context": {
+                    "communicationMode": "SDK"
+                },
+                "appType": "firebolt"
             }
+        }
     }
 
 <details>

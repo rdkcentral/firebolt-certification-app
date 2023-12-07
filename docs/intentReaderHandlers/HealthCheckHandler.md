@@ -32,10 +32,10 @@ It performs the following actions:
 
 #### Parameters
 
-| Key               | Description                                                                       | Required? |
-|-------------------|-----------------------------------------------------------------------------------|-----------|
-| task              | "healthCheck"- It is a static value and should not be changed for this handler      | Y         |
-| appType           | Corresponding intent is launching on which app                                    | Y         |
+| Key                 | Description                                                                         | Required?   |
+| ------------------- | ----------------------------------------------------------------------------------- | ----------- |
+| task                | "healthCheck"- It is a static value and should not be changed for this handler      | Y           |
+| appType             | Corresponding intent is launching on which app                                      | Y           |
 
 
 ### Response Format
@@ -80,7 +80,7 @@ It performs the following actions:
     <summary> Response </summary>
 </details>
 
-           true/OK
+    true/OK
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -92,20 +92,20 @@ It performs the following actions:
  
     {
         "action": "search",
-            "data": {
-                "query": {
+        "data": {
+            "query": {
                     "task": "healthCheck",
                     "action": "NA",
                     "appType": "firebolt"
-                }
-            },
-            "context": {
-                "source": "device"
             }
+        },
+        "context": {
+            "source": "device"
+        }
     }
 
 <details>
     <summary> Response  </summary>
 </details>
 
-        false
+    false

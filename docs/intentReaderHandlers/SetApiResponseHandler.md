@@ -42,14 +42,14 @@ It performs the following actions:
 ```
 #### Parameters
 
-| Key                   | Description                                                                              | Required? |
-|-----------------------|------------------------------------------------------------------------------------------|-----------|
-| task                  | "setApiResponse"- It is a static value and should not be changed for this handler          | Y         |
-| params                | Required response params for the intent. Here, "apiResponse" is a mandatory parameter    | Y         |
-| module                | Corresponding module name for which the API is called                                    | Y         |
-| methodName            | The name of the invoked method                                                           | Y         |
-| type                  | It indicates whether the response is of method/event                                     | Y         |
-| appType               | Corresponding intent is launching on which app                                           | Y         |
+| Key                     | Description                                                                                | Required?   |
+| ----------------------- | ------------------------------------------------------------------------------------------ | ----------- |
+| task                    | "setApiResponse"- It is a static value and should not be changed for this handler          | Y           |
+| params                  | Required response params for the intent. Here, "apiResponse" is a mandatory parameter      | Y           |
+| module                  | Corresponding module name for which the API is called                                      | Y           |
+| methodName              | The name of the invoked method                                                             | Y           |
+| type                    | It indicates whether the response is of method/event                                       | Y           |
+| appType                 | Corresponding intent is launching on which app                                             | Y           |
 
 ### Response Format
 * Response can be either "true" or an error response
@@ -104,7 +104,7 @@ It performs the following actions:
     <summary> Response </summary>
 </details>
 
-            true
+    true
 
 ----------------------------------------------------------------------------------------------------------------------
 

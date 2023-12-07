@@ -38,52 +38,52 @@ It performs the following actions:
 
 #### Parameters
 
-| Key                       | Description                                                                                			| Required? |
-|---------------------------|-------------------------------------------------------------------------------------------------------|-----------|
-| task                      | "callMethod"- It is a static value and should not be changed for this handler                			| Y         |
-| params                    | Required params for call method intent. Here, "method" and "methodParams" are mandatory fields        | Y         |
-| appType                   | Corresponding intent is launching on which app                                             			| Y         |    
-| communicationMode         | It indicates whether the test is run on transport or sdk mode mode.                                   | optional  |
-| isNotSupportedApi         | It indicates whether the passed API is supported or not by the platform.                              | optional  |
+| Key                         | Description                                                                                             | Required?   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------- | ----------- |
+| task                        | "callMethod"- It is a static value and should not be changed for this handler.                          | Y           |
+| params                      | Required params for call method intent. Here, "method" and "methodParams" are mandatory fields.         | Y           |
+| appType                     | Corresponding intent is launching on which app.                                                         | Y           |
+| communicationMode           | It indicates whether the test is run on transport or sdk mode mode.                                     | optional    |
+| isNotSupportedApi           | It indicates whether the passed API is supported or not by the platform.                                | optional    |
 
 
 ### Response Format
 ```json
-{
-    "method": "callMethod",
-    "params": [],
-    "responseCode": 0,
-    "apiResponse": {
-        "result": "<value>",
-        "error": null
-    },
-    "schemaValidationStatus": "PASS",
-    "schemaValidationResponse": {
-        "instance": "<value>",
-        "schema": {
-            "type": "string"
+    {
+        "method": "callMethod",
+        "params": [],
+        "responseCode": 0,
+        "apiResponse": {
+            "result": "<value>",
+            "error": null
         },
-        "options": {},
-        "path": [],
-        "propertyPath": "instance",
-        "errors": [],
-        "disableFormat": false
+        "schemaValidationStatus": "PASS",
+        "schemaValidationResponse": {
+            "instance": "<value>",
+            "schema": {
+                "type": "string"
+            },
+            "options": {},
+            "path": [],
+            "propertyPath": "instance",
+            "errors": [],
+            "disableFormat": false
+        }
     }
-}
 
 ```
 #### Parameters
 
-| Key                       | Description                                                                                			                                      |
-|---------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
-| method                    | The name of method we are invoking                			                                                                              |
-| params                    | The params we passed for invoking the APIs                                                                                                  |
-| responseCode              | The responseCode can be 0,1,2 or 3, which indicates whether the request successful or not. 0-PASS, 1-FAIL, 2-SKIPPED, 3- PENDING            |    
-| apiResponse               | The apiResponse field reflects the response of the API we invoked. It contains "result" and "error" as the inner fields                     |    
-| result                    | The inner field "result" contains a successful response if FCA receives a response from the device.                                         |    
-| error                     | The inner field "error" contains a failure response if FCA receives an error from the device.                                               |    
-| schemaValidationStatus    | Indicates whether schema validation is PASS/FAIL.                                            	                                              |    
-| schemaValidationResponse  | Contains the result of schema validation.                                            	                                                      |    
+| Key                         | Description                                                                                                                                   |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| method                      | The name of method we are invoking.                                                                                                           |
+| params                      | The params we passed for invoking the APIs.                                                                                                   |
+| responseCode                | The responseCode can be 0,1,2 or 3, which indicates whether the request successful or not. 0-PASS, 1-FAIL, 2-SKIPPED, 3- PENDING              |
+| apiResponse                 | The apiResponse field reflects the response of the API we invokIt contains "result" and "error" as the inner fields.                          |
+| result                      | The inner field "result" contains a successful response if receives a response from the device.                                               |
+| error                       | The inner field "error" contains a failure response if FCA receian error from the device.                                                     |
+| schemaValidationStatus      | Indicates whether schema validation is PFAIL.                                                                                                 |
+| schemaValidationResponse    | Contains the result of schema validation.                                                                                                     |
 
 
 ## Examples
@@ -95,14 +95,14 @@ It performs the following actions:
 </details>
 
     {
-			"action": "search",
-			"data": {
-				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"device.version\",\"methodParams\":{}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
-			},
-			"context": {
-				"source": "device"
-			}
+		"action": "search",
+		"data": {
+			"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"device.version\",\"methodParams\":{},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+		},
+		"context": {
+			"source": "device"
 		}
+	}
 
 
 <details>
@@ -110,26 +110,26 @@ It performs the following actions:
 </details>
 
     {
-                "method": "callMethod",
-                "params": [],
-                "responseCode": 0,
-                "apiResponse": {
-                    "result": "<value>",
-                    "error": null
-                },
-                "schemaValidationStatus": "PASS",
-                "schemaValidationResponse": {
-                    "instance": "<value>",
-                    "schema": {
-                        "type": "string"
-                    },
-                    "options": {},
-                    "path": [],
-                    "propertyPath": "instance",
-                    "errors": [],
-                    "disableFormat": false
-                }
-            }
+        "method": "callMethod",
+        "params": [],
+        "responseCode": 0,
+        "apiResponse": {
+            "result": "<value>",
+            "error": null
+        },
+        "schemaValidationStatus": "PASS",
+        "schemaValidationResponse": {
+            "instance": "<value>",
+            "schema": {
+                "type": "string"
+            },
+            "options": {},
+            "path": [],
+            "propertyPath": "instance",
+            "errors": [],
+            "disableFormat": false
+        }
+    }
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -138,32 +138,32 @@ It performs the following actions:
 </details>
 
     {
-			"action": "search",
-			"data": {
-				"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"keyboard.email\",\"methodParams\":{ "type": "signIn", "message": "Enter your email to sign into this app"}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
-			},
-			"context": {
-				"source": "device"
-			}
+		"action": "search",
+		"data": {
+			"query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"keyboard.email\",\"methodParams\":{"type": "signIn", "message": "Enter your email to sign into this app"}},\"action\":\"NA\"\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+		},
+		"context": {
+			"source": "device"
 		}
+	}
 
 
 <details>
     <summary>Response With Params</summary>
 </details>      
 
-        {
-            "method": "callMethod",
-            "params": [
-                "signIn",
-                "Enter your email to sign into this app"
-            ],
-            "responseCode": 0,
-            "apiResponse": {
-                "result": "<email>",
-                "error": null
-            },
-            "schemaValidationStatus": "PASS",
+    {
+        "method": "callMethod",
+        "params": [
+            "signIn",
+            "Enter your email to sign into this app"
+        ],
+        "responseCode": 0,
+        "apiResponse": {
+            "result": "<email>",
+            "error": null
+        },
+        "schemaValidationStatus": "PASS",
             "schemaValidationResponse": {
                 "instance": "<email>",
                 "schema": {
@@ -174,8 +174,8 @@ It performs the following actions:
                 "propertyPath": "instance",
                 "errors": [],
                 "disableFormat": false
-            }
         }
+    }
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -186,60 +186,60 @@ It performs the following actions:
 </details>
 
     {
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<methodName>\",\"methodParams\":{\"type\":\"platform1\"}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
-                    }
-                }
+        "action": "search",
+        "data": {
+            "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<methodName>\",\"methodParams\":{\"type\":\"platform1\"}},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 
 <details>
     <summary>Response with unknown variant error</summary>
 </details>    
 
-            {
-                "method": "callMethod",
-                "params": [
-                    "platform1"
-                ],
-                "responseCode": 0,
-                "apiResponse": {
-                    "result": null,
-                    "error": {
-                        "code": -32602,
-                        "message": "unknown variant `platform1`, expected one of `platform`, `device`, `distributor`, `root` at line 1 column 19"
+    {
+        "method": "callMethod",
+        "params": [
+            "platform1"
+        ],
+        "responseCode": 0,
+        "apiResponse": {
+            "result": null,
+            "error": {
+                "code": -32602,
+                "message": "unknown variant `platform1`, expected one of `platform`, `device``distributor`, `root` at line 1 column 19"
+            }
+        },
+        "schemaValidationStatus": "PASS",
+        "schemaValidationResponse": {
+            "instance": {
+                "code": -32602,
+                "message": "unknown variant `platform1`, expected one of `platform`, `device`, `distributor`, `root` at line 1 column 19"
+            },
+            "schema": {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number"
+                    },
+                    "message": {
+                        "type": "string"
                     }
                 },
-                "schemaValidationStatus": "PASS",
-                "schemaValidationResponse": {
-                    "instance": {
-                        "code": -32602,
-                        "message": "unknown variant `platform1`, expected one of `platform`, `device`, `distributor`, `root` at line 1 column 19"
-                    },
-                    "schema": {
-                        "type": "object",
-                        "properties": {
-                            "code": {
-                                "type": "number"
-                            },
-                            "message": {
-                                "type": "string"
-                            }
-                        },
-                        "required": [
-                            "code",
-                            "message"
-                        ]
-                    },
-                    "options": {},
-                    "path": [],
-                    "propertyPath": "instance",
-                    "errors": [],
-                    "disableFormat": false
-                }
-            }
+                "required": [
+                    "code",
+                    "message"
+                ]
+            },
+            "options": {},
+            "path": [],
+            "propertyPath": "instance",
+            "errors": [],
+            "disableFormat": false
+        }
+    }
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -248,13 +248,13 @@ It performs the following actions:
 </details>
 
     {
-            "action": "search",
-                "data": {
-                    "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<Invalid methodName>\",\"methodParams\":\"\"},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
-                },
-                "context": {
-                    "source": "device"
-                 }
+        "action": "search",
+        "data": {
+            "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"<Invalid methodName>\\"methodParams\":\"\"},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
+         }
     }
 
 <details>
@@ -276,13 +276,13 @@ It performs the following actions:
 </details>
 
     {
-            "action": "search",
-                "data": {
-                    "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"\",\"methodParams\":\"\"},\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
-                },
-                "context": {
-                    "source": "device"
-                 }
+        "action": "search",
+        "data": {
+                "query": "{\"task\":\"callMethod\",\"params\":{\"method\":\"\",\"methodParams\":\"\"}\"action\":\"NA\",\"context\":{\"communicationMode\":\"SDK\"},\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
+        }
     }
 
 <details>
@@ -309,23 +309,23 @@ If the intent has "isNotSupportedApi" = true, it indicates that the API is not i
 
     {
         "action": "search",
-            "data": {
-                "query": {
-                    "task": "callMethod",
-                    "params": {
-                        "method":"accessibility.closedCaptionsSettings",
-                        "methodParams":{
-                            "key":"value"
-                        }
-                    },
-                    "isNotSupportedApi":true,
-                    "action": "NA",
-                    "appType": "firebolt"
-                }
-            },
-            "context": {
-                "source": "device"
+        "data": {
+            "query": {
+                "task": "callMethod",
+                "params": {
+                    "method":"accessibility.closedCaptionsSettings",
+                    "methodParams":{
+                        "key":"value"
+                    }
+                },
+                "isNotSupportedApi":true,
+                "action": "NA",
+                "appType": "firebolt"
             }
+        },
+        "context": {
+            "source": "device"
+        }
     }
 
 <details>
@@ -333,26 +333,26 @@ If the intent has "isNotSupportedApi" = true, it indicates that the API is not i
 </details>
 
     {
-    "method": "callMethod",
-    "params": [],
-    "responseCode": 0,
-    "apiResponse": {
-        "result": "<value>",
-        "error": null
-    },
-    "schemaValidationStatus": "FAIL",
-    "schemaValidationResponse": {
-        "instance": "<value>",
-        "schema": {
-            "type": "string"
+        "method": "callMethod",
+        "params": [],
+        "responseCode": 0,
+        "apiResponse": {
+            "result": "<value>",
+            "error": null
         },
-        "options": {},
-        "path": [],
-        "propertyPath": "instance",
-        "errors": [],
-        "disableFormat": false
+        "schemaValidationStatus": "FAIL",
+        "schemaValidationResponse": {
+            "instance": "<value>",
+            "schema": {
+                "type": "string"
+            },
+            "options": {},
+            "path": [],
+            "propertyPath": "instance",
+            "errors": [],
+            "disableFormat": false
+        }
     }
-}
 
 
 - API response is validated against errorSchema.
@@ -364,7 +364,7 @@ If the intent has "isNotSupportedApi" = true, it indicates that the API is not i
     <summary>Request with isNotSupportedApi true for a not supported api</summary>
 </details>
 
-        {
+    {
         "action": "search",
             "data": {
                 "query": {

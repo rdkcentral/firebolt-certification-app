@@ -21,15 +21,15 @@ FCA accepts input commands only in JSON format. Here, intentReader uses the valu
 Examples/scenarios
 Format :
 ```
-{
-    "action": "search",
-    "data": {
-        "query": "{\"task\":\"<TASK_NAME>\",\"params\":{<INTENT_PARAMS>},\"action\":\"NA\",\"appType\":\"<APP_TYPE>\"}"
-    },
-    "context": {
-        "source": "device"
-    }
-}
+  {
+      "action": "search",
+      "data": {
+          "query": "{\"task\":\"<TASK_NAME>\",\"params\":{<INTENT_PARAMS>},\"action\":\"NA\",\"appType\":\"<APP_TYPE>\"}"
+      },
+      "context": {
+          "source": "device"
+      }
+  }
 ```
 
 ### Variables
@@ -92,30 +92,30 @@ The format of the request remains the same as in pubSub, as we have
 </details>
 
 
-    {
-      task: 'runTest',
-      standalone: 'true',
-      params: {
-        appId: params.appId,
-        certification: true,
-        exceptionMethods: [
-          '...'
-        ],
-        methodsToBeExcluded: [
-          '...'
-        ],
-        modulesToBeExcluded: [],
-        appType: 'firebolt',
-      },
-      action: 'CORE',
-      context: { communicationMode: 'SDK' },
-      metadata: {
-        target: 'RIPPLE',
-        targetVersion: '<version>',
+  {
+    task: 'runTest',
+    standalone: 'true',
+    params: {
+      appId: params.appId,
+      certification: true,
+      exceptionMethods: [
         '...'
-      },
-      asynchronous: false
-    }
+      ],
+      methodsToBeExcluded: [
+        '...'
+      ],
+      modulesToBeExcluded: [],
+      appType: 'firebolt',
+    },
+    action: 'CORE',
+    context: { communicationMode: 'SDK' },
+    metadata: {
+      target: 'RIPPLE',
+      targetVersion: '<version>',
+      '...'
+    },
+    asynchronous: false
+  }
 
 ## Handlers
 

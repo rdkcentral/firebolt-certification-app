@@ -34,15 +34,15 @@ It performs the following actions:
 
 #### Parameters
 
-| Key               | Description                                                                   | Required? |
-|-------------------|-------------------------------------------------------------------------------|-----------|
-| task              | "getTest"- It is a static value and should not be changed for this handler      | Y         |
-| params            | Required job ID params for the intent. Here, "jobId" is a mandatory parameter  | Y         |
-| appType           | Corresponding intent is launching on which app                                | Y         |
+| Key                 | Description                                                                     | Required?   |
+| ------------------- | ------------------------------------------------------------------------------- | ----------- |
+| task                | "getTest"- It is a static value and should not be changed for this handler      | Y           |
+| params              | Required job ID params for the intent. Here, "jobId" is a mandatory parameter   | Y           |
+| appType             | Corresponding intent is launching on which app                                  | Y           |
 
 
 ### Response Format
-* Response can be either the valid report in json format or an error response object
+* Response can be either the valid report in json format or "Report not generated from firebolt"
 
 ```json
     {
@@ -137,10 +137,10 @@ It performs the following actions:
 ```
 #### Parameters
 
-| Key                          | Description                                                                                           |
-| -----------------------------| ------------------------------------------------------------------------------------------------------|
-| stats                        | It indicates the overall status of the suite run like count of pending, skipped, failures etc.        |
-| results                      | It is an array which indicates the individual status of each test                                     |
+| Key                           | Description                                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| stats                         | It indicates the overall status of the suite run like count of pending, skipped, failures etc.         |
+| results                       | It is an array which indicates the individual status of each test                                      |
 
 
 
@@ -296,4 +296,4 @@ It performs the following actions:
     <summary> Response  </summary>
 </details>
 
-            Report not generated from firebolt
+    Report not generated from firebolt

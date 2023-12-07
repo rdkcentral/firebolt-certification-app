@@ -97,7 +97,7 @@ It performs the following actions:
 
 | Key               | Description                                                                                   | Required? |
 |-------------------|-----------------------------------------------------------------------------------------------|-----------|
-| task              | "registerProviderHandler"- It is a static value and should not be changed for this handler      | Y         |
+| task              | "registerProviderHandler"- It is a static value and should not be changed for this handler    | Y         |
 | params            | Required provider params for  the intent. Here, "provider" is a mandatory parameter           | Y         |
 | appType           | Corresponding intent is launching on which app                                                | Y         |
 
@@ -122,21 +122,21 @@ It performs the following actions:
     <summary> Request </summary>
 </details>
 
-            {
-                    "action": "search",
-                    "data": {
-                        "query": "{\"task\":\"registerProviderHandler\",\"params\":{\"provider\":\"keyboard\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                    },
-                    "context": {
-                        "source": "device"
-                    }
-                }
+    {
+        "action": "search",
+        "data": {
+            "query": "{\"task\":\"registerProviderHandler\",\"params{\"provider\":\"keyboard\",\"params\":[]},\"action\":\"NA\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 
 <details>
     <summary> Response </summary>
 </details>
             
-            "Keyboard provider registered successfully"
+    "Keyboard provider registered successfully"
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -147,21 +147,21 @@ It performs the following actions:
     <summary>Request when we pass invalid provider name </summary>
 </details>
 
-            {
-                "action": "search",
-                "data": {
-                    "query": "{\"task\":\"registerProviderHandler\",\"params\":{\"provider\":\"testing\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                },
-                "context": {
-                    "source": "device"
-                }
-            }
+    {
+        "action": "search",
+        "data": {
+            "query": "{\"task\":\"registerProviderHandler\",\"params\{\"provider\":\"testing\",\"params\":[]},\"action\":\"NA\\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 
 <details>
     <summary> Response </summary>
 </details>
 
-            "Provider registeration failed"
+    "Provider registeration failed"
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -169,18 +169,18 @@ It performs the following actions:
     <summary>Request when we pass empty provider name </summary>
 </details>
 
-            {
-                "action": "search",
-                "data": {
-                    "query": "{\"task\":\"registerProviderHandler\",\"params\":{\"provider\":\"\",\"params\":[]},\"action\":\"NA\",\"appType\":\"firebolt\"}"
-                },
-                "context": {
-                    "source": "device"
-                }
-            }
+    {
+        "action": "search",
+        "data": {
+            "query": "{\"task\":\"registerProviderHandler\",\"params\{\"provider\":\"\",\"params\":[]},\"action\":\"NA\\"appType\":\"firebolt\"}"
+        },
+        "context": {
+            "source": "device"
+        }
+    }
 
 <details>
     <summary> Response </summary>
 </details>
 
-            "Provider registeration failed"
+    "Provider registeration failed"

@@ -41,9 +41,7 @@ It performs the following actions:
 ### Response Format
 
 ```json
-        [
-            true/null
-        ]
+    true/null
 ```
 
 #### Parameters
@@ -77,7 +75,7 @@ It performs the following actions:
     <summary> Response </summary>
 </details>
 
-    [ true ]
+    true
 
 ----------------------------------------------------------------------------------------------------------------------
 

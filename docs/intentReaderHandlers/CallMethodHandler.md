@@ -81,8 +81,8 @@ It performs the following actions:
 | responseCode                | The responseCode can be 0,1,2 or 3, which indicates whether the request successful or not. 0-PASS, 1-FAIL, 2-SKIPPED, 3- PENDING              |
 | apiResponse                 | The apiResponse field reflects the response of the API we invokIt contains "result" and "error" as the inner fields.                          |
 | result                      | The inner field "result" contains a successful response if receives a response from the device.                                               |
-| error                       | The inner field "error" contains a failure response if FCA receian error from the device.                                                     |
-| schemaValidationStatus      | Indicates whether schema validation is PFAIL.                                                                                                 |
+| error                       | The inner field "error" contains a failure response if FCA receives an error from the device.                                                 |
+| schemaValidationStatus      | Indicates whether schema validation is PASS or FAIL.                                                                                          |
 | schemaValidationResponse    | Contains the result of schema validation.                                                                                                     |
 
 

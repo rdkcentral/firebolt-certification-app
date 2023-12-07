@@ -136,5 +136,6 @@ It performs the following actions:
     {
         "result": null,
         "error": {
+            "..."
         }
     }

@@ -1,0 +1,72 @@
+name: Lint and Unit Tests
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for linting errors
+        run: npm run lint > lint-results.txt 2>&1 || echo "Linting failed" >> lint-results.txt
+
+      - name: Run tests
+        run: npm run testCoverage > test-results.txt 2>&1 || echo "Testing failed" >> test-results.txt
+
+      # - name: Set failure comment if failed for prs
+      #   if: ${{ failure() && github.event_name == 'pull_request' }}
+      #   run: echo "comment=Linting or unit tests failed" >> $GITHUB_ENV
+
+      # - name: Set success comment
+      #   run: echo "comment=Linting and unit tests succeeded" >> $GITHUB_ENV
+
+      - name: Comment on PR
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          comment_body=""
+
+          if grep -q "Linting failed" lint-results.txt; then
+            comment_body+="Linting failed:\n```\n$(cat lint-results.txt)\n```\n\n"
+          fi
+
+          if grep -q "Testing failed" test-results.txt; then
+            comment_body+="Testing failed:\n```\n$(cat test-results.txt)\n```\n\n"
+          fi
+
+          if [[ -z "$comment_body" ]]; then
+            comment_body="Linting and unit tests succeeded"
+          fi
+
+          comment_body=$(echo "$comment_body" | jq -aRs .)
+
+          if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+            curl -X POST \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -d "{\"body\": $comment_body}" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+          fi
+

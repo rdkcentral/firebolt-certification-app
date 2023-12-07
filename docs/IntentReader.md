@@ -55,7 +55,7 @@ The PubSub plugin has to be integrated with FCA to call IntentReader with PubSub
 
 ### Usage
 
-* The sender (which can be a framework, server, or application) needs to have the PubSub plugin integrated into it.
+* The external sender needs to have the PubSub plugin integrated into it.
 * Once the Pubsub plugin is integrated into the sender, it has to subscribe to the topic FCA will be publishing.
 * The server can then publish the intent on the same topic to which FCA has subscribed.
 

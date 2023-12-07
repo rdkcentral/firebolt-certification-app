@@ -2,7 +2,7 @@
 
 ## Overview
 
-This handler serves the purpose of simulating user inputs in FCA. Specific device calls prompt the system to request user input. When utilized alongside test providers found in src/providers and the SetApiResponseHandler, you gain the ability to provide mock responses to the device's provider calls. This is useful for manipulating various provider APIs such as keyboard and profile calls. Test provider will manage any provider that has refui. 
+RegisterProviderHandler is invoked when the task specified in the intent has the value "registerProviderHandler". This handler serves the purpose of simulating user inputs in FCA. Specific device calls prompt the system to request user input. When utilized alongside test providers found in src/providers and the SetApiResponseHandler, you gain the ability to provide mock responses to the device's provider calls. This is useful for manipulating various provider APIs such as keyboard and profile calls. Test provider will manage any provider that has refui. 
 
 It performs the following actions:
 1. Parses the input message received to get the provider.
@@ -13,8 +13,7 @@ It performs the following actions:
 
 #### Use case - Requirement is to return abc@gmail.com for keyboard.email api
 
-* Register for the Keyboard Test Provider by sending the below intent - src/providers/KeyboardUIProviderTest.js
-*  
+* Register for the Keyboard Test Provider by sending the below intent - src/providers/KeyboardUIProviderTest.js.
 ```json
 
     {
@@ -36,8 +35,7 @@ It performs the following actions:
     }
 
 ```
-* Set the response for keyboard.email using the SetApiResponseHandler by sending the below intent
-*   
+* Set the response for keyboard.email using the SetApiResponseHandler by sending the below intent.
 ```json
 
     {
@@ -55,7 +53,7 @@ It performs the following actions:
                                 "ApiText": "abc@gmail.com",
                                 "isCancelled": false,
                                 "withUi": false,
-                                "result": "john@doe.com"
+                                "result": "abc@gmail.com"
                             }
                         ]
                     }
@@ -104,16 +102,17 @@ It performs the following actions:
 | appType           | Corresponding intent is launching on which app                                                | Y         |
 
 ### Response Format
-* Response can be either "true" or an error response
+* Response can be either "true/Keyboard provider registered successfully" or an "error response/Provider registeration failed"
 
 ```json
     true/Keyboard provider registered successfully
 ```
 #### Parameters
 
-| Key                         | Description                                                                  |
-| --------------------------- | -----------------------------------------------------------------------------|
-| true                        | It indicates whether the mochawesome report from FCA is fetched or not       |
+| Key                                            | Description                                                                   |
+| -----------------------------------------------| ----------------------------------------------------------------------------- |
+| true/Keyboard provider registered successfully | It indicates whether the mochawesome report from FCA is fetched successfully  |
+| false/Provider registeration failed            | It indicates whether the mochawesome report from FCA is not fetched           |
 
 ## Examples
 
@@ -162,7 +161,7 @@ It performs the following actions:
     <summary> Response </summary>
 </details>
 
-            Provider registeration failed
+            "Provider registeration failed"
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -184,4 +183,4 @@ It performs the following actions:
     <summary> Response </summary>
 </details>
 
-            Provider registeration failed
+            "Provider registeration failed"

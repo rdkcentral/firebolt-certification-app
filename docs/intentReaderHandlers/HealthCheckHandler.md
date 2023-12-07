@@ -39,7 +39,7 @@ It performs the following actions:
 
 
 ### Response Format
-* Response can be either "true" or an error response
+* Response can be either "true" or "false"
 
 ```json
     true
@@ -48,8 +48,8 @@ It performs the following actions:
 
 | Key                         | Description                                             |
 | --------------------------- | --------------------------------------------------------|
-| true                        | It indicates that the FCA launched successfully         |
-| error                       | It indicates that FCA did not launch successfully       |
+| true/OK                     | It indicates that the FCA launched successfully         |
+| false                       | It indicates that FCA did not launch successfully       |
 
 
 
@@ -80,7 +80,7 @@ It performs the following actions:
     <summary> Response </summary>
 </details>
 
-           True/OK
+           true/OK
 
 ----------------------------------------------------------------------------------------------------------------------
 
@@ -108,4 +108,4 @@ It performs the following actions:
     <summary> Response  </summary>
 </details>
 
-            false
+        false

@@ -8,8 +8,8 @@
 <div align="center">
 
   [![Status](https://img.shields.io/badge/status-active-success.svg)]() 
-  [![GitHub Issues](https://img.shields.io/github/issues/comcast-fireboltCertification/firebolt-certification-app)](https://github.com/comcast-fireboltCertification/firebolt-certification-app/issues)
-  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/comcast-fireboltCertification/firebolt-certification-app)](https://github.com/comcast-fireboltCertification/firebolt-certification-app/pulls)
+  [![GitHub Issues](https://img.shields.io/github/issues/rdkcentral/firebolt-certification-app)](https://github.com/rdkcentral/firebolt-certification-app/issues)
+  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/rdkcentral/firebolt-certification-app)](https://github.com/rdkcentral/firebolt-certification-app/pulls)
   [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 </div>

@@ -68,11 +68,9 @@ Here, pubSub communication status is established first, and then intent is passe
 
 FCA has the ability to accept intents and input commands as a standalone application without having a PubSub messaging system integrated. Here also, when intentReader is called with a particular intent, it is processed, and the corresponding handler is called, which decides the action to be performed corresponding to the task received in the intent.
 
-The standalone scenario supports both the cold launch and the hot launch of FCA.
+The standalone scenario supports only cold launch of FCA.
 
-1. Cold Launch Scenario: Here the input command or intent is sent along with the launch command used to launch FCA. The FCA will process the intent immediately after it is launched.
-
-2. Hot Launch Scenario: Here, FCA is launched first and intents are sent later. Since the intents are sent only after FCA is launched, we can send any number of intents as needed at any point in time. 
+* Cold Launch Scenario: Here the input command or intent is sent along with the launch command used to launch FCA. The FCA will process the intent immediately after it is launched.
 
 ### Setup
 
@@ -84,7 +82,7 @@ The format of the request remains the same as in pubSub, as we have
 
 * The sender need not have a pubsub messaging system integrated.
 * Sender can directly send the intent to FCA in the format given [here](#standalone-intent-format)
-
+* Here, the standalone intent is sent as an argument along with the launch command used to launch FCA (cold launch).
 #### Standalone Intent Format
 
 <details>

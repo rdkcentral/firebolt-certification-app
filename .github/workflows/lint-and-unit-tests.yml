@@ -44,7 +44,6 @@ jobs:
               TEST_FAILED=$(grep -q "TESTS_FAILED" testResult.txt && echo "true" || echo "false")
           fi
           if [ -n "$LINT_ERRORS" ] || [ "$TEST_FAILED" = "true" ]; then
-            echo 'PR_COMMENT<<EOF' >> "$GITHUB_OUTPUT"
             echo "Checks failed. Here are the details:" >> "$GITHUB_OUTPUT"
             if [ -n "$LINT_ERRORS" ]; then
               echo "Linting failed with the following errors:" >> "$GITHUB_OUTPUT"

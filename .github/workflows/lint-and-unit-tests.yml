@@ -61,11 +61,11 @@ jobs:
               echo EOF
             } >> "$GITHUB_OUTPUT"
           else
-            echo "PR_COMMENT=Linting and unit tests succeeded" >> "$GITHUB_OUTPUT"
+            echo "PR_COMMENT=Linting and unit tests succeeded." >> "$GITHUB_OUTPUT"
           fi
 
       - name: Fail if linting errors or unit tests failed
-        if: steps.comment.outputs.PR_COMMENT != 'Linting and unit tests succeeded'
+        if: steps.comment.outputs.PR_COMMENT != 'Linting and unit tests succeeded.'
         run: exit 1
 
       - name: Comment on PR

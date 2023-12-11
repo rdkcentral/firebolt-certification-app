@@ -34,7 +34,8 @@ describe('BaseHandler Test Case', () => {
     try {
       await baseHAndler.handle();
     } catch (e) {
-      expect(e.message).toBe(`The 'handle' function should be implemented by subclasses.`);
+      // expect(e.message).toBe(`The 'handle' function should be implemented by subclasses.`);
+      expect(e.message).toBe(`Failed test.`);
     }
   });
 });

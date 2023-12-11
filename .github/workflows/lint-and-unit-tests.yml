@@ -59,11 +59,16 @@ jobs:
           fi
           echo "::set-output name=pr_comment::$COMMENT"
 
+      - name: Fail if linting errors or unit tests failed
+        if: steps.comment.outputs.pr_comment != 'Linting and unit tests succeeded'
+        run: exit 1
+
       - name: Comment on PR
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          PR_COMMENT=${{ steps.comment.outputs.pr_comment }}
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
             echo "$PR_COMMENT"
             curl -X POST \

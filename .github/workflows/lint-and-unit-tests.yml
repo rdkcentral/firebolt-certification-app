@@ -44,18 +44,21 @@ jobs:
               TEST_FAILED=$(grep -q "TESTS_FAILED" testResult.txt && echo "true" || echo "false")
           fi
           if [ -n "$LINT_ERRORS" ] || [ "$TEST_FAILED" = "true" ]; then
-            echo "Checks failed. Here are the details:" >> "$GITHUB_OUTPUT"
+            echo "Checks failed. Here are the details:" > comment.txt
             if [ -n "$LINT_ERRORS" ]; then
-              echo "Linting failed with the following errors:" >> "$GITHUB_OUTPUT"
-              echo "\`\`\`" >> "$GITHUB_OUTPUT"
-              cat lintOutput.txt >> "$GITHUB_OUTPUT"
-              echo "\`\`\`" >> "$GITHUB_OUTPUT"
-              echo "For more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md)." >> "$GITHUB_OUTPUT"
+              echo "Linting failed with the following errors:" >> comment.txt
+              echo "\`\`\`" >> comment.txt
+              cat lintOutput.txt >> comment.txt
+              echo "\`\`\`" >> comment.txt
+              echo "For more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md)." >> comment.txt
             fi
             if [ "$TEST_FAILED" = "true" ]; then
-              echo "Unit tests failed." >> "$GITHUB_OUTPUT"
+              echo "Unit tests failed." >> comment.txt
+            fi
           else
-            echo "PR_COMMENT=Linting and unit tests succeeded" >> "$GITHUB_OUTPUT"
+            echo "Linting and unit tests succeeded" > comment.txt
+          fi
+          cat comment.txt >> $GITHUB_OUTPUT
 
       - name: Fail if linting errors or unit tests failed
         if: steps.comment.outputs.pr_comment != 'Linting and unit tests succeeded'
@@ -65,10 +68,12 @@ jobs:
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_COMMENT: ${{ steps.comment.outputs.pr_comment }}
         run: |
-          PR_COMMENT=${{ steps.comment.outputs.PR_COMMENT }}
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+            echo "$PR_COMMENT"
             curl -X POST \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
               -d "{\"body\": \"$PR_COMMENT\"}" \
               "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+          fi

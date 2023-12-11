@@ -55,8 +55,6 @@ jobs:
             fi
             if [ "$TEST_FAILED" = "true" ]; then
               echo "Unit tests failed." >> "$GITHUB_OUTPUT"
-            fi
-            echo 'EOF' >> "$GITHUB_OUTPUT"
           else
             echo "PR_COMMENT=Linting and unit tests succeeded" >> "$GITHUB_OUTPUT"
 

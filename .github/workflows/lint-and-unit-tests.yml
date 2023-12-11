@@ -47,7 +47,7 @@ jobs:
           if [ -n "$LINT_ERRORS" ] || [ "$TEST_FAILED" = "true" ]; then
             {
               echo 'PR_COMMENT<<EOF'
-              echo "Checks failed. Here are the details:"
+              echo "Issue with linting or unit tests detected."
               if [ -n "$LINT_ERRORS" ]; then
                 echo "Linting failed with the following errors:"
                 echo "\`\`\`"

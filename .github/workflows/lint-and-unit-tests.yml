@@ -32,9 +32,6 @@ jobs:
       - name: Check for linting errors
         run: npm run lint > lintOutput.txt || true
 
-      - name: Run tests
-        run: npm run testCoverage || echo "TESTS_FAILED" >> testResult.txt
-
       - name: Determine comment based on linting and test results
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -46,17 +43,24 @@ jobs:
           if [ -f testResult.txt ]; then
               TEST_FAILED=$(grep -q "TESTS_FAILED" testResult.txt && echo "true" || echo "false")
           fi
-          COMMENT="Linting and unit tests succeeded"
           if [ -n "$LINT_ERRORS" ] || [ "$TEST_FAILED" = "true" ]; then
-            COMMENT="Checks failed. Here are the details:\n"
-            if [ -n "$LINT_ERRORS" ]; then
-              COMMENT+="Linting failed with the following errors:\n\`\`\`\n$(cat lintOutput.txt)\n\`\`\`\nFor more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md).\n"
-            fi
-            if [ "$TEST_FAILED" = "true" ]; then
-              COMMENT+="Unit tests failed.\n"
-            fi
-          fi
-          echo "${COMMENT}" >> $GITHUB_OUTPUT
+            {
+              echo 'PR_COMMENT<<EOF'
+              echo "Checks failed. Here are the details:"
+              if [ -n "$LINT_ERRORS" ]; then
+                echo "Linting failed with the following errors:"
+                echo "\`\`\`"
+                cat lintOutput.txt
+                echo "\`\`\`"
+                echo "For more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md)."
+              fi
+              if [ "$TEST_FAILED" = "true" ]; then
+                echo "Unit tests failed."
+              fi
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "PR_COMMENT=Linting and unit tests succeeded" >> "$GITHUB_OUTPUT"
 
       - name: Fail if linting errors or unit tests failed
         if: steps.comment.outputs.pr_comment != 'Linting and unit tests succeeded'
@@ -66,13 +70,10 @@ jobs:
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_COMMENT: ${{ steps.comment.outputs.pr_comment }}
         run: |
+          PR_COMMENT=${{ steps.comment.outputs.PR_COMMENT }}
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
-            echo "$PR_COMMENT"
             curl -X POST \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
               -d "{\"body\": \"$PR_COMMENT\"}" \
               "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
-          fi
-

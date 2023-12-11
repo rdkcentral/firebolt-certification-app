@@ -76,4 +76,4 @@ jobs:
         run: |
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
             echo "$PR_COMMENT"
-
+          fi

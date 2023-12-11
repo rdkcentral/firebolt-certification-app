@@ -19,7 +19,7 @@ Current prettier config:
 {
   "arrowParens": "always",
   "bracketSpacing": true,
-  "endOfLine": "lf",
+  "endOfLine": "auto",
   "printWidth": 100,
   "semi": true,
   "singleQuote": true,

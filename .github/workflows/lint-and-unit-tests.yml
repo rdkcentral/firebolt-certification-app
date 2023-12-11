@@ -33,14 +33,14 @@ jobs:
         run: npm run lint > lintOutput.txt || true
 
       - name: Run tests
-        run: npm run testCoverage
+        run: npm run testCoverage || echo "TESTS_FAILED" >> testResult.txt
 
       - name: Determine comment based on linting and test results
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           LINT_ERRORS=$(grep -E '[1-9][0-9]*\serror' lintOutput.txt || true)
-          TEST_FAILURE=${{ failure() }}
-          if [ -n "$LINT_ERRORS" ] || [ "$TEST_FAILURE" = true ]; then
+          TEST_FAILED=$(grep -q "TESTS_FAILED" testResult.txt && echo "true" || echo "false")
+          if [ -n "$LINT_ERRORS" ] || [ "$TEST_FAILED" = "true" ]; then
             echo "Some checks failed. Here are the details:" > comment.txt
             if [ -n "$LINT_ERRORS" ]; then
               echo "Linting failed with the following errors:" >> comment.txt
@@ -49,7 +49,7 @@ jobs:
               echo "\`\`\`" >> comment.txt
               echo "For more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md)." >> comment.txt
             fi
-            if [ "$TEST_FAILURE" = true ]; then
+            if [ "$TEST_FAILED" = "true" ]; then
               echo "Unit tests failed." >> comment.txt
             fi
             echo "comment=$(cat comment.txt)" >> $GITHUB_ENV

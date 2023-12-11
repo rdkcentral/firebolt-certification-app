@@ -68,7 +68,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          PR_COMMENT=${{ steps.comment.outputs.pr_comment }}
+          PR_COMMENT="${{ steps.comment.outputs.pr_comment }}"
+          PR_COMMENT="${PR_COMMENT//'%'/'%25'}"
+          PR_COMMENT="${PR_COMMENT//$'\n'/'%0A'}"
+          PR_COMMENT="${PR_COMMENT//$'\r'/'%0D'}"
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
             echo "$PR_COMMENT"
             curl -X POST \
@@ -76,3 +79,4 @@ jobs:
               -d "{\"body\": \"$PR_COMMENT\"}" \
               "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
           fi
+

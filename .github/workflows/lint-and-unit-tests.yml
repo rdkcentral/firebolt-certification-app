@@ -65,9 +65,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
-            echo "${{ env.comment }}"
+            echo "$PR_COMMENT"
             curl -X POST \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
-              -d '{"body": "${{ env.comment }}"}' \
+              -d "{\"body\": \"$PR_COMMENT\"}" \
               "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
           fi

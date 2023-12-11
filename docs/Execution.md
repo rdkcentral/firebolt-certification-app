@@ -8,7 +8,6 @@ This document provides a detailed guide on the various methods of executing test
   - [Remotely](#remotely)
 - [Test Types](#test-types)
   - [Sanity](#sanity)
-  - [Regression](#regression)
 - [Modes of Communication](#modes-of-communication)
 
 ## Supported Ways of Execution
@@ -62,10 +61,6 @@ For more specific triggering follow instructions
 Sanity testing ensures that all APIs function correctly at a basic level, serving as a quick check method.
 Execute the Sanity Test Suite, as described in the [Supported Ways of Execution](#supported-ways-of-execution) section.
 This suite tests all APIs by invoking predefined calls under each API, offering a comprehensive overview of basic functionality.
-
-### Regression
-
-For regression testing a user may want to send requests with custom parameters and verify responses against predefined data sets for targeted testing. To trigger those tests, users may be inclined to build out a Framework that allows for communicating with your device, and can both send requests and verify responses as needed.
 
 
 ## Modes of communication

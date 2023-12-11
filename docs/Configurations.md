@@ -79,7 +79,7 @@ Different app types in FCA denote various SDK's of applications that can be test
 
 ### Setup
 
-- Define the app types as part of the configuration before initiating tests (AppType can be sent via the intent message) [Remote Execution](https://github.com/rdkcentral/firebolt-certification-app/blob/docs/Execution.md#remotely).
+- Define the app types as part of the configuration before initiating tests (AppType can be sent via the intent message) [Remote Execution](./Execution.md#remotely).
 
 ### Usage
 

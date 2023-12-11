@@ -81,4 +81,6 @@ Different app types in FCA denote various SDK's of applications that can be test
 
 ### Usage
 
-- Select the appropriate app type to ensure that tests are relevant and effective for the specific category of the application.
+- Select the appropriate app type to ensure that tests are relevant and effective for the specific category of the application ### Usage
+
+- Select the appropriate app type to ensure that tests are relevant and effective for the specific category of the application (e.g.,'Firebolt').

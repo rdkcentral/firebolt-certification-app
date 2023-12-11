@@ -53,7 +53,7 @@ These examples illustrate how URL parameters can be effectively used to adapt th
 - **mf**: When integrating with an MFOS server, setting `mf=true` can simulate the behavior of the FCA in a connected environment, aiding in comprehensive API testing.
 - **systemui**: For Ripple device testing, `systemui=true` alters the UI to match the Ripple context, facilitating a more accurate testing scenario.
 - **voiceGuidance**: Enabling this feature (e.g., `voiceGuidance=true`) can help in assessing the accessibility of the app, ensuring it caters to users requiring voice navigation.
-- **testContext**: if testContext=true is passed, the report should have the context field under each test updated with the following fields `params` `result` `error`
+- **testContext**: If testContext=true is passed, the report should have the context field under each test updated with the following fields `params` `result` `error`
     if testContext=false or not passed the report should have the context field. However the context field will be set to null. 
 
 ### Usage

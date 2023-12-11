@@ -36,7 +36,6 @@ jobs:
         run: npm run testCoverage || echo "TESTS_FAILED" >> testResult.txt
 
       - name: Determine comment based on linting and test results
-        id: comment
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           LINT_ERRORS=""
@@ -57,7 +56,7 @@ jobs:
               COMMENT+="Unit tests failed.\n"
             fi
           fi
-          echo "::set-output name=pr_comment::$COMMENT"
+          echo "${COMMENT}" >> $GITHUB_OUTPUT
 
       - name: Fail if linting errors or unit tests failed
         if: steps.comment.outputs.pr_comment != 'Linting and unit tests succeeded'
@@ -67,11 +66,8 @@ jobs:
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_COMMENT: ${{ steps.comment.outputs.pr_comment }}
         run: |
-          PR_COMMENT="${{ steps.comment.outputs.pr_comment }}"
-          PR_COMMENT="${PR_COMMENT//'%'/'%25'}"
-          PR_COMMENT="${PR_COMMENT//$'\n'/'%0A'}"
-          PR_COMMENT="${PR_COMMENT//$'\r'/'%0D'}"
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
             echo "$PR_COMMENT"
             curl -X POST \

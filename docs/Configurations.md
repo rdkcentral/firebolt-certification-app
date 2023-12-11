@@ -53,7 +53,8 @@ These examples illustrate how URL parameters can be effectively used to adapt th
 - **mf**: When integrating with an MFOS server, setting `mf=true` can simulate the behavior of the FCA in a connected environment, aiding in comprehensive API testing.
 - **systemui**: For Ripple device testing, `systemui=true` alters the UI to match the Ripple context, facilitating a more accurate testing scenario.
 - **voiceGuidance**: Enabling this feature (e.g., `voiceGuidance=true`) can help in assessing the accessibility of the app, ensuring it caters to users requiring voice navigation.
-
+- **testContext**: if testContext=true is passed, the report should have the context field under each test updated with the following fields `params` `result` `error`
+    if testContext=false or not passed the report should have the context field. However the context field will be set to null. 
 
 ### Usage
 
@@ -67,7 +68,7 @@ Customize the test execution and reporting based on the provided URL parameters 
 | **systemui**         | Adds a visual cue, such as changing the background color, it also has elevated permissions and capabilities, such as enabling provider patterns.                                                | true / false              | This mode activates unique visual cues (like color changes and a launch button), special provider patterns only available in systemui, and elevates permissions for a more comprehensive testing experience in Ripple environments.                                                       |
 | **testContext**      | Adds the field 'context' in the mocha report generated when set to true.                                                                                                     | true / false              | Useful for including additional context in test reports.                                                             |
 | **voiceGuidance**    | Enables voice output for navigated menu options in the FCA app when set to true.                                                                                             | true / false              | Enhances accessibility by providing voice guidance for menu navigation.                                              |
-| **reportingId**      | Appends this ID to the report name to form the reporting URL.                                                                                                                | (custom ID)               | Customize the report name for easier identification and tracking.                                                    |
+| **reportingId**      | Appends this ID to the report name to form the reporting URL(it replaces the uuid with the passed value).                                                                                                                | (custom ID)               | Customize the report name for easier identification and tracking.                                                    |
 | **standalone**       | Designed for automated testing scenarios, enabling detailed reports and logs within FCA independently of other apps or frameworks. Set to true for standalone execution.     | true / false              | [Standalone execution guide](https://github.com/rdkcentral/firebolt-certification-app/blob/FIRECERT-1500/docs/IntentReader.md#standalone) Essential for tests requiring independence from other apps or frameworks, with detailed reporting and logging needs.|
 
 ## App Types

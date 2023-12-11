@@ -30,38 +30,42 @@ jobs:
         run: npm ci
 
       - name: Check for linting errors
-        run: npm run lint > lint-errors.txt || echo "Lint errors detected."
-
-      - name: Fail if lint errors are found
-        run: |
-          if [ -s lint-errors.txt ]; then
-            echo "Linting failed, errors are present."
-            exit 1
-          fi
+        run: npm run lint > lintOutput.txt || true
 
       - name: Run tests
         run: npm run testCoverage
 
-      - name: Set failure comment if failed for PRs
-        if: ${{ failure() && github.event_name == 'pull_request' }}
-        run: echo "comment=Linting or unit tests failed" >> $GITHUB_ENV
+      - name: Determine comment based on linting and test results
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          LINT_ERRORS=$(grep -E '[1-9][0-9]*\serror' lintOutput.txt || true)
+          TEST_FAILURE=${{ failure() }}
+          if [ -n "$LINT_ERRORS" ] || [ "$TEST_FAILURE" = true ]; then
+            echo "Some checks failed. Here are the details:" > comment.txt
+            if [ -n "$LINT_ERRORS" ]; then
+              echo "Linting failed with the following errors:" >> comment.txt
+              echo "\`\`\`" >> comment.txt
+              cat lintOutput.txt >> comment.txt
+              echo "\`\`\`" >> comment.txt
+              echo "For more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md)." >> comment.txt
+            fi
+            if [ "$TEST_FAILURE" = true ]; then
+              echo "Unit tests failed." >> comment.txt
+            fi
+            echo "comment=$(cat comment.txt)" >> $GITHUB_ENV
+          else
+            echo "comment=Linting and unit tests succeeded" >> $GITHUB_ENV
+          fi
 
-      - name: Set success comment
-        if: ${{ success() }}
-        run: echo "comment=Linting and unit tests succeeded" >> $GITHUB_ENV
-
-      - name: Comment on PR with lint errors
-        if: always() && github.event_name == 'pull_request'
+      - name: Comment on PR
+        if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          lint_errors=$(<lint-errors.txt)
-          if [ -n "$lint_errors" ]; then
-            comment_body="Linting errors found:\n\`\`\`\n$lint_errors\n\`\`\`"
-          else
-            comment_body="${{ env.comment }}"
+          if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+            echo "${{ env.comment }}"
+            curl -X POST \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -d '{"body": "${{ env.comment }}"}' \
+              "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
           fi
-          curl -X POST \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -d "{\"body\": \"$comment_body\"}" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"

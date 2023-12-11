@@ -72,8 +72,13 @@ jobs:
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_COMMENT: ${{ steps.comment.outputs.PR_COMMENT }}
         run: |
+          PR_COMMENT="${{ steps.comment.outputs.PR_COMMENT }}"
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
-            echo "$PR_COMMENT"
+            JSON_PAYLOAD=$(jq -n --arg body "$PR_COMMENT" '{body: $body}')
+            curl -X POST \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$JSON_PAYLOAD" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
           fi

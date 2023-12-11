@@ -40,8 +40,9 @@ URL parameters allow customization of the FCA's behavior, enabling testers to ta
 ### Setup
 
 - Parameters are passed in the app URL. For example:
- `https://firecertapp.firecert.com/edge/index.html?voiceGuidance=true`
-- Passing multiple parameters in the URL is also possible and can be handled by FCA gracefully.
+ `https://firecertapp.firecert.com/edge/index.html?systemui=true`
+- Passing multiple parameters in the URL is also possible and can be handled by FCA gracefully, For example:
+`https://firecertapp.firecert.com/edge/index.html?lifecycle_validations=true&systemui=true`
 
 ### Examples and Benefits
 

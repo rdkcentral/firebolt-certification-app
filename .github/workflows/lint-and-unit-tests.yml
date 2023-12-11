@@ -32,6 +32,10 @@ jobs:
       - name: Check for linting errors
         run: npm run lint > lintOutput.txt || true
 
+      - name: Run tests
+        id: test
+        run: npm run testCoverage || echo "TESTS_FAILED=true" >> $GITHUB_ENV
+
       - name: Determine comment based on linting and test results
         id: comment
         if: ${{ github.event_name == 'pull_request' }}
@@ -40,11 +44,7 @@ jobs:
           if [ -f lintOutput.txt ]; then
               LINT_ERRORS=$(grep -E '[1-9][0-9]*\serror' lintOutput.txt || true)
           fi
-          TEST_FAILED=false
-          if [ -f testResult.txt ]; then
-              TEST_FAILED=$(grep -q "TESTS_FAILED" testResult.txt && echo "true" || echo "false")
-          fi
-          if [ -n "$LINT_ERRORS" ] || [ "$TEST_FAILED" = "true" ]; then
+          if [ "$TESTS_FAILED" = "true" ] || [ -n "$LINT_ERRORS" ]; then
             {
               echo 'PR_COMMENT<<EOF'
               echo "Issue with linting or unit tests detected."
@@ -55,7 +55,7 @@ jobs:
                 echo "\`\`\`"
                 echo "For more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md)."
               fi
-              if [ "$TEST_FAILED" = "true" ]; then
+              if [ "$TESTS_FAILED" = "true" ]; then
                 echo "Unit tests failed."
               fi
               echo EOF

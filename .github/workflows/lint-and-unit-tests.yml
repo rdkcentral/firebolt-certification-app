@@ -60,6 +60,7 @@ jobs:
               fi
               echo EOF
             } >> "$GITHUB_OUTPUT"
+          fi
           else
             echo "PR_COMMENT=Linting and unit tests succeeded" >> "$GITHUB_OUTPUT"
 

@@ -33,6 +33,7 @@ jobs:
         run: npm run lint > lintOutput.txt || true
 
       - name: Determine comment based on linting and test results
+        id: comment
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           LINT_ERRORS=""
@@ -44,31 +45,33 @@ jobs:
               TEST_FAILED=$(grep -q "TESTS_FAILED" testResult.txt && echo "true" || echo "false")
           fi
           if [ -n "$LINT_ERRORS" ] || [ "$TEST_FAILED" = "true" ]; then
-            echo "Checks failed. Here are the details:" > comment.txt
-            if [ -n "$LINT_ERRORS" ]; then
-              echo "Linting failed with the following errors:" >> comment.txt
-              echo "\`\`\`" >> comment.txt
-              cat lintOutput.txt >> comment.txt
-              echo "\`\`\`" >> comment.txt
-              echo "For more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md)." >> comment.txt
-            fi
-            if [ "$TEST_FAILED" = "true" ]; then
-              echo "Unit tests failed." >> comment.txt
-            fi
+            {
+              echo 'PR_COMMENT<<EOF'
+              echo "Checks failed. Here are the details:"
+              if [ -n "$LINT_ERRORS" ]; then
+                echo "Linting failed with the following errors:"
+                echo "\`\`\`"
+                cat lintOutput.txt
+                echo "\`\`\`"
+                echo "For more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md)."
+              fi
+              if [ "$TEST_FAILED" = "true" ]; then
+                echo "Unit tests failed."
+              fi
+              echo EOF
+            } >> "$GITHUB_OUTPUT"
           else
-            echo "Linting and unit tests succeeded" > comment.txt
-          fi
-          cat comment.txt >> $GITHUB_OUTPUT
+            echo "PR_COMMENT=Linting and unit tests succeeded" >> "$GITHUB_OUTPUT"
 
       - name: Fail if linting errors or unit tests failed
-        if: steps.comment.outputs.pr_comment != 'Linting and unit tests succeeded'
+        if: steps.comment.outputs.PR_COMMENT != 'Linting and unit tests succeeded'
         run: exit 1
 
       - name: Comment on PR
         if: always()
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_COMMENT: ${{ steps.comment.outputs.pr_comment }}
+          PR_COMMENT: ${{ steps.comment.outputs.PR_COMMENT }}
         run: |
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
             echo "$PR_COMMENT"

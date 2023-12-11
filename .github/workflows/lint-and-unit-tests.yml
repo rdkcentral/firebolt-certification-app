@@ -76,9 +76,10 @@ jobs:
           PR_COMMENT="${{ steps.comment.outputs.PR_COMMENT }}"
           if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
             JSON_PAYLOAD=$(jq -n --arg body "$PR_COMMENT" '{body: $body}')
-            curl -X POST \
+            printf '%s\n' "$JSON_PAYLOAD" | curl -X POST \
               -H "Authorization: Bearer $GITHUB_TOKEN" \
               -H "Content-Type: application/json" \
-              -d "$JSON_PAYLOAD" \
+              -d @- \
               "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
           fi
+

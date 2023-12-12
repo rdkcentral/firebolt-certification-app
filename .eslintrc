@@ -24,7 +24,7 @@
     "no-unused-vars": "off",
     "no-var": "error",
     "prefer-const": "error",
-    "prettier/prettier": "warn",
+    "prettier/prettier": "error",
     "spaced-comment":"error"
   }
 }

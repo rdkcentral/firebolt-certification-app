@@ -1,0 +1,88 @@
+name: Lint and Unit Tests
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - main
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for linting errors
+        run: npm run lint > lintOutput.txt || true
+
+      - name: Run tests
+        id: test
+        run: npm run testCoverage || echo "TESTS_FAILED=true" >> $GITHUB_ENV
+
+      - name: Determine comment based on linting and test results
+        id: comment
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          LINT_ERRORS=""
+          if [ -f lintOutput.txt ]; then
+              LINT_ERRORS=$(grep -E '[1-9][0-9]*\serror' lintOutput.txt || true)
+          fi
+          if [ "$TESTS_FAILED" = "true" ] || [ -n "$LINT_ERRORS" ]; then
+            {
+              echo 'PR_COMMENT<<EOF'
+              echo "Issue with linting or unit tests detected."
+              if [ -n "$LINT_ERRORS" ]; then
+                echo "Linting failed with the following errors:"
+                echo "\`\`\`"
+                cat lintOutput.txt
+                echo "\`\`\`"
+                echo "For more information on our linting policies, please see our [Linting-Guide](../tree/dev/Linting-Guide.md)."
+              fi
+              if [ "$TESTS_FAILED" = "true" ]; then
+                echo "Unit tests failed."
+              fi
+              echo EOF
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "PR_COMMENT=Linting and unit tests succeeded." >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fail if linting errors or unit tests failed
+        if: steps.comment.outputs.PR_COMMENT != 'Linting and unit tests succeeded.'
+        run: exit 1
+
+      - name: Comment on PR
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_COMMENT: ${{ steps.comment.outputs.PR_COMMENT }}
+        run: |
+          if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+            JSON_PAYLOAD=$(jq -n --arg body "$PR_COMMENT" '{"body": $body}')
+
+            echo "Generated JSON payload:"
+            echo "$JSON_PAYLOAD"
+
+            curl -X POST \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$JSON_PAYLOAD" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+          fi

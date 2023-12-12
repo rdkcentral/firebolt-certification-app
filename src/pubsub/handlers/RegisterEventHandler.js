@@ -43,11 +43,11 @@ export default class RegisterEventHandler extends BaseHandler {
     } else {
       sdkType = message.params.event.split('_')[0].toLowerCase();
     }
-    if (message.action!=null && message.action != 'NA') {
+    if (message.action != null && message.action != 'NA') {
       sdkType = message.action;
-      process.env.SDK_TYPE = sdkType
+      process.env.SDK_TYPE = sdkType;
     }
-    
+
     let validatedMenu;
     // Switch creation for the type of invocation that needs to happen.
     if ([CONSTANTS.CORE.toLowerCase(), CONSTANTS.MANAGE.toLowerCase()].includes(sdkType)) {

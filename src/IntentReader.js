@@ -83,6 +83,11 @@ export default class IntentReader {
       process.env.REPORTINGID = message.reportingId;
     }
 
+    if (message.metadata && message.metadata.target==='MFOS') {
+      process.env.MF_VALUE = true;
+      process.env.PLATFORM = CONSTANTS.PLATFORM_MOCKOS;
+    }
+
     const handler = handlers[message.task];
     if (handler === undefined) {
       logger.info('Undefined handler: ' + message.task);

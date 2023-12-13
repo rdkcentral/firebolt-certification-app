@@ -37,7 +37,7 @@ It performs the following actions:
 | appType                 | Corresponding intent is launching on which app                                          | Y           |
 
 ### Response Format
-* Response can be either "true" or an error response
+* Response can be either "true" or an error response string
 
 ```json
     true

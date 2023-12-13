@@ -61,6 +61,7 @@ It performs the following actions:
 | appType                     | Corresponding intent is launching on which app.                                                                                           | Y           |
 
 ### Response Format
+* Response can be either a valid json response or error string/object
 
 ```json
     {

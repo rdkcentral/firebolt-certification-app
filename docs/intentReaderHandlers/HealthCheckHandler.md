@@ -80,7 +80,7 @@ It performs the following actions:
     <summary> Response </summary>
 </details>
 
-    true/OK
+    true
 
 ----------------------------------------------------------------------------------------------------------------------
 

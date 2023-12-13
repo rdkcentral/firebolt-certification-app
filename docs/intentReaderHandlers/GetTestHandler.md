@@ -42,7 +42,7 @@ It performs the following actions:
 
 
 ### Response Format
-* Response can be either the valid report in json format or "Report not generated from firebolt"
+* Response can be either the valid report in json format or error response string as "Report not generated from firebolt"
 
 ```json
     {

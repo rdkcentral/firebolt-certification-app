@@ -130,7 +130,7 @@ It performs the following actions:
     }
 
 <details>
-    <summary>Request for setApiResponse with empty params</summary>
+    <summary>Response for setApiResponse with empty params</summary>
 </details>
 
     {

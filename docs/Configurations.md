@@ -5,7 +5,7 @@ This document gives the various configurations available for Firebolt Certificat
 
 ## Table of Contents
 
-- [How to Connect with Mock Firebolt?](#connect-to-mock-firebolt)
+- [Connect with Mock Firebolt](#connect-to-mock-firebolt)
 - [Supported URL Parameters](#supported-url-parameters)
 - [App Types](#app-types)
 
@@ -15,6 +15,7 @@ This document gives the various configurations available for Firebolt Certificat
 
 Mock Firebolt (MFOS) is a simulated environment (representing real Firebolt running on device) that FCA can interact with.
 Connecting to Mock Firebolt enables testing against a simulated Firebolt OS, providing a safe and flexible enviroment for development and testing.
+Use MFOS if you don't have a device with firebolt running on it, or don't have a device at all.
 
 ### Setup
 
@@ -22,12 +23,12 @@ Connecting to Mock Firebolt enables testing against a simulated Firebolt OS, pro
 - Use Mock Firebolt's [usage documentation](https://github.com/rdkcentral/mock-firebolt#usage-local) to get set up. 
 - Clone the Repository [Mock-Firebolt](https://github.com/rdkcentral/mock-firebolt)
 - Follow the instructions provided in the repository to start the Mock Firebolt.
-- Launch the Firebolt Cretification App and add `mf=true` to the app launch URL to connect to the mock environment, visit the [URL Parameters](#supported-url-parameters) for details on sending Parameters.
+- Launch the Firebolt Certification App and add `mf=true` to the app launch URL to connect to the mock environment, visit the [URL Parameters](#supported-url-parameters) for details on sending Parameters.
 
 ### Usage
 
 Utilize MFOS for testing API integrations and app behavior in a controlled, simulated environment. MFOS can be ideal for early-stage development and testing.
-Use MFOS if you don't have a device with firebolt running on it, or don't have a device at all.
+On FCA side only passing `mf=true` URL parameter is required. For detailed instructions on the setup and usage check [MFOS Usage](https://github.com/rdkcentral/mock-firebolt?tab=readme-ov-file#usage-local).
 
 
 ## Supported URL parameters
@@ -36,13 +37,6 @@ Use MFOS if you don't have a device with firebolt running on it, or don't have a
 ### Background
 
 URL parameters allow customization of the FCA's behavior, enabling testers to tailor the testing environemt to specific needs.
-
-### Setup
-
-- Parameters are passed in the app URL. For example:
- `https://<DEPLOYED_FCA_HOST>/index.html?systemui=true`
-- Passing multiple parameters in the URL is also possible and can be handled by FCA gracefully, For example:
-`https://<DEPLOYED_FCA_HOST>/index.html?lifecycle_validations=true&systemui=true`
 
 ### Examples and Benefits
 
@@ -55,6 +49,15 @@ These examples illustrate how URL parameters can be effectively used to adapt th
 - **voiceGuidance**: Enabling this feature (e.g., `voiceGuidance=true`) can help in assessing the accessibility of the app, ensuring it caters to users requiring voice navigation.
 - **testContext**: If testContext=true is passed, the report should have the context field under each test updated with the following fields `params` `result` `error`
     if testContext=false or not passed the report should have the context field. However the context field will be set to null. 
+
+### Setup
+
+- Parameters are passed in the app URL. For example:
+ `https://<DEPLOYED_FCA_HOST>/index.html?systemui=true`
+- Passing multiple parameters in the URL is also possible and can be handled by FCA gracefully, For example:
+`https://<DEPLOYED_FCA_HOST>/index.html?lifecycle_validations=true&systemui=true`
+
+
 
 ### Usage
 

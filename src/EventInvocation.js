@@ -250,7 +250,7 @@ export class EventInvocation {
           const [sdkType, module] = this.getSdkTypeAndModule(eventNameWithModuleName);
           // going to unregister the event listener by eventName
           logger.info('Unregister event ' + eventNameWithModuleName + ' registration ID ' + eventRegistrationID, 'clearAllListeners');
-         
+
           if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
             MODULE_MAP[sdkType][module].clear(eventName);
           } else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {

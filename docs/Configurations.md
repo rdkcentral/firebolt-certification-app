@@ -75,7 +75,7 @@ Customize the test execution and reporting based on the provided URL parameters 
 
 ### Background
 
-Different app types in FCA denote various SDK's of applications that can be tested using the platform. 
+- The appType field in the intent is used to determine the SDK used by FCA. Currently, only Firebolt SDK is supported. Changing this field is not recommended unless a different SDK is being used. 
 
 ### Setup
 

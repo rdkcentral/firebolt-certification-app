@@ -78,7 +78,7 @@ Customize the test execution and reporting based on the provided URL parameters 
 
 ### Background
 
-- The appType field in the intent is used to determine the SDK used by FCA. Currently, only Firebolt SDK is supported. Changing this field is not recommended unless a different SDK is being used. 
+ The appType field in the intent is used to determine the SDK used by FCA. Currently, only Firebolt SDK is supported. Changing this field is not recommended unless a different SDK is being used. 
 
 ### Setup
 

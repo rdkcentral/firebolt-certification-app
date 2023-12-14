@@ -65,7 +65,7 @@ This suite tests all APIs by invoking predefined calls under each API, offering 
 
 ## Modes of communication
 
-Different modes of communication offer flexibility in test approach, tailored to specific testing needs, for example invoking a device.version request would return SDK version if ran via SDK communication mode, whereas in Transport mode the response will not have `sdk` field.
+Different modes of communication offer flexibility in test approach, tailored to specific testing needs, for example invoking a device.version request would return SDK version if ran via SDK communication mode, whereas in Transport mode the response will not contain `sdk` field.
 
 ## SDK Mode
  Invoking APIs using the Firebolt SDK.

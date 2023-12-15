@@ -83,7 +83,7 @@ export default class IntentReader {
       process.env.REPORTINGID = message.reportingId;
     }
 
-    if (message.metadata && message.metadata.target==='MFOS') {
+    if (message.metadata && message.metadata.target === 'MFOS') {
       process.env.MF_VALUE = true;
       process.env.PLATFORM = CONSTANTS.PLATFORM_MOCKOS;
     }
@@ -109,7 +109,7 @@ export default class IntentReader {
       // Invoke toast notification for failed handle
       eventEmitter.emit('showToast', CONSTANTS.INTENT_ERR, CONSTANTS.TOAST_STATE_COMPL, CONSTANTS.TOAST_REF_COMPL, CONSTANTS.ERR_COLOR);
     }
-    console.log('Response String: '+JSON.stringify(responseString))
+    console.log('Response String: ' + JSON.stringify(responseString));
     return responseString;
   }
 }

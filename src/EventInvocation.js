@@ -253,7 +253,7 @@ export class EventInvocation {
           // Events are cleared using Firebolt SDK
           if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
             MODULE_MAP[sdkType][module].clear(eventName);
-          } 
+          }
           // Events are cleared by using Transport layer and thus bypassing SDK
           else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
             const args = Object.assign({ listen: false });

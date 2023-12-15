@@ -239,7 +239,7 @@ export class EventInvocation {
 
   // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
   clearAllListeners() {
-    logger.info('Going to clear registering listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
+    logger.info('Clearing registered listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
     try {
       if (eventHandlerMap.size >= 1) {
         eventHandlerMap.forEach((EventHandlerObject, uniqueListenerKey) => {
@@ -248,18 +248,20 @@ export class EventInvocation {
           const eventName = EventHandlerObject.eventName;
           const eventRegistrationID = uniqueListenerKey.split('-')[1];
           const [sdkType, module] = this.getSdkTypeAndModule(eventNameWithModuleName);
-          // going to unregister the event listener by eventName
           logger.info('Unregister event ' + eventNameWithModuleName + ' registration ID ' + eventRegistrationID, 'clearAllListeners');
 
+          // Events are cleared using Firebolt SDK
           if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
             MODULE_MAP[sdkType][module].clear(eventName);
-          } else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
+          } 
+          // Events are cleared by using Transport layer and thus bypassing SDK
+          else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
             const args = Object.assign({ listen: false });
             Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
           }
         });
         eventHandlerMap.clear();
-        logger.info('after clearing listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
+        logger.info('After clearing listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
         return 'Cleared Listeners';
       } else {
         logger.info('No active Listeners', 'clearAllListeners');

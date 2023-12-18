@@ -1,99 +1,89 @@
 # FCA: Configurations
 
-TODO: add intro
+This document gives the various configurations available for Firebolt Certification App (FCA). It provides insights into setting up and utiizing different environments, parameters, and app types to facilitate effective testing and certification of applications using firebolt technology. 
+
 
 ## Table of Contents
 
-- [Supported Targets](#supported-targets)
-- [Connect to Mock Firebolt](#connect-to-mock-firebolt)
+- [Connect with Mock Firebolt](#connect-to-mock-firebolt)
 - [Supported URL Parameters](#supported-url-parameters)
 - [App Types](#app-types)
 
-## Supported targets
-
-EXISTING CONTENTS(needs revision):
-> - MFOS - `https://github.com/rdkcentral/mock-firebolt`
-
-### Background
-
-TODO: add details
-
-### Setup
-
-TODO: add details
-
-### Usage
-
-TODO: add details
-
 ## Connect to Mock Firebolt
 
-
-EXISTING CONTENTS(needs revision):
-```
-To activate Mock Firebolt, there are specific start-up scripts that exist inside the directory `/plugins/startupScripts`. These scripts along with other scripts that are necessary during start-up are first bundled by webpack during the build process and are loaded in when the application is first loaded.
-
-    - Clone the mock firebolt OS repository` https://github.com/rdkcentral/mock-firebolt`
-    - Start the mock Firebolt OS based on steps mentioned in the repository.
-    - Start the Firebolt Certification App with `npm start`
-    - On launch add the `mf=true` queryParameter to the app launch url and relaunch the app.
-    The above steps will by default connect the Firebolt Certification App to the mock Firebolt OS running on localhost at port 9998
-    Note: To change the hosted location of the mock Firebolt OS use the guidelines as mentioned in `https://github.com/rdkcentral/mock-firebolt/blob/main/docs/UsageWithinApps.md#activating-mock-firebolt
-```
-
 ### Background
 
-TODO: add details
+Mock Firebolt (MFOS) is a simulated environment (representing real Firebolt running on device) that FCA can interact with.
+Connecting to Mock Firebolt enables testing against a simulated Firebolt OS, providing a safe and flexible enviroment for development and testing.
+Use MFOS if you don't have a device with firebolt running on it, or don't have a device at all.
 
 ### Setup
 
-TODO: add details
+- *MFOS*: The open source GitHub project is accessible at [Mock-Firebolt](https://github.com/rdkcentral/mock-firebolt)
+- Use Mock Firebolt's [usage documentation](https://github.com/rdkcentral/mock-firebolt#usage-local) to get set up. 
+- Clone the Repository [Mock-Firebolt](https://github.com/rdkcentral/mock-firebolt)
+- Follow the instructions provided in the repository to start the Mock Firebolt.
+- Launch the Firebolt Certification App and add `mf=true` to the app launch URL to connect to the mock environment, visit the [URL Parameters](#supported-url-parameters) for details on sending Parameters.
 
 ### Usage
 
-TODO: add details
+Utilize MFOS for testing API integrations and app behavior in a controlled, simulated environment. MFOS can be ideal for early-stage development and testing.
+On FCA side only passing `mf=true` URL parameter is required. For detailed instructions on the setup and usage check [MFOS Usage](https://github.com/rdkcentral/mock-firebolt?tab=readme-ov-file#usage-local).
+
 
 ## Supported URL parameters
- 
-EXISTING CONTENTS(needs revision):
-```
-- Platform: platform=`<platform>`
-  - The supported TARGET values are passed. While executing the test suite, if we provide wrong platform it will not execute the suite and will show "Unsupported target used." error
-- Lifecycle Validation: lifecycle_validation=true
-  - When we give lifecycle_validation=true it blocks the default execution of `lifecycle.ready` and `lifecycle.finished` method.
-  - This will help us to validate lifecycle API's as per our need
-- MFOS: mf=true
-  - When we are passing mf=true or with userId, FCA will connect to MFOS server and when we invoke any api in FCA it will return the response from MFOS.
-- System Ui: systemui=true
-  - If FCA systemui=true, FCA acts as the base app in case of ripple. The background color will be changed to purple, and it will display one more button as "Launch FCA app" to launch FCA as third-party app on Ripple devices.
-- TestContext: testContext=true
-  - If testContext=true, it will add the field context in mocha report generated
-```
+
 
 ### Background
 
-TODO: add details
+URL parameters allow customization of the FCA's behavior, enabling testers to tailor the testing environemt to specific needs.
+
+### Examples and Benefits
+
+These examples illustrate how URL parameters can be effectively used to adapt the FCA to various testing requirements, enhancing the flexibility and efficiency of the testing process:
+
+- **platform**: By specifying a platform (e.g., `platform=Sony`), testers can ensure that the testing environment is accurately configured for the specific platform, leading to more reliable and relevant test results.
+- **lifecycle_validation**: Setting this to `true` (e.g., `lifecycle_validation=true`) helps in testing the lifecycle methods independently, ensuring they work as expected without the interference of default executions.
+- **mf**: When integrating with an MFOS server, setting `mf=true` can simulate the behavior of the FCA in a connected environment, aiding in comprehensive API testing.
+- **systemui**: For Ripple device testing, `systemui=true` alters the UI to match the Ripple context, facilitating a more accurate testing scenario.
+- **voiceGuidance**: Enabling this feature (e.g., `voiceGuidance=true`) can help in assessing the accessibility of the app, ensuring it caters to users requiring voice navigation.
+- **testContext**: If testContext=true is passed, the report should have the context field under each test updated with the following fields `params` `result` `error`
+    if testContext=false or not passed the report should have the context field. However the context field will be set to null. 
 
 ### Setup
 
-TODO: add details
+- Parameters are passed in the app URL. For example:
+ `https://<DEPLOYED_FCA_HOST>/index.html?systemui=true`
+- Passing multiple parameters in the URL is also possible and can be handled by FCA gracefully, For example:
+`https://<DEPLOYED_FCA_HOST>/index.html?lifecycle_validations=true&systemui=true`
+
+
 
 ### Usage
 
-TODO: add details
+Customize the test execution and reporting based on the provided URL parameters for targeted testing scenarios.
+
+| Parameter            | Description                                                                                                                                                                  | Possible Values           | Notes                                                                                                               |
+|----------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|---------------------------------------------------------------------------------------------------------------------|
+| **platform**         | Name of targeted platform.                                                                                                                                                   | e.g.,'Sony','X1','XUMO'           | Clarify which specific platform or operating system the testing is focused on.                                                             |
+| **lifecycle_validation** | Blocks the default execution of lifecycle.ready and lifecycle.finished methods when set to true.                                                                             | true / false              | Useful for manually validating lifecycle API's  without automatic execution.                                                                    |
+| **mf**               | When set to true, FCA interacte with the MFOS server, which affects how FCA's API's respond. This means FCA will call methods on MFOS instead of directly on the device.                                                                                                   | true / false              | Enables testing of FCA's integration with MFOS; especially relevant for verifying API responses in different setups.                                                                      |
+| **systemui**         | Adds a visual cue, as well as special permissions.                                                | true / false              | This mode activates unique visual cues (like color changes and a launch button), special provider patterns only available in systemui, and elevates permissions for a more comprehensive testing experience in Ripple environments.                                                       |
+| **testContext**      | Adds the field 'context' in the mocha report generated when set to true.                                                                                                     | true / false              | Useful for including additional context in test reports.                                                             |
+| **voiceGuidance**    | Enables voice output for navigated menu options in the FCA app when set to true.                                                                                             | true / false              | Enhances accessibility by providing voice guidance for menu navigation.                                              |
+| **reportingId**      | Appends this ID to the report name to form the reporting URL (it replaces the uuid with the passed value).                                                                                                                | (custom ID)               | Customize the report name for easier identification and tracking.                                                    |
+| **standalone**       | Designed for automated testing scenarios, enabling detailed reports and logs within FCA independently of other apps or frameworks. Set to true for standalone execution.     | true / false              | [Standalone execution guide](./IntentReader.md#standalone) Essential for tests requiring independence from other apps or frameworks, with detailed reporting and logging needs.|
 
 ## App Types
- 
-TODO: add details
 
 ### Background
 
-TODO: add details
+ The appType field in the intent is used to determine the SDK used by FCA. Currently, only Firebolt SDK is supported. Changing this field is not recommended unless a different SDK is being used. 
 
 ### Setup
 
-TODO: add details
+- Define the app types as part of the configuration before initiating tests (AppType can be sent via the intent message) [Remote Execution](./Execution.md#remotely).
 
 ### Usage
 
-TODO: add details
+- Select the appropriate app type to ensure that tests are relevant and effective for the specific category of the application (e.g.,'Firebolt').

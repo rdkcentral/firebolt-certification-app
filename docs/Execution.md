@@ -1,92 +1,73 @@
 # FCA: Executing Tests
 
-TODO: add intro
+This document provides a detailed guide on the various methods of executing tests on integrated devices using the Firebolt SDK. It is designed to give developers and testers clear insights into the functionality, setup, and usage of different test execution methods.
 
 ## Table of Contents
-
-- [Certification Suite](#certification-suite)
 - [Supported Ways of Execution](#supported-ways-of-execution)
-  - [Sanity Test Execution](#sanity-test-execution)
-  - [Regression Test Execution](#regression-test-execution)
-- [Supported Modes of Execution](#supported-modes-of-execution)
-- [Executing Remotely](#executing-remotely)
+  - [UI](#ui)
+  - [Remotely](#remotely)
+- [Test Types](#test-types)
+  - [Sanity](#sanity)
+- [Modes of Communication](#modes-of-communication)
 
-## Certification Suite
+## Supported Ways of Execution
 
-### Background
+### UI
 
-TODO: add details
+**Background**:
 
-### Setup
+Manual execution via the user interface allows for interactive and immediate testing, giving testers direct control over the test process.
 
-TODO: add details
+**Setup**:
 
-### Usage
+Launch the app on the device.
 
-TODO: add details
+**Usage**:
+- Navigate through the Firebolt UI.
+- Choose the communication mode: SDK or Transport.
+- Select the desired SDK mode: CoreSDK, ManageSDK, or All SDKs.
+- Invoke the sanity suite or specific tests manually.
 
-## Supported ways of Execution
+Useful for quick checks and immediate feedback on the test results.
+For specific instructions on navigation, visit this doc [GUI](GUI.md).
 
-EXISTING CONTENTS(needs revision):
-> It is possible to run the sanity suite in other platforms.
-#### Sanity Test Execution
+### Remotely
 
-TODO: add details
+**Background**:
 
-#### Regression Test Execution
+FCA extends its capabilities by offering remote accessibility through API access, benefiting users managing test suites or without direct device access.
 
-TODO: add details
+**Setup**:
 
-### Background
+A pre-requisite for running executions remotely is implementing a PubSub client.
 
-TODO: add details
+- **PubSub Client**: 
 
-### Setup
+A PubSub client is necessary to trigger FCA remotely.
+Before using FCA with API access, implement a PubSub client as per the [PubSub documentation](plugins/PubSub.md).
 
-TODO: add details
+**Usage**:
 
-### Usage
+- Send a PubSub message to FCA's client follwoing the instructions in the [PubSub Handlers documentation](pubSubHandlers/PubSubHandlers.md).
+- FCA supports numerous intents, one of which is `runTest` whcih can be used to trigger a test.
 
-TODO: add details
+For more specific triggering follow instructions 
+[RunTest Handler documentation](intentReaderHandlers/RunTestHandler.md).
 
-## Supported Modes of execution
+## Test Types
 
-EXISTING CONTENTS(needs revision): 
-> Mode of execution implies the way in which an API is invoked. There are 2 modes of execution -
->
-> - SDK - APIs are invoked using Firebolt SDK.
-> - Transport - APIs are invoked by using Transport layer and thus bypassing SDK.
+### Sanity
 
-### Background
-
-TODO: add details
-
-### Setup
-
-TODO: add details
-
-### Usage
-
-TODO: add details
+Sanity testing ensures that all APIs function correctly at a basic level, serving as a quick check method.
+Execute the Sanity Test Suite, as described in the [Supported Ways of Execution](#supported-ways-of-execution) section.
+This suite tests all APIs by invoking predefined calls under each API, offering a comprehensive overview of basic functionality.
 
 
-## Executing Remotely
+## Modes of communication
 
-### Background
+Different modes of communication offer flexibility in test approach, tailored to specific testing needs, for example invoking a device.version request would return SDK version if ran via SDK communication mode, whereas in Transport mode the response will not contain `sdk` field.
 
-FCA extends its capabilities by offering remote accessibility through API access, presenting automation opportunities for users responsible for managing test suites, as well as those without direct device access. By utilizing a PubSub client, users can dispatch requests to integrated devices running FCA, enabling the initiation of various tests, Firebolt calls, and other tasks (see [PubSub Handlers documentation](pubSubHandlers/PubSubHandlers.md)). However, it's essential to note that implementing a PubSub client is a prerequisite (refer to the [PubSub documentation](plugins/PubSub.md) for guidance). This remote communication feature provides distinct advantages, including the ability to schedule automated test suites, reduce the dependency on physical devices for developers, and more.
-
-### Setup
-
-Before you begin using FCA with API Access, there is one essential pre-requisite:
-
-  - **PubSub Client**: In order to use the API access of FCA you first need to implement a PubSub client to handle incoming and outgoing calls. For information on setting up your own PubSub client please see the [PubSub documentation](plugins/PubSub.md).
-
-TODO: add details for how to configure FCA's PubSub client topics, listeners/subscriptions, compressions, etc...
-TODO: add details for how to configure a PubSub client to talk to FCA's PubSub Client.
-
-### Usage
-
-TODO: Add details for how to send a PubSub message to FCA's PubSub client
-
-FCA includes supported PubSub handlers designed to manage various incoming PubSub methods. For more information on the supported PubSub please see the [PubSub Handlers documentation](pubSubHandlers/PubSubHandlers.md).
+## SDK Mode
+ Invoking APIs using the Firebolt SDK.
+## Transport Mode
+ Bypassing the SDK ( directly communicating with the device, skipping SDK layer), by setting communicationMode param in the intent to Transport and using the Transport layer for API invocation. All validations or data messaging is handled directly between FCA and the device.

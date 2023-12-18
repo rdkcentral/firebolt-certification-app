@@ -24,11 +24,13 @@ When you launch the Firebolt Certification Application (FCA) GUI, you gain acces
 
 ## Configuration Options
 
-To learn more about configuration options see the [configuration documentation](./Configurations.md).
+There are various configurations available for Firebolt Certification App (FCA), Including setting up and utilizing different environments, parameters, and app types to facilitate effective testing and certification of applications using firebolt technology.
+[configuration documentation](./Configurations.md).
 
 ## Test Executions
 
-To learn more about how to execute tests please see the [execution documentation](./Execution.md).
+FCA has various methods of executing tests on integrated devices using the Firebolt SDK. Each of those methods require steps of setup and usage.
+[execution documentation](./Execution.md).
 
 ## Validations
 

@@ -32,7 +32,6 @@ module.exports = {
     '^config$': '../plugins/config.js',
     '^Test_Runner$': '<rootDir>/../src/Test_Runner.js',
     '^EventInvocation$': '<rootDir>/../src//EventInvocation.js',
-    axios: 'axios/dist/node/axios.cjs',
   },
   collectCoverage: true,
   coverageThreshold: {

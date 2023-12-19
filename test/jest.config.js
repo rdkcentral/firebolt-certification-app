@@ -23,7 +23,7 @@ const config = {
 };
 
 module.exports = config;
-
+//testcomment
 // Or async function
 module.exports = {
   moduleNameMapper: {

@@ -21,7 +21,7 @@ const config = {
   verbose: true,
   automock: true,
 };
-
+//testing
 module.exports = config;
 
 // Or async function

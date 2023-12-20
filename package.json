@@ -9,7 +9,6 @@
     "@lightningjs/core": "*",
     "@lightningjs/sdk": "^5.0.1",
     "@lightningjs/ui-components": "^2.2.2",
-    "axios": "^1.6.0",
     "dotenv": "^14.2.0",
     "enhanced-resolve": "5.12.0",
     "eventemitter3": "^5.0.1",
@@ -31,8 +30,8 @@
     "test": "jest --config test/jest.config.js",
     "testCoverage": "NODE_ENV=test jest --config test/jest.config.js",
     "postinstall": "npm update @firebolt-js/manage-sdk",
-    "format": "prettier --write '**/*.js'",
-    "lint": "eslint 'src/**/*.js' 'test/**/*.js' --no-fix"
+    "format": "prettier --write \"**/*.js\"",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@babel/plugin-transform-modules-commonjs": "^7.16.5",

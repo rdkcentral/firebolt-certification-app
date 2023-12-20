@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import IntentReader from '../../src/IntentReader';
+import IntentReader from 'IntentReader';
 import { eventEmitter, showToast } from '../../src/Toast';
 
 // Mocking the appInstance variable

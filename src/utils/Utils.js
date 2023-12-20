@@ -20,6 +20,7 @@ import { CONSTANTS } from '../constant';
 import FireboltExampleInvoker from '../FireboltExampleInvoker';
 import errorSchema from '../source/errorSchema.json';
 
+const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;
@@ -59,7 +60,7 @@ const handleAsyncFunction = (asyncFunc, timeoutInMilliSeconds) => {
 };
 
 async function checkMockOSRestInterface() {
-  const response = await fetch('http://localhost:3333/api/v1');
+  const response = await axios.get('http://localhost:3333/api/v1');
   return response;
 }
 
@@ -409,6 +410,31 @@ async function overrideParamsFromTestData(methodObj) {
   }
 }
 
+  // Aws api call to get the list of sdk version
+  async function getSdkVersionList() {
+    try {
+      const maxAttemptCount = 3;
+      let sdkVersionList;
+      // retry logic if api call is failed
+      for (let attempted = 0; attempted < maxAttemptCount; attempted++) {
+        const response = await fetch(CONSTANTS.API_VERSION_LIST);
+        // Move to the next iteration
+        if (!response.ok) {
+          logger.info(`Retrying api call attempt - ${attempted}`);
+          continue;
+        }
+
+        const data = await response.json();
+        sdkVersionList = data.releasedSDKVersions;
+        break; // Break the loop if the response is successful
+      }
+
+      return sdkVersionList;
+    } catch (error) {
+      throw new Error('Error accessing SDK Version List: ' + error.message);
+    }
+  }
+
 export {
   handleAsyncFunction,
   checkMockOSRestInterface,
@@ -426,4 +452,5 @@ export {
   findTypeInOneOF,
   overrideParamsFromTestData,
   parseXACT,
+  getSdkVersionList
 };

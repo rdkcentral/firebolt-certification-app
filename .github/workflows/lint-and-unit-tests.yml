@@ -22,10 +22,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        run: | 
-          node -v
-          npm -v
-          npm i
+        run: npm i
 
       - name: Check for linting errors
         run: npm run lint > lintOutput.txt || true

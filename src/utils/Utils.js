@@ -20,7 +20,6 @@ import { CONSTANTS } from '../constant';
 import FireboltExampleInvoker from '../FireboltExampleInvoker';
 import errorSchema from '../source/errorSchema.json';
 
-const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
 const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;
@@ -60,7 +59,7 @@ const handleAsyncFunction = (asyncFunc, timeoutInMilliSeconds) => {
 };
 
 async function checkMockOSRestInterface() {
-  const response = await axios.get('http://localhost:3333/api/v1');
+  const response = await fetch('http://localhost:3333/api/v1');
   return response;
 }
 

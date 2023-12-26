@@ -33,9 +33,6 @@ import {
   VoiceGuidance,
   UserGrants,
   Metrics as ManageMetrics,
-  SecureStorage as ManageSecureStorage,
-  Discovery as ManageDiscovery,
-  AudioDescriptions,
 } from '@firebolt-js/manage-sdk';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();
@@ -86,9 +83,6 @@ const MANAGE_MODULE_MAP = {
   localization: ManageLocalization,
   usergrants: UserGrants,
   metrics: ManageMetrics,
-  securestorage: ManageSecureStorage,
-  discovery: ManageDiscovery,
-  audiodescriptions: AudioDescriptions,
 };
 
 export const MODULE_MAP = {

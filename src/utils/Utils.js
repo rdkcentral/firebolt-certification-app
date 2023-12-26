@@ -332,21 +332,6 @@ async function getCurrentAppID() {
 }
 
 /**
- * @function parseXACT
- * @description Parse the XACT and get the mac address
- */
-async function parseXACT(xactString) {
-  let macAddress = Buffer.from(xactString, 'base64').toString('ascii');
-  if (macAddress.includes('estbMac')) {
-    macAddress = macAddress.slice(macAddress.indexOf('estbMac') + 9, macAddress.indexOf('estbMac') + 26);
-    return macAddress;
-  } else {
-    const decodedJwt = jwt(macAddress);
-    return decodedJwt['device:ccpPki:estbMac'];
-  }
-}
-
-/**
  * @function getMethodExcludedListBasedOnMode
  * @description return method exclusion list with combination of common list and list based on communicationMode
  */
@@ -425,5 +410,4 @@ export {
   getMethodExcludedListBasedOnMode,
   findTypeInOneOF,
   overrideParamsFromTestData,
-  parseXACT,
 };

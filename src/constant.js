@@ -17,7 +17,8 @@
  */
 
 import CONFIG_CONSTANTS from 'config';
-import CORE_OPEN_RPC from '@firebolt-js/sdk/dist/firebolt-core-open-rpc';
+// import CORE_OPEN_RPC from '@firebolt-js/sdk/dist/firebolt-core-open-rpc';
+import CORE_OPEN_RPC from '@firebolt-js/sdk/dist/firebolt-open-rpc'
 import MANAGE_OPEN_RPC from '@firebolt-js/manage-sdk/dist/firebolt-manage-open-rpc';
 export const CONSTANTS = {
   ALL_SDKS: 'ALL SDKS',
@@ -113,7 +114,7 @@ export const CONSTANTS = {
   EXCLUDED_VALUES: [null, undefined],
   FIREBOLT_CONST: 'firebolt',
   CERTIFICATION: false,
-  METHODS_T0_IGNORE_WHICH_HAS_SET: ['privacy.settings', 'securestorage.setForApp'],
+  METHODS_T0_IGNORE_WHICH_HAS_SET: ['privacy.settings', 'securestorage.setForApp',"lifecyclemanagement.setState"],
   ERROR_MESSAGEREGEX: new RegExp('((-)[0-9]{5}): ([A-Za-z ]*)'),
   LOCK_TIME: 20000,
   MAX_FAILURES: 3,

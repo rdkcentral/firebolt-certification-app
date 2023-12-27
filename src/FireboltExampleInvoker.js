@@ -33,7 +33,7 @@ import {
   UserGrants,
   AudioDescriptions,
   LifecycleManagement,
-  DeveloperTools
+  DeveloperTools,
 } from '@firebolt-js/manage-sdk';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();

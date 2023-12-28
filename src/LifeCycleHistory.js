@@ -16,13 +16,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Lifecycle, Parameters, Discovery } from '@firebolt-js/sdk';
+import { Lifecycle, Discovery } from '@firebolt-js/sdk';
 import { BehaviorSubject } from 'rxjs';
 require('dotenv').config();
 import { CONSTANTS } from './constant';
-import { getschemaValidationDone, getCurrentAppID } from './utils/Utils';
+import { getschemaValidationDone } from './utils/Utils';
 const logger = require('./utils/Logger')('LifeCycleHistory.js');
-import FireboltExampleInvoker from './FireboltExampleInvoker';
 import IntentReader from './IntentReader';
 
 let instance = null;

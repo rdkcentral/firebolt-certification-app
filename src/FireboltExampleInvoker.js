@@ -16,11 +16,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Accessibility, Account, Advertising, Authentication, Capabilities, Device, Discovery, Keyboard, Lifecycle, Localization, Metrics, Profile, Parameters, SecondScreen, SecureStorage } from '@firebolt-js/sdk';
+import { Accessibility, Account, Advertising, Authentication, Device, Discovery, Keyboard, Lifecycle, Localization, Metrics, Profile, Parameters, SecondScreen } from '@firebolt-js/sdk';
 import {
   Accessory,
   Advertising as ManageAdvertising,
-  Power,
   AcknowledgeChallenge,
   Device as ManageDevice,
   Wifi,
@@ -32,10 +31,6 @@ import {
   Privacy,
   VoiceGuidance,
   UserGrants,
-  Metrics as ManageMetrics,
-  SecureStorage as ManageSecureStorage,
-  Discovery as ManageDiscovery,
-  AudioDescriptions,
 } from '@firebolt-js/manage-sdk';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();
@@ -57,7 +52,6 @@ const CORE_MODULE_MAP = {
   account: Account,
   advertising: Advertising,
   authentication: Authentication,
-  capabilities: Capabilities,
   device: Device,
   discovery: Discovery,
   keyboard: Keyboard,
@@ -67,11 +61,9 @@ const CORE_MODULE_MAP = {
   profile: Profile,
   parameters: Parameters,
   secondscreen: SecondScreen,
-  securestorage: SecureStorage,
 };
 
 const MANAGE_MODULE_MAP = {
-  power: Power,
   accessory: Accessory,
   advertising: ManageAdvertising,
   acknowledgechallenge: AcknowledgeChallenge,
@@ -85,10 +77,6 @@ const MANAGE_MODULE_MAP = {
   voiceguidance: VoiceGuidance,
   localization: ManageLocalization,
   usergrants: UserGrants,
-  metrics: ManageMetrics,
-  securestorage: ManageSecureStorage,
-  discovery: ManageDiscovery,
-  audiodescriptions: AudioDescriptions,
 };
 
 export const MODULE_MAP = {

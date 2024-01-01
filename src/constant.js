@@ -17,7 +17,7 @@
  */
 
 import CONFIG_CONSTANTS from 'config';
-import CORE_OPEN_RPC from '@firebolt-js/sdk/dist/firebolt-core-open-rpc';
+import CORE_OPEN_RPC from '@firebolt-js/sdk/dist/firebolt-open-rpc';
 import MANAGE_OPEN_RPC from '@firebolt-js/manage-sdk/dist/firebolt-manage-open-rpc';
 export const CONSTANTS = {
   ALL_SDKS: 'ALL SDKS',

@@ -409,31 +409,6 @@ async function overrideParamsFromTestData(methodObj) {
   }
 }
 
-  // Aws api call to get the list of sdk version
-  async function getSdkVersionList() {
-    try {
-      const maxAttemptCount = 3;
-      let sdkVersionList;
-      // retry logic if api call is failed
-      for (let attempted = 0; attempted < maxAttemptCount; attempted++) {
-        const response = await fetch(CONSTANTS.API_VERSION_LIST);
-        // Move to the next iteration
-        if (!response.ok) {
-          logger.info(`Retrying api call attempt - ${attempted}`);
-          continue;
-        }
-
-        const data = await response.json();
-        sdkVersionList = data.releasedSDKVersions;
-        break; // Break the loop if the response is successful
-      }
-
-      return sdkVersionList;
-    } catch (error) {
-      throw new Error('Error accessing SDK Version List: ' + error.message);
-    }
-  }
-
 export {
   handleAsyncFunction,
   checkMockOSRestInterface,
@@ -451,5 +426,4 @@ export {
   findTypeInOneOF,
   overrideParamsFromTestData,
   parseXACT,
-  getSdkVersionList
 };

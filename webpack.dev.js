@@ -100,6 +100,10 @@ module.exports = {
           },
           { name: 'Test_Runner', alias: ['/plugins/Test_Runner.js', '/src/Test_Runner.js'] },
           { name: 'config', alias: ['/plugins/config.js'] },
+          {
+            name: 'IntentReader',
+            alias: ['/plugins/IntentReader.js', '/src/IntentReader.js'],
+          },
         ],
         'resolve'
       ),

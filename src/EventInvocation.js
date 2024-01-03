@@ -23,7 +23,7 @@
 //   * Return results of all the events
 // ************* End Description **********
 
-import { dereferenceOpenRPC, errorSchemaCheck, rpcEventHandler } from './utils/Utils';
+import { dereferenceOpenRPC, errorSchemaCheck } from './utils/Utils';
 import { MODULE_MAP } from './FireboltExampleInvoker';
 import { CONSTANTS } from './constant';
 import Transport from '@firebolt-js/sdk/dist/lib/Transport/index.mjs';

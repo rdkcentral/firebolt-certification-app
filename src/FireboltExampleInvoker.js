@@ -20,7 +20,6 @@ import { Accessibility, Account, Advertising, Authentication, Capabilities, Devi
 import {
   Accessory,
   Advertising as ManageAdvertising,
-  Power,
   AcknowledgeChallenge,
   Device as ManageDevice,
   Wifi,
@@ -32,10 +31,9 @@ import {
   Privacy,
   VoiceGuidance,
   UserGrants,
-  Metrics as ManageMetrics,
-  SecureStorage as ManageSecureStorage,
-  Discovery as ManageDiscovery,
   AudioDescriptions,
+  LifecycleManagement,
+  DeveloperTools,
 } from '@firebolt-js/manage-sdk';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();
@@ -71,7 +69,6 @@ const CORE_MODULE_MAP = {
 };
 
 const MANAGE_MODULE_MAP = {
-  power: Power,
   accessory: Accessory,
   advertising: ManageAdvertising,
   acknowledgechallenge: AcknowledgeChallenge,
@@ -85,10 +82,9 @@ const MANAGE_MODULE_MAP = {
   voiceguidance: VoiceGuidance,
   localization: ManageLocalization,
   usergrants: UserGrants,
-  metrics: ManageMetrics,
-  securestorage: ManageSecureStorage,
-  discovery: ManageDiscovery,
   audiodescriptions: AudioDescriptions,
+  ifecyclemanagement: LifecycleManagement,
+  developertools: DeveloperTools,
 };
 
 export const MODULE_MAP = {

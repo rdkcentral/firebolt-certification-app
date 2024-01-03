@@ -32,12 +32,11 @@ import PinChallengeProviderDelegater from './providers/PinChallengeDelegater';
 import KeyboardProviderDelegater from './providers/KeyboardProviderDelegater';
 import AckChallengeProviderDelegater from './providers/AckChallengeDelegater';
 const logger = require('./utils/Logger')('App.js');
-import FireboltTransportInvoker from './FireboltTransportInvoker';
 import { handleAsyncFunction } from './utils/Utils';
 import { withAnnouncer } from '@lightningjs/ui-components';
 const Base = withAnnouncer(lng.Application);
 import Toast, { eventEmitter } from './Toast';
-import IntentReader from './IntentReader';
+import IntentReader from 'IntentReader';
 
 export default class App extends Base {
   static _template() {

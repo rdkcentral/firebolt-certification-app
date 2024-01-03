@@ -22,7 +22,7 @@ require('dotenv').config();
 import { CONSTANTS } from './constant';
 import { getschemaValidationDone } from './utils/Utils';
 const logger = require('./utils/Logger')('LifeCycleHistory.js');
-import IntentReader from './IntentReader';
+import IntentReader from 'IntentReader';
 
 let instance = null;
 let lifecycleValidation;

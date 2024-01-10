@@ -37,7 +37,7 @@ import { handleAsyncFunction } from './utils/Utils';
 import { withAnnouncer } from '@lightningjs/ui-components';
 const Base = withAnnouncer(lng.Application);
 import Toast, { eventEmitter } from './Toast';
-import IntentReader from './IntentReader';
+import IntentReader from 'IntentReader';
 
 export default class App extends Base {
   static _template() {

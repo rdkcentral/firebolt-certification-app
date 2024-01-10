@@ -30,7 +30,7 @@ import { CONSTANTS } from './constant';
 require('dotenv').config();
 
 import pubSubClient from 'pubSubClient';
-import IntentReader from './IntentReader';
+import IntentReader from 'IntentReader';
 
 const logger = require('./utils/Logger')('PubSubCommunication.js');
 let client = null;

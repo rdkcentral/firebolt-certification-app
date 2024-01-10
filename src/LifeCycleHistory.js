@@ -23,7 +23,7 @@ import { CONSTANTS } from './constant';
 import { getschemaValidationDone, getCurrentAppID } from './utils/Utils';
 const logger = require('./utils/Logger')('LifeCycleHistory.js');
 import FireboltExampleInvoker from './FireboltExampleInvoker';
-import IntentReader from 'IntentReader';
+import IntentReader from './IntentReader';
 
 let instance = null;
 let lifecycleValidation;

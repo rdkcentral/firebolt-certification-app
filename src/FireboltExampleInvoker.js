@@ -18,9 +18,7 @@
 
 import { Accessibility, Account, Advertising, Authentication, Capabilities, Device, Discovery, Keyboard, Lifecycle, Localization, Metrics, Profile, Parameters, SecondScreen, SecureStorage } from '@firebolt-js/sdk';
 import {
-  Accessory,
   Advertising as ManageAdvertising,
-  Power,
   AcknowledgeChallenge,
   Device as ManageDevice,
   Wifi,
@@ -72,8 +70,6 @@ const CORE_MODULE_MAP = {
 };
 
 const MANAGE_MODULE_MAP = {
-  power: Power,
-  accessory: Accessory,
   advertising: ManageAdvertising,
   acknowledgechallenge: AcknowledgeChallenge,
   device: ManageDevice,

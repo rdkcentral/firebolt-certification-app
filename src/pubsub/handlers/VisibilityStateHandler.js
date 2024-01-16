@@ -19,13 +19,13 @@
 import BaseHandler from './BaseHandler';
 
 export default class VisibilityStateHandler extends BaseHandler {
-    constructor(handlerName) {
-      super(handlerName);
-    }
+  constructor(handlerName) {
+    super(handlerName);
+  }
 
-    async handle() {
-        const visibilityState = window.document.visibilityState
-        const reportIdString = JSON.stringify({ report: visibilityState });
-        return reportIdString;
-    }
+  async handle() {
+    const visibilityState = window.document.visibilityState;
+    const reportIdString = JSON.stringify({ report: visibilityState });
+    return reportIdString;
+  }
 }

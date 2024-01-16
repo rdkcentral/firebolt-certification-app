@@ -68,7 +68,7 @@ const CORE_MODULE_MAP = {
   profile: Profile,
   parameters: Parameters,
   secondscreen: SecondScreen,
-  securestorage: SecureStorage,
+  securestorage: SecureStorage
 };
 
 const MANAGE_MODULE_MAP = {
@@ -90,6 +90,7 @@ const MANAGE_MODULE_MAP = {
   securestorage: ManageSecureStorage,
   discovery: ManageDiscovery,
   audiodescriptions: AudioDescriptions,
+  hdmiinput: HDMIInput
 };
 
 export const MODULE_MAP = {

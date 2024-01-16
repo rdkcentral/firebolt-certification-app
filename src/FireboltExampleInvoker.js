@@ -34,7 +34,7 @@ import {
   SecureStorage as ManageSecureStorage,
   Discovery as ManageDiscovery,
   AudioDescriptions,
-  HDMIInput
+  HDMIInput,
 } from '@firebolt-js/manage-sdk';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();
@@ -66,7 +66,7 @@ const CORE_MODULE_MAP = {
   profile: Profile,
   parameters: Parameters,
   secondscreen: SecondScreen,
-  securestorage: SecureStorage
+  securestorage: SecureStorage,
 };
 
 const MANAGE_MODULE_MAP = {
@@ -86,7 +86,7 @@ const MANAGE_MODULE_MAP = {
   securestorage: ManageSecureStorage,
   discovery: ManageDiscovery,
   audiodescriptions: AudioDescriptions,
-  hdmiinput: HDMIInput
+  hdmiinput: HDMIInput,
 };
 
 export const MODULE_MAP = {

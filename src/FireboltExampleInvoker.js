@@ -36,6 +36,7 @@ import {
   SecureStorage as ManageSecureStorage,
   Discovery as ManageDiscovery,
   AudioDescriptions,
+  HDMIInput
 } from '@firebolt-js/manage-sdk';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();

@@ -17,15 +17,19 @@
  */
 
 import BaseHandler from './BaseHandler';
-
+const logger = require('../../utils/Logger')('VisibilityStateHandler.js');
 export default class VisibilityStateHandler extends BaseHandler {
   constructor(handlerName) {
     super(handlerName);
   }
 
   async handle() {
-    const visibilityState = window.document.visibilityState;
-    const reportIdString = JSON.stringify({ report: visibilityState });
-    return reportIdString;
+    try {
+      const visibilityState = window.document.visibilityState;
+      const reportIdString = JSON.stringify({ report: visibilityState });
+      return reportIdString;
+    } catch (error) {
+      logger.error('Error while fetching vissibilityState', error);
+    }
   }
 }

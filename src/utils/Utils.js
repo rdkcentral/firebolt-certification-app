@@ -147,28 +147,35 @@ function pushReportToS3(report) {
 
     try {
       const parser = new xml2js.Parser();
-      [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.token', ['device']));
       let parsingSuccessful = false;
-
-      if (result && result.value && !err) {
-        const bufferObj = Buffer.from(result.value, 'base64');
-        const xmlData = bufferObj.toString('utf8');
-        parser.parseString(xmlData, function (err, result) {
-          if (err) {
-            parsingSuccessful = false;
-          } else {
-            const res = result['ns2:xcal-auth-message']['attribute'];
-            for (const resItem of res) {
-              if (resItem.$.key === 'device:ccpPki:estbMac') {
-                logger.info(resItem._, 'pushReportToS3');
-                macAddress = resItem._;
+      if(process.env.MACADDRESS){
+        parsingSuccessful = true;
+        macAddress = process.env.MACADDRESS.split(':').join('');
+        reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
+      }
+      else{
+        [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.token', ['device']));
+        let parsingSuccessful = false;
+        if (result && result.value && !err) {
+          const bufferObj = Buffer.from(result.value, 'base64');
+          const xmlData = bufferObj.toString('utf8');
+          parser.parseString(xmlData, function (err, result) {
+            if (err) {
+              parsingSuccessful = false;
+            } else {
+              const res = result['ns2:xcal-auth-message']['attribute'];
+              for (const resItem of res) {
+                if (resItem.$.key === 'device:ccpPki:estbMac') {
+                  logger.info(resItem._, 'pushReportToS3');
+                  macAddress = resItem._;
+                }
               }
+              macAddress = macAddress.split(':').join('');
+              reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
+              parsingSuccessful = true;
             }
-            macAddress = macAddress.split(':').join('');
-            reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
-            parsingSuccessful = true;
-          }
-        });
+          });
+        }
       }
 
       if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {

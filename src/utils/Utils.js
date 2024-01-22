@@ -148,12 +148,11 @@ function pushReportToS3(report) {
     try {
       const parser = new xml2js.Parser();
       let parsingSuccessful = false;
-      if(process.env.MACADDRESS){
+      if (process.env.MACADDRESS) {
         parsingSuccessful = true;
         macAddress = process.env.MACADDRESS.split(':').join('');
         reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
-      }
-      else{
+      } else {
         [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.token', ['device']));
         let parsingSuccessful = false;
         if (result && result.value && !err) {

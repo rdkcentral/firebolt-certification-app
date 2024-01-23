@@ -148,11 +148,7 @@ function pushReportToS3(report) {
     try {
       const parser = new xml2js.Parser();
       let parsingSuccessful = false;
-      if (process.env.MACADDRESS) {
-        parsingSuccessful = true;
-        macAddress = process.env.MACADDRESS.split(':').join('');
-        reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
-      } else {
+      if (!process.env.MACADDRESS) {
         [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.token', ['device']));
         let parsingSuccessful = false;
         if (result && result.value && !err) {
@@ -169,13 +165,15 @@ function pushReportToS3(report) {
                   macAddress = resItem._;
                 }
               }
-              macAddress = macAddress.split(':').join('');
-              reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
-              parsingSuccessful = true;
             }
           });
         }
+      } else {
+        macAddress = process.env.MACADDRESS;
       }
+      macAddress = macAddress.split(':').join('');
+      reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
+      parsingSuccessful = true;
 
       if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {
         reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;

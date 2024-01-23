@@ -150,7 +150,6 @@ function pushReportToS3(report) {
       let parsingSuccessful = false;
       if (!process.env.MACADDRESS) {
         [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.token', ['device']));
-        parsingSuccessful = false;
         if (result && result.value && !err) {
           const bufferObj = Buffer.from(result.value, 'base64');
           const xmlData = bufferObj.toString('utf8');
@@ -159,6 +158,7 @@ function pushReportToS3(report) {
               parsingSuccessful = false;
             } else {
               const res = result['ns2:xcal-auth-message']['attribute'];
+              parsingSuccessful = true;
               for (const resItem of res) {
                 if (resItem.$.key === 'device:ccpPki:estbMac') {
                   logger.info(resItem._, 'pushReportToS3');
@@ -170,10 +170,11 @@ function pushReportToS3(report) {
         }
       } else {
         macAddress = process.env.MACADDRESS;
+        parsingSuccessful = true;
       }
+
       macAddress = macAddress.split(':').join('');
       reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
-      parsingSuccessful = true;
 
       if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {
         reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;

@@ -150,7 +150,7 @@ function pushReportToS3(report) {
       let parsingSuccessful = false;
       if (!process.env.MACADDRESS) {
         [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.token', ['device']));
-        let parsingSuccessful = false;
+        parsingSuccessful = false;
         if (result && result.value && !err) {
           const bufferObj = Buffer.from(result.value, 'base64');
           const xmlData = bufferObj.toString('utf8');

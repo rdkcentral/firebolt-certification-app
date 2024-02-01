@@ -244,7 +244,7 @@ export class Test_Runner {
                   const err = error.responseError;
                   errorSchemaResult = true;
                   obj = {
-                    error: error,
+                    error: err,
                     param: example.params,
                     errorSchemaResult: errorSchemaResult,
                     methodWithExampleName: methodWithExampleName,
@@ -788,8 +788,8 @@ export class Test_Runner {
       if (result.error && result.error.message) {
         errorMessage = result.error.message;
       } else {
-        errorMessage = CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT;
-        result.error = CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT;
+        errorMessage = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: Obtained error - ${JSON.stringify(result.error)}`;
+        result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: Obtained error - ${JSON.stringify(result.error)}`;
       }
       const doesErrorMsgContainMethodNotFound = typeof errorMessage == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessage.toLowerCase()));
 

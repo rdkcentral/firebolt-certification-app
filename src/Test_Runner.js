@@ -195,13 +195,7 @@ export class Test_Runner {
                 } else {
                   schemaMap = method.result;
                 }
-                if (communicationMode == CONSTANTS.TRANSPORT) {
-                  const paramNames = method.params ? method.params.map((p) => p.name) : [];
-                  result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk, paramNames);
-                } else {
-                  result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk);
-                }
-
+                
                 if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
                   if (method.examples[exampleIndex].schema) {
                     method.examples[exampleIndex].schema = errorSchema;
@@ -209,6 +203,14 @@ export class Test_Runner {
                     method.result.schema = errorSchema;
                   }
                 }
+
+                if (communicationMode == CONSTANTS.TRANSPORT) {
+                  const paramNames = method.params ? method.params.map((p) => p.name) : [];
+                  result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk, paramNames);
+                } else {
+                  result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk);
+                }
+
                 let schemaValidationResultForEachExample = method.examples[exampleIndex].schema ? validator.validate(result, method.examples[exampleIndex].schema) : validator.validate(result, method.result.schema);
                 if (this.methodFilters.isEventMethod(methodObj)) {
                   logger.info(TAG + `${methodObj.name} Result => ${JSON.stringify(result)}`, 'northBoundSchemaValidationAndReportGeneration');

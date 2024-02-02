@@ -195,7 +195,7 @@ export class Test_Runner {
                 } else {
                   schemaMap = method.result;
                 }
-                
+
                 if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
                   if (method.examples[exampleIndex].schema) {
                     method.examples[exampleIndex].schema = errorSchema;

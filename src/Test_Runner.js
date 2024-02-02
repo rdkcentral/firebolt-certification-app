@@ -790,8 +790,14 @@ export class Test_Runner {
       if (result.error && result.error.message) {
         errorMessage = result.error.message;
       } else {
-        errorMessage = JSON.stringify(result.error);
-        result.error = JSON.stringify(result.error);
+        const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
+        if (this.methodFilters.isExceptionMethod(methodName, result.param)) {
+          errorMessage = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+        } else {
+          errorMessage = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+        }
       }
       const doesErrorMsgContainMethodNotFound = typeof errorMessage == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessage.toLowerCase()));
 

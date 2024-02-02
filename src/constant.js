@@ -135,7 +135,8 @@ export const CONSTANTS = {
   APPID_DOESNOT_MATCH: ' passed does not match launched app ',
   INVALID_LIFECYCLE_RECORD: 'Invalid lifecycle record request',
   WRONG_ERROR_MESSAGE_FORMAT: 'Error Message Format Not Conforming to standard',
-  WRONG_RESPONSE_MESSAGE_FORMAT: 'Unexpected error encountered instead of the anticipated response',  EXCLUDED_METHODS_FOR_SDK: [],
+  WRONG_RESPONSE_MESSAGE_FORMAT: 'Unexpected error encountered instead of the anticipated response',
+  EXCLUDED_METHODS_FOR_SDK: [],
   EXCLUDED_METHODS_FOR_TRANSPORT: [],
   defaultSDKs: [
     {

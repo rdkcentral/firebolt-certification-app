@@ -366,7 +366,7 @@ export default class App extends Base {
   }
   async getParameterInitializationValues() {
     await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Parameters.initialization', [], [])).then((res) => {
-      console.log('Response of Initialization ::: ', res);
+      console.log('Response of Initialization :::  ', res);
       if (res != undefined) {
         const action = res[0].discovery.navigateTo.action;
         if (action == 'search') {

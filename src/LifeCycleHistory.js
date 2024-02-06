@@ -107,7 +107,7 @@ export default class LifecycleHistory {
           const intentReader = new IntentReader();
           const query = JSON.parse(event.data.query);
           if (query.params && query.params.appId && query.params.testtoken && query.params.macaddress) {
-            if (process.env.PUBSUB_CONNECTION && process.env.PUBSUB_CONNECTION.readyState != 1) {
+            if (!process.env.PUBSUB_CONNECTION || process.env.PUBSUB_CONNECTION.readyState != 1) {
               process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
               process.env.CURRENT_APPID = query.params.appId;
               process.env.MACADDRESS = query.params.macaddress;

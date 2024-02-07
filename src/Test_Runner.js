@@ -195,13 +195,6 @@ export class Test_Runner {
                 } else {
                   schemaMap = method.result;
                 }
-                if (communicationMode == CONSTANTS.TRANSPORT) {
-                  const paramNames = method.params ? method.params.map((p) => p.name) : [];
-                  result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk, paramNames);
-                } else {
-                  result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk);
-                }
-
                 if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
                   if (method.examples[exampleIndex].schema) {
                     method.examples[exampleIndex].schema = errorSchema;
@@ -209,6 +202,13 @@ export class Test_Runner {
                     method.result.schema = errorSchema;
                   }
                 }
+                if (communicationMode == CONSTANTS.TRANSPORT) {
+                  const paramNames = method.params ? method.params.map((p) => p.name) : [];
+                  result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk, paramNames);
+                } else {
+                  result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk);
+                }
+
                 let schemaValidationResultForEachExample = method.examples[exampleIndex].schema ? validator.validate(result, method.examples[exampleIndex].schema) : validator.validate(result, method.result.schema);
                 if (this.methodFilters.isEventMethod(methodObj)) {
                   logger.info(TAG + `${methodObj.name} Result => ${JSON.stringify(result)}`, 'northBoundSchemaValidationAndReportGeneration');
@@ -244,7 +244,7 @@ export class Test_Runner {
                   const err = error.responseError;
                   errorSchemaResult = true;
                   obj = {
-                    error: error,
+                    error: err,
                     param: example.params,
                     errorSchemaResult: errorSchemaResult,
                     methodWithExampleName: methodWithExampleName,
@@ -788,8 +788,14 @@ export class Test_Runner {
       if (result.error && result.error.message) {
         errorMessage = result.error.message;
       } else {
-        errorMessage = CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT;
-        result.error = CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT;
+        const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
+        if (this.methodFilters.isExceptionMethod(methodName, result.param)) {
+          errorMessage = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+        } else {
+          errorMessage = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+        }
       }
       const doesErrorMsgContainMethodNotFound = typeof errorMessage == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessage.toLowerCase()));
 

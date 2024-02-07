@@ -51,6 +51,7 @@ const TAG = '[Test_Runner]: ';
  */
 let execMode;
 let invokedSdk;
+let errorSchemaBasedOnMode;
 
 /*
 Start and End time of API invocation
@@ -101,7 +102,7 @@ export class Test_Runner {
     const resultStartTime = new Date();
     let suiteStartTime = new Date();
     let errorSchemaResult;
-    errorSchema = (communicationMode == CONSTANTS.TRANSPORT) ? errorSchema['errorSchemaTransport'] : errorSchema['errorSchemaSDK'];
+    errorSchemaBasedOnMode = process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT ? errorSchema['errorSchemaTransport'] : errorSchema['errorSchemaSDK'];
 
     // This is the list of validation Results for each api ,This is the list that will be used for creating the report
     for (const executionMode of execModes) {
@@ -198,9 +199,9 @@ export class Test_Runner {
                 }
                 if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
                   if (method.examples[exampleIndex].schema) {
-                    method.examples[exampleIndex].schema = errorSchema;
+                    method.examples[exampleIndex].schema = errorSchemaBasedOnMode;
                   } else {
-                    method.result.schema = errorSchema;
+                    method.result.schema = errorSchemaBasedOnMode;
                   }
                 }
                 if (communicationMode == CONSTANTS.TRANSPORT) {
@@ -1163,7 +1164,7 @@ export class Test_Runner {
         errorSchemaResult: true,
         methodWithExampleName: methodWithExampleName,
         methodUuid: this.createUUID(),
-        schemaData: errorSchema,
+        schemaData: errorSchemaBasedOnMode,
       };
     } else {
       NOT_SUPPORTED_ERROR_MESSAGES.some((errorMessage) => error.message.includes(errorMessage));

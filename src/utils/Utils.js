@@ -290,8 +290,8 @@ function filterExamples(programlist, programType, offeringType) {
 function errorSchemaCheck(err, communicationMode) {
   let schemaValidationResult;
   if (errorSchema) {
-    let errorSchemaBasedOnMode = (communicationMode == CONSTANTS.TRANSPORT) ? errorSchema['errorSchemaTransport'] : errorSchema['errorSchemaSDK'];
-    schemaValidationResult = validator.validate(err, errorSchemaBasedOnMode); 
+    const errorSchemaBasedOnMode = communicationMode == CONSTANTS.TRANSPORT ? errorSchema[CONSTANTS.ERROR_SCHEMA_TRANSPORT] : errorSchema[CONSTANTS.ERROR_SCHEMA_SDK];
+    schemaValidationResult = validator.validate(err, errorSchemaBasedOnMode);
   }
   return schemaValidationResult;
 }

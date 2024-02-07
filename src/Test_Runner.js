@@ -102,7 +102,7 @@ export class Test_Runner {
     const resultStartTime = new Date();
     let suiteStartTime = new Date();
     let errorSchemaResult;
-    errorSchemaBasedOnMode = process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT ? errorSchema['errorSchemaTransport'] : errorSchema['errorSchemaSDK'];
+    errorSchemaBasedOnMode = process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT ? errorSchema[CONSTANTS.ERROR_SCHEMA_TRANSPORT] : errorSchema[CONSTANTS.ERROR_SCHEMA_SDK];
 
     // This is the list of validation Results for each api ,This is the list that will be used for creating the report
     for (const executionMode of execModes) {

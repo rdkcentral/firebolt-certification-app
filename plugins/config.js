@@ -18,7 +18,7 @@
 
 const CONFIG_CONSTANTS = {
   PLATFORM_XCLASS: '',
-  PLATFORM_LIST: [],
+  PLATFORM_LIST: ['XCLASS', 'XRE_ThorXRE', 'default', 'mock-firebolt-os'],
   PLATFORM_TARGET_MAPPING: {},
   FIREBOLT_CERT_UI_APPID: '',
   ACCOUNT_SESSION_TOKEN: '',

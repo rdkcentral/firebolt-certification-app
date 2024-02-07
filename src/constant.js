@@ -34,7 +34,7 @@ export const CONSTANTS = {
   NO_ERROR_FOUND: 'No error found',
   EXIT_MODAL_TITLE: 'Do you want to Exit ?',
   INTENT_RECEIVED: 'Intent received: ',
-  INTENT_ERR: 'Task failed: Intent error',
+  INTENT_ERR: 'Task failed:Intent error',
   TASK_COMPL: 'Task completed: ',
   COMPL_COLOR: 0xff008c00,
   ERR_COLOR: 0xffff0000,

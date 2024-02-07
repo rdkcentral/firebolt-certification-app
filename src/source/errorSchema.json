@@ -1,22 +1,42 @@
 {
-    "oneOf": [
-        {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "number"
+    "errorSchemaSDK": {
+        "oneOf": [
+            {
+                "type": "object",
+                "properties": {
+                    "code": {
+                        "type": "number"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
                 },
-                "message": {
-                    "type": "string"
-                }
+                "required": [
+                    "code",
+                    "message"
+                ]
             },
-            "required": [
-                "code",
-                "message"
-            ]
+            {
+                "type": "string"
+            }
+        ]
+    },
+    "errorSchemaTransport": {
+        "type": "object",
+        "properties": {
+            "code": {
+                "type": "number"
+            },
+            "message": {
+                "type": "string"
+            },
+            "data": {
+                "type": "string"
+            }
         },
-        {
-            "type": "string"
-        }
-    ]
+        "required": [
+            "code",
+            "message"
+        ]
+    }
 }

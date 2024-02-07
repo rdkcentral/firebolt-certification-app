@@ -101,6 +101,7 @@ export class Test_Runner {
     const resultStartTime = new Date();
     let suiteStartTime = new Date();
     let errorSchemaResult;
+    errorSchema = (communicationMode == CONSTANTS.TRANSPORT) ? errorSchema['errorSchemaTransport'] : errorSchema['errorSchemaSDK'];
 
     // This is the list of validation Results for each api ,This is the list that will be used for creating the report
     for (const executionMode of execModes) {
@@ -1154,7 +1155,7 @@ export class Test_Runner {
     let obj;
     const NOT_SUPPORTED_ERROR_MESSAGES = ['Unsupported', 'Not supported', 'not supported'];
     const errMessage = '{"code":' + error.code + ',"message":' + error.message + '}';
-    const schemaValidationResult = errorSchemaCheck(error);
+    const schemaValidationResult = errorSchemaCheck(error, process.env.COMMUNICATION_MODE);
     if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
       obj = {
         error: error,

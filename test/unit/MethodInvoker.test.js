@@ -351,10 +351,30 @@ describe('MethodInvoker', () => {
             oneOf: [
               {
                 type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
+                additionalProperties: false,
                 required: ['code', 'message'],
+                properties: {
+                  code: {
+                    title: 'errorObjectCode',
+                    description:
+                      'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                    type: 'integer',
+                  },
+                  message: {
+                    title: 'errorObjectMessage',
+                    description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                    type: 'string',
+                  },
+                  data: {
+                    title: 'errorObjectData',
+                    description:
+                      'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                  },
+                },
               },
-              { type: 'string' },
+              {
+                type: 'string',
+              },
             ],
           },
           options: {},
@@ -369,10 +389,30 @@ describe('MethodInvoker', () => {
                 oneOf: [
                   {
                     type: 'object',
-                    properties: { code: { type: 'number' }, message: { type: 'string' } },
+                    additionalProperties: false,
                     required: ['code', 'message'],
+                    properties: {
+                      code: {
+                        title: 'errorObjectCode',
+                        description:
+                          'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                        type: 'integer',
+                      },
+                      message: {
+                        title: 'errorObjectMessage',
+                        description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                        type: 'string',
+                      },
+                      data: {
+                        title: 'errorObjectData',
+                        description:
+                          'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                      },
+                    },
                   },
-                  { type: 'string' },
+                  {
+                    type: 'string',
+                  },
                 ],
               },
               instance: {
@@ -415,10 +455,30 @@ describe('MethodInvoker', () => {
             oneOf: [
               {
                 type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
+                additionalProperties: false,
                 required: ['code', 'message'],
+                properties: {
+                  code: {
+                    title: 'errorObjectCode',
+                    description:
+                      'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                    type: 'integer',
+                  },
+                  message: {
+                    title: 'errorObjectMessage',
+                    description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                    type: 'string',
+                  },
+                  data: {
+                    title: 'errorObjectData',
+                    description:
+                      'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                  },
+                },
               },
-              { type: 'string' },
+              {
+                type: 'string',
+              },
             ],
           },
           options: {},
@@ -470,10 +530,30 @@ describe('MethodInvoker', () => {
             oneOf: [
               {
                 type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
+                additionalProperties: false,
                 required: ['code', 'message'],
+                properties: {
+                  code: {
+                    title: 'errorObjectCode',
+                    description:
+                      'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                    type: 'integer',
+                  },
+                  message: {
+                    title: 'errorObjectMessage',
+                    description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                    type: 'string',
+                  },
+                  data: {
+                    title: 'errorObjectData',
+                    description:
+                      'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                  },
+                },
               },
-              { type: 'string' },
+              {
+                type: 'string',
+              },
             ],
           },
           options: {},
@@ -501,10 +581,30 @@ describe('MethodInvoker', () => {
             oneOf: [
               {
                 type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
+                additionalProperties: false,
                 required: ['code', 'message'],
+                properties: {
+                  code: {
+                    title: 'errorObjectCode',
+                    description:
+                      'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                    type: 'integer',
+                  },
+                  message: {
+                    title: 'errorObjectMessage',
+                    description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                    type: 'string',
+                  },
+                  data: {
+                    title: 'errorObjectData',
+                    description:
+                      'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                  },
+                },
               },
-              { type: 'string' },
+              {
+                type: 'string',
+              },
             ],
           },
           options: {},
@@ -534,10 +634,30 @@ describe('MethodInvoker', () => {
             oneOf: [
               {
                 type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
+                additionalProperties: false,
                 required: ['code', 'message'],
+                properties: {
+                  code: {
+                    title: 'errorObjectCode',
+                    description:
+                      'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                    type: 'integer',
+                  },
+                  message: {
+                    title: 'errorObjectMessage',
+                    description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                    type: 'string',
+                  },
+                  data: {
+                    title: 'errorObjectData',
+                    description:
+                      'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                  },
+                },
               },
-              { type: 'string' },
+              {
+                type: 'string',
+              },
             ],
           },
           options: {},
@@ -552,10 +672,30 @@ describe('MethodInvoker', () => {
                 oneOf: [
                   {
                     type: 'object',
-                    properties: { code: { type: 'number' }, message: { type: 'string' } },
+                    additionalProperties: false,
                     required: ['code', 'message'],
+                    properties: {
+                      code: {
+                        title: 'errorObjectCode',
+                        description:
+                          'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                        type: 'integer',
+                      },
+                      message: {
+                        title: 'errorObjectMessage',
+                        description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                        type: 'string',
+                      },
+                      data: {
+                        title: 'errorObjectData',
+                        description:
+                          'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                      },
+                    },
                   },
-                  { type: 'string' },
+                  {
+                    type: 'string',
+                  },
                 ],
               },
               instance: { code: 'mockError', message: 'Method Not Implemented' },
@@ -587,10 +727,30 @@ describe('MethodInvoker', () => {
             oneOf: [
               {
                 type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
+                additionalProperties: false,
                 required: ['code', 'message'],
+                properties: {
+                  code: {
+                    title: 'errorObjectCode',
+                    description:
+                      'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                    type: 'integer',
+                  },
+                  message: {
+                    title: 'errorObjectMessage',
+                    description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                    type: 'string',
+                  },
+                  data: {
+                    title: 'errorObjectData',
+                    description:
+                      'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                  },
+                },
               },
-              { type: 'string' },
+              {
+                type: 'string',
+              },
             ],
           },
           options: {},
@@ -605,10 +765,30 @@ describe('MethodInvoker', () => {
                 oneOf: [
                   {
                     type: 'object',
-                    properties: { code: { type: 'number' }, message: { type: 'string' } },
+                    additionalProperties: false,
                     required: ['code', 'message'],
+                    properties: {
+                      code: {
+                        title: 'errorObjectCode',
+                        description:
+                          'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                        type: 'integer',
+                      },
+                      message: {
+                        title: 'errorObjectMessage',
+                        description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                        type: 'string',
+                      },
+                      data: {
+                        title: 'errorObjectData',
+                        description:
+                          'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                      },
+                    },
                   },
-                  { type: 'string' },
+                  {
+                    type: 'string',
+                  },
                 ],
               },
               instance: { code: 'mockError', message: 'some error' },
@@ -640,10 +820,30 @@ describe('MethodInvoker', () => {
             oneOf: [
               {
                 type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
+                additionalProperties: false,
                 required: ['code', 'message'],
+                properties: {
+                  code: {
+                    title: 'errorObjectCode',
+                    description:
+                      'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+                    type: 'integer',
+                  },
+                  message: {
+                    title: 'errorObjectMessage',
+                    description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+                    type: 'string',
+                  },
+                  data: {
+                    title: 'errorObjectData',
+                    description:
+                      'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+                  },
+                },
               },
-              { type: 'string' },
+              {
+                type: 'string',
+              },
             ],
           },
           options: {},

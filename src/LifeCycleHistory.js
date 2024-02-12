@@ -106,7 +106,10 @@ export default class LifecycleHistory {
         if (event.data.query != undefined) {
           const intentReader = new IntentReader();
           const query = JSON.parse(event.data.query);
+
+          // Establishing a pubSub connection when an intent is received in the navigateTo intent with the following parameters.
           if (query.params && query.params.appId && query.params.testtoken && query.params.macaddress) {
+            // PUBSUB_CONNECTION environment variable has a pubsub client instance and calls the isConnected function to check the Websocket status.
             if (!process.env.PUBSUB_CONNECTION || (process.env.PUBSUB_CONNECTION && !process.env.PUBSUB_CONNECTION.isConnected())) {
               process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
               process.env.CURRENT_APPID = query.params.appId;

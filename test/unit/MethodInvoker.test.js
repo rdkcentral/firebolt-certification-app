@@ -200,7 +200,7 @@ const errorSchemaSDK = {
       type: 'string',
     },
   ],
-}
+};
 
 jest.mock('../../src/FireboltExampleInvoker', () => {
   const mockModuleMap = {

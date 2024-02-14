@@ -29,10 +29,8 @@ export default class LifecycleMethodHandler extends BaseHandler {
   }
   async handle(message) {
     const sdkInvokerInfo = new Test_Runner();
-    let lifecycleApiResponse;
+    const lifecycleApiResponse;
     lifecycleApiResponse = await sdkInvokerInfo.invokeLifecycleAPI(message.params);
-    return lifecycleApiResponse
+    return lifecycleApiResponse;
   }
-
-
 }

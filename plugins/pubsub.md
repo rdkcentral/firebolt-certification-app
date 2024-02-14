@@ -114,7 +114,7 @@ class PubSubClient {
     let status = false;
     if(this.ws && this.ws.readyState == this.ws.OPEN){
       logger.info('WS connection already Established');
-      status = true
+      status = true;
     }
     return status;
   }

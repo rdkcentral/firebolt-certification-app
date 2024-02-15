@@ -39,6 +39,5 @@ export default class LifecycleMethodHandler extends BaseHandler {
       };
       return JSON.stringify({ report: result });
     }
-
   }
 }

@@ -38,7 +38,7 @@ import { withAnnouncer } from '@lightningjs/ui-components';
 const Base = withAnnouncer(lng.Application);
 import Toast, { eventEmitter } from './Toast';
 import IntentReader from 'IntentReader';
-
+let webSocket
 export default class App extends Base {
   static _template() {
     return {
@@ -132,10 +132,13 @@ export default class App extends Base {
         // Making a Rest Call to check MockOs is running
         this.checkStatus();
       }
-      const webSocket = new WebSocket(CONSTANTS.MOCKOS_PORT);
+      webSocket = new WebSocket(CONSTANTS.MOCKOS_PORT);
       webSocket.onopen = function () {
         process.env.MOCKOS = true;
       };
+      webSocket.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
       this.pubSubListener();
     }
     const pubSubTopicUUID = new URLSearchParams(appUrl.search).get('pubsub_uuid');
@@ -347,6 +350,7 @@ export default class App extends Base {
     } else {
       // using lifecycle close method to close the app ['userExit'] or  ['remoteButton']
       FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Lifecycle.close', ['userExit']);
+      webSocket.close()
     }
   }
 

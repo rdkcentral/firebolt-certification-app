@@ -119,7 +119,7 @@ export default class App extends Base {
     }
     // Get values from Parameter.initialization - Start
     try {
-      await this.getParameterInitializationValues();
+      await this.getParameterInitializationValues()
     } catch (e) {
       logger.error(JSON.stringify(e), 'init');
     }

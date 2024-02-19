@@ -64,18 +64,20 @@ jobs:
         run: exit 1
 
       - name: Comment on PR
-        if: steps.comment.outputs.PR_COMMENT != 'Linting and unit tests succeeded.' && ${{ github.event_name }} == 'pull_request'
+        if: steps.comment.outputs.PR_COMMENT != 'Linting and unit tests succeeded.'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_COMMENT: ${{ steps.comment.outputs.PR_COMMENT }}
         run: |
-          JSON_PAYLOAD=$(jq -n --arg body "$PR_COMMENT" '{"body": $body}')
+          if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+            JSON_PAYLOAD=$(jq -n --arg body "$PR_COMMENT" '{"body": $body}')
 
-          echo "Generated JSON payload:"
-          echo "$JSON_PAYLOAD"
+            echo "Generated JSON payload:"
+            echo "$JSON_PAYLOAD"
 
-          curl -X POST \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "Content-Type: application/json" \
-            -d "$JSON_PAYLOAD" \
-            "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+            curl -X POST \
+              -H "Authorization: Bearer $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "$JSON_PAYLOAD" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments"
+          fi

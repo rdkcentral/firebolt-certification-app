@@ -202,8 +202,8 @@ function pushReportToS3(report) {
       let prefix = process.env.STANDALONE_PREFIX ? process.env.STANDALONE_PREFIX : 'standaloneReports';
       const reportNameSplit = reportName.split('-');
       const reportId = reportNameSplit[0];
-      restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + "-" + reportName + '.json';
-      console.log("Divya RestAPIURL"+JSON.stringify(restApiUrl))
+      restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
+      console.log('Divya RestAPIURL' + JSON.stringify(restApiUrl));
       logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReportToS3');
     }
 

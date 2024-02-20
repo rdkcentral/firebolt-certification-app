@@ -111,7 +111,7 @@ export default class App extends Base {
     testContext ? (process.env.TESTCONTEXT = JSON.parse(testContext)) : (process.env.TESTCONTEXT = false);
     process.env.TESTCONTEXT = true; // Making TESTCONTEXT = true by default. This line will be removed in later stages when required
     process.env.TEST_TOKEN = this.testToken;
-    process.env.STANDALONE_PREFIX = standalonePrefix
+    process.env.STANDALONE_PREFIX = standalonePrefix;
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
     if (platform) {

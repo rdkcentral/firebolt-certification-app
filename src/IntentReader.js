@@ -90,7 +90,7 @@ export default class IntentReader {
     if ('standalonePrefix' in message) {
       process.env.STANDALONE_PREFIX = message.standalonePrefix;
     }
-    
+
     const handler = handlers[message.task];
     if (handler === undefined) {
       logger.info('Undefined handler: ' + message.task);

@@ -199,7 +199,7 @@ function pushReportToS3(report) {
 
     // Uplaods to standalone url if standalone param is passed in url
     if (process.env.STANDALONE == 'true') {
-      let prefix = process.env.STANDALONE_PREFIX ? process.env.STANDALONE_PREFIX : 'standaloneReports';
+      const prefix = process.env.STANDALONE_PREFIX ? process.env.STANDALONE_PREFIX : 'standaloneReports';
       const reportNameSplit = reportName.split('-');
       const reportId = reportNameSplit[0];
       restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';

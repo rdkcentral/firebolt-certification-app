@@ -98,6 +98,7 @@ export default class App extends Base {
     this.accessibilityCheck(voiceGuidanceOverride === 'false' ? CONSTANTS.DISABLE_VOICE_ANNOUNCEMENT : CONSTANTS.ENABLE_VOICE_ANNOUNCEMENT);
     const platform = new URLSearchParams(appUrl.search).get('platform');
     const testContext = new URLSearchParams(window.location.search).get('testContext');
+    const standalonePrefix = new URLSearchParams(appUrl.search).get('standalonePrefix');
     const reportingId = new URLSearchParams(appUrl.search).get('reportingId');
     const standalone = new URLSearchParams(appUrl.search).get('standalone');
     this.systemui = new URLSearchParams(window.location.search).get('systemui');
@@ -110,6 +111,7 @@ export default class App extends Base {
     testContext ? (process.env.TESTCONTEXT = JSON.parse(testContext)) : (process.env.TESTCONTEXT = false);
     process.env.TESTCONTEXT = true; // Making TESTCONTEXT = true by default. This line will be removed in later stages when required
     process.env.TEST_TOKEN = this.testToken;
+    process.env.STANDALONE_PREFIX = standalonePrefix
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
     if (platform) {

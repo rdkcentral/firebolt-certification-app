@@ -97,7 +97,7 @@ export class MethodInvoker {
       }
       // if the method is not supported and it gives a valid response, validate against errorschema instead of api schema
       if (message.params.isNotSupportedApi == true && response != undefined) {
-        schemaValidationResult = errorSchemaCheck(response);
+        schemaValidationResult = errorSchemaCheck(response, process.env.COMMUNICATION_MODE);
       }
     } catch (error) {
       logger.error('Error: ', error);
@@ -121,7 +121,7 @@ export class MethodInvoker {
     let apiResponse, responseCode, schemaValidationStatus;
     if (err) {
       apiResponse = { result: null, error: err };
-      schemaValidationResult = errorSchemaCheck(err);
+      schemaValidationResult = errorSchemaCheck(err, process.env.COMMUNICATION_MODE);
       if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
         if (err.message != undefined && CONSTANTS.ERROR_LIST.includes(err.message)) {
           responseCode = CONSTANTS.STATUS_CODE[3];

@@ -170,6 +170,38 @@ const mockFireboltTransportInvoker = {
     return Promise.resolve('success');
   }),
 };
+
+const errorSchemaSDK = {
+  oneOf: [
+    {
+      type: 'object',
+      additionalProperties: false,
+      required: ['code', 'message'],
+      properties: {
+        code: {
+          title: 'errorObjectCode',
+          description:
+            'A Number that indicates the error type that occurred. This MUST be an integer. The error codes from and including -32768 to -32000 are reserved for pre-defined errors. These pre-defined errors SHOULD be assumed to be returned from any JSON-RPC api.',
+          type: 'integer',
+        },
+        message: {
+          title: 'errorObjectMessage',
+          description: 'A String providing a short description of the error. The message SHOULD be limited to a concise single sentence.',
+          type: 'string',
+        },
+        data: {
+          title: 'errorObjectData',
+          description:
+            'A Primitive or Structured value that contains additional information about the error. This may be omitted. The value of this member is defined by the Server (e.g. detailed error information, nested errors etc.).',
+        },
+      },
+    },
+    {
+      type: 'string',
+    },
+  ],
+};
+
 jest.mock('../../src/FireboltExampleInvoker', () => {
   const mockModuleMap = {
     mocksdk: {
@@ -347,16 +379,7 @@ describe('MethodInvoker', () => {
         schemaValidationStatus: 'FAIL',
         schemaValidationResponse: {
           instance: { code: 'FCAError', message: 'Expected `schema` to be an object or boolean' },
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
-                required: ['code', 'message'],
-              },
-              { type: 'string' },
-            ],
-          },
+          schema: errorSchemaSDK,
           options: {},
           path: [],
           propertyPath: 'instance',
@@ -365,16 +388,7 @@ describe('MethodInvoker', () => {
               path: [],
               property: 'instance',
               message: 'is not exactly one from [subschema 0],[subschema 1]',
-              schema: {
-                oneOf: [
-                  {
-                    type: 'object',
-                    properties: { code: { type: 'number' }, message: { type: 'string' } },
-                    required: ['code', 'message'],
-                  },
-                  { type: 'string' },
-                ],
-              },
+              schema: errorSchemaSDK,
               instance: {
                 code: 'FCAError',
                 message: 'Expected `schema` to be an object or boolean',
@@ -411,16 +425,7 @@ describe('MethodInvoker', () => {
         schemaValidationStatus: 'PASS',
         schemaValidationResponse: {
           instance: { code: -32601, message: 'Wrong Method Name' },
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
-                required: ['code', 'message'],
-              },
-              { type: 'string' },
-            ],
-          },
+          schema: errorSchemaSDK,
           options: {},
           path: [],
           propertyPath: 'instance',
@@ -466,16 +471,7 @@ describe('MethodInvoker', () => {
         schemaValidationStatus: 'PASS',
         schemaValidationResponse: {
           instance: err,
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
-                required: ['code', 'message'],
-              },
-              { type: 'string' },
-            ],
-          },
+          schema: errorSchemaSDK,
           options: {},
           path: [],
           propertyPath: 'instance',
@@ -497,16 +493,7 @@ describe('MethodInvoker', () => {
         schemaValidationStatus: 'PASS',
         schemaValidationResponse: {
           instance: err,
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
-                required: ['code', 'message'],
-              },
-              { type: 'string' },
-            ],
-          },
+          schema: errorSchemaSDK,
           options: {},
           path: [],
           propertyPath: 'instance',
@@ -530,16 +517,7 @@ describe('MethodInvoker', () => {
         schemaValidationStatus: 'FAIL',
         schemaValidationResponse: {
           instance: err,
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
-                required: ['code', 'message'],
-              },
-              { type: 'string' },
-            ],
-          },
+          schema: errorSchemaSDK,
           options: {},
           path: [],
           propertyPath: 'instance',
@@ -548,16 +526,7 @@ describe('MethodInvoker', () => {
               path: [],
               property: 'instance',
               message: 'is not exactly one from [subschema 0],[subschema 1]',
-              schema: {
-                oneOf: [
-                  {
-                    type: 'object',
-                    properties: { code: { type: 'number' }, message: { type: 'string' } },
-                    required: ['code', 'message'],
-                  },
-                  { type: 'string' },
-                ],
-              },
+              schema: errorSchemaSDK,
               instance: { code: 'mockError', message: 'Method Not Implemented' },
               name: 'oneOf',
               argument: ['[subschema 0]', '[subschema 1]'],
@@ -583,16 +552,7 @@ describe('MethodInvoker', () => {
         schemaValidationStatus: 'FAIL',
         schemaValidationResponse: {
           instance: err,
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
-                required: ['code', 'message'],
-              },
-              { type: 'string' },
-            ],
-          },
+          schema: errorSchemaSDK,
           options: {},
           path: [],
           propertyPath: 'instance',
@@ -601,16 +561,7 @@ describe('MethodInvoker', () => {
               path: [],
               property: 'instance',
               message: 'is not exactly one from [subschema 0],[subschema 1]',
-              schema: {
-                oneOf: [
-                  {
-                    type: 'object',
-                    properties: { code: { type: 'number' }, message: { type: 'string' } },
-                    required: ['code', 'message'],
-                  },
-                  { type: 'string' },
-                ],
-              },
+              schema: errorSchemaSDK,
               instance: { code: 'mockError', message: 'some error' },
               name: 'oneOf',
               argument: ['[subschema 0]', '[subschema 1]'],
@@ -636,16 +587,7 @@ describe('MethodInvoker', () => {
         schemaValidationStatus: 'PASS',
         schemaValidationResponse: {
           instance: err,
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
-                required: ['code', 'message'],
-              },
-              { type: 'string' },
-            ],
-          },
+          schema: errorSchemaSDK,
           options: {},
           path: [],
           propertyPath: 'instance',

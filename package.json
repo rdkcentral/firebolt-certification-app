@@ -6,7 +6,7 @@
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "@firebolt-js/manage-sdk": "1.0.0",
     "@firebolt-js/sdk": "1.0.0",
-    "@lightningjs/core": "*",
+    "@lightningjs/core": "2.11.0",
     "@lightningjs/sdk": "^5.0.1",
     "@lightningjs/ui-components": "^2.2.2",
     "dotenv": "^14.2.0",

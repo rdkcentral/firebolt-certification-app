@@ -149,7 +149,7 @@ function pushReportToS3(report) {
       const parser = new xml2js.Parser();
       let parsingSuccessful = false;
       if (!process.env.MACADDRESS) {
-        [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.token', ['device']));
+        console.log('Inside If to get the Mac address')[(result, err)] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.root', ['device']));
         if (result && result.value && !err) {
           const bufferObj = Buffer.from(result.value, 'base64');
           const xmlData = bufferObj.toString('utf8');
@@ -179,7 +179,7 @@ function pushReportToS3(report) {
       if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {
         reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;
       }
-
+      console.log('Parsing Sucessful:::' + parsingSuccessful);
       if (!parsingSuccessful) {
         reportName =
           process.env.REPORTINGID && process.env.STANDALONE

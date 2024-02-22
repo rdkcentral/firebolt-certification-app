@@ -28,7 +28,7 @@ const xml2js = require('xml2js');
 const logger = require('../utils/Logger')('Utils.js');
 
 let deSchemaList, invokedSdk;
-let uuid = uuidv4().replace(/-/g, '');
+const uuid = uuidv4().replace(/-/g, '');
 
 /**
  * This function returns a list with the result (if successful) or the error (on failure),

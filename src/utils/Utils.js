@@ -153,19 +153,23 @@ function pushReportToS3(report) {
         if (result && result.value && !err) {
           const bufferObj = Buffer.from(result.value, 'base64');
           const xmlData = bufferObj.toString('utf8');
-          parser.parseString(xmlData, function (err, result) {
-            if (err) {
-              parsingSuccessful = false;
-            } else {
-              const res = result['ns2:xcal-auth-message']['attribute'];
-              parsingSuccessful = true;
-              for (const resItem of res) {
-                if (resItem.$.key === 'device:ccpPki:estbMac') {
-                  logger.info(resItem._, 'pushReportToS3');
-                  macAddress = resItem._;
+          await new Promise((resolve, reject) => {
+            parser.parseString(xmlData, function (err, result) {
+              if (err) {
+                parsingSuccessful = false;
+                resolve();
+              } else {
+                const res = result['ns2:xcal-auth-message']['attribute'];
+                parsingSuccessful = true;
+                for (const resItem of res) {
+                  if (resItem.$.key === 'device:ccpPki:estbMac') {
+                    logger.info(resItem._, 'pushReportToS3');
+                    macAddress = resItem._;
+                  }
                 }
+                resolve();
               }
-            }
+            });
           });
         }
       } else {
@@ -175,12 +179,12 @@ function pushReportToS3(report) {
 
       macAddress = macAddress.split(':').join('');
       reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
-
+      console.log('Parsing Sucessful:::' + parsingSuccessful);
       if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {
         reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;
       }
-      console.log('Parsing Sucessful:::' + parsingSuccessful);
       if (!parsingSuccessful) {
+        console.log('Parsing not successful');
         reportName =
           process.env.REPORTINGID && process.env.STANDALONE
             ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend

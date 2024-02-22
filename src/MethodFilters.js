@@ -106,7 +106,7 @@ export default class MethodFilters {
     let isException = false;
     if (exceptionMethods && Array.isArray(exceptionMethods)) {
       const methodInExceptionList = exceptionMethods.find((object) => {
-        if (object.hasOwnProperty('param') && object.method == methodName && methodParams.find((paramsObj) => object.param[paramsObj.name] == paramsObj.value)) {
+        if (object.hasOwnProperty('param') && object.method == methodName && methodParams.find((paramsObj) => _.isEqual(object.param[paramsObj.name], paramsObj.value))) {
           return true;
         } else if (!object.hasOwnProperty('param') && object.method && object.method == methodName) {
           return true;

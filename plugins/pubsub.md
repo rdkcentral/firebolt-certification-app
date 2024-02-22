@@ -108,6 +108,16 @@ class PubSubClient {
       return false;
     }
   }
+
+  // Checking WebSocket Connection status
+  isConnected() {
+    let status = false;
+    if(this.ws && this.ws.readyState == this.ws.OPEN){
+      logger.info('WS connection already Established');
+      status = true;
+    }
+    return status;
+  }
 }
 
 const getClient = async () => {
@@ -128,6 +138,8 @@ Here is an overview of the functions provided by the PubSubClient class:
 - `subscribe(topic, callback)` - Subscribes to the specified topic and executes a callback function when a message is received.
 
 - `unsubscribe(topic)` - Unsubscribes from the specified topic.
+
+- `isConnected()` - Checking WebSocket Connection status.
 
 To add your own PubSub client, create a new instance of the PubSubClient class in `/plugins/pubSubClient.js` and use the functions provided by the class to publish and subscribe to topics. You can use the getClient() function to create a new instance of the `PubSubClient` class.
 

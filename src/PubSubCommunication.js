@@ -76,6 +76,7 @@ export default class PubSubCommunication {
     try {
       // Establishing pubsub connection. Compression is enabled by default.
       client = await pubSubClient.getClient();
+      process.env.PUBSUB_CONNECTION = client;
       client.subscribe(process.env.PUBSUB_SUBSCRIBE_TOPIC, (data) => {
         let message = null;
         let headers = null;

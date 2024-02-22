@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
-        
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -69,7 +69,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_COMMENT: ${{ steps.comment.outputs.PR_COMMENT }}
         run: |
-          if [[ "${{ github.event_name }}" == 'pull_request' ]]; then
+          if [[ "${{ github.event_name }}" == 'pull_request' && "$PR_COMMENT" != 'Linting and unit tests succeeded.' ]]; then
             JSON_PAYLOAD=$(jq -n --arg body "$PR_COMMENT" '{"body": $body}')
 
             echo "Generated JSON payload:"

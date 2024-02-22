@@ -150,8 +150,7 @@ function pushReportToS3(report) {
       const parser = new xml2js.Parser();
       let parsingSuccessful = false;
       if (!process.env.MACADDRESS) {
-        console.log('Inside If to get the Mac address')[(result, err)] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.root', ['device']));
-        console.log('Error');
+        [(result, err)] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.token', ['device']));
         if (result && result.value && !err) {
           const bufferObj = Buffer.from(result.value, 'base64');
           const xmlData = bufferObj.toString('utf8');
@@ -181,12 +180,10 @@ function pushReportToS3(report) {
 
       macAddress = macAddress.split(':').join('');
       reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
-      console.log('Parsing Sucessful:::' + parsingSuccessful);
       if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {
         reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;
       }
       if (typeof parsingSuccessful !== 'undefined' && !parsingSuccessful) {
-        console.log('Parsing not successful');
         reportName =
           process.env.REPORTINGID && process.env.STANDALONE
             ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend
@@ -209,7 +206,6 @@ function pushReportToS3(report) {
       const reportNameSplit = reportName.split('-');
       const reportId = reportNameSplit[0];
       restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
-      logger.info('Divya RestAPIURL' + JSON.stringify(restApiUrl));
       logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReportToS3');
     }
 

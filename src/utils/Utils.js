@@ -28,6 +28,7 @@ const xml2js = require('xml2js');
 const logger = require('../utils/Logger')('Utils.js');
 
 let deSchemaList, invokedSdk;
+let uuid = uuidv4().replace(/-/g, "");
 
 /**
  * This function returns a list with the result (if successful) or the error (on failure),
@@ -190,12 +191,12 @@ function pushReportToS3(report) {
           process.env.REPORTINGID && process.env.STANDALONE
             ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend
             : !process.env.REPORTINGID && process.env.STANDALONE
-              ? uuidv4() + '-' + 'refAppExecReport' + '-' + fileNameAppend
+              ? uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend
               : 'refAppExecReport' + '-' + fileNameAppend;
       }
     } catch (error) {
       logger.error(error, 'pushReportToS3');
-      reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : uuidv4() + '-' + 'refAppExecReport' + '-' + fileNameAppend;
+      reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend;
     }
 
     let restApiUrl = CONSTANTS.REPORT_PUBLISH_URL + reportName + '.json';

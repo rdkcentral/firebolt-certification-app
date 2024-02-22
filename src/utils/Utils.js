@@ -150,6 +150,7 @@ function pushReportToS3(report) {
       let parsingSuccessful = false;
       if (!process.env.MACADDRESS) {
         console.log('Inside If to get the Mac address')[(result, err)] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.root', ['device']));
+        console.log("Error")
         if (result && result.value && !err) {
           const bufferObj = Buffer.from(result.value, 'base64');
           const xmlData = bufferObj.toString('utf8');
@@ -183,7 +184,7 @@ function pushReportToS3(report) {
       if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {
         reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;
       }
-      if (!parsingSuccessful) {
+      if (typeof parsingSuccessful !== 'undefined' && !parsingSuccessful){
         console.log('Parsing not successful');
         reportName =
           process.env.REPORTINGID && process.env.STANDALONE

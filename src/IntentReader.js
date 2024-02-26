@@ -45,6 +45,7 @@ import RegisterProviderHandler from './pubsub/handlers/RegisterProviderHandler';
 import GetEventResponse from './pubsub/handlers/GetEventResponse';
 import GetMethodResponseHandler from './pubsub/handlers/GetMethodResponseHandler';
 import VisibilityStateHandler from '../src/pubsub/handlers/VisibilityStateHandler';
+import LifecycleMethodHandler from './pubsub/handlers/LifecycleMethodHandler';
 
 const logger = require('./utils/Logger')('IntentReader.js');
 
@@ -63,6 +64,7 @@ const handlers = {
   getEventResponse: new GetEventResponse('getEventResponse'),
   getMethodResponse: new GetMethodResponseHandler('getMethodResponse'),
   visibilityState: new VisibilityStateHandler('visibilityState'),
+  callLifecycle: new LifecycleMethodHandler('callLifecycle'),
   [CONSTANTS.CALL_METHOD]: new CallMethodHandler(CONSTANTS.CALL_METHOD),
   [CONSTANTS.HEALTH_CHECK]: new HealthCheckHandler(CONSTANTS.HEALTH_CHECK),
 };
@@ -83,6 +85,10 @@ export default class IntentReader {
 
     if ('reportingId' in message) {
       process.env.REPORTINGID = message.reportingId;
+    }
+
+    if ('standalonePrefix' in message) {
+      process.env.STANDALONE_PREFIX = message.standalonePrefix;
     }
 
     const handler = handlers[message.task];

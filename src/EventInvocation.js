@@ -23,7 +23,7 @@
 //   * Return results of all the events
 // ************* End Description **********
 
-import { dereferenceOpenRPC, errorSchemaCheck, rpcEventHandler } from './utils/Utils';
+import { dereferenceOpenRPC, errorSchemaCheck } from './utils/Utils';
 import { MODULE_MAP } from './FireboltExampleInvoker';
 import { CONSTANTS } from './constant';
 import Transport from '@firebolt-js/sdk/dist/lib/Transport/index.mjs';
@@ -125,7 +125,7 @@ export class EventInvocation {
       let schemaValidationResult = {};
       let schemaValidationStatus = CONSTANTS.PASS;
       if (message.params.isNotSupportedApi == true) {
-        schemaValidationResult = errorSchemaCheck(listenerResponse);
+        schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
         schemaValidationStatus = CONSTANTS.FAIL;
       }
       registrationResponse['eventListenerSchemaResult'] = {
@@ -140,7 +140,7 @@ export class EventInvocation {
       }
       registrationResponse['eventListenerResponse'] = { result: null, error: listenerResponse };
       // In case of error, validate error against errorschema
-      const schemaValidationResult = errorSchemaCheck(listenerResponse);
+      const schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
       if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
         registrationResponse['eventListenerSchemaResult'] = {
           status: CONSTANTS.FAIL,

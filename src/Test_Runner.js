@@ -51,6 +51,7 @@ const TAG = '[Test_Runner]: ';
  */
 let execMode;
 let invokedSdk;
+let errorSchemaBasedOnMode;
 
 /*
 Start and End time of API invocation
@@ -101,6 +102,7 @@ export class Test_Runner {
     const resultStartTime = new Date();
     let suiteStartTime = new Date();
     let errorSchemaResult;
+    errorSchemaBasedOnMode = process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT ? errorSchema[CONSTANTS.ERROR_SCHEMA_TRANSPORT] : errorSchema[CONSTANTS.ERROR_SCHEMA_SDK];
 
     // This is the list of validation Results for each api ,This is the list that will be used for creating the report
     for (const executionMode of execModes) {
@@ -195,6 +197,13 @@ export class Test_Runner {
                 } else {
                   schemaMap = method.result;
                 }
+                if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
+                  if (method.examples[exampleIndex].schema) {
+                    method.examples[exampleIndex].schema = errorSchemaBasedOnMode;
+                  } else {
+                    method.result.schema = errorSchemaBasedOnMode;
+                  }
+                }
                 if (communicationMode == CONSTANTS.TRANSPORT) {
                   const paramNames = method.params ? method.params.map((p) => p.name) : [];
                   result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk, paramNames);
@@ -202,13 +211,6 @@ export class Test_Runner {
                   result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk);
                 }
 
-                if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
-                  if (method.examples[exampleIndex].schema) {
-                    method.examples[exampleIndex].schema = errorSchema;
-                  } else {
-                    method.result.schema = errorSchema;
-                  }
-                }
                 let schemaValidationResultForEachExample = method.examples[exampleIndex].schema ? validator.validate(result, method.examples[exampleIndex].schema) : validator.validate(result, method.result.schema);
                 if (this.methodFilters.isEventMethod(methodObj)) {
                   logger.info(TAG + `${methodObj.name} Result => ${JSON.stringify(result)}`, 'northBoundSchemaValidationAndReportGeneration');
@@ -244,7 +246,7 @@ export class Test_Runner {
                   const err = error.responseError;
                   errorSchemaResult = true;
                   obj = {
-                    error: error,
+                    error: err,
                     param: example.params,
                     errorSchemaResult: errorSchemaResult,
                     methodWithExampleName: methodWithExampleName,
@@ -788,8 +790,14 @@ export class Test_Runner {
       if (result.error && result.error.message) {
         errorMessage = result.error.message;
       } else {
-        errorMessage = CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT;
-        result.error = CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT;
+        const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
+        if (this.methodFilters.isExceptionMethod(methodName, result.param)) {
+          errorMessage = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+        } else {
+          errorMessage = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+        }
       }
       const doesErrorMsgContainMethodNotFound = typeof errorMessage == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessage.toLowerCase()));
 
@@ -1148,7 +1156,7 @@ export class Test_Runner {
     let obj;
     const NOT_SUPPORTED_ERROR_MESSAGES = ['Unsupported', 'Not supported', 'not supported'];
     const errMessage = '{"code":' + error.code + ',"message":' + error.message + '}';
-    const schemaValidationResult = errorSchemaCheck(error);
+    const schemaValidationResult = errorSchemaCheck(error, process.env.COMMUNICATION_MODE);
     if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
       obj = {
         error: error,
@@ -1156,7 +1164,7 @@ export class Test_Runner {
         errorSchemaResult: true,
         methodWithExampleName: methodWithExampleName,
         methodUuid: this.createUUID(),
-        schemaData: errorSchema,
+        schemaData: errorSchemaBasedOnMode,
       };
     } else {
       NOT_SUPPORTED_ERROR_MESSAGES.some((errorMessage) => error.message.includes(errorMessage));

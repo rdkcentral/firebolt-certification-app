@@ -108,6 +108,16 @@ class PubSubClient {
       return false;
     }
   }
+
+  // Checking WebSocket Connection status.
+  isConnected() {
+    let status = false;
+    if (this.ws && this.ws.readyState == this.ws.OPEN) {
+      logger.info('WS connection already Established');
+      status = true;
+    }
+    return status;
+  }
 }
 
 const getClient = async () => {

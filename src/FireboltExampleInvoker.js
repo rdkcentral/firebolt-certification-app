@@ -111,7 +111,7 @@ export default class FireboltExampleInvoker {
       }
       return await invoker(...params);
     }
-
+    sdk = sdk.toLowerCase();
     const moduleClass = MODULE_MAP[sdk][module];
     const updatedMethod = removeSetInMethodName(methodName);
 

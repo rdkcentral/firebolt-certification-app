@@ -65,7 +65,6 @@ const CORE_MODULE_MAP = {
 };
 
 const MANAGE_MODULE_MAP = {
-  power: Power,
   accessory: Accessory,
   advertising: ManageAdvertising,
   acknowledgechallenge: AcknowledgeChallenge,

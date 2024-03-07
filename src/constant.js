@@ -118,7 +118,7 @@ export const CONSTANTS = {
   LOCK_TIME: 20000,
   MAX_FAILURES: 3,
   PINS: { purchase: '1111' },
-  MOCKOS_PORT: 'ws://localhost:9998',
+  MOCKOS_PORT: 'ws://localhost:9998/123~A',
   MOCKOS_UNAVAILABLE: 'MockOs is not running',
   PLATFORM_MOCKOS: 'mock-firebolt-os',
   DISABLE_VOICE_ANNOUNCEMENT: false,

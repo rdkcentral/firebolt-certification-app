@@ -45,6 +45,7 @@ import RegisterProviderHandler from './pubsub/handlers/RegisterProviderHandler';
 import GetEventResponse from './pubsub/handlers/GetEventResponse';
 import GetMethodResponseHandler from './pubsub/handlers/GetMethodResponseHandler';
 import VisibilityStateHandler from '../src/pubsub/handlers/VisibilityStateHandler';
+import LifecycleMethodHandler from './pubsub/handlers/LifecycleMethodHandler';
 
 const logger = require('./utils/Logger')('IntentReader.js');
 
@@ -63,6 +64,7 @@ const handlers = {
   getEventResponse: new GetEventResponse('getEventResponse'),
   getMethodResponse: new GetMethodResponseHandler('getMethodResponse'),
   visibilityState: new VisibilityStateHandler('visibilityState'),
+  callLifecycle: new LifecycleMethodHandler('callLifecycle'),
   [CONSTANTS.CALL_METHOD]: new CallMethodHandler(CONSTANTS.CALL_METHOD),
   [CONSTANTS.HEALTH_CHECK]: new HealthCheckHandler(CONSTANTS.HEALTH_CHECK),
 };
@@ -76,6 +78,11 @@ export default class IntentReader {
       return;
     }
 
+    if (message.metadata && message.metadata.target === 'MFOS') {
+      process.env.MF_VALUE = true;
+      process.env.PLATFORM = CONSTANTS.PLATFORM_MOCKOS;
+    }
+
     // Check for standalone and reportingId in the message and set them in process.env
     if ('standalone' in message) {
       process.env.STANDALONE = message.standalone;
@@ -83,6 +90,10 @@ export default class IntentReader {
 
     if ('reportingId' in message) {
       process.env.REPORTINGID = message.reportingId;
+    }
+
+    if ('standalonePrefix' in message) {
+      process.env.STANDALONE_PREFIX = message.standalonePrefix;
     }
 
     const handler = handlers[message.task];
@@ -107,6 +118,7 @@ export default class IntentReader {
       eventEmitter.emit('showToast', CONSTANTS.INTENT_ERR, CONSTANTS.TOAST_STATE_COMPL, CONSTANTS.TOAST_REF_COMPL, CONSTANTS.ERR_COLOR);
     }
 
+    console.log('Response String: ' + JSON.stringify(responseString));
     return responseString;
   }
 }

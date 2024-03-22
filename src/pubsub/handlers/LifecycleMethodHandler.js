@@ -28,10 +28,11 @@ export default class LifecycleMethodHandler extends BaseHandler {
     super(handlerName);
   }
   async handle(message) {
+    process.env.COMMUNICATION_MODE = message.context.communicationMode;
     const sdkInvokerInfo = new Test_Runner();
     try {
       const lifecycleApiResponse = await sdkInvokerInfo.invokeLifecycleAPI(message.params);
-      return lifecycleApiResponse;
+      return JSON.stringify({ report: lifecycleApiResponse });   
     } catch (e) {
       const result = {
         responseCode: CONSTANTS.STATUS_CODE[1],

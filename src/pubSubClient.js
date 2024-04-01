@@ -16,36 +16,47 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { v4: uuidv4 } = require('uuid');
 const logger = require('../src/utils/Logger')('pubSubClient.js');
 require('dotenv').config({ override: true });
+
+const defaultWsUrl = 'ws://your-ws-url-here.com';
 
 class PubSubClient {
   constructor() {
     this.ws = null;
-    this.url = 'ws://your-ws-url-here.com';
+    this.url = defaultWsUrl;
     this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = '_FCS';
     this.PUBSUB_PUBLISH_TOPIC_SUFFIX = '_FCA';
   }
 
   // Initializes a WS connection
   async initialize() {
+    let pubSubTopic;
     const appUrl = window.location;
-    let pubSubTopicUUID = new URLSearchParams(appUrl.search).get('pubsub_uuid');
+    const pubSubTopicUUID = new URLSearchParams(appUrl.search).get('pubsub_uuid');
+    const macAddress = process.env.MACADDRESS;
 
-    // If pubsub_uuid isn't passed as a query param, use a default value
-    if (!pubSubTopicUUID) {
-      pubSubTopicUUID = 'DEFAULT_TOPIC';
-      console.warn(`WARNING: No pubsub_uuid query parameter found. Using default value: ${pubSubTopicUUID}`);
+    // Priority #1: Use pubSubTopicUUID if it's available
+    if (pubSubTopicUUID) {
+      pubSubTopic = pubSubTopicUUID;
+    }
+    // Priority #2: Use MACADDRESS if pubSubTopicUUID is not available
+    else if (macAddress) {
+      const normalizedMac = macAddress.replace(/:/g, '');
+      pubSubTopic = normalizedMac;
+    }
+    // Default case: Use 'DEFAULT_TOPIC' if neither pubSubTopicUUID nor MACADDRESS are available
+    else {
+      pubSubTopic = 'DEFAULT_TOPIC';
+      console.warn(`WARNING: No pubsub_uuid query parameter or MAC address found. Using default value: ${pubSubTopic}`);
     }
 
-    process.env.PUBSUB_SUBSCRIBE_TOPIC = pubSubTopicUUID + this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX;
-    process.env.PUBSUB_PUBLISH_TOPIC = pubSubTopicUUID + this.PUBSUB_PUBLISH_TOPIC_SUFFIX;
+    process.env.PUBSUB_SUBSCRIBE_TOPIC = pubSubTopic + this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX;
+    process.env.PUBSUB_PUBLISH_TOPIC = pubSubTopic + this.PUBSUB_PUBLISH_TOPIC_SUFFIX;
 
     // Establish WS Connection
     this.ws = new WebSocket(this.url);
     logger.info('Establishing a WS connection...', 'initialize');
-    console.warn('WARNING: WebSocket connections will fail to initialize. The file has not been properly configured. Please update the URL to point to your WebSocket server for communication to work.');
 
     return new Promise((resolve, reject) => {
       this.ws.addEventListener('open', (event) => {
@@ -54,7 +65,11 @@ class PubSubClient {
       });
 
       this.ws.addEventListener('error', (event) => {
-        logger.error('Failed to initialize a WS connection...', 'initialize');
+        if (this.url === defaultWsUrl) {
+          logger.error('WARNING: WebSocket connections will fail to initialize. The file has not been properly configured. Please update the URL to point to your WebSocket server for communication to work.');
+        } else {
+          logger.error('Failed to initialize a WS connection...', 'initialize');
+        }
         reject(false);
       });
     });

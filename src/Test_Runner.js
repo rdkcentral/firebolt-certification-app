@@ -912,8 +912,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
                 Message: {
-                  Expected: schemaMap,
                   Actual: 'undefined',
+                  Expected: schemaMap,
                   Message: CONSTANTS.UNDEFINED_RESPONSE_MESSAGE,
                   params: params,
                 },
@@ -927,8 +927,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.PENDING,
                 Message: {
-                  Expected: schemaMap,
                   Actual: 'undefined',
+                  Expected: schemaMap,
                   Message: CONSTANTS.UNDEFINED_RESPONSE_MESSAGE,
                   params: params,
                 },
@@ -947,8 +947,8 @@ export class Test_Runner {
                   Schema: CONSTANTS.PASSED,
                   Content: CONSTANTS.FAILED,
                   Message: {
-                    Expected: 'NA',
                     Actual: 'NA',
+                    Expected: 'NA',
                     Error: schemaValidationResult.errors[0].message,
                   },
                   params: params,
@@ -961,7 +961,7 @@ export class Test_Runner {
                 {
                   Schema: CONSTANTS.FAILED,
                   Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-                  Message: { Expected: schemaMap, Actual: response, Error: convertedValidationErr },
+                  Message: { Actual: response, Expected: schemaMap, Error: convertedValidationErr },
                   params: params,
                 },
                 null,
@@ -974,8 +974,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.PENDING,
                 Message: {
-                  Expected: schemaMap,
                   Actual: response,
+                  Expected: schemaMap,
                   Error: schemaValidationResult.errors[0].message,
                 },
                 params: params,

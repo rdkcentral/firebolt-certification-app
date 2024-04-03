@@ -961,7 +961,7 @@ export class Test_Runner {
                 {
                   Schema: CONSTANTS.FAILED,
                   Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-                  Message: { Actual: response, Expected: schemaMap, Error: convertedValidationErr },
+                  Message: { Actual: response, Expected: schemaMap, Error: convertedValidationErr }, 
                   params: params,
                 },
                 null,

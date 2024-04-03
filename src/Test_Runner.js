@@ -856,7 +856,7 @@ export class Test_Runner {
           {
             Schema: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
             Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-            Message: errorMessage,
+            Actual: errorMessage,
             Expected: schemaMap,
             params: params,
           },

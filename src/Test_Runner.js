@@ -838,13 +838,13 @@ export class Test_Runner {
         }
       } else if (doesContainMethodNotFound && !doesErrorMsgContainMethodNotFound) {
         // when the underlying platform returns "Method not found" or "Not supported" but in error. So not the correct error schema format. Certification will set the status as failed in this case
-        errorMessage = JSON.stringify({ Schema: CONSTANTS.FAILED, Content: CONSTANTS.FAILED, Message: JSON.stringify(result) }, null, 1);
+        errorMessage = JSON.stringify({ Schema: CONSTANTS.FAILED, Content: CONSTANTS.FAILED, Actual: JSON.stringify(result) }, null, 1);
       } else if ((errorSchemaResult && typeof errorMessage == 'string') || typeof errorMessage == 'object') {
         errorMessage = JSON.stringify(
           {
             Schema: CONSTANTS.FAILED,
             Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-            Message: errorMessage,
+            Actual: errorMessage,
             Expected: schemaMap,
             params: params,
           },
@@ -912,8 +912,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
                 Message: {
-                  Expected: schemaMap,
                   Actual: 'undefined',
+                  Expected: schemaMap,
                   Message: CONSTANTS.UNDEFINED_RESPONSE_MESSAGE,
                   params: params,
                 },
@@ -927,8 +927,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.PENDING,
                 Message: {
-                  Expected: schemaMap,
                   Actual: 'undefined',
+                  Expected: schemaMap,
                   Message: CONSTANTS.UNDEFINED_RESPONSE_MESSAGE,
                   params: params,
                 },
@@ -947,8 +947,8 @@ export class Test_Runner {
                   Schema: CONSTANTS.PASSED,
                   Content: CONSTANTS.FAILED,
                   Message: {
-                    Expected: 'NA',
                     Actual: 'NA',
+                    Expected: 'NA',
                     Error: schemaValidationResult.errors[0].message,
                   },
                   params: params,
@@ -961,7 +961,7 @@ export class Test_Runner {
                 {
                   Schema: CONSTANTS.FAILED,
                   Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-                  Message: { Expected: schemaMap, Actual: response, Error: convertedValidationErr },
+                  Message: { Actual: response, Expected: schemaMap, Error: convertedValidationErr },
                   params: params,
                 },
                 null,
@@ -974,8 +974,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.PENDING,
                 Message: {
-                  Expected: schemaMap,
                   Actual: response,
+                  Expected: schemaMap,
                   Error: schemaValidationResult.errors[0].message,
                 },
                 params: params,

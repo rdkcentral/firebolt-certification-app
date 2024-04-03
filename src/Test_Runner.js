@@ -788,15 +788,15 @@ export class Test_Runner {
     if (result.error || doesContainMethodNotFound) {
       let errorMessage;
       if (result.error && result.error.message) {
-        errorMessage = result.error.message;
+        errorMessage = result;
       } else {
         const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
         if (this.methodFilters.isExceptionMethod(methodName, result.param)) {
-          errorMessage = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
-          result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          errorMessage = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
+          result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
         } else {
-          errorMessage = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
-          result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          errorMessage = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
+          result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
         }
       }
       const doesErrorMsgContainMethodNotFound = typeof errorMessage == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessage.toLowerCase()));
@@ -809,7 +809,7 @@ export class Test_Runner {
       if (result.error.responseError) {
         testContext.result = result.error.responseError;
         testContext.error = null;
-        errorMessage = result.error.responseError.error;
+        errorMessage = result.error.responseError;
       }
 
       errorSchemaResult = result.errorSchemaResult;
@@ -868,11 +868,11 @@ export class Test_Runner {
       // isPass = false
 
       convertedResponse = errorMessage;
-      convertedValidationErr = result.error.message;
+      convertedValidationErr = result.error;
       methodName = result.methodWithExampleName;
       uuid = result.methodUuid;
       if (typeof result.error.message == 'string' || Array.isArray(result.error.message) || typeof result.error.message == 'undefined') {
-        convertedValidationErr = { err: result.error.message };
+        convertedValidationErr = { err: result.error };
       }
     } else {
       testContext = {

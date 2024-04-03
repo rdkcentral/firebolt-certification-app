@@ -838,13 +838,13 @@ export class Test_Runner {
         }
       } else if (doesContainMethodNotFound && !doesErrorMsgContainMethodNotFound) {
         // when the underlying platform returns "Method not found" or "Not supported" but in error. So not the correct error schema format. Certification will set the status as failed in this case
-        errorMessage = JSON.stringify({ Schema: CONSTANTS.FAILED, Content: CONSTANTS.FAILED, Message: JSON.stringify(result) }, null, 1);
+        errorMessage = JSON.stringify({ Schema: CONSTANTS.FAILED, Content: CONSTANTS.FAILED, Actual: JSON.stringify(result) }, null, 1);
       } else if ((errorSchemaResult && typeof errorMessage == 'string') || typeof errorMessage == 'object') {
         errorMessage = JSON.stringify(
           {
             Schema: CONSTANTS.FAILED,
             Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-            Message: errorMessage,
+            Actual: errorMessage,
             Expected: schemaMap,
             params: params,
           },

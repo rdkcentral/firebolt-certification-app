@@ -118,7 +118,7 @@ export class Test_Runner {
       try {
         // The deSchema is stored in the global object , if it is already initialized we dont need to do it again.
         [deSchemaList, invokedSdk] = await dereferenceOpenRPC(executionMode.toLowerCase());
-        this.dereferenceSchemaList = deSchemaList;
+        this.dereferenceSchemaList = _.cloneDeep(deSchemaList);
       } catch (error) {
         logger.error(JSON.stringify(error), 'northBoundSchemaValidationAndReportGeneration');
         // We could throw the error here and stop further processing

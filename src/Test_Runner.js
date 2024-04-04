@@ -809,7 +809,7 @@ export class Test_Runner {
       if (result.error.responseError) {
         testContext.result = result.error.responseError;
         testContext.error = null;
-        errorMessage = result.error.responseError;
+        errorMessage = result.error.responseError.error;
       }
 
       errorSchemaResult = result.errorSchemaResult;

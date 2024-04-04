@@ -41,6 +41,7 @@ const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 const logger = require('./utils/Logger')('Test_Runner.js');
+const _ = require('lodash');
 
 let validationResult;
 let validationError = {};

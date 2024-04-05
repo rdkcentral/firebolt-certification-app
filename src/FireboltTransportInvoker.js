@@ -33,7 +33,7 @@ export default class FireboltTransportInvoker {
   }
 
   async invoke(methodName, params, paramNamesArray) {
-    const module = methodName.split('.')[0];
+    const module = methodName.split('.')[0].toLowerCase();
     const method = methodName.split('.')[1];
     if (paramNamesArray) {
       const jsonParams = {};

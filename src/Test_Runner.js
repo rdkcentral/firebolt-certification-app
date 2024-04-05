@@ -786,9 +786,10 @@ export class Test_Runner {
     );
     const params = result.param;
     if (result.error || doesContainMethodNotFound) {
-      let errorMessage;
+      let errorMessage, checkForMethodNotFound;
       if (result.error && result.error.message) {
-        errorMessage = result.error.message;
+        errorMessage = result.error;
+        checkForMethodNotFound = result.error.message;
       } else {
         const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
         if (this.methodFilters.isExceptionMethod(methodName, result.param)) {
@@ -799,7 +800,7 @@ export class Test_Runner {
           result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
         }
       }
-      const doesErrorMsgContainMethodNotFound = typeof errorMessage == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessage.toLowerCase()));
+      const doesErrorMsgContainMethodNotFound = typeof checkForMethodNotFound == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(checkForMethodNotFound.toLowerCase()));
 
       testContext = {
         params: params,

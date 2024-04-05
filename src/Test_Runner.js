@@ -788,7 +788,7 @@ export class Test_Runner {
     if (result.error || doesContainMethodNotFound) {
       let errorMessage;
       if (result.error && result.error.message) {
-        errorMessage = result.error;
+        errorMessage = result.error.message;
       } else {
         const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
         if (this.methodFilters.isExceptionMethod(methodName, result.param)) {

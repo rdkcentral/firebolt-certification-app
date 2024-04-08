@@ -786,21 +786,18 @@ export class Test_Runner {
     );
     const params = result.param;
     if (result.error || doesContainMethodNotFound) {
-      let errorMessage, checkForMethodNotFound;
+      let errorMessage;
       if (result.error && result.error.message) {
         errorMessage = result.error;
-        checkForMethodNotFound = result.error.message;
       } else {
         const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
         if (this.methodFilters.isExceptionMethod(methodName, result.param)) {
-          errorMessage = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
-          result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
+          errorMessage = result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
         } else {
-          errorMessage = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
-          result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
+          errorMessage = result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
         }
       }
-      const doesErrorMsgContainMethodNotFound = typeof checkForMethodNotFound == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(checkForMethodNotFound.toLowerCase()));
+      const doesErrorMsgContainMethodNotFound = typeof result?.error?.message == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(result?.error?.message.toLowerCase()));
 
       testContext = {
         params: params,

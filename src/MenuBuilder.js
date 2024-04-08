@@ -227,6 +227,22 @@ export default class MenuBuilder {
     }
   }
 
+  // Changing the scheme of some methods to be oneOf null or boolean, this is just work around and will be removed in future.
+  changeOPENRPCSchema(methodObj) {
+    if (CONSTANTS.CHANGES_SCHEMA_METHODS && CONSTANTS.CHANGES_SCHEMA_METHODS.includes(methodObj.name)) {
+      methodObj.result.schema = {
+        oneOf: [
+          {
+            const: null,
+          },
+          {
+            type: 'boolean',
+          },
+        ],
+      };
+    }
+  }
+
   buildMenusFromOpenRpc() {
     const buildMenus = [];
     const mergedSDKs = CONSTANTS.defaultSDKs.concat(CONSTANTS.additionalSDKs);
@@ -271,6 +287,7 @@ export default class MenuBuilder {
               if (OPEN_RPC.methods[i].examples && OPEN_RPC.methods[i].examples.length) {
                 this.addPropertyExamples(methodObj, OPEN_RPC);
                 this.addPolymorphicPullExamples(methodObj);
+                process.env.CHANGE_SCHEMA != false && this.changeOPENRPCSchema(methodObj);
                 if (OPEN_RPC.methods[i].examples.length > 1) {
                   const methodMenuItem = {
                     title: method,

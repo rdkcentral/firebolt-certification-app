@@ -102,6 +102,8 @@ export default class App extends Base {
     const standalone = new URLSearchParams(appUrl.search).get('standalone');
     this.systemui = new URLSearchParams(window.location.search).get('systemui');
     this.testToken = new URLSearchParams(window.location.search).get('testtoken');
+    this.changeSchema = new URLSearchParams(window.location.search).get('changeSchema');
+    process.env.CHANGE_SCHEMA = !CONSTANTS.EXCLUDED_VALUES.includes(this.changeSchema) ? this.changeSchema : false;
     this.pubSubUuidPresent = false;
     this.appContinue = false;
     process.env.LIFECYCLE_VALIDATION = lifecycle;

@@ -3,7 +3,6 @@
 The code for handling different types of PubSub requests is located in `./src/pubsub/handlers`. Below are the supported handlers for various types of PubSub requests.
 
 * [GetPubSubStatusHandler](./GetPubSubStatusHandler.md)
-* [GetTestHandler](./GetTestHandler.md)
 * [RunTestHandler](./RunTestHandler.md)
 * [RegisterEventHandler](./RegisterEventHandler.md)
 * [CallMethodHandler](./CallMethodHandler.md)

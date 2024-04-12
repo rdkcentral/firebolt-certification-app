@@ -33,7 +33,6 @@ require('dotenv').config();
 import GetPubSubStatusHandler from './pubsub/handlers/GetPubSubStatusHandler';
 import CallMethodHandler from './pubsub/handlers/CallMethodHandler';
 import DataFetchHandler from './pubsub/handlers/DataFetchHandler';
-import GetTestHandler from './pubsub/handlers/GetTestHandler';
 import HealthCheckHandler from './pubsub/handlers/HealthCheckHandler';
 import RunTestHandler from './pubsub/handlers/RunTestHandler';
 import RegisterEventHandler from './pubsub/handlers/RegisterEventHandler';
@@ -51,7 +50,6 @@ const logger = require('./utils/Logger')('IntentReader.js');
 
 const handlers = {
   getPubSubStatus: new GetPubSubStatusHandler('getPubSubStatus'),
-  getTest: new GetTestHandler('getTest'),
   runTest: new RunTestHandler('getPubSubStatus'),
   dataFetch: new DataFetchHandler('dataFetch'),
   registerEvent: new RegisterEventHandler('registerEvent'),

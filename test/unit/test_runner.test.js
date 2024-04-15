@@ -256,6 +256,14 @@ jest.mock('../../src/utils/Utils', () => ({
   },
 }));
 
+jest.mock('lodash', () => {
+  return {
+    cloneDeep: (value) => {
+      return value;
+    },
+  };
+});
+
 let mockShouldDereferencerFail = false;
 let runner;
 let result;

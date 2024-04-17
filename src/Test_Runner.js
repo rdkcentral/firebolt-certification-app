@@ -787,21 +787,20 @@ export class Test_Runner {
     );
     const params = result.param;
     if (result.error || doesContainMethodNotFound) {
-      let errorMessage, errorMessageLog;
+      let errorMessage;
       if (result.error && result.error.message) {
-        errorMessage = result.error;
-        errorMessageLog = result.error.message;
+        errorMessage = result.error.message;
       } else {
         const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
         if (this.methodFilters.isExceptionMethod(methodName, result.param)) {
-          errorMessage = result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
-          errorMessageLog = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          errorMessage = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
         } else {
-          errorMessage = result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
-          errorMessageLog = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          errorMessage = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
         }
       }
-      const doesErrorMsgContainMethodNotFound = typeof errorMessageLog == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessageLog.toLowerCase()));
+      const doesErrorMsgContainMethodNotFound = typeof errorMessage == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessage.toLowerCase()));
 
       testContext = {
         params: params,
@@ -840,13 +839,13 @@ export class Test_Runner {
         }
       } else if (doesContainMethodNotFound && !doesErrorMsgContainMethodNotFound) {
         // when the underlying platform returns "Method not found" or "Not supported" but in error. So not the correct error schema format. Certification will set the status as failed in this case
-        errorMessage = JSON.stringify({ Schema: CONSTANTS.FAILED, Content: CONSTANTS.FAILED, Actual: JSON.stringify(result) }, null, 1);
+        errorMessage = JSON.stringify({ Schema: CONSTANTS.FAILED, Content: CONSTANTS.FAILED, Message: JSON.stringify(result) }, null, 1);
       } else if ((errorSchemaResult && typeof errorMessage == 'string') || typeof errorMessage == 'object') {
         errorMessage = JSON.stringify(
           {
             Schema: CONSTANTS.FAILED,
             Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-            Actual: errorMessage,
+            Message: errorMessage,
             Expected: schemaMap,
             params: params,
           },
@@ -858,7 +857,7 @@ export class Test_Runner {
           {
             Schema: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
             Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-            Actual: errorMessage,
+            Message: errorMessage,
             Expected: schemaMap,
             params: params,
           },
@@ -870,11 +869,11 @@ export class Test_Runner {
       // isPass = false
 
       convertedResponse = errorMessage;
-      convertedValidationErr = result.error;
+      convertedValidationErr = result.error.message;
       methodName = result.methodWithExampleName;
       uuid = result.methodUuid;
       if (typeof result.error.message == 'string' || Array.isArray(result.error.message) || typeof result.error.message == 'undefined') {
-        convertedValidationErr = { err: result.error };
+        convertedValidationErr = { err: result.error.message };
       }
     } else {
       testContext = {
@@ -914,8 +913,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
                 Message: {
-                  Actual: 'undefined',
                   Expected: schemaMap,
+                  Actual: 'undefined',
                   Message: CONSTANTS.UNDEFINED_RESPONSE_MESSAGE,
                   params: params,
                 },
@@ -929,8 +928,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.PENDING,
                 Message: {
-                  Actual: 'undefined',
                   Expected: schemaMap,
+                  Actual: 'undefined',
                   Message: CONSTANTS.UNDEFINED_RESPONSE_MESSAGE,
                   params: params,
                 },
@@ -949,8 +948,8 @@ export class Test_Runner {
                   Schema: CONSTANTS.PASSED,
                   Content: CONSTANTS.FAILED,
                   Message: {
-                    Actual: 'NA',
                     Expected: 'NA',
+                    Actual: 'NA',
                     Error: schemaValidationResult.errors[0].message,
                   },
                   params: params,
@@ -963,7 +962,7 @@ export class Test_Runner {
                 {
                   Schema: CONSTANTS.FAILED,
                   Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-                  Message: { Actual: response, Expected: schemaMap, Error: convertedValidationErr },
+                  Message: { Expected: schemaMap, Actual: response, Error: convertedValidationErr },
                   params: params,
                 },
                 null,
@@ -976,8 +975,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.PENDING,
                 Message: {
-                  Actual: response,
                   Expected: schemaMap,
+                  Actual: response,
                   Error: schemaValidationResult.errors[0].message,
                 },
                 params: params,

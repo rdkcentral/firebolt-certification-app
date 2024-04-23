@@ -133,12 +133,6 @@ jest.mock('../../src/pubsub/handlers/GetPubSubStatusHandler', () => {
   }));
 });
 
-jest.mock('../../src/pubsub/handlers/GetTestHandler', () => {
-  return jest.fn().mockImplementation(() => ({
-    handle: jest.fn().mockResolvedValue(JSON.stringify({ jobId: 'no report found' })),
-  }));
-});
-
 jest.mock('../../src/pubsub/handlers/RunTestHandler', () => {
   return jest.fn().mockImplementation(() => ({
     handle: jest.fn().mockResolvedValue(JSON.stringify({ error: 'Not performed' })),

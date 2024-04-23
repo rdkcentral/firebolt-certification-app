@@ -35,30 +35,6 @@ import IntentReader from 'IntentReader';
 const logger = require('./utils/Logger')('PubSubCommunication.js');
 let client = null;
 
-// Custom queue structure to store reports for async runTest and getTest calls
-class reportQueue {
-  constructor() {
-    this.items = [];
-  }
-  enqueue(element) {
-    if (this.items.length >= CONSTANTS.REPORT_QUEUE_SIZE) {
-      this.items.shift();
-    }
-    this.items.push(element);
-  }
-  findReport(itemId) {
-    let requiredReport = null;
-    for (let i = 0; i < this.items.length; i++) {
-      if (this.items[i]['reportId'] == itemId) {
-        requiredReport = this.items[i]['report'];
-      }
-    }
-    return requiredReport;
-  }
-}
-
-const asyncReports = new reportQueue();
-
 export default class PubSubCommunication {
   getResponseTopic(requestParams) {
     if (requestParams && requestParams[CONSTANTS.PARAMS] && requestParams[CONSTANTS.PARAMS][CONSTANTS.RESPONSE_TOPIC]) {

@@ -53,29 +53,6 @@ export default class RunTestHandler extends BaseHandler {
 
     const validationReport = await this.getValidationReport(message);
     return JSON.stringify({ report: validationReport });
-
-    /* removing asyncReports support.    
-        if (message.asynchronous == true) {
-            // JobId to be returned immediately when asynchronous parameter in message is true
-            let reportId = uuidv4()
-            let reportIdString = JSON.stringify({ "jobId": reportId })
-            client.publish(responseTopic, reportIdString, headers)
-
-            let validationReport = await this.getValidationReport(message)
-            let reportString = JSON.stringify(validationReport);
-            // Adding message to report queue
-            asyncReports.enqueue({ "reportId": reportId, "report": reportString })
-        }
-        else if (!message.asynchronous || message.asynchronous == undefined || message.asynchronous == null) {
-            let validationReport = await this.getValidationReport(message)
-            let reportstring = JSON.stringify({ "report": validationReport });
-            client.publish(responseTopic, reportstring, headers)
-        }
-        else {
-            let responseString = JSON.stringify({ "error": "Invalid asynchronous field" })
-            client.publish(responseTopic, responseString, headers)
-        }
-        */
   }
 
   // Method to populate env variables for report title

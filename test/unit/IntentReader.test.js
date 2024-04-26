@@ -64,6 +64,31 @@ jest.mock('@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
   };
 });
 
+jest.mock('@firebolt-js/sdk', () => {
+  return {
+    Accessibility: {},
+    Account: {},
+    Advertising: {},
+    Authentication: {},
+    Device: {},
+    Discovery: {},
+    Keyboard: {},
+    Lifecycle: {
+      ready: () => {},
+      state: () => {
+        return 'initializing'; // dummy state value.
+      }, // returning a Lifecycle.state object
+      close: () => {},
+      finish: () => {},
+    },
+    Localization: {},
+    Metrics: {},
+    Profile: {},
+    Parameters: {},
+    SecondScreen: {},
+  };
+});
+
 const mockFireboltTransportInvoker = {
   invoke: jest.fn().mockImplementation(() => {
     return Promise.resolve('success');
@@ -105,12 +130,6 @@ test('Test showToast function', () => {
 jest.mock('../../src/pubsub/handlers/GetPubSubStatusHandler', () => {
   return jest.fn().mockImplementation(() => ({
     handle: jest.fn().mockResolvedValue(JSON.stringify({ pubSubStatus: 'Connection successful' })),
-  }));
-});
-
-jest.mock('../../src/pubsub/handlers/GetTestHandler', () => {
-  return jest.fn().mockImplementation(() => ({
-    handle: jest.fn().mockResolvedValue(JSON.stringify({ jobId: 'no report found' })),
   }));
 });
 

@@ -26,12 +26,12 @@ const Validator = require('jsonschema').Validator;
 const logger = require('./utils/Logger')('MethodInvoker.js');
 const validator = new Validator();
 const responseList = [];
+let id = 0;
 export class MethodInvoker {
   // This method accepts the message(method name, params) and return Api response with Schema validation result.
   async invoke(message) {
     let response, method, params, mode, err, paramNames, module, methodObj;
-    let schemaMap;
-    let schemaValidationResult;
+    id = id + 1;
     process.env.COMMUNICATION_MODE = message.context.communicationMode;
     params = message.params.methodParams;
     if (message.params.method.includes('_')) {
@@ -70,12 +70,11 @@ export class MethodInvoker {
     try {
       // Fetching the method Object from the deSchemaList
       if (method.includes('set') && params[0] == undefined && !CONSTANTS.METHODS_T0_IGNORE_WHICH_HAS_SET.includes(method)) {
-        methodObj = deSchemaList.methods.find((obj) => obj.name.toLowerCase() == updatedMethod.toLowerCase());
+        methodObj = deSchemaList.methods.some((obj) => obj.name.toLowerCase() == updatedMethod.toLowerCase());
       } else {
-        methodObj = deSchemaList.methods.find((obj) => obj.name.toLowerCase() == method.toLowerCase());
+        methodObj = deSchemaList.methods.some((obj) => obj.name.toLowerCase() == method.toLowerCase());
       }
       if (methodObj) {
-        schemaMap = methodObj.result.schema;
         const moduleClass = MODULE_MAP[invokedSdk][module];
 
         if (moduleClass) {
@@ -88,17 +87,17 @@ export class MethodInvoker {
         } else if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
           [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames), process.env.TimeoutInMS);
         }
-        schemaValidationResult = validator.validate(response, schemaMap);
       } else if (!methodObj && process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
         [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames), process.env.TimeoutInMS);
-        schemaValidationResult = [];
       } else {
         err = CONSTANTS.ERROR_MESSAGE_WRONG_METHOD_NAME;
       }
       // if the method is not supported and it gives a valid response, validate against errorschema instead of api schema
-      if (message.params.isNotSupportedApi == true && response != undefined) {
-        schemaValidationResult = errorSchemaCheck(response, process.env.COMMUNICATION_MODE);
-      }
+
+      // ---------------Need to check how to manage this in FCS side---------------
+      // if (message.params.isNotSupportedApi == true && response != undefined) {
+      //   schemaValidationResult = errorSchemaCheck(response, process.env.COMMUNICATION_MODE);
+      // }
     } catch (error) {
       logger.error('Error: ', error);
       err = { code: 'FCAError', message: error.message };
@@ -114,66 +113,11 @@ export class MethodInvoker {
     };
     responseList.push(resultObject);
 
-    return this.formatResult(message.task, response, err, schemaValidationResult, params, schemaMap);
-  }
-
-  formatResult(task, response, err, schemaValidationResult, params, schemaMap) {
-    let apiResponse, responseCode, schemaValidationStatus;
-    if (err) {
-      apiResponse = { result: null, error: err };
-      schemaValidationResult = errorSchemaCheck(err, process.env.COMMUNICATION_MODE);
-      if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
-        if (err.message != undefined && CONSTANTS.ERROR_LIST.includes(err.message)) {
-          responseCode = CONSTANTS.STATUS_CODE[3];
-          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[1];
-        } else {
-          responseCode = CONSTANTS.STATUS_CODE[1];
-          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[1];
-        }
-      } else {
-        if (err.message != undefined && CONSTANTS.ERROR_LIST.includes(err.message)) {
-          responseCode = CONSTANTS.STATUS_CODE[3];
-          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
-        } else {
-          responseCode = CONSTANTS.STATUS_CODE[0];
-          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
-        }
-      }
+    if (response !== undefined) {
+      return { id: id, result: response, jsonrpc: '2.0' };
     } else {
-      if (response == undefined || (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0)) {
-        // Handling expected null scenarios from Open RPC
-        if (response === null && schemaMap && (Object.values(schemaMap).includes('null') || Object.values(schemaMap).includes(null) || findTypeInOneOF(schemaMap))) {
-          apiResponse = { result: response, error: null };
-          responseCode = CONSTANTS.STATUS_CODE[0];
-          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
-        } else if (schemaMap == undefined) {
-          apiResponse = { result: response, error: null };
-          responseCode = CONSTANTS.STATUS_CODE[0];
-          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
-        } else if (response == undefined) {
-          apiResponse = { result: null, error: 'undefined' };
-          responseCode = CONSTANTS.STATUS_CODE[2];
-          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[2];
-        } else {
-          apiResponse = { result: response, error: null };
-          responseCode = CONSTANTS.STATUS_CODE[1];
-          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[1];
-        }
-      } else {
-        apiResponse = { result: response, error: null };
-        responseCode = CONSTANTS.STATUS_CODE[0];
-        schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
-      }
+      return { id: id, error: err, jsonrpc: '2.0' };
     }
-
-    return {
-      method: task,
-      params: params,
-      responseCode: responseCode,
-      apiResponse: apiResponse,
-      schemaValidationStatus: schemaValidationStatus,
-      schemaValidationResponse: schemaValidationResult,
-    };
   }
 
   // Return the method response object for the passed method

@@ -113,7 +113,7 @@ export class MethodInvoker {
     };
     responseList.push(resultObject);
 
-    if (response !== undefined) {
+    if (err === undefined) {
       return { id: id, result: response, jsonrpc: '2.0' };
     } else {
       return { id: id, error: err, jsonrpc: '2.0' };

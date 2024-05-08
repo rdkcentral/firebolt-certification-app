@@ -26,12 +26,11 @@ const Validator = require('jsonschema').Validator;
 const logger = require('./utils/Logger')('MethodInvoker.js');
 const validator = new Validator();
 const responseList = [];
-let id = 0;
 export class MethodInvoker {
   // This method accepts the message(method name, params) and return Api response with Schema validation result.
   async invoke(message) {
     let response, method, params, mode, err, paramNames, module, methodObj;
-    id = id + 1;
+    process.env.ID = process.env.ID + 1;
     process.env.COMMUNICATION_MODE = message.context.communicationMode;
     params = message.params.methodParams;
     if (message.params.method.includes('_')) {
@@ -92,12 +91,6 @@ export class MethodInvoker {
       } else {
         err = CONSTANTS.ERROR_MESSAGE_WRONG_METHOD_NAME;
       }
-      // if the method is not supported and it gives a valid response, validate against errorschema instead of api schema
-
-      // ---------------Need to check how to manage this in FCS side---------------
-      // if (message.params.isNotSupportedApi == true && response != undefined) {
-      //   schemaValidationResult = errorSchemaCheck(response, process.env.COMMUNICATION_MODE);
-      // }
     } catch (error) {
       logger.error('Error: ', error);
       err = { code: 'FCAError', message: error.message };
@@ -114,9 +107,9 @@ export class MethodInvoker {
     responseList.push(resultObject);
 
     if (err === undefined) {
-      return { id: id, result: response, jsonrpc: '2.0' };
+      return { jsonrpc: '2.0', result: response, id: process.env.ID };
     } else {
-      return { id: id, error: err, jsonrpc: '2.0' };
+      return { jsonrpc: '2.0', error: err, id: process.env.ID };
     }
   }
 

@@ -55,7 +55,7 @@ class EventHandler {
   handleEvent(eventData) {
     const eventDataObject = {
       eventName: this.eventName,
-      eventListenerId: this.eventListener.eventListenerId,
+      eventListenerId: this.eventListener.id,
       eventResponse: eventData,
       eventTime: new Date(),
     };

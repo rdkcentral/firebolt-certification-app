@@ -51,15 +51,59 @@ class EventHandler {
   getEventName() {
     return this.eventName;
   }
+  // Fetch schema from dereferenced RPC using event name
+  getSchema(moduleWithEventName, schemaList) {
+    let schemaMap = null;
+    if (moduleWithEventName.includes('_')) {
+      moduleWithEventName = moduleWithEventName.split('_')[1];
+    }
+    for (let methodIndex = 0; schemaList != undefined && schemaList.methods && methodIndex < schemaList.methods.length; methodIndex++) {
+      const eventName = schemaList.methods[methodIndex].name;
+      if (eventName.toLowerCase() == moduleWithEventName.toLowerCase()) {
+        const methodObj = schemaList.methods[methodIndex];
+        schemaMap = methodObj.result.schema;
+      }
+    }
+    return schemaMap;
+  }
+
   // Handle, parse and store the resolved event data from listener
   handleEvent(eventData) {
-    const eventDataObject = {
-      eventName: this.eventName,
-      eventListenerId: this.eventListener.id,
-      eventResponse: eventData,
-      eventTime: new Date(),
-    };
+    let eventDataObject;
+    if (process.env.STANDALONE == true) {
+      const eventSchemaResponse = this.eventSchemaValidation(eventData);
+      eventDataObject = {
+        eventName: this.eventName,
+        eventListenerId: this.eventListener.eventListenerId,
+        eventListenerId: this.eventListener.id,
+        eventResponse: eventData,
+        eventSchemaResult: eventSchemaResponse,
+        eventTime: new Date(),
+      };
+    } else {
+      eventDataObject = {
+        eventName: this.eventName,
+        eventListenerId: this.eventListener.id,
+        eventResponse: eventData,
+        eventTime: new Date(),
+      };
+    }
     eventHistory.push(eventDataObject);
+  }
+  // Schema validation for resolved event data
+  eventSchemaValidation(eventResponse) {
+    const eventSchemaResult = {};
+    if (this.eventSchema) {
+      const validationResult = validator.validate(eventResponse, this.eventSchema);
+      if (validationResult.errors && validationResult.errors.length > 0 && validationResult.errors[0].message) {
+        eventSchemaResult['status'] = CONSTANTS.FAIL;
+        eventSchemaResult['eventSchemaResult'] = validationResult.errors[0].message;
+      } else {
+        eventSchemaResult['status'] = CONSTANTS.PASS;
+        eventSchemaResult['eventSchemaResult'] = validationResult.errors;
+      }
+    }
+    return eventSchemaResult;
   }
   // Store listener data in object
   setEventListener(eventListener) {
@@ -74,25 +118,69 @@ class EventHandler {
 export class EventInvocation {
   // This method accepts the message params and return the listener response and schema response
   async northBoundEventHandling(message) {
-    const eventParams = message.params;
-    const moduleWithEventName = eventParams.event;
-    const params = eventParams.params;
-    const [listenerResponse, uniqueListenerKey] = await this.registerEvent(moduleWithEventName, params);
+    let eventParams, moduleWithEventName, params, listenerResponse, uniqueListenerKey, registrationResponse, responseCode;
+    eventParams = message.params;
+    moduleWithEventName = eventParams.event;
+    params = eventParams.params;
+    [listenerResponse, uniqueListenerKey] = await this.registerEvent(moduleWithEventName, params);
+    registrationResponse = {};
 
-    const registrationResponse = {};
-    registrationResponse['jsonrpc'] = '2.0';
-    registrationResponse['id'] = null;
-    if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
-      registrationResponse['id'] = listenerResponse;
-      registrationResponse['result'] = {
-        listening: true,
-        event: moduleWithEventName,
-      };
-      eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
+    if (process.env.STANDALONE == true) {
+      registrationResponse['eventName'] = moduleWithEventName;
+      registrationResponse['eventListenerId'] = uniqueListenerKey;
+      if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
+        registrationResponse['eventListenerResponse'] = {
+          listenerResponse: listenerResponse,
+          error: null,
+        };
+        // Handling not supported api to check error schema if it gives a valid response
+        let schemaValidationResult = {};
+        let schemaValidationStatus = CONSTANTS.PASS;
+        if (message.params.isNotSupportedApi == true) {
+          schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
+          schemaValidationStatus = CONSTANTS.FAIL;
+        }
+        registrationResponse['eventListenerSchemaResult'] = {
+          status: schemaValidationStatus,
+          eventSchemaResult: schemaValidationResult,
+        };
+        eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
+      } else {
+        if (CONSTANTS.ERROR_LIST.includes(listenerResponse.message)) {
+          responseCode = CONSTANTS.STATUS_CODE[3];
+          registrationResponse['responseCode'] = responseCode;
+        }
+        registrationResponse['eventListenerResponse'] = { result: null, error: listenerResponse };
+        // In case of error, validate error against errorschema
+        const schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
+        if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
+          registrationResponse['eventListenerSchemaResult'] = {
+            status: CONSTANTS.FAIL,
+            eventSchemaResult: {},
+          };
+        } else {
+          registrationResponse['eventListenerSchemaResult'] = {
+            status: CONSTANTS.PASS,
+            eventSchemaResult: schemaValidationResult,
+          };
+        }
+      }
+      return registrationResponse;
     } else {
-      registrationResponse['error'] = listenerResponse;
+      registrationResponse['jsonrpc'] = '2.0';
+      registrationResponse['id'] = null;
+      if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
+        registrationResponse['id'] = listenerResponse;
+        registrationResponse['result'] = {
+          listening: true,
+          event: moduleWithEventName,
+        };
+        eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
+      } else {
+        registrationResponse['error'] = listenerResponse;
+      }
+      return registrationResponse;
     }
-    return registrationResponse;
   }
 
   // This method will listen to event and capture the event response after triggering

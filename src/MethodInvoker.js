@@ -29,7 +29,7 @@ const responseList = [];
 export class MethodInvoker {
   // This method accepts the message(method name, params) and return Api response with Schema validation result.
   async invoke(message) {
-    let response, method, params, mode, err, paramNames, module, methodObj;
+    let response, method, params, mode, err, paramNames, module, methodObj, schemaMap, schemaValidationResult;
     process.env.ID = process.env.ID + 1;
     process.env.COMMUNICATION_MODE = message.context.communicationMode;
     params = message.params.methodParams;
@@ -74,6 +74,9 @@ export class MethodInvoker {
         methodObj = deSchemaList.methods.some((obj) => obj.name.toLowerCase() == method.toLowerCase());
       }
       if (methodObj) {
+        if (process.env.STANDALONE == true) {
+          schemaMap = methodObj.result.schema;
+        }
         const moduleClass = MODULE_MAP[invokedSdk][module];
 
         if (moduleClass) {
@@ -86,10 +89,22 @@ export class MethodInvoker {
         } else if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
           [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames), process.env.TimeoutInMS);
         }
+        if (process.env.STANDALONE == true) {
+          schemaValidationResult = validator.validate(response, schemaMap);
+        }
       } else if (!methodObj && process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
         [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames), process.env.TimeoutInMS);
+        if (process.env.STANDALONE == true) {
+          schemaValidationResult = [];
+        }
       } else {
         err = CONSTANTS.ERROR_MESSAGE_WRONG_METHOD_NAME;
+      }
+      if (process.env.STANDALONE == true) {
+        // if the method is not supported and it gives a valid response, validate against errorschema instead of api schema
+        if (message.params.isNotSupportedApi == true && response != undefined) {
+          schemaValidationResult = errorSchemaCheck(response, process.env.COMMUNICATION_MODE);
+        }
       }
     } catch (error) {
       logger.error('Error: ', error);
@@ -105,12 +120,74 @@ export class MethodInvoker {
       },
     };
     responseList.push(resultObject);
-
-    if (err === undefined) {
-      return { jsonrpc: '2.0', result: response, id: process.env.ID };
+    if (process.env.STANDALONE == true) {
+      return this.formatResult(message.task, response, err, schemaValidationResult, params, schemaMap);
     } else {
-      return { jsonrpc: '2.0', error: err, id: process.env.ID };
+      if (err === undefined) {
+        return { jsonrpc: '2.0', result: response, id: process.env.ID };
+      } else {
+        return { jsonrpc: '2.0', error: err, id: process.env.ID };
+      }
     }
+  }
+
+  formatResult(task, response, err, schemaValidationResult, params, schemaMap) {
+    let apiResponse, responseCode, schemaValidationStatus;
+    if (err) {
+      apiResponse = { result: null, error: err };
+      schemaValidationResult = errorSchemaCheck(err, process.env.COMMUNICATION_MODE);
+      if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
+        if (err.message != undefined && CONSTANTS.ERROR_LIST.includes(err.message)) {
+          responseCode = CONSTANTS.STATUS_CODE[3];
+          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[1];
+        } else {
+          responseCode = CONSTANTS.STATUS_CODE[1];
+          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[1];
+        }
+      } else {
+        if (err.message != undefined && CONSTANTS.ERROR_LIST.includes(err.message)) {
+          responseCode = CONSTANTS.STATUS_CODE[3];
+          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
+        } else {
+          responseCode = CONSTANTS.STATUS_CODE[0];
+          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
+        }
+      }
+    } else {
+      if (response == undefined || (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0)) {
+        // Handling expected null scenarios from Open RPC
+        if (response === null && schemaMap && (Object.values(schemaMap).includes('null') || Object.values(schemaMap).includes(null) || findTypeInOneOF(schemaMap))) {
+          apiResponse = { result: response, error: null };
+          responseCode = CONSTANTS.STATUS_CODE[0];
+          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
+        } else if (schemaMap == undefined) {
+          apiResponse = { result: response, error: null };
+          responseCode = CONSTANTS.STATUS_CODE[0];
+          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
+        } else if (response == undefined) {
+          apiResponse = { result: null, error: 'undefined' };
+          responseCode = CONSTANTS.STATUS_CODE[2];
+          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[2];
+        } else {
+          apiResponse = { result: response, error: null };
+          responseCode = CONSTANTS.STATUS_CODE[1];
+          schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[1];
+        }
+      } else {
+        apiResponse = { result: response, error: null };
+        responseCode = CONSTANTS.STATUS_CODE[0];
+        schemaValidationStatus = CONSTANTS.SCHEMA_VALIDATION_STATUS_CODE[0];
+      }
+    }
+
+    return {
+      method: task,
+      params: params,
+      responseCode: responseCode,
+      apiResponse: apiResponse,
+      schemaValidationStatus: schemaValidationStatus,
+      schemaValidationResponse: schemaValidationResult,
+    };
   }
 
   // Return the method response object for the passed method

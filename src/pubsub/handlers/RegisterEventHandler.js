@@ -29,7 +29,11 @@ export default class RegisterEventHandler extends BaseHandler {
 
   async handle(message) {
     const validationReport = await this.eventSwitchMode(message);
-    return JSON.stringify(validationReport);
+    if (process.env.STANDALONE == true) {
+      return JSON.stringify({ report: validationReport });
+    } else {
+      return JSON.stringify(validationReport);
+    }
   }
 
   async eventSwitchMode(message) {

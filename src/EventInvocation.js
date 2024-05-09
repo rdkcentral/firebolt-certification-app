@@ -39,6 +39,9 @@ class EventHandler {
     this.moduleWithEventName = moduleWithEventName;
     const event = moduleWithEventName.split('.')[1];
     this.eventName = this.parseEventName(event);
+    if (process.env.STANDALONE == true) {
+      this.eventSchema = this.getSchema(moduleWithEventName, schemaList);
+    }
     this.initializationTime = new Date();
     this.eventListener = null;
   }

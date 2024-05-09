@@ -78,7 +78,6 @@ class EventHandler {
       eventDataObject = {
         eventName: this.eventName,
         eventListenerId: this.eventListener.eventListenerId,
-        eventListenerId: this.eventListener.id,
         eventResponse: eventData,
         eventSchemaResult: eventSchemaResponse,
         eventTime: new Date(),
@@ -121,12 +120,11 @@ class EventHandler {
 export class EventInvocation {
   // This method accepts the message params and return the listener response and schema response
   async northBoundEventHandling(message) {
-    let eventParams, moduleWithEventName, params, listenerResponse, uniqueListenerKey, registrationResponse, responseCode;
-    eventParams = message.params;
-    moduleWithEventName = eventParams.event;
-    params = eventParams.params;
-    [listenerResponse, uniqueListenerKey] = await this.registerEvent(moduleWithEventName, params);
-    registrationResponse = {};
+    const eventParams = message.params;
+    const moduleWithEventName = eventParams.event;
+    const params = eventParams.params;
+    const [listenerResponse, uniqueListenerKey] = await this.registerEvent(moduleWithEventName, params);
+    const registrationResponse = {};
 
     if (process.env.STANDALONE == true) {
       registrationResponse['eventName'] = moduleWithEventName;
@@ -150,7 +148,7 @@ export class EventInvocation {
         eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
       } else {
         if (CONSTANTS.ERROR_LIST.includes(listenerResponse.message)) {
-          responseCode = CONSTANTS.STATUS_CODE[3];
+          const responseCode = CONSTANTS.STATUS_CODE[3];
           registrationResponse['responseCode'] = responseCode;
         }
         registrationResponse['eventListenerResponse'] = { result: null, error: listenerResponse };

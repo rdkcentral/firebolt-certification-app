@@ -43,6 +43,8 @@ export default class SetApiResponseHandler extends BaseHandler {
         return this.setResponseFederatedDataPurchasedContent(message);
       case 'ackchallenge':
         return this.setResponseAckChallenge(message);
+      case 'userinterest':
+        return this.setResponseUserInterestChallenge(message);
       default:
         const defaultIdString = JSON.stringify({
           report: 'Selected module provider is not available',
@@ -90,6 +92,13 @@ export default class SetApiResponseHandler extends BaseHandler {
     process.env.ackChallengeIsExit = ackChallengeParams.isExit;
     const reportIdString = JSON.stringify({ report: 'Received ApiResponse parameters' });
 
+    return reportIdString;
+  }
+
+  setResponseUserInterestChallenge(message) {
+    const userInterestData = message.params.apiResponse.attributes[0];
+
+    const reportIdString = JSON.stringify({ report: 'Received UserInterest apiResponse parameters' });
     return reportIdString;
   }
 }

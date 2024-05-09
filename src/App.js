@@ -28,9 +28,11 @@ import { CONSTANTS } from './constant';
 require('dotenv').config({ override: true });
 import { checkMockOSRestInterface, TRUE_VALUES, getCurrentAppID } from './utils/Utils';
 import { AcknowledgeChallenge, Keyboard, PinChallenge } from '@firebolt-js/manage-sdk';
+import { Discovery } from '@firebolt-js/sdk';
 import PinChallengeProviderDelegater from './providers/PinChallengeDelegater';
 import KeyboardProviderDelegater from './providers/KeyboardProviderDelegater';
 import AckChallengeProviderDelegater from './providers/AckChallengeDelegater';
+import UserIntrestDelegater from './providers/UserInterestDelegater';
 const logger = require('./utils/Logger')('App.js');
 import FireboltTransportInvoker from './FireboltTransportInvoker';
 import { handleAsyncFunction } from './utils/Utils';
@@ -198,14 +200,16 @@ export default class App extends Base {
           if (!this.appContinue) {
             const systemui = new URLSearchParams(window.location.search).get('systemui');
 
-            if (systemui) {
-              try {
+            try {
+              if (systemui) {
                 AcknowledgeChallenge.provide('xrn:firebolt:capability:usergrant:acknowledgechallenge', new AckChallengeProviderDelegater(this));
                 Keyboard.provide('xrn:firebolt:capability:input:keyboard', new KeyboardProviderDelegater(this));
                 PinChallenge.provide('xrn:firebolt:capability:usergrant:pinchallenge', new PinChallengeProviderDelegater(this));
-              } catch (err) {
-                logger.error('Could not set up providers' + err, 'LoadedState');
+              } else {
+                Discovery.provide('xrn:firebolt:capability:discovery:interest', new UserIntrestDelegater(this));
               }
+            } catch (err) {
+              logger.error('Could not set up providers' + err, 'LoadedState');
             }
             process.env.APPOBJECT = this;
             const menusBuilder = new MenuBuilder();

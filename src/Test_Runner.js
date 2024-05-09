@@ -532,8 +532,9 @@ export class Test_Runner {
   async invokeLifecycleAPI(methods) {
     let response,
       result = null,
-      error = null;
-    schemaResult, contentResult;
+      error = null,
+      schemaResult,
+      contentResult;
     const method = methods.methodName;
     const params = {};
     process.env.APP_TYPE = process.env.APP_TYPE ? process.env.APP_TYPE : CONSTANTS.FIREBOLT_CONST;

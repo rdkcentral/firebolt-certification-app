@@ -9,6 +9,7 @@ on:
     branches:
       - dev
       - main
+      - feature/deploy-fca-with-actions
 
   jobs:
     build-and-deploy:

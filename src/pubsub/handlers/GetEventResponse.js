@@ -28,7 +28,7 @@ export default class GetEventResponse extends BaseHandler {
   async handle(message) {
     const eventInvocation = new EventInvocation();
     const validationReport = eventInvocation.getEventResponse(message);
-    const  validationReportObject = { jsonrpc: '2.0', result: validationReport, id: process.env.ID + 1 };
+    const validationReportObject = { jsonrpc: '2.0', result: validationReport, id: process.env.ID + 1 };
     return JSON.stringify(validationReportObject);
   }
 }

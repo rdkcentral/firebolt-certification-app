@@ -15,9 +15,15 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+import { testDataHandler } from '../utils/Utils';
 
 export default class UserIntrestProvider {
   userInterest() {
-    return;
+    const ENTITYINFOEXAMPLES = testDataHandler('content', 'CONTENT');
+    if (ENTITYINFOEXAMPLES.hasOwnProperty(process.env.entityInfoKey)) {
+      return ENTITYINFOEXAMPLES[process.env.entityInfoKey];
+    } else {
+      return null;
+    }
   }
 }

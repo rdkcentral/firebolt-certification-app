@@ -766,10 +766,10 @@ describe('EventInvocation', () => {
 
     test('should return event object with response - single event fired', () => {
       currentCallback({ foo: 'bar1' });
-      const message = { params: { event: eventRegistrationID } };
+      const message = { params: { event: 'accessibility.onClosedCaptionsSettingsChanged-6' } };
       const expectedResponse = {
         eventName: 'modulechanged',
-        eventListenerId: eventRegistrationID,
+        eventListenerId: 6,
         eventResponse: { foo: 'bar1' },
         eventTime: '2023-05-10T14:27:35.806Z',
       };
@@ -786,10 +786,10 @@ describe('EventInvocation', () => {
 
     test('should return event object with last response - multiple events fired', () => {
       currentCallback({ foo: 'bar2' });
-      const message = { params: { event: eventRegistrationID } };
+      const message = { params: { event: 'accessibility.onClosedCaptionsSettingsChanged-6' } };
       const expectedResponse = {
         eventName: 'modulechanged',
-        eventListenerId: eventRegistrationID,
+        eventListenerId: 6,
         eventResponse: { foo: 'bar2' },
         eventTime: '2023-05-10T14:18:18.347Z',
       };

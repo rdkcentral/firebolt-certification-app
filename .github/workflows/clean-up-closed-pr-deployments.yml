@@ -19,7 +19,7 @@ jobs:
           PR_NUMBER="PR-${{ github.event.pull_request.number }}"
           if [ -d "$PR_NUMBER" ]; then
             rm -rf "$PR_NUMBER"
-            echo "Deleted folder: PR-$PR_NUMBER"
+            echo "Deleted folder: $PR_NUMBER"
           else
             echo "Folder $PR_NAME does not exist."
             exit 0

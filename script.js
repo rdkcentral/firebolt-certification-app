@@ -29,7 +29,7 @@ fetch(apiUrl)
 
       const title = document.createElement('p');
       title.classList.add('title', 'is-4', 'has-text-centered');
-      title.textContent = folderName;
+      title.textContent = folderName.toUpperCase();
 
       cardContent.appendChild(title);
       card.appendChild(cardContent);

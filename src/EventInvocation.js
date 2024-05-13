@@ -326,16 +326,12 @@ export class EventInvocation {
   // Return the event response object for the eventName passed as the param
   getEventResponse(message) {
     try {
-      let filteredEventDataObjectList = [];
+      let filteredEventDataObjectList
       const eventName = message.params.event;
       if (process.env.STANDALONE == true) {
         filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
       } else {
-        eventHistory.forEach((element) => {
-          if (eventName.includes(element.eventListenerId.toString())) {
-            filteredEventDataObjectList.push(element);
-          }
-        });
+        filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId.toString() == eventName.split('-').pop());
       }
       if (filteredEventDataObjectList.length) {
         const eventDataObject = filteredEventDataObjectList[filteredEventDataObjectList.length - 1];

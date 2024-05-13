@@ -36,14 +36,17 @@ jobs:
         run: |
           if [[ "${{github.event_name}}" == "pull_request" ]]; then
             PR_NUMBER=${{ github.event.pull_request.number }}
+            rm -rf PR-$PR_NUMBER
             mkdir -p PR-$PR_NUMBER
             mv dist/web/* PR-$PR_NUMBER/
           else
             BRANCH_NAME=$(echo ${{ github.ref }} | sed -n 's/refs\/heads\///p')
-            if [[ "$BRANCH_NAME"]] == "main" ]]; then
-              mv dist/web/* prod/
-            elif [[ "$BRANCH_NAME" == "dev" ]]; then
+            if [[ "$BRANCH_NAME" == "dev" ]]; then
+              rm -rf edge/
               mv dist/web/* edge/
+            elif [[ "$BRANCH_NAME" == "main" ]]; then
+              rm -rf prod/
+              mv dist/web/* prod/
             fi
           fi
     
@@ -51,14 +54,16 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          BRANCH_NAME=$(echo ${{ github.ref }} | sed -n 's/refs\/heads\///p')
-          if [[ "$BRANCH_NAME" == "main" ]]; then
-            git add prod/
-          elif [[ "$BRANCH_NAME" == "dev" ]]; then
-            git add edge/
-          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             PR_NUMBER=${{ github.event.pull_request.number }}
             git add PR-$PR_NUMBER
+          else
+            BRANCH_NAME=$(echo ${{ github.ref }} | sed -n 's/refs\/heads\///p')
+            if [[ "$BRANCH_NAME" == "dev" ]]; then
+              git add edge/
+            elif [[ "$BRANCH_NAME" == "main" ]]; then
+              git add prod/
+            fi
           fi
           git commit -m "Add bundled code"
 

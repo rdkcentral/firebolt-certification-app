@@ -326,7 +326,7 @@ export class EventInvocation {
   // Return the event response object for the eventName passed as the param
   getEventResponse(message) {
     try {
-      let filteredEventDataObjectList
+      let filteredEventDataObjectList;
       const eventName = message.params.event;
       if (process.env.STANDALONE == true) {
         filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);

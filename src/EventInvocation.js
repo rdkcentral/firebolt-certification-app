@@ -85,7 +85,7 @@ class EventHandler {
     } else {
       eventDataObject = {
         eventName: this.eventName,
-        eventListenerId: this.eventListener.eventListenerId,
+        eventListenerId: this.eventListener.id,
         eventResponse: eventData,
         eventTime: new Date(),
       };
@@ -326,8 +326,13 @@ export class EventInvocation {
   // Return the event response object for the eventName passed as the param
   getEventResponse(message) {
     try {
+      let filteredEventDataObjectList;
       const eventName = message.params.event;
-      const filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
+      if (process.env.STANDALONE == true) {
+        filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
+      } else {
+        filteredEventDataObjectList = eventHistory.filter((element) => JSON.stringify(eventName).includes(element.eventListenerId.toString()));
+      }
       if (filteredEventDataObjectList.length) {
         const eventDataObject = filteredEventDataObjectList[filteredEventDataObjectList.length - 1];
         return eventDataObject;

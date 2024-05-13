@@ -1,6 +1,9 @@
 name: Build and Deploy FCA
 
 on:
+  pull_request:
+    branches:
+      - dev
   push:
     branches:
       - dev
@@ -32,16 +35,17 @@ jobs:
 
       - name: Dynamically move build files to the correct directory
         run: |
-          BRANCH_NAME=$(echo ${{ github.ref }} | sed -n 's/refs\/heads\///p')
-          if [[ "$BRANCH_NAME" == "main" ]]; then
-            mkdir -p prod
-            mv dist/web/* prod/
-          elif [[ "$BRANCH_NAME" == "dev" ]]; then
-            mkdir -p edge
-            mv dist/web/* edge/
-          elif [[ "$BRANCH_NAME" == "feature/deploy-fca-with-actions" ]]; then
-            mkdir -p feature
-            mv dist/web/* feature/
+          if [[ "${{github.event_name}}" == "pull_request" ]]; then
+            PR_NUMBER=${{ github.event.pull_request.number }}
+            mkdir -p PR-$PR_NUMBER
+            mv dist/web/* PR-$PR_NUMBER/
+          else
+            BRANCH_NAME=$(echo ${{ github.ref }} | sed -n 's/refs\/heads\///p')
+            if [[ "$BRANCH_NAME"]] == "main" ]]; then
+              mv dist/web/* prod/
+            elif [[ "$BRANCH_NAME" == "dev" ]]; then
+              mv dist/web/* edge/
+            fi
           fi
     
       - name: Create commit
@@ -55,6 +59,9 @@ jobs:
             git add edge/
           elif [[ "$BRANCH_NAME" == "feature/deploy-fca-with-actions" ]]; then
             git add feature/
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            PR_NUMBER=${{ github.event.pull_request.number }}
+            git add PR-$PR_NUMBER
           fi
           git commit -m "Add bundled code"
 

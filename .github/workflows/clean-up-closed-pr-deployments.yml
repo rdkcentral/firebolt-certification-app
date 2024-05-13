@@ -12,14 +12,14 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: github-io-deployment
-          fethc-depth: 0
+          fetch-depth: 0
 
       - name: Delete PR Deployment Directory
         run: |
-          PR_NAME="${{ github.event.pull_request.head.ref }}"
-          if [ -d "$PR_NAME" ]; then
-            rm -rf "$PR_NAME"
-            echo "Deleted folder: $PR_NAME"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          if [ -d "$PR_NUMBER" ]; then
+            rm -rf "$PR_NUMBER"
+            echo "Deleted folder: PR-$PR_NUMBER"
           else
             echo "Folder $PR_NAME does not exist."
             exit 1

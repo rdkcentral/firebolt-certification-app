@@ -85,7 +85,7 @@ class EventHandler {
     } else {
       eventDataObject = {
         eventName: this.eventName,
-        eventListenerId: this.eventListener.id,
+        eventListenerId: this.eventListener.eventListenerId,
         eventResponse: eventData,
         eventTime: new Date(),
       };

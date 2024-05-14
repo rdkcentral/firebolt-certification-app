@@ -17,7 +17,7 @@
  */
 
 import { Discovery } from '@firebolt-js/sdk';
-// import { Content } from '@firebolt-js/discovery-sdk'
+import { Content } from '@firebolt-js/discovery-sdk';
 import { testDataHandler, filterExamples } from '../utils/Utils';
 
 const MOCK_PURCHASED_CONTENT = {
@@ -153,19 +153,11 @@ export default class DiscoveryInvoker {
   }
   // Commenting below methods as the APIs used have been deprecated from discovery sdk , can be uncommented when added as ripple-rpc APIs in future ticket
 
-  async getRequestPurchases(provider, parameters, options) {
-    /** Use providers API to find a real app that is a provider, otherwise use the example */
-    const allApps = await Content.providers();
-    const supportedApps = allApps.filter((a) => a.apis.indexOf('purchases') !== -1);
-    const prov = supportedApps.length > 0 ? supportedApps[0].id : provider;
-    return Content.purchases(prov, parameters, options);
+  async getRequestPurchases() {
+    return Content.requestPurchases({});
   }
 
-  async getRequestDetails(provider, parameters, options) {
-    /** Use providers API to find a real app that is a provider, otherwise use the example */
-    const allApps = await Content.providers();
-    const supportedApps = allApps.filter((a) => a.apis.indexOf('entity') !== -1);
-    const prov = supportedApps.length > 0 ? supportedApps[0].id : provider;
-    return Content.entity(prov, parameters, options);
+  async getRequestDetails(entityId) {
+    return Content.requestDetails(entityId);
   }
 }

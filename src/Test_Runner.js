@@ -490,7 +490,7 @@ export class Test_Runner {
     executionMode = executionMode.toUpperCase();
     apiExecutionStartTime = new Date(); // api execution start time
 
-    if (executionMode.includes(CONSTANTS.MANAGE) || executionMode.includes(CONSTANTS.CORE)) {
+    if (executionMode.includes(CONSTANTS.MANAGE) || executionMode.includes(CONSTANTS.CORE) || executionMode.includes(CONSTANTS.DISCOVERY)) {
       [response, err] = paramsArray
         ? await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramsArray))
         : await handleAsyncFunction(FireboltExampleInvoker.get().invoke(sdk, method, params, null, paramsArray));

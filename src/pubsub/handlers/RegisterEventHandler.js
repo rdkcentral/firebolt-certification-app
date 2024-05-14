@@ -50,7 +50,7 @@ export default class RegisterEventHandler extends BaseHandler {
 
     let validatedMenu;
     // Switch creation for the type of invocation that needs to happen.
-    if ([CONSTANTS.CORE.toLowerCase(), CONSTANTS.MANAGE.toLowerCase()].includes(sdkType)) {
+    if ([CONSTANTS.CORE.toLowerCase(), CONSTANTS.MANAGE.toLowerCase(), CONSTANTS.DISCOVERY.toLowerCase()].includes(sdkType)) {
       validatedMenu = await eventInvokerInfo.northBoundEventHandling(message);
     } else {
       validatedMenu = {

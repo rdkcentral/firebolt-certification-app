@@ -19,11 +19,13 @@ import { testDataHandler } from '../utils/Utils';
 
 export default class UserIntrestProvider {
   userInterest() {
+    // process.env.entityInfoKey = 'EXAMPLE_VALUE';
     const ENTITYINFOEXAMPLES = testDataHandler('content', 'CONTENT');
     if (ENTITYINFOEXAMPLES.hasOwnProperty(process.env.entityInfoKey)) {
-      return ENTITYINFOEXAMPLES[process.env.entityInfoKey];
+      const data = ENTITYINFOEXAMPLES[process.env.entityInfoKey];
+      return Promise.resolve(data);
     } else {
-      return null;
+      return Promise.resolve(null);
     }
   }
 }

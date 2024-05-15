@@ -11,7 +11,11 @@ const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?r
 fetch(apiUrl)
   .then((response) => response.json())
   .then((data) => {
-    const folderNames = data.filter((item) => item.type === 'dir').map((item) => item.name);
+    let folderNames = data.fitler((item) => item.type === 'dir').map((item) => item.name);
+
+    // Ensure PROD & EDGE are first
+    const fixedFolders = ['prod', 'edge'];
+    folderNames = fixedFolders.concat(folderNames.filter(folder => !fixedFolders.includes(folder)));
 
     folderNames.forEach((folderName) => {
       const column = document.createElement('div');

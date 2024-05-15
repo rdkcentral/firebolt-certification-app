@@ -11,7 +11,7 @@ const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?r
 fetch(apiUrl)
   .then((response) => response.json())
   .then((data) => {
-    let folderNames = data.fitler((item) => item.type === 'dir').map((item) => item.name);
+    let folderNames = data.filter((item) => item.type === 'dir').map((item) => item.name);
 
     // Ensure PROD & EDGE are first
     const fixedFolders = ['prod', 'edge'];

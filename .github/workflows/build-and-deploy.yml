@@ -42,10 +42,12 @@ jobs:
           else
             BRANCH_NAME=$(echo ${{ github.ref }} | sed -n 's/refs\/heads\///p')
             if [[ "$BRANCH_NAME" == "dev" ]]; then
-              rm -rf edge/
+              rm -rf edge
+              mkdir -p edge
               mv dist/web/* edge/
             elif [[ "$BRANCH_NAME" == "main" ]]; then
-              rm -rf prod/
+              rm -rf prod
+              mkdir -p prod
               mv dist/web/* prod/
             fi
           fi

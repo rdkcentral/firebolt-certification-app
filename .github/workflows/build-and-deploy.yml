@@ -1,0 +1,74 @@
+name: Build and Deploy FCA
+
+on:
+  pull_request:
+    branches:
+      - dev
+  push:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Checkout github-io-deployment branch
+        run: |
+          git fetch origin
+          git checkout github-io-deployment
+
+      - name: Dynamically move build files to the correct directory
+        run: |
+          if [[ "${{github.event_name}}" == "pull_request" ]]; then
+            PR_NUMBER=${{ github.event.pull_request.number }}
+            rm -rf PR-$PR_NUMBER
+            mkdir -p PR-$PR_NUMBER
+            mv dist/web/* PR-$PR_NUMBER/
+          else
+            BRANCH_NAME=$(echo ${{ github.ref }} | sed -n 's/refs\/heads\///p')
+            if [[ "$BRANCH_NAME" == "dev" ]]; then
+              rm -rf edge/
+              mv dist/web/* edge/
+            elif [[ "$BRANCH_NAME" == "main" ]]; then
+              rm -rf prod/
+              mv dist/web/* prod/
+            fi
+          fi
+    
+      - name: Create commit
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            PR_NUMBER=${{ github.event.pull_request.number }}
+            git add PR-$PR_NUMBER
+          else
+            BRANCH_NAME=$(echo ${{ github.ref }} | sed -n 's/refs\/heads\///p')
+            if [[ "$BRANCH_NAME" == "dev" ]]; then
+              git add edge/
+            elif [[ "$BRANCH_NAME" == "main" ]]; then
+              git add prod/
+            fi
+          fi
+          git commit -m "Add bundled code"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: github-io-deployment

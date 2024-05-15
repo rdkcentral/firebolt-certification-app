@@ -31,7 +31,7 @@ import { AcknowledgeChallenge, Keyboard, PinChallenge } from '@firebolt-js/manag
 import PinChallengeProviderDelegater from './providers/PinChallengeDelegater';
 import KeyboardProviderDelegater from './providers/KeyboardProviderDelegater';
 import AckChallengeProviderDelegater from './providers/AckChallengeDelegater';
-import UserIntrestDelegater from './providers/UserInterestDelegater';
+import UserInterestDelegater from './providers/UserInterestDelegater';
 const logger = require('./utils/Logger')('App.js');
 import FireboltTransportInvoker from './FireboltTransportInvoker';
 import { handleAsyncFunction } from './utils/Utils';
@@ -205,7 +205,7 @@ export default class App extends Base {
                 Keyboard.provide('xrn:firebolt:capability:input:keyboard', new KeyboardProviderDelegater(this));
                 PinChallenge.provide('xrn:firebolt:capability:usergrant:pinchallenge', new PinChallengeProviderDelegater(this));
               } else {
-                Discovery.provide('xrn:firebolt:capability:discovery:user-interest', new UserIntrestDelegater(this));
+                Discovery.provide('xrn:firebolt:capability:discovery:user-interest', new UserInterestDelegater(this));
               }
             } catch (err) {
               logger.error('Could not set up providers' + err, 'LoadedState');

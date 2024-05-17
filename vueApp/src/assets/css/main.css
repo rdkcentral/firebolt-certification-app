@@ -1,0 +1,10 @@
+@import './bulma.min.css';
+
+html {
+  background-color: #123456;
+}
+
+#app {
+  margin: 0 auto;
+  max-width: 1280px;
+}

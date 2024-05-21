@@ -45,6 +45,8 @@ import RegisterProviderHandler from './pubsub/handlers/RegisterProviderHandler';
 import GetEventResponse from './pubsub/handlers/GetEventResponse';
 import GetMethodResponseHandler from './pubsub/handlers/GetMethodResponseHandler';
 import GetSDKVersionHandler from './pubsub/handlers/GetSDKVersionHandler';
+import LifecycleMethodHandler from './pubsub/handlers/LifecycleMethodHandler';
+
 
 const logger = require('./utils/Logger')('IntentReader.js');
 
@@ -63,6 +65,7 @@ const handlers = {
   getEventResponse: new GetEventResponse('getEventResponse'),
   getMethodResponse: new GetMethodResponseHandler('getMethodResponse'),
   getSDKVersionHandler: new GetSDKVersionHandler('getSDKVersionHandler'),
+  callLifecycle: new LifecycleMethodHandler('callLifecycle'),
   [CONSTANTS.CALL_METHOD]: new CallMethodHandler(CONSTANTS.CALL_METHOD),
   [CONSTANTS.HEALTH_CHECK]: new HealthCheckHandler(CONSTANTS.HEALTH_CHECK),
 };

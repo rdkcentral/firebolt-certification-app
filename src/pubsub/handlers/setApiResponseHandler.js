@@ -97,7 +97,7 @@ export default class SetApiResponseHandler extends BaseHandler {
 
   setResponseUserInterestChallenge(message) {
     const userInterestData = message.params.apiResponse.attributes[0];
-    process.env.entityInfoKey = userInterestData.entityInfo;
+    process.env.userInterestKey = userInterestData.userInterestKey;
     const reportIdString = JSON.stringify({ report: 'Received UserInterest apiResponse parameters' });
     return reportIdString;
   }

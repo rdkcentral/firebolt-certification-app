@@ -16,13 +16,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { testDataHandler } from '../utils/Utils';
+import USERINTERESTDATA from '../../plugins/userInterest.json';
 
 export default class UserIntrestProvider {
   userInterest() {
-    // process.env.entityInfoKey = 'EXAMPLE_VALUE';
-    const ENTITYINFOEXAMPLES = testDataHandler('content', 'CONTENT');
-    if (ENTITYINFOEXAMPLES.hasOwnProperty(process.env.entityInfoKey)) {
-      const data = ENTITYINFOEXAMPLES[process.env.entityInfoKey];
+    if (USERINTERESTDATA.hasOwnProperty(process.env.userInterestKey)) {
+      const data = USERINTERESTDATA[process.env.userInterestKey];
       return Promise.resolve(data);
     } else {
       return Promise.resolve(null);

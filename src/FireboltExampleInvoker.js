@@ -48,8 +48,8 @@ import { CONSTANTS } from './constant';
 const MAP = {
   'discovery.purchasedContent': discoveryInvoker.purchasedContent.bind(discoveryInvoker),
   'discovery.entityInfo': discoveryInvoker.entityInfo.bind(discoveryInvoker),
-  'content.requestPurchases': discoveryInvoker.getRequestPurchases.bind(discoveryInvoker),
-  'content.requestDetails': discoveryInvoker.getRequestDetails.bind(discoveryInvoker),
+  // 'content.purchases': discoveryInvoker.getPurchasedContent.bind(discoveryInvoker),
+  // 'content.entity': discoveryInvoker.getEntityInfo.bind(discoveryInvoker),
 };
 
 const CORE_MODULE_MAP = {

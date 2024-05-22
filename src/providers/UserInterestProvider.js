@@ -15,16 +15,19 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-import { testDataHandler } from '../utils/Utils';
-import USERINTERESTDATA from '../../plugins/userInterest.json';
 
 export default class UserIntrestProvider {
   userInterest() {
-    if (USERINTERESTDATA.hasOwnProperty(process.env.userInterestKey)) {
-      const data = USERINTERESTDATA[process.env.userInterestKey];
-      return Promise.resolve(data);
-    } else {
-      return Promise.resolve(null);
+    try {
+      const USERINTERESTDATA = require('../../plugins/userInterest.json');
+      if (USERINTERESTDATA.hasOwnProperty(process.env.userInterestKey)) {
+        const data = USERINTERESTDATA[process.env.userInterestKey];
+        return Promise.resolve(data);
+      } else {
+        return Promise.resolve(null);
+      }
+    } catch (err) {
+      logger.error('Test data repo error: ', err);
     }
   }
 }

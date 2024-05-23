@@ -49,7 +49,7 @@ For example if we are runing an test suite an array of method parameters are pas
     - context: { "source": "device"}
 
 - Optional Intent Fields :
-    - data: { query: {"params": {"certification":true,"exceptionMethods": [{{"method":"authentication.token","param":{"type":"distributor"}},"options":{"clientId":"your-client"}},.......],"methodsToBeExcluded":["accessory.pair",...],"modulesToBeExcluded":["keyboard",....],"metadata": {"target":"your-Target-device","targetVersion":"1c238a16","fireboltVersion":"0.10.0","deviceModel":"your-device-model","devicePartner":"your-device-Partner","fbVersion":"0.10.0"},"asynchronous":false}}
+    - data: { query: {"params": {"certification":true,"exceptionMethods": [{{"method":"authentication.token","param":{"type":"distributor"}},"options":{"clientId":"your-client"}},.......],"methodsToBeExcluded":["accessory.pair",...],"modulesToBeExcluded":["keyboard",....],"metadata": {"target":"your-Target-device","targetVersion":"1c238a16","fireboltVersion":"0.10.0","deviceModel":"your-device-model","devicePartner":"your-device-Partner","fbVersion":"0.10.0"}}}}
 
 ## Invalid Intent and Response
 

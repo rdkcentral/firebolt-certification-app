@@ -41,6 +41,7 @@ const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 const logger = require('./utils/Logger')('Test_Runner.js');
+const _ = require('lodash');
 
 let validationResult;
 let validationError = {};
@@ -118,7 +119,7 @@ export class Test_Runner {
       try {
         // The deSchema is stored in the global object , if it is already initialized we dont need to do it again.
         [deSchemaList, invokedSdk] = await dereferenceOpenRPC(executionMode.toLowerCase());
-        this.dereferenceSchemaList = deSchemaList;
+        this.dereferenceSchemaList = _.cloneDeep(deSchemaList);
       } catch (error) {
         logger.error(JSON.stringify(error), 'northBoundSchemaValidationAndReportGeneration');
         // We could throw the error here and stop further processing
@@ -786,20 +787,21 @@ export class Test_Runner {
     );
     const params = result.param;
     if (result.error || doesContainMethodNotFound) {
-      let errorMessage;
+      let errorMessage, errorMessageLog;
       if (result.error && result.error.message) {
-        errorMessage = result.error.message;
+        errorMessage = result.error;
+        errorMessageLog = result.error.message;
       } else {
         const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
         if (this.methodFilters.isExceptionMethod(methodName, result.param)) {
-          errorMessage = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
-          result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          errorMessage = result.error = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
+          errorMessageLog = `${CONSTANTS.WRONG_ERROR_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
         } else {
-          errorMessage = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
-          result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
+          errorMessage = result.error = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result)}`;
+          errorMessageLog = `${CONSTANTS.WRONG_RESPONSE_MESSAGE_FORMAT}: ${JSON.stringify(result.error)}`;
         }
       }
-      const doesErrorMsgContainMethodNotFound = typeof errorMessage == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessage.toLowerCase()));
+      const doesErrorMsgContainMethodNotFound = typeof errorMessageLog == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessageLog.toLowerCase()));
 
       testContext = {
         params: params,
@@ -838,13 +840,13 @@ export class Test_Runner {
         }
       } else if (doesContainMethodNotFound && !doesErrorMsgContainMethodNotFound) {
         // when the underlying platform returns "Method not found" or "Not supported" but in error. So not the correct error schema format. Certification will set the status as failed in this case
-        errorMessage = JSON.stringify({ Schema: CONSTANTS.FAILED, Content: CONSTANTS.FAILED, Message: JSON.stringify(result) }, null, 1);
+        errorMessage = JSON.stringify({ Schema: CONSTANTS.FAILED, Content: CONSTANTS.FAILED, Actual: JSON.stringify(result) }, null, 1);
       } else if ((errorSchemaResult && typeof errorMessage == 'string') || typeof errorMessage == 'object') {
         errorMessage = JSON.stringify(
           {
             Schema: CONSTANTS.FAILED,
             Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-            Message: errorMessage,
+            Actual: errorMessage,
             Expected: schemaMap,
             params: params,
           },
@@ -856,7 +858,7 @@ export class Test_Runner {
           {
             Schema: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
             Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-            Message: errorMessage,
+            Actual: errorMessage,
             Expected: schemaMap,
             params: params,
           },
@@ -868,11 +870,11 @@ export class Test_Runner {
       // isPass = false
 
       convertedResponse = errorMessage;
-      convertedValidationErr = result.error.message;
+      convertedValidationErr = result.error;
       methodName = result.methodWithExampleName;
       uuid = result.methodUuid;
       if (typeof result.error.message == 'string' || Array.isArray(result.error.message) || typeof result.error.message == 'undefined') {
-        convertedValidationErr = { err: result.error.message };
+        convertedValidationErr = { err: result.error };
       }
     } else {
       testContext = {
@@ -912,8 +914,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
                 Message: {
-                  Expected: schemaMap,
                   Actual: 'undefined',
+                  Expected: schemaMap,
                   Message: CONSTANTS.UNDEFINED_RESPONSE_MESSAGE,
                   params: params,
                 },
@@ -927,8 +929,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.PENDING,
                 Message: {
-                  Expected: schemaMap,
                   Actual: 'undefined',
+                  Expected: schemaMap,
                   Message: CONSTANTS.UNDEFINED_RESPONSE_MESSAGE,
                   params: params,
                 },
@@ -947,8 +949,8 @@ export class Test_Runner {
                   Schema: CONSTANTS.PASSED,
                   Content: CONSTANTS.FAILED,
                   Message: {
-                    Expected: 'NA',
                     Actual: 'NA',
+                    Expected: 'NA',
                     Error: schemaValidationResult.errors[0].message,
                   },
                   params: params,
@@ -961,7 +963,7 @@ export class Test_Runner {
                 {
                   Schema: CONSTANTS.FAILED,
                   Content: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
-                  Message: { Expected: schemaMap, Actual: response, Error: convertedValidationErr },
+                  Message: { Actual: response, Expected: schemaMap, Error: convertedValidationErr },
                   params: params,
                 },
                 null,
@@ -974,8 +976,8 @@ export class Test_Runner {
                 Schema: CONSTANTS.FAILED,
                 Content: CONSTANTS.PENDING,
                 Message: {
-                  Expected: schemaMap,
                   Actual: response,
+                  Expected: schemaMap,
                   Error: schemaValidationResult.errors[0].message,
                 },
                 params: params,

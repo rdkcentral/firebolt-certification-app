@@ -47,7 +47,6 @@ import GetMethodResponseHandler from './pubsub/handlers/GetMethodResponseHandler
 import GetSDKVersionHandler from './pubsub/handlers/GetSDKVersionHandler';
 import LifecycleMethodHandler from './pubsub/handlers/LifecycleMethodHandler';
 
-
 const logger = require('./utils/Logger')('IntentReader.js');
 
 const handlers = {

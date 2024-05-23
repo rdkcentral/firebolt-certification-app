@@ -199,6 +199,7 @@ function pushReportToS3(report) {
     let restApiUrl = CONSTANTS.REPORT_PUBLISH_URL + reportName + '.json';
 
     logger.debug('standalone', process.env.STANDALONE);
+    console.log('Divya standalone', process.env.STANDALONE);
 
     // Uplaods to standalone url if standalone param is passed in url
     if (process.env.STANDALONE == 'true') {

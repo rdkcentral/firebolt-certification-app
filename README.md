@@ -81,7 +81,7 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
   - Steps to convert into `html report`
     1.  Move the `json report` to root folder
     2.  Run the command `yarn marge filename.json -f report -o /destination_path`
-    3.  Check the `html report` on the destination path.
+    3.  Check the `html report` on the destination path
 
 ## Supported Report Parameters
 

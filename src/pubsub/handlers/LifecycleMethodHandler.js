@@ -19,6 +19,7 @@
 import BaseHandler from './BaseHandler';
 import { Test_Runner } from 'Test_Runner';
 const logger = require('../../utils/Logger')('LifecycleMethodHandler.js');
+import { CONSTANTS } from '../../constant';
 
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();
@@ -29,6 +30,7 @@ export default class LifecycleMethodHandler extends BaseHandler {
   }
   async handle(message) {
     process.env.COMMUNICATION_MODE = message.context.communicationMode;
+    process.env.APP_TYPE = message.params.appType[0];
     const sdkInvokerInfo = new Test_Runner();
     try {
       const lifecycleApiResponse = await sdkInvokerInfo.invokeLifecycleAPI(message.params);

@@ -64,6 +64,31 @@ jest.mock('@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
   };
 });
 
+jest.mock('@firebolt-js/sdk', () => {
+  return {
+    Accessibility: {},
+    Account: {},
+    Advertising: {},
+    Authentication: {},
+    Device: {},
+    Discovery: {},
+    Keyboard: {},
+    Lifecycle: {
+      ready: () => {},
+      state: () => {
+        return 'initializing'; // dummy state value.
+      }, // returning a Lifecycle.state object
+      close: () => {},
+      finish: () => {},
+    },
+    Localization: {},
+    Metrics: {},
+    Profile: {},
+    Parameters: {},
+    SecondScreen: {},
+  };
+});
+
 const mockFireboltTransportInvoker = {
   invoke: jest.fn().mockImplementation(() => {
     return Promise.resolve('success');

@@ -64,7 +64,7 @@ jest.mock('@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
   };
 });
 
-est.mock('@firebolt-js/sdk', () => {
+jest.mock('@firebolt-js/sdk', () => {
   return {
     Accessibility: {},
     Account: {},

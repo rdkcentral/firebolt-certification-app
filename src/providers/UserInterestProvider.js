@@ -19,7 +19,7 @@
 export default class UserIntrestProvider {
   userInterest() {
     try {
-      const USERINTERESTDATA = require('../../plugins/userInterest.json');
+      const USERINTERESTDATA = require('../source/userInterest.json');
       if (USERINTERESTDATA.hasOwnProperty(process.env.userInterestKey)) {
         const data = USERINTERESTDATA[process.env.userInterestKey];
         return Promise.resolve(data);

@@ -1,0 +1,63 @@
+{
+    "USERINTEREST_PLAYLIST": {
+        "identifiers": {
+            "entityId": "345",
+            "entityType": "playlist"
+        },
+        "info": {
+            "title": "User Interest",
+            "synopsis": "User Interest request provider",
+            "releaseDate": "1993-01-01T00:00:00.000Z",
+            "contentRatings": [
+                {
+                    "scheme": "US-Movie",
+                    "rating": "PG"
+                },
+                {
+                    "scheme": "CA-Movie",
+                    "rating": "G"
+                }
+            ]
+        }
+    },
+    "USERINTEREST_REACTION": {
+        "identifiers": {
+            "entityId": "123",
+            "entityType": "channel",
+            "channelType": "streaming" 
+        },
+        "info": {
+            "title": "User Interest",
+            "synopsis": "User Interest request provider",
+            "releaseDate": "1993-01-01T00:00:00.000Z",
+            "contentRatings": [
+                {
+                    "scheme": "US-Movie",
+                    "rating": "PG"
+                },
+                {
+                    "scheme": "CA-Movie",
+                    "rating": "G"
+                }
+            ]
+        }
+    },
+    "USERINTEREST_RECORDING": {
+        "identifiers": {
+            "entityId": "981",
+            "entityType": "music",
+            "musicType": "song" 
+        },
+        "info": {
+            "title": "User Interest",
+            "synopsis": "User Interest request provider",
+            "releaseDate": "1993-01-01T00:00:00.000Z",
+            "contentRatings": [
+                {
+                    "scheme": "US-TV",
+                    "rating": "PG"
+                }
+            ]
+        }
+    }
+}

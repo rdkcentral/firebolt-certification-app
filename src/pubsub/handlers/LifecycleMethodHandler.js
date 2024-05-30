@@ -30,6 +30,7 @@ export default class LifecycleMethodHandler extends BaseHandler {
   }
   async handle(message) {
     process.env.COMMUNICATION_MODE = message.context.communicationMode;
+    process.env.APP_TYPE = message.params.appType[0];
     const sdkInvokerInfo = new Test_Runner();
     try {
       const lifecycleApiResponse = await sdkInvokerInfo.invokeLifecycleAPI(message.params);

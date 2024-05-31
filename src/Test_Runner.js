@@ -552,7 +552,7 @@ export class Test_Runner {
       case CONSTANTS.LIFECYCLE_METHOD_LIST[0]:
         try {
           result = await this.lifecycleMethodCalls(method, params);
-          const stateSchema = this.getMethodSchema('Lifecycle.ready', lifecycleMethods);
+          const stateSchema = this.getMethodSchema('lifecycle.ready', lifecycleMethods);
           schemaResult = this.schemaValidation(result.response, stateSchema);
         } catch (err) {
           error = err;
@@ -568,7 +568,7 @@ export class Test_Runner {
                 */
         try {
           result = await this.lifecycleMethodCalls(method, params);
-          const stateSchema = this.getMethodSchema('Lifecycle.state', lifecycleMethods);
+          const stateSchema = this.getMethodSchema('lifecycle.state', lifecycleMethods);
           schemaResult = this.schemaValidation(result.response, stateSchema);
         } catch (err) {
           error = err;
@@ -579,7 +579,7 @@ export class Test_Runner {
       case CONSTANTS.LIFECYCLE_METHOD_LIST[2]:
         try {
           result = await this.lifecycleMethodCalls(method, methods.methodParams);
-          const stateSchema = this.getMethodSchema('Lifecycle.close', lifecycleMethods);
+          const stateSchema = this.getMethodSchema('lifecycle.close', lifecycleMethods);
           schemaResult = this.schemaValidation(result.response, stateSchema);
         } catch (err) {
           error = err;
@@ -609,7 +609,7 @@ export class Test_Runner {
         try {
           const OnInactiveEvent = LifecycleHistory.get();
           const OnInactiveHistory = OnInactiveEvent._history._value[0].event;
-          const OnInActiveList = this.getMethodSchema('Lifecycle.onInactive', lifecycleMethods);
+          const OnInActiveList = this.getMethodSchema('lifecycle.onInactive', lifecycleMethods);
           schemaResult = this.schemaValidation(OnInactiveHistory, OnInActiveList);
           if (OnInactiveHistory.state == 'inactive' && OnInactiveHistory.previous == 'initializing') {
             contentResult = CONSTANTS.PASS;
@@ -625,7 +625,7 @@ export class Test_Runner {
         try {
           const onForegroundEvent = LifecycleHistory.get();
           const onForegroundHistory = onForegroundEvent._history._value[1].event;
-          const onForegroundList = this.getMethodSchema('Lifecycle.onForeground', lifecycleMethods);
+          const onForegroundList = this.getMethodSchema('lifecycle.onForeground', lifecycleMethods);
           schemaResult = this.schemaValidation(onForegroundHistory, onForegroundList);
           if (onForegroundHistory.state == 'foreground' && onForegroundHistory.previous == 'inactive') {
             contentResult = CONSTANTS.PASS;
@@ -641,7 +641,7 @@ export class Test_Runner {
         try {
           const onBackgroundEvent = LifecycleHistory.get();
           const onBackgroundHistory = onBackgroundEvent._history._value[2].event;
-          const onBackgroundList = this.getMethodSchema('Lifecycle.onBackground', lifecycleMethods);
+          const onBackgroundList = this.getMethodSchema('lifecycle.onBackground', lifecycleMethods);
           schemaResult = this.schemaValidation(onBackgroundHistory, onBackgroundList);
           if (onBackgroundHistory.state == 'background' && onBackgroundHistory.previous == 'foreground') {
             contentResult = CONSTANTS.PASS;

@@ -27,7 +27,7 @@ export default class UserIntrestProvider {
         return Promise.resolve(null);
       }
     } catch (err) {
-      logger.error('Test data repo error: ', err);
+      logger.error('Error in userInterest provider: ', err.message);
     }
   }
 }

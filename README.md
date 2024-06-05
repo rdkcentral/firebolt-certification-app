@@ -118,7 +118,6 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
 The code for handling different types of PubSub requests is located in `./src/pubsub/handlers`. Below are the supported handlers for various types of PubSub requests.
 
 * [GetPubSubStatusHandler](./src/pubsub/handlers/GetPubSubStatusHandler.md)
-* [GetTestHandler](./src/pubsub/handlers/GetTestHandler.md)
 * [RunTestHandler](./src/pubsub/handlers/RunTestHandler.md)
 * [RegisterEventHandler](./src/pubsub/handlers/RegisterEventHandler.md)
 * [CallMethodHandler](./src/pubsub/handlers/CallMethodHandler.md)

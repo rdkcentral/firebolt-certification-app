@@ -65,7 +65,7 @@ class PubSubClient {
 
       this.ws.addEventListener('error', (event) => {
         logger.error('Failed to initialize a WS connection...', event);
-        this.ws = null;  // Ensure ws is null if connection fails
+        this.ws = null; // Ensure ws is null if connection fails
         reject(false);
       });
     }).catch((error) => {

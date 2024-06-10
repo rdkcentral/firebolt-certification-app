@@ -193,7 +193,8 @@ function pushReportToS3(report) {
       }
     } catch (error) {
       logger.error(error, 'pushReportToS3');
-      reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend;    }
+      reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend;    
+    }
 
     let restApiUrl = CONSTANTS.REPORT_PUBLISH_URL + reportName + '.json';
 

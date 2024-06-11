@@ -64,12 +64,12 @@ class PubSubClient {
       });
 
       this.ws.addEventListener('error', (event) => {
-        logger.error('Failed to initialize a WS connection...', event);
+        logger.info('Failed to initialize a WS connection...', event);
         this.ws = null; // Ensure ws is null if connection fails
         reject(false);
       });
     }).catch((error) => {
-      logger.error('Continuing without PubSub due to WS connection failure.');
+      logger.info('Continuing without PubSub due to WS connection failure.');
       return false;
     });
   }

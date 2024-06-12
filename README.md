@@ -154,4 +154,3 @@ The prompt is displayed when the user needs to grant/deny a particular api, or t
 If user wants to grant an api, yes button is pressed, for deniel - no button, and incase if the user wants to dismiss the prompt without any action, back button is pressed.
 
 
-

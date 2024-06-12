@@ -205,7 +205,9 @@ export default class App extends Base {
                 Keyboard.provide('xrn:firebolt:capability:input:keyboard', new KeyboardProviderDelegater(this));
                 PinChallenge.provide('xrn:firebolt:capability:usergrant:pinchallenge', new PinChallengeProviderDelegater(this));
               } else {
-                Discovery.provide('xrn:firebolt:capability:discovery:interest', new UserInterestDelegater(this));
+                if (process.env.REGISTERPROVIDER) {
+                  Discovery.provide('xrn:firebolt:capability:discovery:interest', new UserInterestDelegater(this));
+                }
               }
             } catch (err) {
               logger.error('Could not set up providers' + err, 'LoadedState');
@@ -408,6 +410,12 @@ export default class App extends Base {
             process.env.MACADDRESS = query.params.macaddress;
           } else {
             logger.error('No Mac Address Found in Parameter Initialization response...', 'getParameterInitializationValues');
+          }
+
+          if (query.params.hasOwnProperty(CONSTANTS.REGISTERPROVIDER)) {
+            process.env.REGISTERPROVIDER = query.params.registerProvider;
+          } else {
+            process.env.REGISTERPROVIDER = true;
           }
 
           if (query.task) {

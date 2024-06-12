@@ -19,6 +19,7 @@
 import BaseHandler from './BaseHandler';
 import { Test_Runner } from 'Test_Runner';
 const logger = require('../../utils/Logger')('LifecycleMethodHandler.js');
+import { CONSTANTS } from '../../constant';
 
 const { v4: uuidv4 } = require('uuid');
 require('dotenv').config();

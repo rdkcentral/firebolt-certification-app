@@ -19,15 +19,17 @@
 export default class UserIntrestProvider {
   userInterest() {
     try {
-      if (process.env.userInterestError.toLowerCase() == 'error') {
-        return Promise.reject({ code: 10000, message: 'Custom error from provider' });
-      } else {
-        const USERINTERESTDATA = require('../source/userInterest.json');
-        if (USERINTERESTDATA.hasOwnProperty(process.env.userInterestKey)) {
-          const data = USERINTERESTDATA[process.env.userInterestKey];
-          return Promise.resolve(data);
+      if (process.env.userInterestError.toLowerCase() != 'timeout') {
+        if (process.env.userInterestError.toLowerCase() == 'error') {
+          return Promise.reject({ code: 10000, message: 'Custom error from provider' });
         } else {
-          return Promise.resolve(null);
+          const USERINTERESTDATA = require('../source/userInterest.json');
+          if (USERINTERESTDATA.hasOwnProperty(process.env.userInterestKey)) {
+            const data = USERINTERESTDATA[process.env.userInterestKey];
+            return Promise.resolve(data);
+          } else {
+            return Promise.resolve(null);
+          }
         }
       }
     } catch (err) {

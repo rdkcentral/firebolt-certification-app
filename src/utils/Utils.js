@@ -184,7 +184,7 @@ function pushReportToS3(report) {
         reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;
       }
 
-      if (!parsingSuccessful) {
+      if (typeof parsingSuccessful !== 'undefined' && !parsingSuccessful) {
         reportName =
           process.env.REPORTINGID && process.env.STANDALONE
             ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend

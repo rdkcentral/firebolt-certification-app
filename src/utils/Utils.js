@@ -158,6 +158,7 @@ function pushReportToS3(report) {
           parser.parseString(xmlData, function (err, result) {
             if (err) {
               parsingSuccessful = false;
+              resolve();
             } else {
               const res = result['ns2:xcal-auth-message']['attribute'];
               parsingSuccessful = true;

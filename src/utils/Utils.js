@@ -28,6 +28,7 @@ const xml2js = require('xml2js');
 const logger = require('../utils/Logger')('Utils.js');
 
 let deSchemaList, invokedSdk;
+const uuid = uuidv4().replace(/-/g, '');
 
 /**
  * This function returns a list with the result (if successful) or the error (on failure),
@@ -147,29 +148,37 @@ function pushReportToS3(report) {
 
     try {
       const parser = new xml2js.Parser();
-      [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.token', ['device']));
       let parsingSuccessful = false;
-
-      if (result && result.value && !err) {
-        const bufferObj = Buffer.from(result.value, 'base64');
-        const xmlData = bufferObj.toString('utf8');
-        parser.parseString(xmlData, function (err, result) {
-          if (err) {
-            parsingSuccessful = false;
-          } else {
-            const res = result['ns2:xcal-auth-message']['attribute'];
-            for (const resItem of res) {
-              if (resItem.$.key === 'device:ccpPki:estbMac') {
-                logger.info(resItem._, 'pushReportToS3');
-                macAddress = resItem._;
+      if (!process.env.MACADDRESS) {
+        [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.root', []));
+        if (result && result.value && !err) {
+          const bufferObj = Buffer.from(result.value, 'base64');
+          const xmlData = bufferObj.toString('utf8');
+          await new Promise((resolve, reject) => {
+          parser.parseString(xmlData, function (err, result) {
+            if (err) {
+              parsingSuccessful = false;
+            } else {
+              const res = result['ns2:xcal-auth-message']['attribute'];
+              parsingSuccessful = true;
+              for (const resItem of res) {
+                if (resItem.$.key === 'device:ccpPki:estbMac') {
+                  logger.info(resItem._, 'pushReportToS3');
+                  macAddress = resItem._;
+                }
               }
+              resolve();
             }
-            macAddress = macAddress.split(':').join('');
-            reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
-            parsingSuccessful = true;
-          }
+          });
         });
+        }
+      } else {
+        macAddress = process.env.MACADDRESS;
+        parsingSuccessful = true;
       }
+
+      macAddress = macAddress.split(':').join('');
+      reportName = macAddress + '-' + 'refAppExecReport' + '-' + fileNameAppend;
 
       if (parsingSuccessful && process.env.REPORTINGID && process.env.STANDALONE) {
         reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;
@@ -180,12 +189,12 @@ function pushReportToS3(report) {
           process.env.REPORTINGID && process.env.STANDALONE
             ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend
             : !process.env.REPORTINGID && process.env.STANDALONE
-              ? uuidv4() + '-' + 'refAppExecReport' + '-' + fileNameAppend
+              ? uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend
               : 'refAppExecReport' + '-' + fileNameAppend;
       }
     } catch (error) {
       logger.error(error, 'pushReportToS3');
-      reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : 'refAppExecReport' + '-' + fileNameAppend;
+      reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend;
     }
 
     let restApiUrl = CONSTANTS.REPORT_PUBLISH_URL + reportName + '.json';
@@ -194,10 +203,11 @@ function pushReportToS3(report) {
 
     // Uplaods to standalone url if standalone param is passed in url
     if (process.env.STANDALONE == 'true') {
+      const prefix = process.env.STANDALONE_PREFIX ? process.env.STANDALONE_PREFIX : 'standaloneReports';
       const reportNameSplit = reportName.split('-');
       const reportId = reportNameSplit[0];
-      restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + reportName + '.json';
-      logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${reportId}/report.html`, 'pushReportToS3');
+      restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
+      logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReportToS3');
     }
 
     logger.info('URL: ' + restApiUrl, 'pushReportToS3');

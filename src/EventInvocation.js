@@ -39,7 +39,9 @@ class EventHandler {
     this.moduleWithEventName = moduleWithEventName;
     const event = moduleWithEventName.split('.')[1];
     this.eventName = this.parseEventName(event);
-    this.eventSchema = this.getSchema(moduleWithEventName, schemaList);
+    if (process.env.STANDALONE == true) {
+      this.eventSchema = this.getSchema(moduleWithEventName, schemaList);
+    }
     this.initializationTime = new Date();
     this.eventListener = null;
   }
@@ -69,14 +71,24 @@ class EventHandler {
   }
   // Handle, parse and store the resolved event data from listener
   handleEvent(eventData) {
-    const eventSchemaResponse = this.eventSchemaValidation(eventData);
-    const eventDataObject = {
-      eventName: this.eventName,
-      eventListenerId: this.eventListener.eventListenerId,
-      eventResponse: eventData,
-      eventSchemaResult: eventSchemaResponse,
-      eventTime: new Date(),
-    };
+    let eventDataObject;
+    if (process.env.STANDALONE == true) {
+      const eventSchemaResponse = this.eventSchemaValidation(eventData);
+      eventDataObject = {
+        eventName: this.eventName,
+        eventListenerId: this.eventListener.eventListenerId,
+        eventResponse: eventData,
+        eventSchemaResult: eventSchemaResponse,
+        eventTime: new Date(),
+      };
+    } else {
+      eventDataObject = {
+        eventName: this.eventName,
+        eventListenerId: this.eventListener.id,
+        eventResponse: eventData,
+        eventTime: new Date(),
+      };
+    }
     eventHistory.push(eventDataObject);
   }
   // Schema validation for resolved event data
@@ -107,53 +119,68 @@ class EventHandler {
 export class EventInvocation {
   // This method accepts the message params and return the listener response and schema response
   async northBoundEventHandling(message) {
-    let responseCode;
     const eventParams = message.params;
     const moduleWithEventName = eventParams.event;
     const params = eventParams.params;
     const [listenerResponse, uniqueListenerKey] = await this.registerEvent(moduleWithEventName, params);
 
     const registrationResponse = {};
-    registrationResponse['eventName'] = moduleWithEventName;
-    registrationResponse['eventListenerId'] = uniqueListenerKey;
-    if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
-      registrationResponse['eventListenerResponse'] = {
-        listenerResponse: listenerResponse,
-        error: null,
-      };
+    if (process.env.STANDALONE == true) {
+      registrationResponse['eventName'] = moduleWithEventName;
+      registrationResponse['eventListenerId'] = uniqueListenerKey;
+      if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
+        registrationResponse['eventListenerResponse'] = {
+          listenerResponse: listenerResponse,
+          error: null,
+        };
       // Handling not supported api to check error schema if it gives a valid response
       let schemaValidationResult = {};
       let schemaValidationStatus = CONSTANTS.PASS;
       if (message.params.isNotSupportedApi == true) {
-        schemaValidationResult = errorSchemaCheck(listenerResponse);
+        schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
         schemaValidationStatus = CONSTANTS.FAIL;
       }
-      registrationResponse['eventListenerSchemaResult'] = {
-        status: schemaValidationStatus,
-        eventSchemaResult: schemaValidationResult,
-      };
-      eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
-    } else {
-      if (CONSTANTS.ERROR_LIST.includes(listenerResponse.message)) {
-        responseCode = CONSTANTS.STATUS_CODE[3];
-        registrationResponse['responseCode'] = responseCode;
-      }
-      registrationResponse['eventListenerResponse'] = { result: null, error: listenerResponse };
-      // In case of error, validate error against errorschema
-      const schemaValidationResult = errorSchemaCheck(listenerResponse);
-      if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
         registrationResponse['eventListenerSchemaResult'] = {
-          status: CONSTANTS.FAIL,
-          eventSchemaResult: {},
-        };
-      } else {
-        registrationResponse['eventListenerSchemaResult'] = {
-          status: CONSTANTS.PASS,
+          status: schemaValidationStatus,
           eventSchemaResult: schemaValidationResult,
         };
+        eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
+      } else {
+        if (CONSTANTS.ERROR_LIST.includes(listenerResponse.message)) {
+          const responseCode = CONSTANTS.STATUS_CODE[3];
+          registrationResponse['responseCode'] = responseCode;
+        }
+        registrationResponse['eventListenerResponse'] = { result: null, error: listenerResponse };
+        // In case of error, validate error against errorschema
+        const schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
+        if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
+          registrationResponse['eventListenerSchemaResult'] = {
+            status: CONSTANTS.FAIL,
+            eventSchemaResult: {},
+          };
+        } else {
+          registrationResponse['eventListenerSchemaResult'] = {
+            status: CONSTANTS.PASS,
+            eventSchemaResult: schemaValidationResult,
+          };
+        }
       }
-    }
+      return registrationResponse;
+    } else {
+      registrationResponse['jsonrpc'] = '2.0';
+      registrationResponse['id'] = null;
+      if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
+        registrationResponse['id'] = listenerResponse;
+        registrationResponse['result'] = {
+          listening: true,
+          event: moduleWithEventName,
+        };
+        eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
+      } else {
+        registrationResponse['error'] = listenerResponse;
+      }
     return registrationResponse;
+    }
   }
 
   // This method will listen to event and capture the event response after triggering
@@ -298,8 +325,13 @@ export class EventInvocation {
   // Return the event response object for the eventName passed as the param
   getEventResponse(message) {
     try {
+      let filteredEventDataObjectList;
       const eventName = message.params.event;
-      const filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
+      if (process.env.STANDALONE == true) {
+        filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
+      } else {
+        filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId.toString() == eventName.split('-').pop());
+      }
       if (filteredEventDataObjectList.length) {
         const eventDataObject = filteredEventDataObjectList[filteredEventDataObjectList.length - 1];
         return eventDataObject;

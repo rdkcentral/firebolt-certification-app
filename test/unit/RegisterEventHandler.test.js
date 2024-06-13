@@ -28,16 +28,12 @@ jest.mock('../../src/EventInvocation', () => {
       return {
         northBoundEventHandling: (message) => {
           return {
-            eventName: message.params.event,
-            eventListenerId: message.params.event + '-146',
-            eventListenerResponse: {
-              listenerResponse: 146,
-              error: null,
+            jsonrpc: '2.0',
+            result: {
+              listening: true,
+              event: message.params.event,
             },
-            eventListenerSchemaResult: {
-              status: 'PASS',
-              eventSchemaResult: {},
-            },
+            id: 1,
           };
         },
       };

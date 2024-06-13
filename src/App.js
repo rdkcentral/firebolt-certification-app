@@ -112,6 +112,7 @@ export default class App extends Base {
     process.env.TEST_TOKEN = this.testToken;
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
+    process.env.ID = 0;
     if (platform) {
       process.env.PLATFORM = platform;
     } else {

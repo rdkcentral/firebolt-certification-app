@@ -19,8 +19,8 @@
 export default class UserIntrestProvider {
   userInterest() {
     try {
-      if (process.env.userInterestError.toLowerCase() != 'timeout') {
-        if (process.env.userInterestError.toLowerCase() == 'error') {
+      if (process.env.userInterestError == null || process.env.userInterestError.toLowerCase() != 'timeout') {
+        if (process.env.userInterestError && process.env.userInterestError.toLowerCase() == 'error') {
           return Promise.reject({ code: 1000, message: 'Custom error from provider' });
         } else {
           const USERINTERESTDATA = require('../source/userInterest.json');

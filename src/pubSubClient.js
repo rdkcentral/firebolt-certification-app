@@ -18,7 +18,7 @@
 const logger = require('../src/utils/Logger')('pubSubClient.js');
 require('dotenv').config({ override: true });
 
-const defaultWsUrl = 'ws://localhost:8080';
+const defaultWsUrl = process.env.PUB_SUB_URL ? process.env.PUB_SUB_URL : 'ws://localhost:8080';
 
 class PubSubClient {
   constructor(url = defaultWsUrl) {

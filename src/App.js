@@ -114,6 +114,10 @@ export default class App extends Base {
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
     process.env.STANDALONE_PREFIX = standalonePrefix;
+
+    // Set the pubSub URL if present
+    process.env.PUB_SUB_URL = new URLSearchParams(window.location.search).get('pubSubUrl');
+
     if (platform) {
       process.env.PLATFORM = platform;
     } else {
@@ -405,6 +409,11 @@ export default class App extends Base {
             process.env.MACADDRESS = query.params.macaddress;
           } else {
             logger.error('No Mac Address Found in Parameter Initialization response...', 'getParameterInitializationValues');
+          }
+
+          // Set the pubSub URL if present
+          if (query.params.pubSubUrl) {
+            process.env.PUB_SUB_URL = query.params.pubSubUrl;
           }
 
           if (query.task) {

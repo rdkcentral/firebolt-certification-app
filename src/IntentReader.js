@@ -84,6 +84,10 @@ export default class IntentReader {
     if ('reportingId' in message) {
       process.env.REPORTINGID = message.reportingId;
     }
+    
+    if ('standalonePrefix' in message) {
+      process.env.STANDALONE_PREFIX = message.standalonePrefix;
+    }
 
     const handler = handlers[message.task];
     if (handler === undefined) {

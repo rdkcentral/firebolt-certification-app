@@ -55,8 +55,7 @@ describe('GetEventResponse Test Case', () => {
     const responseString = await getEventResponse.handle(message);
     console.log(expect.getState().currentTestName + ' : ' + responseString);
     expect(responseString).toBeTruthy();
-    expect(responseString).toContain('report');
-    expect(responseString).toEqual('{"report":{"event":"null"}}');
+    expect(JSON.parse(responseString).result).toEqual({ event: 'null' });
   });
 
   test('Event response- when no event is passed', async () => {
@@ -64,7 +63,6 @@ describe('GetEventResponse Test Case', () => {
     const responseString = await getEventResponse.handle(message);
     console.log(expect.getState().currentTestName + ' : ' + responseString);
     expect(responseString).toBeTruthy();
-    expect(responseString).toContain('report');
-    expect(responseString).toEqual('{"report":{"undefined":"null"}}');
+    expect(JSON.parse(responseString).result).toEqual({ undefined: 'null' });
   });
 });

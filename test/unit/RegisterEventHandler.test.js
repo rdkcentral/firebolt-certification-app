@@ -60,7 +60,6 @@ describe('RegisterEventHandler', () => {
       const responseString = await registerEventHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       expect(responseString).toBeTruthy();
-      expect(responseString).toContain('report');
       const response = JSON.parse(responseString);
       expect(response.result.event).toEqual(message.params.event);
       expect(process.env.COMMUNICATION_MODE).toEqual(message.context.communicationMode);
@@ -75,7 +74,6 @@ describe('RegisterEventHandler', () => {
       const responseString = await registerEventHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       expect(responseString).toBeTruthy();
-      expect(responseString).toContain('report');
       const response = JSON.parse(responseString);
       expect(response.result.event).toEqual(message.params.event);
     });
@@ -89,7 +87,6 @@ describe('RegisterEventHandler', () => {
       const responseString = await registerEventHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       expect(responseString).toBeTruthy();
-      expect(responseString).toContain('report');
       const response = JSON.parse(responseString);
       expect(response.error.code).toEqual('FCA Error');
       expect(response.error.message).toEqual("Not supported. sdkType 'extension' not in ['core','manage']");

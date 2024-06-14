@@ -71,7 +71,7 @@ class EventHandler {
   }
   // Handle, parse and store the resolved event data from listener
   handleEvent(eventData) {
-    let eventDataObject = {
+    const eventDataObject = {
       eventName: this.eventName,
       eventResponse: eventData,
       eventTime: new Date(),
@@ -130,7 +130,7 @@ export class EventInvocation {
         let schemaValidationResult = {};
         let schemaValidationStatus = CONSTANTS.PASS;
         if (message.params.isNotSupportedApi == true) {
-          schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
+          schemaValidationResult = errorSchemaCheck(listenerResponse);
           schemaValidationStatus = CONSTANTS.FAIL;
         }
         registrationResponse['eventListenerSchemaResult'] = {
@@ -145,7 +145,7 @@ export class EventInvocation {
         }
         registrationResponse['eventListenerResponse'] = { result: null, error: listenerResponse };
         // In case of error, validate error against errorschema
-        const schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
+        const schemaValidationResult = errorSchemaCheck(listenerResponse);
         if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
           registrationResponse['eventListenerSchemaResult'] = {
             status: CONSTANTS.FAIL,
@@ -324,7 +324,7 @@ export class EventInvocation {
         filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
       } else {
         filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId.toString() == eventName.split('-').pop());
-      }      
+      }
       if (filteredEventDataObjectList.length) {
         const eventDataObject = filteredEventDataObjectList[filteredEventDataObjectList.length - 1];
         return eventDataObject;

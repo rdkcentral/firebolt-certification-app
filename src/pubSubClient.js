@@ -18,12 +18,10 @@
 const logger = require('../src/utils/Logger')('pubSubClient.js');
 require('dotenv').config({ override: true });
 
-const defaultWsUrl = process.env.PUB_SUB_URL ? process.env.PUB_SUB_URL : 'ws://localhost:8080';
-
 class PubSubClient {
-  constructor(url = defaultWsUrl) {
+  constructor() {
     this.ws = null;
-    this.url = url;
+    this.url = process.env.PUB_SUB_URL ? process.env.PUB_SUB_URL : 'ws://localhost:8080';
     this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = '_FCS';
     this.PUBSUB_PUBLISH_TOPIC_SUFFIX = '_FCA';
   }
@@ -186,8 +184,8 @@ class PubSubClient {
   }
 }
 
-const getClient = async (url = defaultWsUrl) => {
-  const pubSubClient = new PubSubClient(url);
+const getClient = async () => {
+  const pubSubClient = new PubSubClient();
   try {
     await pubSubClient.initialize();
   } catch (error) {

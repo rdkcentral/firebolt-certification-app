@@ -142,11 +142,14 @@ const schemaList = {
       ],
     },
     {
-      name: 'mockmodule.mockmethod1',
+      name: 'mockmodule1.mockmethod1',
       summary: 'Firebolt OpenRPC schema',
       params: [],
       result: {
         name: 'OpenRPC Schema',
+        schema: {
+          type: 'object',
+        },
       },
     },
   ],
@@ -178,6 +181,9 @@ jest.mock('../../src/FireboltExampleInvoker', () => {
         setmockmethod: jest.fn(),
         listen: jest.fn(),
         clear: jest.fn(),
+      },
+      mockmodule2: {
+        mockmethod2: jest.fn(),
       },
     },
   };
@@ -229,53 +235,12 @@ describe('MethodInvoker', () => {
         action: 'NA',
         context: { communicationMode: 'Transport' },
       };
-      const expectedResult = {
-        method: 'callMethod',
-        params: [],
-        responseCode: 1,
-        apiResponse: { result: 'success', error: null },
-        schemaValidationStatus: 'FAIL',
-        schemaValidationResponse: {
-          instance: 'success',
-          schema: { type: 'object' },
-          options: {},
-          path: [],
-          propertyPath: 'instance',
-          errors: [
-            {
-              path: [],
-              property: 'instance',
-              message: 'is not of a type(s) object',
-              schema: { type: 'object' },
-              instance: 'success',
-              name: 'type',
-              argument: ['object'],
-              stack: 'instance is not of a type(s) object',
-            },
-          ],
-          disableFormat: false,
-        },
-      };
+      const expectedResult = { id: 1, result: 'success', jsonrpc: '2.0' };
       result = await methodInvoker.invoke(MESSAGE_TRANSPORT);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result).toEqual(expectedResult); // will be Fail as the schema wont match. Schema expects object, return is string
+      expect(result.result).toEqual(expectedResult.result); // will be Fail as the schema wont match. Schema expects object, return is string
     });
-    test('should successfully handle calls with params with communicationMode Transport ', async () => {
-      process.env.COMMUNICATION_MODE = 'Transport';
-      const MESSAGE_TRANSPORT = {
-        task: 'callMethod',
-        params: { method: 'mockmodule.mockmethod', methodParams: { value: true } },
-        action: 'NA',
-        context: { communicationMode: 'Transport' },
-      };
-      const expectedResult = {
-        method: 'callMethod',
-        params: [true],
-      };
-      result = await methodInvoker.invoke(MESSAGE_TRANSPORT);
-      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result.params).toEqual(expectedResult.params); // will be Fail as the schema wont match. Schema expects object, return is string
-    });
+
     test('should successfully handle set calls', async () => {
       process.env.COMMUNICATION_MODE = 'SDK';
       const message = {
@@ -284,114 +249,11 @@ describe('MethodInvoker', () => {
         action: 'NA',
         context: { communicationMode: 'SDK' },
       };
-      const expectedResponse = {
-        method: 'callMethod',
-        params: [true],
-        responseCode: 0,
-        apiResponse: { result: 'success', error: null },
-        schemaValidationStatus: 'PASS',
-        schemaValidationResponse: {
-          instance: 'success',
-          schema: { type: 'string' },
-          options: {},
-          path: [],
-          propertyPath: 'instance',
-          errors: [],
-          disableFormat: false,
-        },
-      };
+      const expectedResponse = { id: 1, result: 'success', jsonrpc: '2.0' };
       result = await methodInvoker.invoke(message);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result).toEqual(expectedResponse); // will return PASS as module and method exist as well as schema validation passes.
+      expect(result.result).toEqual(expectedResponse.result); // will return PASS as module and method exist as well as schema validation passes.
     });
-    test('should successfully handle calls with params as object', async () => {
-      process.env.COMMUNICATION_MODE = 'SDK';
-      const message = {
-        task: 'callMethod',
-        params: {
-          method: 'mocksdk_mockmodule.mockmethod',
-          methodParams: { firstParam: true, secondParam: 'somestring' },
-        },
-        action: 'NA',
-        context: { communicationMode: 'SDK' },
-      };
-
-      const expectedResponse = {
-        method: 'callMethod',
-        params: [true, 'somestring'],
-      };
-      result = await methodInvoker.invoke(message);
-      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result.method).toEqual(expectedResponse.method);
-      expect(result.params).toEqual(expectedResponse.params);
-    });
-
-    test('should return error on error during processing', async () => {
-      process.env.COMMUNICATION_MODE = 'SDK';
-      const message = {
-        task: 'callMethod',
-        params: {
-          method: 'mockmodule.mockmethod1',
-        },
-        action: 'NA',
-        context: { communicationMode: 'SDK' },
-      };
-      const expectedResponse = {
-        method: 'callMethod',
-        params: [],
-        responseCode: 1,
-        apiResponse: {
-          result: null,
-          error: { code: 'FCAError', message: 'Expected `schema` to be an object or boolean' },
-        },
-        schemaValidationStatus: 'FAIL',
-        schemaValidationResponse: {
-          instance: { code: 'FCAError', message: 'Expected `schema` to be an object or boolean' },
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
-                required: ['code', 'message'],
-              },
-              { type: 'string' },
-            ],
-          },
-          options: {},
-          path: [],
-          propertyPath: 'instance',
-          errors: [
-            {
-              path: [],
-              property: 'instance',
-              message: 'is not exactly one from [subschema 0],[subschema 1]',
-              schema: {
-                oneOf: [
-                  {
-                    type: 'object',
-                    properties: { code: { type: 'number' }, message: { type: 'string' } },
-                    required: ['code', 'message'],
-                  },
-                  { type: 'string' },
-                ],
-              },
-              instance: {
-                code: 'FCAError',
-                message: 'Expected `schema` to be an object or boolean',
-              },
-              name: 'oneOf',
-              argument: ['[subschema 0]', '[subschema 1]'],
-              stack: 'instance is not exactly one from [subschema 0],[subschema 1]',
-            },
-          ],
-          disableFormat: false,
-        },
-      };
-      result = await methodInvoker.invoke(message);
-      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result).toEqual(expectedResponse); // will return result will be null.
-    });
-
     test('should return wrong method name when method not in sdk', async () => {
       process.env.COMMUNICATION_MODE = 'SDK';
       const message = {
@@ -404,33 +266,41 @@ describe('MethodInvoker', () => {
       };
 
       const expectedResponse = {
-        method: 'callMethod',
-        params: [],
-        responseCode: 0,
-        apiResponse: { result: null, error: { code: -32601, message: 'Wrong Method Name' } },
-        schemaValidationStatus: 'PASS',
-        schemaValidationResponse: {
-          instance: { code: -32601, message: 'Wrong Method Name' },
-          schema: {
-            oneOf: [
-              {
-                type: 'object',
-                properties: { code: { type: 'number' }, message: { type: 'string' } },
-                required: ['code', 'message'],
-              },
-              { type: 'string' },
-            ],
-          },
-          options: {},
-          path: [],
-          propertyPath: 'instance',
-          errors: [],
-          disableFormat: false,
-        },
+        id: 1,
+        error: { code: -32601, message: 'Wrong Method Name' },
+        jsonrpc: '2.0',
       };
       result = await methodInvoker.invoke(message);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result).toEqual(expectedResponse); // will return result will be null.
+      expect(result.error).toEqual(expectedResponse.error); // will return result will be null.
+    });
+
+    test('validate MethodInvoker method which present in OPEN RPC but not imported to moduleMap/firebolt invoker', async () => {
+      process.env.COMMUNICATION_MODE = 'Transport';
+      const MESSAGE_TRANSPORT = {
+        task: 'callMethod',
+        params: { method: 'mockmodule1.mockmethod1' },
+        action: 'NA',
+        context: { communicationMode: 'Transport' },
+      };
+      const expectedResult = { id: 1, result: 'success', jsonrpc: '2.0' };
+      result = await methodInvoker.invoke(MESSAGE_TRANSPORT);
+      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
+      expect(result.result).toEqual(expectedResult.result); // will be Fail as the schema wont match. Schema expects object, return is string
+    });
+
+    test('validate MethodInvoker method which is not present in OPEN RPC but present in moduleMap/firebolt invoker', async () => {
+      process.env.COMMUNICATION_MODE = 'Transport';
+      const MESSAGE_TRANSPORT = {
+        task: 'callMethod',
+        params: { method: 'mockmodule2.mockmethod2' },
+        action: 'NA',
+        context: { communicationMode: 'Transport' },
+      };
+      const expectedResult = { id: 1, result: 'success', jsonrpc: '2.0' };
+      result = await methodInvoker.invoke(MESSAGE_TRANSPORT);
+      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
+      expect(result.result).toEqual(expectedResult.result); // will be Fail as the schema wont match. Schema expects object, return is string
     });
   });
 

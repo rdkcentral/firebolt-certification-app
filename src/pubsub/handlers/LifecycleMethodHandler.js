@@ -33,13 +33,21 @@ export default class LifecycleMethodHandler extends BaseHandler {
     try {
       const lifecycleApiResponse = await sdkInvokerInfo.invokeLifecycleAPI(message.params);
       console.log("handlers LifecycleMethodHandler.js lifecycleApiResponse > ", lifecycleApiResponse)
-      return JSON.stringify({ report: lifecycleApiResponse });
+      if (process.env.STANDALONE == true) {
+        return JSON.stringify({ report: lifecycleApiResponse });
+      } else {
+        return JSON.stringify(lifecycleApiResponse);
+      }
     } catch (e) {
       const result = {
         responseCode: CONSTANTS.STATUS_CODE[1],
         error: { message: 'FCA in exception block: ' + e.message, code: 'FCAError' },
       };
-      return JSON.stringify({ report: result });
+      if (process.env.STANDALONE == true) {
+        return JSON.stringify({ report: result });
+      } else {
+        return JSON.stringify(result);
+      }
     }
   }
 }

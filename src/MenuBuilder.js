@@ -169,18 +169,18 @@ export default class MenuBuilder {
     const certificationMenu = [];
 
     const sdkMenuArray = this.constructMenuBasedOnMode(CONSTANTS.SDK);
+    const sdkMenuObject = this.createMenuObject(CONSTANTS.SDK, sdkMenuArray);
+    certificationMenu.push(sdkMenuObject);
+
+    const transportMenuArray = this.constructMenuBasedOnMode(CONSTANTS.TRANSPORT);
     CONSTANTS.additionalSDKs.forEach(
       function (sdkObject) {
         const sdkObjectCopy = { ...sdkObject };
         // dynamically construct menu items using additionalSDKs config
         const menuObject = this.createSubMenuObject(sdkObjectCopy.name, ValidationView, sdkObjectCopy.name, CONSTANTS.SDK);
-        sdkMenuArray.push(menuObject);
+        transportMenuArray.push(menuObject);
       }.bind(this)
     );
-    const sdkMenuObject = this.createMenuObject(CONSTANTS.SDK, sdkMenuArray);
-    certificationMenu.push(sdkMenuObject);
-
-    const transportMenuArray = this.constructMenuBasedOnMode(CONSTANTS.TRANSPORT);
     const transportMenuObject = this.createMenuObject(CONSTANTS.TRANSPORT, transportMenuArray);
     certificationMenu.push(transportMenuObject);
     return [...certificationMenu];

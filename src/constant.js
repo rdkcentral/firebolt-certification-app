@@ -19,6 +19,7 @@
 import CONFIG_CONSTANTS from 'config';
 import CORE_OPEN_RPC from '@firebolt-js/sdk/dist/firebolt-core-open-rpc';
 import MANAGE_OPEN_RPC from '@firebolt-js/manage-sdk/dist/firebolt-manage-open-rpc';
+import DISCOVERY_OPEN_RPC from '@firebolt-js/discovery-sdk/dist/firebolt-discovery-open-rpc';
 export const CONSTANTS = {
   ALL_SDKS: 'ALL SDKS',
   SDK: 'SDK',
@@ -106,6 +107,7 @@ export const CONSTANTS = {
   EXCEPTION_METHODS: [],
   CORE: 'CORE',
   MANAGE: 'MANAGE',
+  DISCOVERY: 'DISCOVERY',
   FIREBOLT_ALL: 'FIREBOLT-ALL',
   ERROR_MESSAGE_WRONG_METHOD_NAME: { code: -32601, message: 'Wrong Method Name' },
   INVALID_REQUEST_TYPE: 'Error: Invalid requestType',
@@ -150,6 +152,14 @@ export const CONSTANTS = {
     {
       name: 'Manage',
       openRpc: MANAGE_OPEN_RPC,
+      validation: function () {
+        return !(process.env.MF_VALUE && !process.env.MOCKOS);
+      },
+      unavailableMessage: 'MockOs is not running',
+    },
+    {
+      name: 'Discovery',
+      openRpc: DISCOVERY_OPEN_RPC,
       validation: function () {
         return !(process.env.MF_VALUE && !process.env.MOCKOS);
       },

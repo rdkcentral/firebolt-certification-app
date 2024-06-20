@@ -28,16 +28,12 @@ jest.mock('../../src/EventInvocation', () => {
       return {
         northBoundEventHandling: (message) => {
           return {
-            eventName: message.params.event,
-            eventListenerId: message.params.event + '-146',
-            eventListenerResponse: {
-              listenerResponse: 146,
-              error: null,
+            jsonrpc: '2.0',
+            result: {
+              listening: true,
+              event: message.params.event,
             },
-            eventListenerSchemaResult: {
-              status: 'PASS',
-              eventSchemaResult: {},
-            },
+            id: 1,
           };
         },
       };
@@ -64,9 +60,8 @@ describe('RegisterEventHandler', () => {
       const responseString = await registerEventHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       expect(responseString).toBeTruthy();
-      expect(responseString).toContain('report');
       const response = JSON.parse(responseString);
-      expect(response.report.eventName).toEqual(message.params.event);
+      expect(response.result.event).toEqual(message.params.event);
       expect(process.env.COMMUNICATION_MODE).toEqual(message.context.communicationMode);
     });
     test('validate sdktype is handled correctly - MANAGE', async () => {
@@ -79,7 +74,6 @@ describe('RegisterEventHandler', () => {
       const responseString = await registerEventHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       expect(responseString).toBeTruthy();
-      expect(responseString).toContain('report');
       const response = JSON.parse(responseString);
       expect(response.report.eventName).toEqual(message.params.event);
     });
@@ -93,10 +87,9 @@ describe('RegisterEventHandler', () => {
       const responseString = await registerEventHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       expect(responseString).toBeTruthy();
-      expect(responseString).toContain('report');
       const response = JSON.parse(responseString);
-      expect(response.report.error.code).toEqual('FCA Error');
-      expect(response.report.error.message).toEqual("Not supported. sdkType 'extension' not in ['core','manage']");
+      expect(response.error.code).toEqual('FCA Error');
+      expect(response.error.message).toEqual("Not supported. sdkType 'extension' not in ['core','manage']");
     });
   });
 });

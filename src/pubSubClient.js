@@ -32,6 +32,7 @@ class PubSubClient {
     const appUrl = window.location;
     const pubSubTopicUUID = new URLSearchParams(appUrl.search).get('pubsub_uuid');
     const macAddress = process.env.MACADDRESS;
+    const appId = process.env.CURRENT_APPID;
 
     // Priority #1: Use pubSubTopicUUID if it's available
     if (pubSubTopicUUID) {
@@ -48,8 +49,8 @@ class PubSubClient {
       console.warn(`WARNING: No pubsub_uuid query parameter or MAC address found. Using default value: ${pubSubTopic}`);
     }
 
-    process.env.PUBSUB_SUBSCRIBE_TOPIC = pubSubTopic + this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX;
-    process.env.PUBSUB_PUBLISH_TOPIC = pubSubTopic + this.PUBSUB_PUBLISH_TOPIC_SUFFIX;
+    process.env.PUBSUB_SUBSCRIBE_TOPIC = pubSubTopic + '_' + appId + this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX;
+    process.env.PUBSUB_PUBLISH_TOPIC = pubSubTopic + '_' + appId + this.PUBSUB_PUBLISH_TOPIC_SUFFIX;
 
     // Establish WS Connection
     this.ws = new WebSocket(this.url);

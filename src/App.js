@@ -419,8 +419,6 @@ export default class App extends Base {
 
           if (query.params.hasOwnProperty(CONSTANTS.REGISTERPROVIDER)) {
             process.env.REGISTERPROVIDER = query.params.registerprovider;
-          } else {
-            process.env.REGISTERPROVIDER = true;
           }
 
           // Set the pubSub URL if present

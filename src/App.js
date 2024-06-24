@@ -417,16 +417,15 @@ export default class App extends Base {
             logger.error('No Mac Address Found in Parameter Initialization response...', 'getParameterInitializationValues');
           }
 
-<<<<<<< HEAD
           if (query.params.hasOwnProperty(CONSTANTS.REGISTERPROVIDER)) {
             process.env.REGISTERPROVIDER = query.params.registerprovider;
           } else {
             process.env.REGISTERPROVIDER = true;
-=======
+          }
+
           // Set the pubSub URL if present
           if (query.params.pubSubUrl) {
             process.env.PUB_SUB_URL = query.params.pubSubUrl;
->>>>>>> dev
           }
 
           if (query.task) {

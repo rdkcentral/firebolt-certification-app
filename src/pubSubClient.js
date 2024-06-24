@@ -15,16 +15,13 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-
 const logger = require('../src/utils/Logger')('pubSubClient.js');
 require('dotenv').config({ override: true });
-
-const defaultWsUrl = 'ws://your-ws-url-here.com';
 
 class PubSubClient {
   constructor() {
     this.ws = null;
-    this.url = defaultWsUrl;
+    this.url = process.env.PUB_SUB_URL ? process.env.PUB_SUB_URL : 'ws://localhost:8080';
     this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = '_FCS';
     this.PUBSUB_PUBLISH_TOPIC_SUFFIX = '_FCA';
   }
@@ -35,6 +32,7 @@ class PubSubClient {
     const appUrl = window.location;
     const pubSubTopicUUID = new URLSearchParams(appUrl.search).get('pubsub_uuid');
     const macAddress = process.env.MACADDRESS;
+    const appId = process.env.CURRENT_APPID;
 
     // Priority #1: Use pubSubTopicUUID if it's available
     if (pubSubTopicUUID) {
@@ -51,12 +49,12 @@ class PubSubClient {
       console.warn(`WARNING: No pubsub_uuid query parameter or MAC address found. Using default value: ${pubSubTopic}`);
     }
 
-    process.env.PUBSUB_SUBSCRIBE_TOPIC = pubSubTopic + this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX;
-    process.env.PUBSUB_PUBLISH_TOPIC = pubSubTopic + this.PUBSUB_PUBLISH_TOPIC_SUFFIX;
+    process.env.PUBSUB_SUBSCRIBE_TOPIC = pubSubTopic + '_' + appId + this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX;
+    process.env.PUBSUB_PUBLISH_TOPIC = pubSubTopic + '_' + appId + this.PUBSUB_PUBLISH_TOPIC_SUFFIX;
 
     // Establish WS Connection
     this.ws = new WebSocket(this.url);
-    logger.info('Establishing a WS connection...', 'initialize');
+    logger.info(`Establishing a WS connection to ${this.url}...`, 'initialize');
 
     return new Promise((resolve, reject) => {
       this.ws.addEventListener('open', (event) => {
@@ -65,13 +63,13 @@ class PubSubClient {
       });
 
       this.ws.addEventListener('error', (event) => {
-        if (this.url === defaultWsUrl) {
-          logger.error('WARNING: WebSocket connections will fail to initialize. The file has not been properly configured. Please update the URL to point to your WebSocket server for communication to work.');
-        } else {
-          logger.error('Failed to initialize a WS connection...', 'initialize');
-        }
+        logger.info('Failed to initialize a WS connection...', event);
+        this.ws = null; // Ensure ws is null if connection fails
         reject(false);
       });
+    }).catch((error) => {
+      logger.info('Continuing without PubSub due to WS connection failure.');
+      return false;
     });
   }
 
@@ -79,6 +77,11 @@ class PubSubClient {
   publish(topic, message, headers) {
     if (!topic) {
       logger.info('No topic provided...');
+      return false;
+    }
+
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      logger.error('WS connection is not open. Cannot publish message.');
       return false;
     }
 
@@ -92,7 +95,7 @@ class PubSubClient {
 
     // If headers are passed in, add them to the payload object
     if (headers) {
-      payload.payload.headers = headers;
+      publishMsg.payload.headers = headers;
     }
 
     logger.info('Publishing message: ', JSON.stringify(publishMsg));
@@ -109,6 +112,11 @@ class PubSubClient {
 
   // Subscribe to a topic
   subscribe(topic, callback) {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      logger.error('WS connection is not open. Cannot subscribe to topic.');
+      return false;
+    }
+
     const subscribeMsg = {
       operation: 'sub',
       topic,
@@ -146,6 +154,11 @@ class PubSubClient {
 
   // Unsubscribe to a topic
   unsubscribe(topic) {
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      logger.error('WS connection is not open. Cannot unsubscribe from topic.');
+      return false;
+    }
+
     const payload = {
       operation: 'unsub',
       topic,
@@ -164,8 +177,8 @@ class PubSubClient {
   // Checks WebSocket connection status
   isConnected() {
     let status = false;
-    if (this.ws && this.ws.readyState == this.ws.OPEN) {
-      logger.info('WS connection already Established');
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      logger.info('WS connection already established');
       status = true;
     }
     return status;
@@ -174,7 +187,11 @@ class PubSubClient {
 
 const getClient = async () => {
   const pubSubClient = new PubSubClient();
-  await pubSubClient.initialize();
+  try {
+    await pubSubClient.initialize();
+  } catch (error) {
+    logger.error(error);
+  }
   return pubSubClient;
 };
 

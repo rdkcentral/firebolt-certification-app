@@ -100,6 +100,7 @@ export default class App extends Base {
     const testContext = new URLSearchParams(window.location.search).get('testContext');
     const reportingId = new URLSearchParams(appUrl.search).get('reportingId');
     const standalone = new URLSearchParams(appUrl.search).get('standalone');
+    const standalonePrefix = new URLSearchParams(appUrl.search).get('standalonePrefix');
     this.systemui = new URLSearchParams(window.location.search).get('systemui');
     this.testToken = new URLSearchParams(window.location.search).get('testtoken');
     this.pubSubUuidPresent = false;
@@ -113,6 +114,7 @@ export default class App extends Base {
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
     process.env.ID = 0;
+    process.env.STANDALONE_PREFIX = standalonePrefix;
     if (platform) {
       process.env.PLATFORM = platform;
     } else {

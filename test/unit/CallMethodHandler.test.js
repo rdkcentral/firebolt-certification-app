@@ -27,20 +27,9 @@ jest.mock('../../src/MethodInvoker', () => {
           switch (message.params.method) {
             case 'firebolt.mockMethod':
               return {
-                method: 'callMethod',
-                params: [],
-                responseCode: 0,
-                apiResponse: { result: 'mockFireboltResult', error: null },
-                schemaValidationStatus: 'PASS',
-                schemaValidationResponse: {
-                  instance: 'mockFireboltResult',
-                  schema: { type: 'string' },
-                  options: {},
-                  path: [],
-                  propertyPath: 'instance',
-                  errors: [],
-                  disableFormat: false,
-                },
+                id: 1,
+                result: 'mockFireboltResult',
+                jsonrpc: '2.0',
               };
             default:
               throw new Error('Firebolt error');
@@ -55,20 +44,9 @@ jest.mock('externalInvokers', () => ({
   myExternalInvoker: function () {
     this.invoke = () =>
       Promise.resolve({
-        method: 'callMethod',
-        params: [],
-        responseCode: 0,
-        apiResponse: { result: 'mockResult', error: null },
-        schemaValidationStatus: 'PASS',
-        schemaValidationResponse: {
-          instance: 'mockResult',
-          schema: { type: 'string' },
-          options: {},
-          path: [],
-          propertyPath: 'instance',
-          errors: [],
-          disableFormat: false,
-        },
+        id: 1,
+        result: 'mockResult',
+        jsonrpc: '2.0',
       });
   },
 }));
@@ -104,9 +82,9 @@ describe('CallMethodHandler', () => {
       const responseString = await callMethodHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       expect(responseString).toBeTruthy();
-      expect(responseString).toContain('report');
+      expect(responseString).toContain('result');
       const report = JSON.parse(responseString);
-      expect(report.report.apiResponse.result).toEqual('mockResult');
+      expect(report.result).toEqual('mockResult');
     });
     test('Validate method invoker is invoked', async () => {
       const message = {
@@ -123,9 +101,9 @@ describe('CallMethodHandler', () => {
       const responseString = await callMethodHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       expect(responseString).toBeTruthy();
-      expect(responseString).toContain('report');
+      expect(responseString).toContain('result');
       const report = JSON.parse(responseString);
-      expect(report.report.apiResponse.result).toEqual('mockFireboltResult');
+      expect(report.result).toEqual('mockFireboltResult');
     });
     test('Validate exception handling', async () => {
       const message = {
@@ -141,9 +119,8 @@ describe('CallMethodHandler', () => {
       const responseString = await callMethodHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       const report = JSON.parse(responseString);
-      expect(report.report.responseCode).toEqual(1); // indicating failure
-      expect(report.report.error.code).toEqual('FCAError'); // indicating failure is within FCA app
-      expect(report.report.error.message).toContain('FCA in exception block'); // indicating failure is within FCA app
+      expect(report.error.code).toEqual('FCAError'); // indicating failure is within FCA app
+      expect(report.error.message).toContain('FCA in exception block'); // indicating failure is within FCA app
     });
   });
 });

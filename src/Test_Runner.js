@@ -552,13 +552,19 @@ export class Test_Runner {
       case CONSTANTS.LIFECYCLE_METHOD_LIST[0]:
         try {
           result = await this.lifecycleMethodCalls(method, params);
-          const stateSchema = this.getMethodSchema('Lifecycle.ready', lifecycleMethods);
-          schemaResult = this.schemaValidation(result.response, stateSchema);
+          if (process.env.STANDALONE == true) {
+            const stateSchema = this.getMethodSchema('Lifecycle.ready', lifecycleMethods);
+            schemaResult = this.schemaValidation(result.response, stateSchema);
+          }
         } catch (err) {
           error = err;
           result.error = error;
         }
-        response = this.createResultObject(result.response, result.error, schemaResult);
+        if (process.env.STANDALONE == true) {
+          response = this.createResultObject(result.response, result.error, schemaResult);
+        } else {
+          response = this.createResultObject(result.response, result.error);
+        }
         break;
       case CONSTANTS.LIFECYCLE_METHOD_LIST[1]:
         /*
@@ -568,24 +574,36 @@ export class Test_Runner {
                 */
         try {
           result = await this.lifecycleMethodCalls(method, params);
-          const stateSchema = this.getMethodSchema('Lifecycle.state', lifecycleMethods);
-          schemaResult = this.schemaValidation(result.response, stateSchema);
+          if (process.env.STANDALONE == true) {
+            const stateSchema = this.getMethodSchema('Lifecycle.state', lifecycleMethods);
+            schemaResult = this.schemaValidation(result.response, stateSchema);
+          }
         } catch (err) {
           error = err;
           result.error = error;
         }
-        response = this.createResultObject(result.response, result.error, schemaResult);
+        if (process.env.STANDALONE == true) {
+          response = this.createResultObject(result.response, result.error, schemaResult);
+        } else {
+          response = this.createResultObject(result.response, result.error);
+        }
         break;
       case CONSTANTS.LIFECYCLE_METHOD_LIST[2]:
         try {
           result = await this.lifecycleMethodCalls(method, methods.methodParams);
-          const stateSchema = this.getMethodSchema('Lifecycle.close', lifecycleMethods);
-          schemaResult = this.schemaValidation(result.response, stateSchema);
+          if (process.env.STANDALONE == true) {
+            const stateSchema = this.getMethodSchema('Lifecycle.close', lifecycleMethods);
+            schemaResult = this.schemaValidation(result.response, stateSchema);
+          }
         } catch (err) {
           error = err;
           result.error = error;
         }
-        response = this.createResultObject(result.response, result.error, schemaResult);
+        if (process.env.STANDALONE == true) {
+          response = this.createResultObject(result.response, result.error, schemaResult);
+        } else {
+          response = this.createResultObject(result.response, result.error);
+        }
         break;
 
       case CONSTANTS.LIFECYCLE_METHOD_LIST[3]:
@@ -606,52 +624,64 @@ export class Test_Runner {
         response = this.createResultObject(result, error);
         break;
       case CONSTANTS.LIFECYCLE_METHOD_LIST[5]:
-        try {
-          const OnInactiveEvent = LifecycleHistory.get();
-          const OnInactiveHistory = OnInactiveEvent._history._value[0].event;
-          const OnInActiveList = this.getMethodSchema('Lifecycle.onInactive', lifecycleMethods);
-          schemaResult = this.schemaValidation(OnInactiveHistory, OnInActiveList);
-          if (OnInactiveHistory.state == 'inactive' && OnInactiveHistory.previous == 'initializing') {
-            contentResult = CONSTANTS.PASS;
-          } else {
-            contentResult = CONSTANTS.FAIL;
+        if (process.env.STANDALONE == true) {
+          try {
+            const OnInactiveEvent = LifecycleHistory.get();
+            const OnInactiveHistory = OnInactiveEvent._history._value[0].event;
+            const OnInActiveList = this.getMethodSchema('Lifecycle.onInactive', lifecycleMethods);
+            schemaResult = this.schemaValidation(OnInactiveHistory, OnInActiveList);
+            if (OnInactiveHistory.state == 'inactive' && OnInactiveHistory.previous == 'initializing') {
+              contentResult = CONSTANTS.PASS;
+            } else {
+              contentResult = CONSTANTS.FAIL;
+            }
+          } catch (err) {
+            error = err;
           }
-        } catch (err) {
-          error = err;
+          response = this.createResultObject(result, error, schemaResult, contentResult);
+        } else {
+          response = this.createResultObject(result, error);
         }
-        response = this.createResultObject(result, error, schemaResult, contentResult);
         break;
       case CONSTANTS.LIFECYCLE_METHOD_LIST[6]:
-        try {
-          const onForegroundEvent = LifecycleHistory.get();
-          const onForegroundHistory = onForegroundEvent._history._value[1].event;
-          const onForegroundList = this.getMethodSchema('Lifecycle.onForeground', lifecycleMethods);
-          schemaResult = this.schemaValidation(onForegroundHistory, onForegroundList);
-          if (onForegroundHistory.state == 'foreground' && onForegroundHistory.previous == 'inactive') {
-            contentResult = CONSTANTS.PASS;
-          } else {
-            contentResult = CONSTANTS.FAIL;
+        if (process.env.STANDALONE == true) {
+          try {
+            const onForegroundEvent = LifecycleHistory.get();
+            const onForegroundHistory = onForegroundEvent._history._value[1].event;
+            const onForegroundList = this.getMethodSchema('Lifecycle.onForeground', lifecycleMethods);
+            schemaResult = this.schemaValidation(onForegroundHistory, onForegroundList);
+            if (onForegroundHistory.state == 'foreground' && onForegroundHistory.previous == 'inactive') {
+              contentResult = CONSTANTS.PASS;
+            } else {
+              contentResult = CONSTANTS.FAIL;
+            }
+          } catch (err) {
+            error = err;
           }
-        } catch (err) {
-          error = err;
+          response = this.createResultObject(result, error, schemaResult, contentResult);
+        } else {
+          response = this.createResultObject(result, error);
         }
-        response = this.createResultObject(result, error, schemaResult, contentResult);
         break;
       case CONSTANTS.LIFECYCLE_METHOD_LIST[7]:
-        try {
-          const onBackgroundEvent = LifecycleHistory.get();
-          const onBackgroundHistory = onBackgroundEvent._history._value[2].event;
-          const onBackgroundList = this.getMethodSchema('Lifecycle.onBackground', lifecycleMethods);
-          schemaResult = this.schemaValidation(onBackgroundHistory, onBackgroundList);
-          if (onBackgroundHistory.state == 'background' && onBackgroundHistory.previous == 'foreground') {
-            contentResult = CONSTANTS.PASS;
-          } else {
-            contentResult = CONSTANTS.FAIL;
+        if (process.env.STANDALONE == true) {
+          try {
+            const onBackgroundEvent = LifecycleHistory.get();
+            const onBackgroundHistory = onBackgroundEvent._history._value[2].event;
+            const onBackgroundList = this.getMethodSchema('Lifecycle.onBackground', lifecycleMethods);
+            schemaResult = this.schemaValidation(onBackgroundHistory, onBackgroundList);
+            if (onBackgroundHistory.state == 'background' && onBackgroundHistory.previous == 'foreground') {
+              contentResult = CONSTANTS.PASS;
+            } else {
+              contentResult = CONSTANTS.FAIL;
+            }
+          } catch (err) {
+            error = err;
           }
-        } catch (err) {
-          error = err;
+          response = this.createResultObject(result, error, schemaResult, contentResult);
+        } else {
+          response = this.createResultObject(result, error);
         }
-        response = this.createResultObject(result, error, schemaResult, contentResult);
         break;
       case CONSTANTS.LIFECYCLE_METHOD_LIST[8]:
         result = await this.lifecycleMethodCalls(method, params);
@@ -709,13 +739,30 @@ export class Test_Runner {
     };
   }
 
-  createResultObject(result, error, schemaResult, contentResult) {
-    const resultObject = {
-      result: result,
-      error: error,
-      schemaResult: schemaResult,
-      contentResult: contentResult,
-    };
+  createResultObject(result, error) {
+    let resultObject;
+    if (process.env.STANDALONE == true) {
+      resultObject = {
+        result: result,
+        error: error,
+        schemaResult: schemaResult,
+        contentResult: contentResult,
+      };
+    } else {
+      if (error == null) {
+        resultObject = {
+          jsonrpc: '2.0',
+          result: result,
+          id: process.env.ID + 1,
+        };
+      } else {
+        resultObject = {
+          jsonrpc: '2.0',
+          error: error,
+          id: process.env.ID + 1,
+        };
+      }
+    }
     return resultObject;
   }
 

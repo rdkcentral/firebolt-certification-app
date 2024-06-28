@@ -140,6 +140,7 @@ export const CONSTANTS = {
   WRONG_RESPONSE_MESSAGE_FORMAT: 'Unexpected error format encountered in the response',
   EXCLUDED_METHODS_FOR_SDK: [],
   EXCLUDED_METHODS_FOR_TRANSPORT: [],
+  REGISTERPROVIDER: 'registerprovider',
   defaultSDKs: [
     {
       name: 'Core',

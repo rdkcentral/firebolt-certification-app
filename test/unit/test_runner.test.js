@@ -476,7 +476,6 @@ describe('Test_Runner test cases', () => {
         mode: 'Lifecycle.validation',
         methodName: CONSTANTS.LIFECYCLE_METHOD_LIST[1],
       };
-      jest.spyOn(runner, 'schemaValidation').mockImplementation(() => 'Passed');
       const response = await runner.invokeLifecycleAPI(tempParams);
       expect(response).not.toBe(undefined);
       /*

@@ -115,6 +115,7 @@ export default class App extends Base {
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
     process.env.STANDALONE_PREFIX = standalonePrefix;
+    process.env.ID = 0;
     process.env.REGISTERPROVIDER = true;
 
     // Set the pubSub URL if present

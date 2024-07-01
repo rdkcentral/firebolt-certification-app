@@ -126,7 +126,7 @@ export const CONSTANTS = {
   DISABLE_VOICE_ANNOUNCEMENT: false,
   ENABLE_VOICE_ANNOUNCEMENT: true,
   TARGET_TO_BE_EXCLUDED: [],
-  METHODS_TO_BE_EXCLUDED: [],
+  METHODS_TO_BE_EXCLUDED: ['Lifecycle.close'],
   METHODS_TO_BE_EXCLUDED_ONLY_DEVICES: [],
   PUBSUB_ACK: { pubSubStatus: 'Connection successful' },
   SUBSCRIBE: 'Subscribe',

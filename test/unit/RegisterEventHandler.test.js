@@ -75,7 +75,7 @@ describe('RegisterEventHandler', () => {
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       expect(responseString).toBeTruthy();
       const response = JSON.parse(responseString);
-      expect(response.report.eventName).toEqual(message.params.event);
+      expect(response.result.event).toEqual(message.params.event);
     });
     test('validate sdktype is handled correctly - no match found', async () => {
       const message = {

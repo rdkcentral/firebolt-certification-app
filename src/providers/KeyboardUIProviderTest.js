@@ -39,7 +39,7 @@ export default class KeyboardUIProviderTest {
       });
     } else {
       this._app.$dismissOverlay();
-      return Promise.resolve({ text: process.env.ApiText, canceled: process.env.isCancelled });
+      return Promise.resolve(process.env.ApiText);
     }
   }
 
@@ -56,7 +56,7 @@ export default class KeyboardUIProviderTest {
       });
     } else {
       this._app.$dismissOverlay();
-      return Promise.resolve({ text: process.env.ApiText, canceled: process.env.isCancelled });
+      return Promise.resolve(process.env.ApiText);
     }
   }
 
@@ -73,7 +73,7 @@ export default class KeyboardUIProviderTest {
       });
     } else {
       this._app.$dismissOverlay();
-      return Promise.resolve({ text: process.env.ApiText, canceled: process.env.isCancelled });
+      return Promise.resolve(process.env.ApiText);
     }
   }
 
@@ -108,7 +108,7 @@ export default class KeyboardUIProviderTest {
 
   onDone(responder, text, isCancelled) {
     setTimeout(() => this._app.$dismissOverlay(), 500); // Try and get lightning-ui component to use onkeyup
-    responder({ text, canceled: isCancelled });
+    responder(text);
   }
 
   sleep(ms) {

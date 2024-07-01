@@ -636,8 +636,8 @@ describe('EventInvocation', () => {
       const result = await eventInvocation.northBoundEventHandling(eventParams);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(MODULE_MAP.mocksdk.mockmodule.listen).toHaveBeenCalled();
-      expect(result.eventListenerResponse).toStrictEqual(expectedResponse.eventListenerResponse);
-      expect(result.eventListenerSchemaResult.status).toEqual(expectedResponse.eventListenerSchemaResult.status);
+      expect(result.id).toBeNull();
+      expect(result.error).toStrictEqual(expectedResponse.error);
     });
     test('validate getEventResponse method', async () => {
       const message = { params: { event: 'lifecycle.onForeground' } };
@@ -764,12 +764,11 @@ describe('EventInvocation', () => {
 
     test('should return event object with response - single event fired', () => {
       currentCallback({ foo: 'bar1' });
-      const message = { params: { event: eventRegistrationID } };
+      const message = { params: { event: 'accessibility.onClosedCaptionsSettingsChanged-6' } };
       const expectedResponse = {
         eventName: 'modulechanged',
-        eventListenerId: eventRegistrationID,
+        eventListenerId: 6,
         eventResponse: { foo: 'bar1' },
-        eventSchemaResult: { status: 'PASS', eventSchemaResult: [] },
         eventTime: '2023-05-10T14:27:35.806Z',
       };
       result = eventInvocation.getEventResponse(message);
@@ -778,7 +777,6 @@ describe('EventInvocation', () => {
         eventName: expectedResponse.eventName,
         eventListenerId: expectedResponse.eventListenerId,
         eventResponse: expectedResponse.eventResponse,
-        eventSchemaResult: expectedResponse.eventSchemaResult,
       });
       expect(result.eventTime).toBeDefined();
       expect(result.eventTime).toBeInstanceOf(Date);
@@ -786,12 +784,11 @@ describe('EventInvocation', () => {
 
     test('should return event object with last response - multiple events fired', () => {
       currentCallback({ foo: 'bar2' });
-      const message = { params: { event: eventRegistrationID } };
+      const message = { params: { event: 'accessibility.onClosedCaptionsSettingsChanged-6'  } };
       const expectedResponse = {
         eventName: 'modulechanged',
-        eventListenerId: eventRegistrationID,
+        eventListenerId: 6,
         eventResponse: { foo: 'bar2' },
-        eventSchemaResult: { status: 'PASS', eventSchemaResult: [] },
         eventTime: '2023-05-10T14:18:18.347Z',
       };
       result = eventInvocation.getEventResponse(message);
@@ -800,7 +797,6 @@ describe('EventInvocation', () => {
         eventName: expectedResponse.eventName,
         eventListenerId: expectedResponse.eventListenerId,
         eventResponse: expectedResponse.eventResponse,
-        eventSchemaResult: expectedResponse.eventSchemaResult,
       });
       expect(result.eventTime).toBeDefined();
       expect(result.eventTime).toBeInstanceOf(Date);
@@ -835,32 +831,6 @@ describe('EventInvocation', () => {
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(result.error.code).toEqual(expectedResponse.error.code);
       expect(result.error.message).toBeDefined();
-    });
-
-    test('should return failure for schema', async () => {
-      // register for invalid schema
-      const message = { params: { event: eventRegistrationID } };
-      const expectedResponse = {
-        eventName: 'modulechanged',
-        eventListenerId: eventRegistrationID,
-        eventResponse: true,
-        eventSchemaResult: {
-          status: 'FAIL',
-          eventSchemaResult: 'is not any of "ListenResponse","EventResponse"',
-        },
-        eventTime: '2023-05-11T20:34:05.219Z',
-      };
-      currentCallback(true);
-      result = eventInvocation.getEventResponse(message);
-      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result).toMatchObject({
-        eventName: expectedResponse.eventName,
-        eventListenerId: expectedResponse.eventListenerId,
-        eventResponse: expectedResponse.eventResponse,
-        eventSchemaResult: expectedResponse.eventSchemaResult,
-      });
-      expect(result.eventTime).toBeDefined();
-      expect(result.eventTime).toBeInstanceOf(Date);
     });
   });
 });

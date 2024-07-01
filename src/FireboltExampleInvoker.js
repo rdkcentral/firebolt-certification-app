@@ -16,7 +16,25 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Accessibility, Account, Advertising, Authentication, Capabilities, Device, Discovery, Keyboard, Lifecycle, Localization, Metrics, Profile, Parameters, SecondScreen, SecureStorage } from '@firebolt-js/sdk';
+import {
+  Accessibility,
+  Account,
+  Advertising,
+  Authentication,
+  Capabilities,
+  Device,
+  Discovery,
+  Display,
+  Keyboard,
+  Lifecycle,
+  Localization,
+  Metrics,
+  MediaInfo,
+  Profile,
+  Parameters,
+  SecondScreen,
+  SecureStorage,
+} from '@firebolt-js/sdk';
 import {
   Advertising as ManageAdvertising,
   AcknowledgeChallenge,
@@ -30,6 +48,7 @@ import {
   Privacy,
   VoiceGuidance,
   UserGrants,
+  MediaInfo as ManageMediaInfo,
   Metrics as ManageMetrics,
   SecureStorage as ManageSecureStorage,
   Discovery as ManageDiscovery,
@@ -60,9 +79,11 @@ const CORE_MODULE_MAP = {
   capabilities: Capabilities,
   device: Device,
   discovery: Discovery,
+  display: Display,
   keyboard: Keyboard,
   lifecycle: Lifecycle,
   localization: Localization,
+  mediainfo: MediaInfo,
   metrics: Metrics,
   profile: Profile,
   parameters: Parameters,
@@ -83,6 +104,7 @@ const MANAGE_MODULE_MAP = {
   voiceguidance: VoiceGuidance,
   localization: ManageLocalization,
   usergrants: UserGrants,
+  mediainfo: ManageMediaInfo,
   metrics: ManageMetrics,
   securestorage: ManageSecureStorage,
   discovery: ManageDiscovery,

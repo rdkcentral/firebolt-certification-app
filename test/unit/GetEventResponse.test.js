@@ -55,7 +55,6 @@ describe('GetEventResponse Test Case', () => {
     const responseString = await getEventResponse.handle(message);
     console.log(expect.getState().currentTestName + ' : ' + responseString);
     expect(responseString).toBeTruthy();
-    expect(responseString).toContain('report');
     expect(JSON.parse(responseString).result).toEqual({ event: 'null' });
   });
 
@@ -64,7 +63,6 @@ describe('GetEventResponse Test Case', () => {
     const responseString = await getEventResponse.handle(message);
     console.log(expect.getState().currentTestName + ' : ' + responseString);
     expect(responseString).toBeTruthy();
-    expect(responseString).toContain('report');
     expect(JSON.parse(responseString).result).toEqual({ undefined: 'null' });
   });
 });

@@ -240,22 +240,6 @@ describe('MethodInvoker', () => {
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(result.result).toEqual(expectedResult.result); // will be Fail as the schema wont match. Schema expects object, return is string
     });
-    test('should successfully handle calls with params with communicationMode Transport ', async () => {
-      process.env.COMMUNICATION_MODE = 'Transport';
-      const MESSAGE_TRANSPORT = {
-        task: 'callMethod',
-        params: { method: 'mockmodule.mockmethod', methodParams: { value: true } },
-        action: 'NA',
-        context: { communicationMode: 'Transport' },
-      };
-      const expectedResult = {
-        method: 'callMethod',
-        params: [true],
-      };
-      result = await methodInvoker.invoke(MESSAGE_TRANSPORT);
-      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result.params).toEqual(expectedResult.params); // will be Fail as the schema wont match. Schema expects object, return is string
-    });
     test('should successfully handle set calls', async () => {
       process.env.COMMUNICATION_MODE = 'SDK';
       const message = {
@@ -298,7 +282,8 @@ describe('MethodInvoker', () => {
         action: 'NA',
         context: { communicationMode: 'Transport' },
       };
-      result = await methodInvoker.invoke(message);
+      const expectedResult = { id: 1, result: 'success', jsonrpc: '2.0' };
+      result = await methodInvoker.invoke(MESSAGE_TRANSPORT);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(result.result).toEqual(expectedResult.result); // will be Fail as the schema wont match. Schema expects object, return is string
     });

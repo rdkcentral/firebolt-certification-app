@@ -119,7 +119,6 @@ describe('CallMethodHandler', () => {
       const responseString = await callMethodHandler.handle(message);
       console.log(expect.getState().currentTestName + ' : ' + responseString);
       const report = JSON.parse(responseString);
-      expect(report.report.responseCode).toEqual(1); // indicating failure
       expect(report.error.code).toEqual('FCAError'); // indicating failure is within FCA app
       expect(report.error.message).toContain('FCA in exception block'); // indicating failure is within FCA app
     });

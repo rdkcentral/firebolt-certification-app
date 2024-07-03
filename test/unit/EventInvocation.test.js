@@ -534,7 +534,7 @@ describe('EventInvocation', () => {
       const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
       // register listener
       let result = await eventInvocation.northBoundEventHandling(eventParams);
-      expect(result.eventListenerId).toBeDefined();
+      expect(result.id).toBeDefined();
       // check no errors when no listeners are registered
       result = eventInvocation.clearAllListeners();
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
@@ -546,11 +546,11 @@ describe('EventInvocation', () => {
       const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
       // register listener
       let result = await eventInvocation.northBoundEventHandling(eventParams);
-      expect(result.eventListenerId).toBeDefined();
+      expect(result.id).toBeDefined();
       // register second listener listener
       const eventParams1 = { params: { event: 'mocksdk_mockeventmodule.oneventmodulechanged' } };
       const response = await eventInvocation.northBoundEventHandling(eventParams1);
-      expect(response.eventListenerId).toBeDefined();
+      expect(response.id).toBeDefined();
       // check no errors when no listeners are registered
       result = eventInvocation.clearAllListeners();
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
@@ -572,17 +572,18 @@ describe('EventInvocation', () => {
     test('validate EventInvocation method with communicationMode SDK', async () => {
       const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
       const expectedResponse = {
-        eventName: 'mocksdk_mockmodule.onmodulechanged',
-        eventListenerId: 'mockmodule.onmodulechanged-1',
-        eventListenerResponse: { listenerResponse: 1, error: null },
-        eventListenerSchemaResult: { status: 'PASS', eventSchemaResult: {} },
+        jsonrpc: '2.0',
+        result: {
+          listening: true,
+          event: 'mocksdk_mockmodule.onmodulechanged',
+        },
+        id: 4,
       };
       const result = await eventInvocation.northBoundEventHandling(eventParams);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(MODULE_MAP.mocksdk.mockmodule.listen).toHaveBeenCalled();
-      // expect(result.eventListenerId).toBe(expectedResponse.eventListenerId)
-      expect(result.eventListenerResponse.error).toBeNull();
-      expect(result.eventListenerSchemaResult.status).toEqual(expectedResponse.eventListenerSchemaResult.status);
+      expect(result.id).toBe(expectedResponse.id);
+      expect(result.result).not.toBeNull();
     });
 
     test('should fail if not supported api returns a valid response and not error object', async () => {
@@ -590,46 +591,17 @@ describe('EventInvocation', () => {
         params: { event: 'mocksdk_mockmodule.onmodulechanged', isNotSupportedApi: true },
       };
       const expectedResponse = {
-        eventName: 'mocksdk_mockmodule.onmodulechanged',
-        eventListenerId: 'mockmodule.onmodulechanged-1',
-        eventListenerResponse: { listenerResponse: 1, error: null },
-        eventListenerSchemaResult: {
-          status: 'FAIL',
-          eventSchemaResult: {
-            instance: 1,
-            schema: {
-              type: 'object',
-              properties: { code: { type: 'number' }, message: { type: 'string' } },
-              required: ['code', 'message'],
-            },
-            options: {},
-            path: [],
-            propertyPath: 'instance',
-            errors: [
-              {
-                path: [],
-                property: 'instance',
-                message: 'is not of a type(s) object',
-                schema: {
-                  type: 'object',
-                  properties: { code: { type: 'number' }, message: { type: 'string' } },
-                  required: ['code', 'message'],
-                },
-                instance: 1,
-                name: 'type',
-                argument: ['object'],
-                stack: 'instance is not of a type(s) object',
-              },
-            ],
-            disableFormat: false,
-          },
+        jsonrpc: '2.0',
+        result: {
+          listening: true,
+          event: 'mocksdk_mockmodule.onmodulechanged',
         },
+        id: 4,
       };
       const result = await eventInvocation.northBoundEventHandling(eventParams);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(MODULE_MAP.mocksdk.mockmodule.listen).toHaveBeenCalled();
-      expect(result.eventListenerResponse.error).toStrictEqual(expectedResponse.eventListenerResponse.error);
-      expect(result.eventListenerSchemaResult.status).toEqual(expectedResponse.eventListenerSchemaResult.status);
+      expect(result.error).toStrictEqual(expectedResponse.error);
     });
 
     test('should pass if not supported api returns an error object', async () => {
@@ -638,67 +610,36 @@ describe('EventInvocation', () => {
         isNotSupportedApi: true,
       };
       const expectedResponse = {
-        eventName: 'mocksdk_mockmodule.onnotsupported',
-        eventListenerId: null,
-        eventListenerResponse: {
-          result: null,
-          error: { code: -52001, message: 'Method not supported' },
+        jsonrpc: '2.0',
+        error: {
+          code: -52001,
+          message: 'Method not supported',
         },
-        eventListenerSchemaResult: {
-          status: 'PASS',
-          eventSchemaResult: {
-            instance: { code: -52001, message: 'Method not supported' },
-            schema: {
-              type: 'object',
-              properties: { code: { type: 'number' }, message: { type: 'string' } },
-              required: ['code', 'message'],
-            },
-            options: {},
-            path: [],
-            propertyPath: 'instance',
-            errors: [],
-            disableFormat: false,
-          },
-        },
+        id: 16,
       };
       const result = await eventInvocation.northBoundEventHandling(eventParams);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(MODULE_MAP.mocksdk.mockmodule.listen).toHaveBeenCalled();
-      expect(result.eventListenerResponse.error).toStrictEqual(expectedResponse.eventListenerResponse.error);
-      expect(result.eventListenerSchemaResult.status).toEqual(expectedResponse.eventListenerSchemaResult.status);
+      expect(result.error).toStrictEqual(expectedResponse.error);
     });
 
     test('validate invalid EventInvocation method with communicationMode SDK - Method not found', async () => {
       const eventParams = { params: { event: 'mocksdk_mockmodule.oninvalidevent' } };
       const expectedResponse = {
-        eventName: 'mocksdk_mockmodule.oninvalidevent',
-        eventListenerId: null,
-        responseCode: 3,
-        eventListenerResponse: { result: null, error: { code: '', message: 'Method not found' } },
-        eventListenerSchemaResult: { status: 'FAIL', eventSchemaResult: {} },
+        jsonrpc: '2.0',
+        error: {
+          code: '',
+          message: 'Method not found',
+        },
+        id: 16,
       };
       const result = await eventInvocation.northBoundEventHandling(eventParams);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(MODULE_MAP.mocksdk.mockmodule.listen).toHaveBeenCalled();
-      expect(result.eventListenerId).toBeNull();
-      expect(result.responseCode).toBe(expectedResponse.responseCode);
-      expect(result.eventListenerResponse).toStrictEqual(expectedResponse.eventListenerResponse);
-      expect(result.eventListenerSchemaResult.status).toEqual(expectedResponse.eventListenerSchemaResult.status);
+      expect(result.id).toBeNull();
+      expect(result.error).toStrictEqual(expectedResponse.error);
     });
-    test('validate invalid EventInvocation method with communicationMode SDK - schema failure', async () => {
-      const eventParams = { params: { event: 'mocksdk_mockmodule.oninvalidschema' } };
-      const expectedResponse = {
-        eventName: 'mocksdk_mockmodule.oninvalidschema',
-        eventListenerId: 'mockmodule.oninvalidschema-[object Object]',
-        eventListenerResponse: { result: null, error: { listen: 2 } },
-        eventListenerSchemaResult: { status: 'FAIL', eventSchemaResult: {} },
-      };
-      const result = await eventInvocation.northBoundEventHandling(eventParams);
-      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(MODULE_MAP.mocksdk.mockmodule.listen).toHaveBeenCalled();
-      expect(result.eventListenerResponse).toStrictEqual(expectedResponse.eventListenerResponse);
-      expect(result.eventListenerSchemaResult.status).toEqual(expectedResponse.eventListenerSchemaResult.status);
-    });
+
     test('validate getEventResponse method', async () => {
       const message = { params: { event: 'lifecycle.onForeground' } };
       await eventInvocation.getEventResponse(message);
@@ -708,17 +649,19 @@ describe('EventInvocation', () => {
       process.env.COMMUNICATION_MODE = 'Transport';
       const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
       const expectedResponse = {
-        eventName: 'mocksdk_mockmodule.onmodulechanged',
-        eventListenerId: 'mockmodule.onmodulechanged-1',
-        eventListenerResponse: { listenerResponse: 1, error: null },
-        eventListenerSchemaResult: { status: 'PASS', eventSchemaResult: {} },
+        jsonrpc: '2.0',
+        result: {
+          listening: true,
+          event: 'mocksdk_mockmodule.onmodulechanged',
+        },
+        id: 1,
       };
+
       const result = await eventInvocation.northBoundEventHandling(eventParams);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(Transport.listen).toHaveBeenCalled();
-      expect(result.eventListenerId).toBe(expectedResponse.eventListenerId);
-      expect(result.eventListenerResponse).toStrictEqual(expectedResponse.eventListenerResponse);
-      expect(result.eventListenerSchemaResult.status).toEqual(expectedResponse.eventListenerSchemaResult.status);
+      expect(result.id).toBe(expectedResponse.id);
+      expect(result.result).toStrictEqual(expectedResponse.result);
     });
   });
 
@@ -811,7 +754,7 @@ describe('EventInvocation', () => {
       eventInvocation = new EventInvocation();
       const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
       const result = await eventInvocation.northBoundEventHandling(eventParams);
-      eventRegistrationID = result.eventListenerId;
+      eventRegistrationID = result.id;
       console.log('printing received eventRegistrationId: ' + eventRegistrationID);
     });
 
@@ -823,12 +766,11 @@ describe('EventInvocation', () => {
 
     test('should return event object with response - single event fired', () => {
       currentCallback({ foo: 'bar1' });
-      const message = { params: { event: eventRegistrationID } };
+      const message = { params: { event: 'accessibility.onClosedCaptionsSettingsChanged-6' } };
       const expectedResponse = {
         eventName: 'modulechanged',
-        eventListenerId: eventRegistrationID,
+        eventListenerId: 6,
         eventResponse: { foo: 'bar1' },
-        eventSchemaResult: { status: 'PASS', eventSchemaResult: [] },
         eventTime: '2023-05-10T14:27:35.806Z',
       };
       result = eventInvocation.getEventResponse(message);
@@ -837,7 +779,6 @@ describe('EventInvocation', () => {
         eventName: expectedResponse.eventName,
         eventListenerId: expectedResponse.eventListenerId,
         eventResponse: expectedResponse.eventResponse,
-        eventSchemaResult: expectedResponse.eventSchemaResult,
       });
       expect(result.eventTime).toBeDefined();
       expect(result.eventTime).toBeInstanceOf(Date);
@@ -845,12 +786,11 @@ describe('EventInvocation', () => {
 
     test('should return event object with last response - multiple events fired', () => {
       currentCallback({ foo: 'bar2' });
-      const message = { params: { event: eventRegistrationID } };
+      const message = { params: { event: 'accessibility.onClosedCaptionsSettingsChanged-6' } };
       const expectedResponse = {
         eventName: 'modulechanged',
-        eventListenerId: eventRegistrationID,
+        eventListenerId: 6,
         eventResponse: { foo: 'bar2' },
-        eventSchemaResult: { status: 'PASS', eventSchemaResult: [] },
         eventTime: '2023-05-10T14:18:18.347Z',
       };
       result = eventInvocation.getEventResponse(message);
@@ -859,7 +799,6 @@ describe('EventInvocation', () => {
         eventName: expectedResponse.eventName,
         eventListenerId: expectedResponse.eventListenerId,
         eventResponse: expectedResponse.eventResponse,
-        eventSchemaResult: expectedResponse.eventSchemaResult,
       });
       expect(result.eventTime).toBeDefined();
       expect(result.eventTime).toBeInstanceOf(Date);
@@ -894,32 +833,6 @@ describe('EventInvocation', () => {
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(result.error.code).toEqual(expectedResponse.error.code);
       expect(result.error.message).toBeDefined();
-    });
-
-    test('should return failure for schema', async () => {
-      // register for invalid schema
-      const message = { params: { event: eventRegistrationID } };
-      const expectedResponse = {
-        eventName: 'modulechanged',
-        eventListenerId: eventRegistrationID,
-        eventResponse: true,
-        eventSchemaResult: {
-          status: 'FAIL',
-          eventSchemaResult: 'is not any of "ListenResponse","EventResponse"',
-        },
-        eventTime: '2023-05-11T20:34:05.219Z',
-      };
-      currentCallback(true);
-      result = eventInvocation.getEventResponse(message);
-      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result).toMatchObject({
-        eventName: expectedResponse.eventName,
-        eventListenerId: expectedResponse.eventListenerId,
-        eventResponse: expectedResponse.eventResponse,
-        eventSchemaResult: expectedResponse.eventSchemaResult,
-      });
-      expect(result.eventTime).toBeDefined();
-      expect(result.eventTime).toBeInstanceOf(Date);
     });
   });
 });

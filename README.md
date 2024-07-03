@@ -81,7 +81,7 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
   - Steps to convert into `html report`
     1.  Move the `json report` to root folder
     2.  Run the command `yarn marge filename.json -f report -o /destination_path`
-    3.  Check the `html report` on the destination path.
+    3.  Check the `html report` on the destination path
 
 ## Supported Report Parameters
 
@@ -152,6 +152,5 @@ To activate Mock Firebolt, there are specific start-up scripts that exist inside
 For pinChallenge and acknowledgeChallenge UI prompts , a timeout of 15s is added so that, if no action is taken when the prompts displays on the screen (i.e; neither yes/no/back button ), the prompts will be automatically dismissed with "null" value as the response.
 The prompt is displayed when the user needs to grant/deny a particular api, or the user has to enter a pin in-case of pinChallenge.
 If user wants to grant an api, yes button is pressed, for deniel - no button, and incase if the user wants to dismiss the prompt without any action, back button is pressed.
-
 
 

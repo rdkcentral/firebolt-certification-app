@@ -16,23 +16,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import BaseHandler from './BaseHandler';
-import { EventInvocation } from 'EventInvocation';
-require('dotenv').config();
+import UserIntrestProvider from './UserInterestProvider';
 
-export default class GetEventResponse extends BaseHandler {
-  constructor(handlerName) {
-    super(handlerName);
+export default class UserIntrestDelegater {
+  constructor() {
+    this.delegate = new UserIntrestProvider();
+    process.env.UserInterestDelegater = this;
   }
 
-  async handle(message) {
-    const eventInvocation = new EventInvocation();
-    const validationReport = eventInvocation.getEventResponse(message);
-    if (process.env.STANDALONE == true) {
-      return JSON.stringify({ report: validationReport });
-    } else {
-      const validationReportObject = { jsonrpc: '2.0', result: validationReport, id: process.env.ID + 1 };
-      return JSON.stringify(validationReportObject);
-    }
+  userInterest() {
+    return this.delegate.userInterest();
   }
 }

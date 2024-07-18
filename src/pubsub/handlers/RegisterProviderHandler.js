@@ -51,6 +51,16 @@ export default class RegisterProviderHandler extends BaseHandler {
             report: 'AcknowledgeChallenge ' + CONSTANTS.PROVIDER_REGISTRATION,
           });
           break;
+        case 'broadcastplayer':
+        case 'player':
+        case 'streamingplayer':
+          try {
+            const provider = require('../../../plugins/playerProviderHandler');
+            reportString = provider.integratedPlayerProvider(providerClass);
+          } catch (err) {
+            reportString = JSON.stringify({ report: `Unable to register for ${providerClass}` });
+          }
+          break;
         default:
           reportString = JSON.stringify({ report: CONSTANTS.PROVIDER_REGISTRATION_FAILED });
           break;

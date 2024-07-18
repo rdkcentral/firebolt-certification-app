@@ -17,7 +17,7 @@
  */
 
 import { CONSTANTS } from '../constant';
-import FireboltExampleInvoker from '../FireboltExampleInvoker';
+import FireboltExampleInvoker from 'FireboltExampleInvoker';
 import errorSchema from '../source/errorSchema.json';
 
 const { v4: uuidv4 } = require('uuid');

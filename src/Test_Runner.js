@@ -26,7 +26,7 @@
 // ************* End Description **********
 
 import { dereferenceOpenRPC } from './utils/Utils';
-import FireboltExampleInvoker from './FireboltExampleInvoker';
+import FireboltExampleInvoker from 'FireboltExampleInvoker';
 import FireboltTransportInvoker from './FireboltTransportInvoker';
 
 import MethodFilters from './MethodFilters';
@@ -35,7 +35,7 @@ import { handleAsyncFunction, errorSchemaCheck, overrideParamsFromTestData } fro
 const utils = require('./utils/Utils');
 import LifecycleHistory from './LifeCycleHistory';
 import { Device } from '@firebolt-js/sdk';
-import { MODULE_MAP } from './FireboltExampleInvoker';
+import { MODULE_MAP } from 'FireboltExampleInvoker';
 import errorSchema from './source/errorSchema.json';
 const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;

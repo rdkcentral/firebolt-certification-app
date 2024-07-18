@@ -18,7 +18,7 @@
 
 import { Button } from '@lightningjs/ui-components';
 import lng from '@lightningjs/core';
-import FireboltExampleInvoker from './FireboltExampleInvoker';
+import FireboltExampleInvoker from 'FireboltExampleInvoker';
 import FireboltTransportInvoker from './FireboltTransportInvoker';
 import ResultHandler from './ResultHandler';
 import { CONSTANTS } from './constant';

@@ -16,11 +16,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import FireboltExampleInvoker from './FireboltExampleInvoker';
+import FireboltExampleInvoker from 'FireboltExampleInvoker';
 import FireboltTransportInvoker from './FireboltTransportInvoker';
 import { handleAsyncFunction, dereferenceOpenRPC, errorSchemaCheck } from './utils/Utils';
 import { CONSTANTS } from './constant';
-import { MODULE_MAP } from './FireboltExampleInvoker';
+import { MODULE_MAP } from 'FireboltExampleInvoker';
 import { removeSetInMethodName, findTypeInOneOF } from './utils/Utils';
 const Validator = require('jsonschema').Validator;
 const logger = require('./utils/Logger')('MethodInvoker.js');

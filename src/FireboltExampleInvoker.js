@@ -100,6 +100,13 @@ export const MODULE_MAP = {
   discovery: DISCOVERY_MODULE_MAP,
 };
 
+try {
+  const additionalInvoker = require('../plugins/AdditionalExampleInvoker');
+  MODULE_MAP.integratedPlayer = additionalInvoker.default;
+} catch (err) {
+  logger.error('Unable to import additional invoker', 'MODULE_MAP');
+}
+
 let instance = null;
 
 export default class FireboltExampleInvoker {

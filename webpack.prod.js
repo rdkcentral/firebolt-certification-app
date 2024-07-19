@@ -87,10 +87,6 @@ module.exports = {
             name: 'IntentReader',
             alias: ['/plugins/IntentReader.js', '/src/IntentReader.js'],
           },
-          {
-            name: 'FireboltExampleInvoker',
-            alias: ['/plugins/FireboltExampleInvoker.js', '/src/FireboltExampleInvoker.js'],
-          },
         ],
         'resolve'
       ),

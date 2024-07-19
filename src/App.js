@@ -21,7 +21,7 @@ import Menu from './Menu';
 import MenuBuilder from './MenuBuilder';
 import LifecycleHistory from './LifeCycleHistory';
 import { Settings, Accessibility, Discovery } from '@firebolt-js/sdk';
-import FireboltExampleInvoker from 'FireboltExampleInvoker';
+import FireboltExampleInvoker from './FireboltExampleInvoker';
 import Modal from './Modal';
 import PubSubCommunication from './PubSubCommunication';
 import { CONSTANTS } from './constant';

@@ -33,7 +33,6 @@ module.exports = {
     '^Test_Runner$': '<rootDir>/../src/Test_Runner.js',
     '^EventInvocation$': '<rootDir>/../src//EventInvocation.js',
     '^IntentReader$': '../src/IntentReader.js',
-    '^FireboltExampleInvoker$': '<rootDir>/../src/FireboltExampleInvoker.js',
   },
   collectCoverage: true,
   coverageThreshold: {

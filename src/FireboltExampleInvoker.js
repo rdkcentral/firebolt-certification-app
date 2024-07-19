@@ -102,7 +102,7 @@ export const MODULE_MAP = {
 
 try {
   const additionalInvoker = require('../plugins/AdditionalExampleInvoker');
-  MODULE_MAP.integratedPlayer = additionalInvoker.default;
+  MODULE_MAP.integratedplayer = additionalInvoker.default;
 } catch (err) {
   logger.error('Unable to import additional invoker', 'MODULE_MAP');
 }

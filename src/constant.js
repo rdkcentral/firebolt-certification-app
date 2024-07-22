@@ -141,7 +141,6 @@ export const CONSTANTS = {
   EXCLUDED_METHODS_FOR_SDK: [],
   EXCLUDED_METHODS_FOR_TRANSPORT: [],
   REGISTERPROVIDER: 'registerprovider',
-  PROVIDERNAME: 'providername',
   defaultSDKs: [
     {
       name: 'Core',

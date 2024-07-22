@@ -117,7 +117,6 @@ export default class App extends Base {
     process.env.STANDALONE_PREFIX = standalonePrefix;
     process.env.ID = 0;
     process.env.REGISTERPROVIDER = true;
-    process.env.PROVIDERNAME = null;
 
     // Set the pubSub URL if present
     process.env.PUB_SUB_URL = new URLSearchParams(window.location.search).get('pubSubUrl');
@@ -218,17 +217,6 @@ export default class App extends Base {
               }
             } catch (err) {
               logger.error('Could not set up providers' + err, 'LoadedState');
-            }
-            try {
-              if (process.env.REGISTERPROVIDER && process.env.PROVIDERNAME) {
-                console.log('line 224--------');
-                const provider = require('../plugins/playerProviderHandler.js');
-                provider.integratedPlayerProvider(process.env.PROVIDERNAME);
-              } else {
-                logger.info('Could not set up player providers', 'LoadedState');
-              }
-            } catch (err) {
-              logger.error('Could not set up player providers' + err, 'LoadedState');
             }
             process.env.APPOBJECT = this;
             const menusBuilder = new MenuBuilder();
@@ -433,11 +421,6 @@ export default class App extends Base {
           if (query.params.hasOwnProperty(CONSTANTS.REGISTERPROVIDER)) {
             process.env.REGISTERPROVIDER = query.params.registerprovider;
           }
-          console.log('process.env.REGISTERPROVIDER-----:', process.env.REGISTERPROVIDER);
-          if (query.params.hasOwnProperty(CONSTANTS.PROVIDERNAME)) {
-            process.env.PROVIDERNAME = query.params.providername.toLowerCase();
-          }
-          console.log('process.env.PROVIDERNAME-----:', process.env.PROVIDERNAME);
           // Set the pubSub URL if present
           if (query.params.pubSubUrl) {
             process.env.PUB_SUB_URL = query.params.pubSubUrl;

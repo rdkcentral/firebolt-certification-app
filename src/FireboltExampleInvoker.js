@@ -101,10 +101,10 @@ export const MODULE_MAP = {
 };
 
 try {
-  const additionalInvoker = require('../plugins/AdditionalExampleInvoker');
-  MODULE_MAP.integratedplayer = additionalInvoker.default;
+  const additionalInvoker = require('../plugins/AdditionalExampleInvoker').default;
+  Object.assign(MODULE_MAP, additionalInvoker);
 } catch (err) {
-  logger.error('Unable to import additional invoker', 'MODULE_MAP');
+  logger.error(`Unable to import additional invoker - ${err.message}`, 'MODULE_MAP');
 }
 
 let instance = null;

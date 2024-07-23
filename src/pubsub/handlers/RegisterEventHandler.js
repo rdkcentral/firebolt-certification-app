@@ -29,11 +29,7 @@ export default class RegisterEventHandler extends BaseHandler {
 
   async handle(message) {
     const validationReport = await this.eventSwitchMode(message);
-    if (process.env.STANDALONE == true) {
-      return JSON.stringify({ report: validationReport });
-    } else {
-      return JSON.stringify(validationReport);
-    }
+    return JSON.stringify({ report: validationReport });
   }
 
   async eventSwitchMode(message) {
@@ -54,7 +50,7 @@ export default class RegisterEventHandler extends BaseHandler {
 
     let validatedMenu;
     // Switch creation for the type of invocation that needs to happen.
-    if ([CONSTANTS.CORE.toLowerCase(), CONSTANTS.MANAGE.toLowerCase(), CONSTANTS.DISCOVERY.toLowerCase()].includes(sdkType)) {
+    if ([CONSTANTS.CORE.toLowerCase(), CONSTANTS.MANAGE.toLowerCase()].includes(sdkType)) {
       validatedMenu = await eventInvokerInfo.northBoundEventHandling(message);
     } else {
       validatedMenu = {

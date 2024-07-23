@@ -44,9 +44,6 @@ describe('Utils test cases', () => {
   test('validate dereferenceOpenRPC', async () => {
     await dereferenceOpenRPC('manage');
   });
-  test('validate dereferenceOpenRPC', async () => {
-    await dereferenceOpenRPC('discovery');
-  });
   test('validate getschemaValidationDone', async () => {
     const name = 'lifecycle.onForeground';
     const response = { state: 'foreground', previous: 'inactive' };

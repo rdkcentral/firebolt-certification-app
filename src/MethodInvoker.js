@@ -29,8 +29,9 @@ const responseList = [];
 export class MethodInvoker {
   // This method accepts the message(method name, params) and return Api response with Schema validation result.
   async invoke(message) {
-    let response, method, params, mode, err, paramNames, module, methodObj, schemaMap, schemaValidationResult;
-    process.env.ID = process.env.ID + 1;
+    let response, method, params, mode, err, paramNames, module, methodObj;
+    let schemaMap;
+    let schemaValidationResult;
     process.env.COMMUNICATION_MODE = message.context.communicationMode;
     params = message.params.methodParams;
     if (message.params.method.includes('_')) {
@@ -69,14 +70,12 @@ export class MethodInvoker {
     try {
       // Fetching the method Object from the deSchemaList
       if (method.includes('set') && params[0] == undefined && !CONSTANTS.METHODS_T0_IGNORE_WHICH_HAS_SET.includes(method)) {
-        methodObj = deSchemaList.methods.some((obj) => obj.name.toLowerCase() == updatedMethod.toLowerCase());
+        methodObj = deSchemaList.methods.find((obj) => obj.name.toLowerCase() == updatedMethod.toLowerCase());
       } else {
-        methodObj = deSchemaList.methods.some((obj) => obj.name.toLowerCase() == method.toLowerCase());
+        methodObj = deSchemaList.methods.find((obj) => obj.name.toLowerCase() == method.toLowerCase());
       }
       if (methodObj) {
-        if (process.env.STANDALONE == true) {
-          schemaMap = methodObj.result.schema;
-        }
+        schemaMap = methodObj.result.schema;
         const moduleClass = MODULE_MAP[invokedSdk][module];
 
         if (moduleClass) {
@@ -89,22 +88,16 @@ export class MethodInvoker {
         } else if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
           [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames), process.env.TimeoutInMS);
         }
-        if (process.env.STANDALONE == true) {
-          schemaValidationResult = validator.validate(response, schemaMap);
-        }
+        schemaValidationResult = validator.validate(response, schemaMap);
       } else if (!methodObj && process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
         [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames), process.env.TimeoutInMS);
-        if (process.env.STANDALONE == true) {
-          schemaValidationResult = [];
-        }
+        schemaValidationResult = [];
       } else {
         err = CONSTANTS.ERROR_MESSAGE_WRONG_METHOD_NAME;
       }
-      if (process.env.STANDALONE == true) {
-        // if the method is not supported and it gives a valid response, validate against errorschema instead of api schema
-        if (message.params.isNotSupportedApi == true && response != undefined) {
-          schemaValidationResult = errorSchemaCheck(response, process.env.COMMUNICATION_MODE);
-        }
+      // if the method is not supported and it gives a valid response, validate against errorschema instead of api schema
+      if (message.params.isNotSupportedApi == true && response != undefined) {
+        schemaValidationResult = errorSchemaCheck(response, process.env.COMMUNICATION_MODE);
       }
     } catch (error) {
       logger.error('Error: ', error);
@@ -120,15 +113,8 @@ export class MethodInvoker {
       },
     };
     responseList.push(resultObject);
-    if (process.env.STANDALONE == true) {
-      return this.formatResult(message.task, response, err, schemaValidationResult, params, schemaMap);
-    } else {
-      if (err === undefined) {
-        return { jsonrpc: '2.0', result: response, id: process.env.ID };
-      } else {
-        return { jsonrpc: '2.0', error: err, id: process.env.ID };
-      }
-    }
+
+    return this.formatResult(message.task, response, err, schemaValidationResult, params, schemaMap);
   }
 
   formatResult(task, response, err, schemaValidationResult, params, schemaMap) {

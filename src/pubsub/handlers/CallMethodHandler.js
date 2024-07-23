@@ -48,21 +48,13 @@ export default class CallMethodHandler extends BaseHandler {
 
       process.env.TimeoutInMS = message.responseTimeout ? message.responseTimeout : null;
       const result = await invoker.invoke(message);
-      if (process.env.STANDALONE == true) {
-        return JSON.stringify({ report: result });
-      } else {
-        return JSON.stringify(result);
-      }
+      return JSON.stringify({ report: result });
     } catch (e) {
       const result = {
         responseCode: CONSTANTS.STATUS_CODE[1],
         error: { message: 'FCA in exception block: ' + e.message, code: 'FCAError' },
       };
-      if (process.env.STANDALONE == true) {
-        return JSON.stringify({ report: result });
-      } else {
-        return JSON.stringify(result);
-      }
+      return JSON.stringify({ report: result });
     }
   }
 }

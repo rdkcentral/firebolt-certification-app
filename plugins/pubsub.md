@@ -21,7 +21,7 @@ If you would like to extend the functionality of the existing PubSub client or c
 
 Here is an overview of the functions provided by the PubSubClient class:
 
-- `initialize()` - Initializes a WebSocket connection to the specified URL. By default, it points to 'ws://localhost:8080'.
+- `initialize()` - Initializes a WebSocket connection to the specified URL.
 
 - `publish(topic, message)` - Publishes a message to the specified topic.
 

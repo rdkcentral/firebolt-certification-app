@@ -68,11 +68,11 @@ export default class KeyboardUIProvider {
         session: {
           onDone: (keyboard, text) => {
             this._app.overlayDismissTimer = setTimeout(() => this._app.$dismissOverlay(), 500); // Try and get lightning-ui component to use onkeyup
-            responder(text);
+            responder({ text, canceled: false });
           },
           onCancel: (keyboard) => {
             this._app.$dismissOverlay();
-            responder('');
+            responder({ text: '', canceled: true });
           },
           mask: mask,
           title: session.message,

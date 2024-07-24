@@ -103,7 +103,7 @@ export default class SetApiResponseHandler extends BaseHandler {
     process.env.userInterestError = userInterestData.userInterestError;
     const reportIdString = JSON.stringify({ report: 'Received UserInterest apiResponse parameters' });
     return reportIdString;
-  } 
+  }
 
   setExternalResponse(message) {
     try {

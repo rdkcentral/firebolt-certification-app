@@ -105,6 +105,7 @@ export default class SetApiResponseHandler extends BaseHandler {
     return reportIdString;
   }
 
+  // importing external Api resonse function, which can set the pre-requisite values to external modules
   setExternalResponse(message) {
     try {
       const externalFunction = require('../../../plugins/setExternalApiResponse');

@@ -100,6 +100,7 @@ export const MODULE_MAP = {
   discovery: DISCOVERY_MODULE_MAP,
 };
 
+// importing additional invoker which has external sdk's being exported and adding those modules in the MODULE_MAP
 try {
   const additionalInvoker = require('../plugins/AdditionalExampleInvoker').default;
   Object.assign(MODULE_MAP, additionalInvoker);

@@ -6,7 +6,7 @@
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "@firebolt-js/discovery-sdk": "1.2.0",
     "@firebolt-js/manage-sdk": "1.2.0",
-    "@firebolt-js/sdk": "1.2.0",
+    "@firebolt-js/sdk": "1.2.0-feature-app-info-metrics.0",
     "@lightningjs/core": "2.11.0",
     "@lightningjs/sdk": "^5.0.1",
     "@lightningjs/ui-components": "^2.2.2",
@@ -22,7 +22,8 @@
     "rxjs": "7.2.0",
     "uuid": "^9.0.0",
     "winston": "^3.8.2",
-    "xml2js": "^0.5.0"
+    "xml2js": "^0.5.0",
+    "money-badger-open-rpc": "git+ssh://git@github.com-ghec:comcast-firebolt/money-badger-open-rpc.git"
   },
   "scripts": {
     "start": "webpack-dev-server --config webpack.dev.js",

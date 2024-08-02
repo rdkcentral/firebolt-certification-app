@@ -32,7 +32,7 @@ class PubSubClient {
     const appUrl = window.location;
     const pubSubTopicUUID = new URLSearchParams(appUrl.search).get('pubsub_uuid');
     const macAddress = process.env.MACADDRESS;
-    const appId = process.env.CURRENT_APPID;
+    const appId = 'comcast.test.firecert';
 
     // Priority #1: Use pubSubTopicUUID if it's available
     if (pubSubTopicUUID) {
@@ -59,6 +59,9 @@ class PubSubClient {
     return new Promise((resolve, reject) => {
       this.ws.addEventListener('open', (event) => {
         logger.info('WS connection initialized...', event);
+        logger.info ('Publish Topic: ' + process.env.PUBSUB_PUBLISH_TOPIC);
+        logger.info ('Subscribe Topic: ' + process.env.PUBSUB_SUBSCRIBE_TOPIC);
+
         resolve(true);
       });
 

@@ -116,24 +116,24 @@ async function getschemaValidationDone(name, response, sdkType) {
  * @param response - response of the method
  */
 function censorData(methodName, response) {
-  let json;
-  try {
-    json = require('../../plugins/external-test-data/fixtures/censorData.json');
-    if (methodName in json) {
-      for (let i = 0; i < json[methodName].field.length; i++) {
-        if (response[json[methodName].field[i]]) {
-          const response_length = response[json[methodName].field[i]].length;
-          response[json[methodName].field[i]] = response[json[methodName].field[i]].replace(response[json[methodName].field[i]].substring(2, response_length - 2), '*******');
-        } else if (json[methodName].field[i] === '' && typeof response == 'string') {
-          const response_length = response.length;
-          response = response.replace(response.substring(2, response_length - 2), '*******');
-        }
-      }
-    }
-  } catch (err) {
-    logger.error('err - missing censorData', err);
-  }
-  return response;
+  // let json;
+  // try {
+  //   json = require('../../plugins/external-test-data/fixtures/censorData.json');
+  //   if (methodName in json) {
+  //     for (let i = 0; i < json[methodName].field.length; i++) {
+  //       if (response[json[methodName].field[i]]) {
+  //         const response_length = response[json[methodName].field[i]].length;
+  //         response[json[methodName].field[i]] = response[json[methodName].field[i]].replace(response[json[methodName].field[i]].substring(2, response_length - 2), '*******');
+  //       } else if (json[methodName].field[i] === '' && typeof response == 'string') {
+  //         const response_length = response.length;
+  //         response = response.replace(response.substring(2, response_length - 2), '*******');
+  //       }
+  //     }
+  //   }
+  // } catch (err) {
+  //   logger.error('err - missing censorData', err);
+  // }
+  // return response;
 }
 
 // Push report to S3 and return report URL
@@ -238,36 +238,36 @@ function pushReportToS3(report) {
  * @param {String} dataIdentifier - Key to be used to fetch param or content data from external repo
  */
 function testDataHandler(requestType, dataIdentifier) {
-  if (requestType == 'param') {
-    // Params are not used by FCA for now
-    logger.info('RequestType: params. Skipping repo fetch');
-    return;
-  } else if (requestType == 'content') {
-    const moduleName = dataIdentifier.toLowerCase();
-    if (moduleName) {
-      try {
-        const moduleImportPath = require(`../../plugins/external-test-data/fixtures/modules/${moduleName}.json`);
-        const stringifyData = JSON.stringify(eval(moduleImportPath));
-        const parsedData = JSON.parse(stringifyData);
-        if (parsedData) {
-          return parsedData;
-        } else {
-          logger.error('Error: Requested data not found in external repo');
-        }
-      } catch (err) {
-        logger.error('Test data repo error: ', err);
-      }
-    }
-  } else if (requestType == 'overrideParams') {
-    try {
-      const moduleImportPath = require(`../../plugins/external-test-data/fixtures/overrideParams.json`);
-      return moduleImportPath;
-    } catch (error) {
-      logger.error('Test data repo error: ', error);
-    }
-  } else {
-    throw CONSTANTS.INVALID_REQUEST_TYPE;
-  }
+  // if (requestType == 'param') {
+  //   // Params are not used by FCA for now
+  //   logger.info('RequestType: params. Skipping repo fetch');
+  //   return;
+  // } else if (requestType == 'content') {
+  //   const moduleName = dataIdentifier.toLowerCase();
+  //   if (moduleName) {
+  //     try {
+  //       const moduleImportPath = require(`../../plugins/external-test-data/fixtures/modules/${moduleName}.json`);
+  //       const stringifyData = JSON.stringify(eval(moduleImportPath));
+  //       const parsedData = JSON.parse(stringifyData);
+  //       if (parsedData) {
+  //         return parsedData;
+  //       } else {
+  //         logger.error('Error: Requested data not found in external repo');
+  //       }
+  //     } catch (err) {
+  //       logger.error('Test data repo error: ', err);
+  //     }
+  //   }
+  // } else if (requestType == 'overrideParams') {
+  //   try {
+  //     const moduleImportPath = require(`../../plugins/external-test-data/fixtures/overrideParams.json`);
+  //     return moduleImportPath;
+  //   } catch (error) {
+  //     logger.error('Test data repo error: ', error);
+  //   }
+  // } else {
+  //   throw CONSTANTS.INVALID_REQUEST_TYPE;
+  // }
 }
 
 /**

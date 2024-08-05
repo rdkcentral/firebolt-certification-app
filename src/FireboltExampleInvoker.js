@@ -36,7 +36,6 @@ import {
   AudioDescriptions,
   HDMIInput,
 } from '@firebolt-js/manage-sdk';
-import { Content } from '@firebolt-js/discovery-sdk';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();
 const logger = require('./utils/Logger')('FireboltExampleInvoker.js');
@@ -49,7 +48,7 @@ const MAP = {
   'discovery.purchasedContent': discoveryInvoker.purchasedContent.bind(discoveryInvoker),
   'discovery.entityInfo': discoveryInvoker.entityInfo.bind(discoveryInvoker),
   // 'content.purchases': discoveryInvoker.getPurchasedContent.bind(discoveryInvoker),
-  // 'content.entity': discoveryInvoker.getEntityInfo.bind(discoveryInvoker),
+  // 'content.entity': discoveryInvoker.getEntityInfo.bind(discoveryInvoker)
 };
 
 const CORE_MODULE_MAP = {
@@ -90,14 +89,9 @@ const MANAGE_MODULE_MAP = {
   hdmiinput: HDMIInput,
 };
 
-const DISCOVERY_MODULE_MAP = {
-  content: Content,
-};
-
 export const MODULE_MAP = {
   core: CORE_MODULE_MAP,
   manage: MANAGE_MODULE_MAP,
-  discovery: DISCOVERY_MODULE_MAP,
 };
 
 let instance = null;

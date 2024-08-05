@@ -25,17 +25,11 @@ export default class VisibilityStateHandler extends BaseHandler {
     super(handlerName);
   }
 
-  async handle(message) {
+  async handle() {
     try {
-      if (message.params.params && message.params.params == 'visibilityState') {
-        const visibilityState = window.document.visibilityState;
-        const reportIdString = JSON.stringify({ report: visibilityState });
-        return reportIdString;
-      } else if (message.params.params && message.params.params == 'language') {
-        const language = window.navigator.language;
-        const reportIdString = JSON.stringify({ report: language });
-        return reportIdString;
-      }
+      const visibilityState = window.document.visibilityState;
+      const reportIdString = JSON.stringify({ report: visibilityState });
+      return reportIdString;
     } catch (e) {
       const result = {
         responseCode: CONSTANTS.STATUS_CODE[1],

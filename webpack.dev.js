@@ -45,7 +45,7 @@ module.exports = {
   },
   devtool: 'source-map-inline',
   devServer: {
-    host: '192.168.2.35',
+    host: '192.168.3.123',
     contentBase: path.join(__dirname, 'dist/dev'),
     compress: false,
     port: 8081,

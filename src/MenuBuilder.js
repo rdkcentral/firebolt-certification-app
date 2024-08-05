@@ -31,13 +31,13 @@ import modules from 'externalViews';
 require('dotenv').config();
 let additionalRpcExamples = null;
 
-// // Attempt to load additional test cases
-// try {
-//   additionalRpcExamples = require('../plugins/AdditionalFireboltTestCases.json');
-//   console.log('Additional RPC examples loaded from plugin');
-// } catch (error) {
-//   console.log('Additional RPC examples plugin not found');
-// }
+// Attempt to load additional test cases
+try {
+  additionalRpcExamples = require('../plugins/AdditionalFireboltTestCases.json');
+  console.log('Additional RPC examples loaded from plugin');
+} catch (error) {
+  console.log('Additional RPC examples plugin not found');
+}
 
 const IGNORE_MODULES = ['internal'];
 

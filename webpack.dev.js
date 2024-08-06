@@ -104,6 +104,10 @@ module.exports = {
             name: 'IntentReader',
             alias: ['/plugins/IntentReader.js', '/src/IntentReader.js'],
           },
+          {
+            name: 'CensorData',
+            alias: ['/plugins/censorData.json', '/src/source/censorData.json'],
+          },
         ],
         'resolve'
       ),

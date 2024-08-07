@@ -120,7 +120,6 @@ function censorData(methodName, response) {
   let json;
   try {
     const json = censorDataJson;
-    logger.info('line 1233455 : ' + JSON.stringify(json));
     if (methodName in json) {
       for (let i = 0; i < json[methodName].field.length; i++) {
         if (response[json[methodName].field[i]]) {

@@ -193,7 +193,7 @@ export default class App extends Base {
       },
 
       class ErrorState extends this {
-        $enter() {}
+        $enter() { }
       },
 
       class LoadedState extends this {
@@ -373,7 +373,19 @@ export default class App extends Base {
     await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Parameters.initialization', [], [])).then((res) => {
       console.log('Response of Initialization :: ', res);
       if (res != undefined) {
-        const navigateTo = JSON.parse(res[0].discovery.navigateTo)
+        const extractedNavigate = res[0].discovery.navigateTo;
+        let navigateTo;
+        if (typeof extractedNavigate === 'string') {
+          try {
+            navigateTo = JSON.parse(extractedNavigate);
+          }
+          catch (e) {
+            console.log("Encountered a string type navigateTo field when expecting object. Attempt to parse field to object was unsuccessful.")
+          }
+        }
+        else {
+          navigateTo = extractedNavigate;
+        }
         const action = navigateTo.action;
         if (action == 'search') {
           let query = navigateTo.data.query;

@@ -987,6 +987,7 @@ export class Test_Runner {
           }
         } else {
           response = utils.censorData(methodObj.name, response);
+          testContext.result = response;
           if (hasContentValidationExecuted) {
             // Actual and Expected Schema/Content
             if (schemaValidationResult.errors[0].message === 'Content is not valid') {
@@ -1041,6 +1042,7 @@ export class Test_Runner {
         validationError = CONSTANTS.NO_ERROR_FOUND;
         convertedValidationErr = validationError;
         response = utils.censorData(methodObj.name, response);
+        testContext.result = response;
         if (typeof validationError == 'string' || Array.isArray(validationError)) {
           convertedValidationErr = { err: validationError };
         }

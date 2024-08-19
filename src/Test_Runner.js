@@ -264,7 +264,7 @@ export class Test_Runner {
                 } else {
                   logger.debug('TestContext Debug: Error block on api execution - has error message: ' + error + ' for method: ' + methodWithExampleName, 'northBoundSchemaValidationAndReportGeneration');
                   if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
-                    obj = this.errorCheckForExemptedMethods(error, methodObj, methodWithExampleName, example, schemaMap);
+                    obj = this.errorCheckForExemptedMethods(error, methodObj, methodWithExampleName, example, schemaMap, apiExecutionStartTime, apiExecutionEndTime);
                   } else {
                     let err = error;
                     if (typeof error == 'string') {
@@ -1218,7 +1218,7 @@ export class Test_Runner {
     }
   }
 
-  errorCheckForExemptedMethods(error, methodObj, methodWithExampleName, example, schemaMap) {
+  errorCheckForExemptedMethods(error, methodObj, methodWithExampleName, example, schemaMap, apiExecutionStartTime, apiExecutionEndTime) {
     let obj;
     const NOT_SUPPORTED_ERROR_MESSAGES = ['Unsupported', 'Not supported', 'not supported'];
     const errMessage = '{"code":' + error.code + ',"message":' + error.message + '}';
@@ -1231,6 +1231,8 @@ export class Test_Runner {
         methodWithExampleName: methodWithExampleName,
         methodUuid: this.createUUID(),
         schemaData: errorSchema,
+        apiExecutionStartTime: apiExecutionStartTime,
+        apiExecutionEndTime: apiExecutionEndTime,
       };
     } else {
       NOT_SUPPORTED_ERROR_MESSAGES.some((errorMessage) => error.message.includes(errorMessage));
@@ -1242,6 +1244,8 @@ export class Test_Runner {
         validationResult: {},
         methodUuid: this.createUUID(),
         schemaData: schemaMap.schema,
+        apiExecutionStartTime: apiExecutionStartTime,
+        apiExecutionEndTime: apiExecutionEndTime,
       };
     }
     return obj;

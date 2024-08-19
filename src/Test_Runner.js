@@ -56,7 +56,7 @@ let invokedSdk;
 Start and End time of API invocation
 */
 let apiExecutionEndTime;
-let apiExecutionStartTime = new Date();
+let apiExecutionStartTime;
 
 export class Test_Runner {
   /**
@@ -130,6 +130,8 @@ export class Test_Runner {
       // traverse the json data inside loop to get methodname & properties
       for (let methodIndex = 0; this.dereferenceSchemaList != undefined && methodIndex < this.dereferenceSchemaList.methods.length; methodIndex++) {
         const module = this.dereferenceSchemaList.methods[methodIndex].name.split('.')[0];
+        apiExecutionEndTime = 0;
+        apiExecutionStartTime = 0;
         let methodUuid = this.createUUID(); // uuid of this method
         const method = this.dereferenceSchemaList.methods[methodIndex];
         const methodObj = this.dereferenceSchemaList.methods[methodIndex];
@@ -485,12 +487,13 @@ export class Test_Runner {
       sdk = invokedSdk;
     }
     executionMode = executionMode.toUpperCase();
-    apiExecutionStartTime = new Date(); // api execution start time
 
     if (executionMode.includes(CONSTANTS.MANAGE) || executionMode.includes(CONSTANTS.CORE)) {
+      apiExecutionStartTime = new Date(); // api execution start time
       [response, err] = paramsArray
         ? await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramsArray))
         : await handleAsyncFunction(FireboltExampleInvoker.get().invoke(sdk, method, params, null, paramsArray));
+      apiExecutionEndTime = new Date(); // api execution end time
       // To handle event response trimming observed when events invoked via transport mode
       if (response) {
         if (response.hasOwnProperty('event') == true) {
@@ -504,7 +507,6 @@ export class Test_Runner {
     } else {
       response = CONSTANTS.NOTPERFORMED;
     }
-    apiExecutionEndTime = new Date(); // api execution end time
     // If an error happens while invoking the function throw error
     if (err) {
       throw err;

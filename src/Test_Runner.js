@@ -167,6 +167,8 @@ export class Test_Runner {
             validationResult: {},
             methodUuid: this.createUUID(),
             schemaData: schemaMap.schema,
+            apiExecutionStartTime: apiExecutionStartTime,
+            apiExecutionEndTime: apiExecutionEndTime,
           };
           schemaValidationResultSet.push(obj);
         } else if (!this.methodFilters.isRpcMethod(methodObj, invokedSdk, communicationMode)) {
@@ -228,6 +230,8 @@ export class Test_Runner {
                   methodWithExampleName: methodWithExampleName,
                   methodUuid: methodUuid,
                   schemaData: schemaMap.schema,
+                  apiExecutionStartTime: apiExecutionStartTime,
+                  apiExecutionEndTime: apiExecutionEndTime,
                 };
                 schemaValidationResultSet.push(schemaValidationResultForEachExampleSet);
               } catch (error) {
@@ -243,6 +247,8 @@ export class Test_Runner {
                     validationResult: {},
                     methodUuid: methodUuid,
                     schemaData: schemaMap.schema,
+                    apiExecutionStartTime: apiExecutionStartTime,
+                    apiExecutionEndTime: apiExecutionEndTime,
                   };
                 } else if (error.responseError) {
                   logger.debug('TestContext Debug: Error block on api execution - has responseError: ' + error + ' for method: ' + methodWithExampleName, 'northBoundSchemaValidationAndReportGeneration');
@@ -255,11 +261,13 @@ export class Test_Runner {
                     methodWithExampleName: methodWithExampleName,
                     methodUuid: methodUuid,
                     schemaData: schemaMap.schema,
+                    apiExecutionStartTime: apiExecutionStartTime,
+                    apiExecutionEndTime: apiExecutionEndTime,
                   };
                 } else {
                   logger.debug('TestContext Debug: Error block on api execution - has error message: ' + error + ' for method: ' + methodWithExampleName, 'northBoundSchemaValidationAndReportGeneration');
                   if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
-                    obj = this.errorCheckForExemptedMethods(error, methodObj, methodWithExampleName, example, schemaMap);
+                    obj = this.errorCheckForExemptedMethods(error, methodObj, methodWithExampleName, example, schemaMap, apiExecutionStartTime, apiExecutionEndTime);
                   } else {
                     let err = error;
                     if (typeof error == 'string') {
@@ -273,6 +281,8 @@ export class Test_Runner {
                       methodWithExampleName: methodWithExampleName,
                       methodUuid: methodUuid,
                       schemaData: schemaMap.schema,
+                      apiExecutionStartTime: apiExecutionStartTime,
+                      apiExecutionEndTime: apiExecutionEndTime,
                     };
                   }
                 }
@@ -292,6 +302,8 @@ export class Test_Runner {
               methodWithExampleName: methodObj.name,
               methodUuid: methodUuid,
               schemaData: schemaMap.schema,
+              apiExecutionStartTime: apiExecutionStartTime,
+              apiExecutionEndTime: apiExecutionEndTime,
             };
             schemaValidationResultSet.push(obj);
           }
@@ -310,7 +322,9 @@ export class Test_Runner {
             schema = schemaValidationRes.schemaData;
           }
           delete schemaValidationRes.schemaData;
-          const apiValidationResult = this.generateAPIValidaionResult(schemaValidationRes, methodObj, apiExecutionStartTime, apiExecutionEndTime, suitesUuid, hasContentValidationExecuted, schema);
+          const executionStartTime = schemaValidationRes.apiExecutionStartTime;
+          const executionEndTime = schemaValidationRes.apiExecutionEndTime;
+          const apiValidationResult = this.generateAPIValidaionResult(schemaValidationRes, methodObj, executionStartTime, executionEndTime, suitesUuid, hasContentValidationExecuted, schema);
           if (apiValidationResult.pass) {
             successList.push(apiValidationResult.uuid);
           } else if (apiValidationResult.skipped) {
@@ -1204,7 +1218,7 @@ export class Test_Runner {
     }
   }
 
-  errorCheckForExemptedMethods(error, methodObj, methodWithExampleName, example, schemaMap) {
+  errorCheckForExemptedMethods(error, methodObj, methodWithExampleName, example, schemaMap, apiExecutionStartTime, apiExecutionEndTime) {
     let obj;
     const NOT_SUPPORTED_ERROR_MESSAGES = ['Unsupported', 'Not supported', 'not supported'];
     const errMessage = '{"code":' + error.code + ',"message":' + error.message + '}';
@@ -1217,6 +1231,8 @@ export class Test_Runner {
         methodWithExampleName: methodWithExampleName,
         methodUuid: this.createUUID(),
         schemaData: errorSchemaBasedOnMode,
+        apiExecutionStartTime: apiExecutionStartTime,
+        apiExecutionEndTime: apiExecutionEndTime,
       };
     } else {
       NOT_SUPPORTED_ERROR_MESSAGES.some((errorMessage) => error.message.includes(errorMessage));
@@ -1228,6 +1244,8 @@ export class Test_Runner {
         validationResult: {},
         methodUuid: this.createUUID(),
         schemaData: schemaMap.schema,
+        apiExecutionStartTime: apiExecutionStartTime,
+        apiExecutionEndTime: apiExecutionEndTime,
       };
     }
     return obj;

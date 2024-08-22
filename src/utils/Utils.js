@@ -18,7 +18,7 @@
 
 import { CONSTANTS } from '../constant';
 import FireboltExampleInvoker from '../FireboltExampleInvoker';
-import errorSchema from '../source/errorSchema.json';
+import errorSchemaObject from '../source/errorSchema.json';
 import censorDataJson from 'CensorData';
 
 const { v4: uuidv4 } = require('uuid');
@@ -294,8 +294,8 @@ function filterExamples(programlist, programType, offeringType) {
 
 function errorSchemaCheck(err) {
   let schemaValidationResult;
-  if (errorSchema) {
-    schemaValidationResult = validator.validate(err, errorSchema[errorSchema]);
+  if (errorSchemaObject) {
+    schemaValidationResult = validator.validate(err, errorSchemaObject.errorSchema);
   }
   return schemaValidationResult;
 }

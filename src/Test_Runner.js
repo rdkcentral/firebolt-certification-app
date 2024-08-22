@@ -36,7 +36,7 @@ const utils = require('./utils/Utils');
 import LifecycleHistory from './LifeCycleHistory';
 import { Device } from '@firebolt-js/sdk';
 import { MODULE_MAP } from './FireboltExampleInvoker';
-import errorSchema from './source/errorSchema.json';
+import errorSchemaObject from './source/errorSchema.json';
 const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
@@ -103,7 +103,7 @@ export class Test_Runner {
     const resultStartTime = new Date();
     let suiteStartTime = new Date();
     let errorSchemaResult;
-    errorSchemaValue = errorSchema[errorSchema];
+    errorSchemaValue = errorSchemaObject.errorSchema;
 
     // This is the list of validation Results for each api ,This is the list that will be used for creating the report
     for (const executionMode of execModes) {

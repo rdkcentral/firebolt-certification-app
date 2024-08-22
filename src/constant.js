@@ -172,6 +172,4 @@ export const CONSTANTS = {
   EXCLUDED_METHODS_FOR_MFOS: [],
   ...CONFIG_CONSTANTS,
   VERSIONS: 'Versions',
-  ERROR_SCHEMA_TRANSPORT: 'errorSchemaTransport',
-  ERROR_SCHEMA_SDK: 'errorSchemaSDK',
 };

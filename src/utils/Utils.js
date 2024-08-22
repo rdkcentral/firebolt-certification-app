@@ -292,11 +292,10 @@ function filterExamples(programlist, programType, offeringType) {
   return offeringList;
 }
 
-function errorSchemaCheck(err, communicationMode) {
+function errorSchemaCheck(err) {
   let schemaValidationResult;
   if (errorSchema) {
-    const errorSchemaBasedOnMode = communicationMode == CONSTANTS.TRANSPORT ? errorSchema[CONSTANTS.ERROR_SCHEMA_TRANSPORT] : errorSchema[CONSTANTS.ERROR_SCHEMA_SDK];
-    schemaValidationResult = validator.validate(err, errorSchemaBasedOnMode);
+    schemaValidationResult = validator.validate(err, errorSchema[errorSchema]);
   }
   return schemaValidationResult;
 }

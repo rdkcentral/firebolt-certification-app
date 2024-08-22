@@ -52,7 +52,7 @@ const TAG = '[Test_Runner]: ';
  */
 let execMode;
 let invokedSdk;
-let errorSchemaBasedOnMode;
+let errorSchemaValue;
 
 /*
 Start and End time of API invocation
@@ -103,7 +103,7 @@ export class Test_Runner {
     const resultStartTime = new Date();
     let suiteStartTime = new Date();
     let errorSchemaResult;
-    errorSchemaBasedOnMode = process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT ? errorSchema[CONSTANTS.ERROR_SCHEMA_TRANSPORT] : errorSchema[CONSTANTS.ERROR_SCHEMA_SDK];
+    errorSchemaValue = errorSchema[errorSchema];
 
     // This is the list of validation Results for each api ,This is the list that will be used for creating the report
     for (const executionMode of execModes) {
@@ -200,9 +200,9 @@ export class Test_Runner {
                 }
                 if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
                   if (method.examples[exampleIndex].schema) {
-                    method.examples[exampleIndex].schema = errorSchemaBasedOnMode;
+                    method.examples[exampleIndex].schema = errorSchemaValue;
                   } else {
-                    method.result.schema = errorSchemaBasedOnMode;
+                    method.result.schema = errorSchemaValue;
                   }
                 }
                 if (communicationMode == CONSTANTS.TRANSPORT) {
@@ -1206,7 +1206,7 @@ export class Test_Runner {
     let obj;
     const NOT_SUPPORTED_ERROR_MESSAGES = ['Unsupported', 'Not supported', 'not supported'];
     const errMessage = '{"code":' + error.code + ',"message":' + error.message + '}';
-    const schemaValidationResult = errorSchemaCheck(error, process.env.COMMUNICATION_MODE);
+    const schemaValidationResult = errorSchemaCheck(error);
     if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
       obj = {
         error: error,
@@ -1214,7 +1214,7 @@ export class Test_Runner {
         errorSchemaResult: true,
         methodWithExampleName: methodWithExampleName,
         methodUuid: this.createUUID(),
-        schemaData: errorSchemaBasedOnMode,
+        schemaData: errorSchemaValue,
       };
     } else {
       NOT_SUPPORTED_ERROR_MESSAGES.some((errorMessage) => error.message.includes(errorMessage));

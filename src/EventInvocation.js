@@ -138,7 +138,7 @@ export class EventInvocation {
         let schemaValidationResult = {};
         let schemaValidationStatus = CONSTANTS.PASS;
         if (message.params.isNotSupportedApi == true) {
-          schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
+          schemaValidationResult = errorSchemaCheck(listenerResponse);
           schemaValidationStatus = CONSTANTS.FAIL;
         }
         registrationResponse['eventListenerSchemaResult'] = {
@@ -153,7 +153,7 @@ export class EventInvocation {
         }
         registrationResponse['eventListenerResponse'] = { result: null, error: listenerResponse };
         // In case of error, validate error against errorschema
-        const schemaValidationResult = errorSchemaCheck(listenerResponse, process.env.COMMUNICATION_MODE);
+        const schemaValidationResult = errorSchemaCheck(listenerResponse);
         if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
           registrationResponse['eventListenerSchemaResult'] = {
             status: CONSTANTS.FAIL,

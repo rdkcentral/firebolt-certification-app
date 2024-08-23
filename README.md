@@ -143,7 +143,7 @@ To activate Mock Firebolt, there are specific start-up scripts that exist inside
     - Start the mock Firebolt OS based on steps mentioned in the repository.
     - Start the Firebolt Certification App with `npm start`
     - On launch add the `mf=true` queryParameter to the app launch url and relaunch the app.
-    The above steps will by default connect the Firebolt Certification App to the mock Firebolt OS running on localhost at port 9998
+    The above steps will by default connect the Firebolt Certification App to the mock Firebolt OS running on localhost at port 9998.
     Note: To change the hosted location of the mock Firebolt OS use the guidelines as mentioned in `https://github.com/rdkcentral/mock-firebolt/blob/main/docs/UsageWithinApps.md#activating-mock-firebolt`
 
 

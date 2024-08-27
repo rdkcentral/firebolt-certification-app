@@ -849,19 +849,11 @@ export class Test_Runner {
       }
       const doesErrorMsgContainMethodNotFound = typeof errorMessageLog == 'string' && CONSTANTS.ERROR_LIST.find((i) => i.toLowerCase().includes(errorMessageLog.toLowerCase()));
 
-      if (result.error && result.error.message && CONSTANTS.ERROR_RESPONSE_MESSAGE.includes(result.error.message)) {
-        testContext = {
-          params: params,
-          result: null,
-          error: null,
-        };
-      } else {
-        testContext = {
-          params: params,
-          result: null,
-          error: result.error,
-        };
-      }
+      testContext = {
+        params: params,
+        result: null,
+        error: result.error,
+      };
       if (result.error.responseError) {
         testContext.result = result.error.responseError;
         testContext.error = null;

@@ -174,5 +174,4 @@ export const CONSTANTS = {
   VERSIONS: 'Versions',
   ERROR_SCHEMA_TRANSPORT: 'errorSchemaTransport',
   ERROR_SCHEMA_SDK: 'errorSchemaSDK',
-  ERROR_RESPONSE_MESSAGE: ['Timed out in 10000 ms.', 'Received response as undefined'],
 };

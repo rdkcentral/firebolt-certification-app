@@ -161,4 +161,5 @@ export const CONSTANTS = {
   EXCLUDED_METHODS_FOR_MFOS: [],
   ...CONFIG_CONSTANTS,
   VERSIONS: 'Versions',
+  NO_RESULT_OR_ERROR_MESSAGE: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }',
 };

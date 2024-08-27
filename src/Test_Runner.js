@@ -819,7 +819,7 @@ export class Test_Runner {
       testContext = {
         params: params,
         result: null,
-        error: result.error,
+        error: errorResponse,
       };
 
       if (errorMessage == undefined) {
@@ -831,6 +831,7 @@ export class Test_Runner {
       resultState = this.setResultState('failed');
 
       if (errorResponse === CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE || (typeof errorResponse == 'string' && errorResponse.includes('Could not find an example for'))) {
+        testContext.error = null;
         errorMessage = JSON.stringify({ 'Schema Validation': CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: errorResponse, Response: null, Expected: schemaMap, params: params }, null, 1);
       } else if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
         if (isExceptionMethod) {
@@ -891,6 +892,7 @@ export class Test_Runner {
       uuid = result.methodUuid;
 
       if (response === CONSTANTS.SKIPPED_MESSAGE) {
+        testContext.result = null;
         resultState = this.setResultState('skipped');
         convertedValidationErr = { err: CONSTANTS.NO_ERROR_FOUND };
         convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: response }, null, 1);
@@ -902,6 +904,7 @@ export class Test_Runner {
           convertedValidationErr = { err: validationError };
         }
         if (response === undefined) {
+          testContext.result = null;
           // if (hasContentValidationExecuted) {
           //   convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: { Actual: 'undefined', Expected: schemaMap, Message: CONSTANTS.UNDEFINED_RESPONSE_MESSAGE, params: params } }, null, 1);
           // } else {

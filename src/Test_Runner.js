@@ -863,9 +863,10 @@ export class Test_Runner {
     };
 
     if (!schemaValidationResult && result.error) {
+      resultState = this.setResultState('failed');
+      convertedError = { err: parsedResponse };
       if (parsedResponse === CONSTANTS.SKIPPED_MESSAGE) {
         resultState = this.setResultState('skipped');
-        convertedError = { err: CONSTANTS.NO_ERROR_FOUND };
         convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: parsedResponse }, null, 1);
       } else {
         convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: parsedResponse, Response: null, Expected: schemaMap, params: params }, null, 1);

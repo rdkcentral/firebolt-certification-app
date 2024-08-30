@@ -199,7 +199,7 @@ export class Test_Runner {
                 };
 
                 if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
-                  schemaFormat.properties.error = errorSchemaBasedOnMode;
+                  schemaFormat.properties.error = errorSchema;
                   schemaFormat.required = ['error'];
                   if (method.examples[exampleIndex].schema) {
                     method.examples[exampleIndex].schema = schemaFormat;
@@ -278,6 +278,8 @@ export class Test_Runner {
                       validationResult: errorSchemaValidationResult,
                       methodUuid: methodUuid,
                       schemaData: schemaMap.schema,
+                      apiExecutionStartTime: apiExecutionStartTime,
+                      apiExecutionEndTime: apiExecutionEndTime,
                     };
                   } else {
                     const schemaValidationResult = validator.validate(errorResponse, schemaMap.schema);

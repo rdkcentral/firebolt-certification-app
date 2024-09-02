@@ -41,9 +41,6 @@ const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 const logger = require('./utils/Logger')('Test_Runner.js');
-
-let validationResult;
-let validationError = {};
 const TAG = '[Test_Runner]: ';
 
 /**
@@ -100,7 +97,6 @@ export class Test_Runner {
     // Start time of all API invocation
     const resultStartTime = new Date();
     let suiteStartTime = new Date();
-    let errorSchemaResult;
 
     // This is the list of validation Results for each api ,This is the list that will be used for creating the report
     for (const executionMode of execModes) {
@@ -159,7 +155,6 @@ export class Test_Runner {
           const obj = {
             error: CONSTANTS.SKIPPED_MESSAGE,
             param: undefined,
-            errorSchemaResult: undefined,
             methodWithExampleName: methodObj.name,
             methodUuid: this.createUUID(),
             schemaData: schemaMap.schema,
@@ -174,11 +169,10 @@ export class Test_Runner {
             for (let exampleIndex = 0; exampleIndex < method.examples.length; exampleIndex++) {
               let paramValues = [];
               // The Subscribe methods are skipped for Transport, which is dynamically added from menubuilder
-              if (communicationMode == CONSTANTS.TRANSPORT) {
-                if (this.methodFilters.isSubscribeMethod(method.examples[exampleIndex]) || this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
-                  break;
-                }
-              } else if (this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
+              if (this.methodFilters.isSubscribeMethod(method.examples[exampleIndex]) || this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
+                break;
+              }
+              if (this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
                 continue;
               }
 
@@ -197,6 +191,13 @@ export class Test_Runner {
                   type: 'object',
                   properties: {},
                 };
+
+                if (method.examples[exampleIndex].schema) {
+                  schemaMap = method.examples[exampleIndex];
+                } else {
+                  schemaMap = method.result;
+                }
+
 
                 if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
                   schemaFormat.properties.error = errorSchema;
@@ -220,12 +221,7 @@ export class Test_Runner {
                     }
                   }
                 }
-                if (method.examples[exampleIndex].schema) {
-                  schemaMap = method.examples[exampleIndex];
-                } else {
-                  schemaMap = method.result;
-                }
-
+                
                 if (communicationMode == CONSTANTS.TRANSPORT) {
                   const paramNames = method.params ? method.params.map((p) => p.name) : [];
                   result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk, paramNames);
@@ -268,32 +264,17 @@ export class Test_Runner {
                   };
                 } else {
                   logger.debug('TestContext Debug: Error block on api execution - has error message: ' + errorResponse + ' for method: ' + methodWithExampleName, 'northBoundSchemaValidationAndReportGeneration');
-                  if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
-                    const errorSchemaValidationResult = validator.validate(errorResponse, schemaMap.schema);
-                    obj = {
-                      error: errorResponse,
-                      param: example.params,
-                      errorSchemaResult: true,
-                      methodWithExampleName: methodWithExampleName,
-                      validationResult: errorSchemaValidationResult,
-                      methodUuid: methodUuid,
-                      schemaData: schemaMap.schema,
-                      apiExecutionStartTime: apiExecutionStartTime,
-                      apiExecutionEndTime: apiExecutionEndTime,
-                    };
-                  } else {
-                    const schemaValidationResult = validator.validate(errorResponse, schemaMap.schema);
-                    obj = {
-                      error: errorResponse,
-                      param: example.params,
-                      methodWithExampleName: methodWithExampleName,
-                      validationResult: schemaValidationResult,
-                      methodUuid: methodUuid,
-                      schemaData: schemaMap.schema,
-                      apiExecutionStartTime: apiExecutionStartTime,
-                      apiExecutionEndTime: apiExecutionEndTime,
-                    };
-                  }
+                  const schemaValidationResult = validator.validate(errorResponse, schemaMap.schema);
+                  obj = {
+                    error: errorResponse,
+                    param: example.params,
+                    methodWithExampleName: methodWithExampleName,
+                    validationResult: schemaValidationResult,
+                    methodUuid: methodUuid,
+                    schemaData: schemaMap.schema,
+                    apiExecutionStartTime: apiExecutionStartTime,
+                    apiExecutionEndTime: apiExecutionEndTime,
+                  };
                 }
                 schemaValidationResultSet.push(obj);
               }
@@ -851,8 +832,9 @@ export class Test_Runner {
     const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
     const isExceptionMethod = this.methodFilters.isExceptionMethod(methodName, params);
     const schemaValidationResult = result.validationResult;
+    // Check if the error message contains "Method not found"
     if (parsedResponse && parsedResponse.error && parsedResponse.error.message) {
-      doesErrorMessageContainMethodNotFound = CONSTANTS.ERROR_LIST.find((i) =>
+      doesErrorMessageContainMethodNotFound = CONSTANTS.ERROR_LIST.some((i) =>
         JSON.stringify(parsedResponse.error.message || '')
           .toLowerCase()
           .includes(i.toLowerCase())
@@ -863,10 +845,11 @@ export class Test_Runner {
       result: null,
       error: null,
     };
-
+    // If schema validation did not occur and an error is present, set the schema validation status to skipped.
     if (!schemaValidationResult && result.error) {
       resultState = this.setResultState('failed');
       convertedError = { err: parsedResponse };
+      // Check if the parsed response is a skipped message
       if (parsedResponse === CONSTANTS.SKIPPED_MESSAGE) {
         resultState = this.setResultState('skipped');
         convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: parsedResponse }, null, 1);
@@ -874,26 +857,33 @@ export class Test_Runner {
         convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: parsedResponse, Response: null, Expected: schemaMap, params: params }, null, 1);
       }
     } else if (isExceptionMethod) {
+      // Handle case where the method is an exception method
       resultState = this.setResultState('failed');
+      // Check if parsed response contains an error
       if (parsedResponse && parsedResponse.error) {
         testContext.error = parsedResponse.error;
         convertedError = { err: parsedResponse.error };
+        // Check if there are schema validation errors
         if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
-          convertedResponse = JSON.stringify(
-            { 'Schema Validation': CONSTANTS.FAILED, Message: 'Expected error, incorrect error format', Response: parsedResponse, Expected: schemaValidationResult.schema, params: params },
-            null,
-            1
-          );
+          // Check if the error message is undefined response
+          if (parsedResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE) {
+            testContext.error = null;
+            convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE, Response: null, Expected: schemaMap, params: params }, null, 1);
+          } else {
+            // Handle other schema validation errors
+            convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: 'Expected error, incorrect error format', Response: parsedResponse, Expected: schemaMap, params: params }, null, 1);
+          }
         } else {
-          // sgf
+          // Handle cases where there are no schema validation errors
+          // Check if the error message contains method not found
           if (doesErrorMessageContainMethodNotFound) {
-            // When the underlying platform returns "Method not found" or "Not supported" in response.error.message. Certification suite will consider this as pending
             convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.PASSED, Message: 'Method not implemented by platform', Response: parsedResponse, params: params }, null, 1);
-            // Disable SKIPPED and PENDING states in report based on flag [FIRECERT-838]
+            // If the certification flag is enabled, fail the test case; otherwise, mark it as pending.
             if (!process.env.CERTIFICATION) {
               resultState = this.setResultState('pending');
             }
           } else {
+            // Handle other error messages
             resultState = this.setResultState('passed');
             convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.PASSED, Message: 'Expected error, received error', Response: parsedResponse, params: params }, null, 1);
           }
@@ -905,20 +895,25 @@ export class Test_Runner {
         convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: 'Expected error, received result', Response: { result: parsedResponse }, Expected: schemaMap, params: params }, null, 1);
       }
     } else {
+      // Handle case where the method is not an exception method
       resultState = this.setResultState('passed');
+      // Check if parsed response contains an error
       if (parsedResponse && parsedResponse.error) {
         testContext.error = parsedResponse.result;
         convertedError = { err: parsedResponse };
         resultState = this.setResultState('failed');
+        // Check if the error message contains method not found
         if (doesErrorMessageContainMethodNotFound) {
           convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: 'Method not implemented by platform', Response: parsedResponse, Expected: schemaMap, params: params }, null, 1);
-          // Disable SKIPPED and PENDING states in report based on flag [FIRECERT-838]
+          // If the certification flag is enabled, fail the test case; otherwise, mark it as pending.
           if (!process.env.CERTIFICATION) {
             resultState = this.setResultState('pending');
           }
-        } else if (parsedResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE && schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
+        }
+        // Check if the error message is undefined response
+        else if (parsedResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE) {
           testContext.error = null;
-          convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }', Response: null, Expected: schemaMap, params: params }, null, 1);
+          convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE, Response: null, Expected: schemaMap, params: params }, null, 1);
         } else {
           convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: 'Unexpected error encountered in the response', Response: parsedResponse, Expected: schemaMap, params: params }, null, 1);
         }
@@ -935,7 +930,7 @@ export class Test_Runner {
       }
     }
     if (typeof convertedError == 'string' || Array.isArray(convertedError) || typeof convertedError == 'undefined') {
-      convertedError = { err: validationError };
+      convertedError = { err: convertedError };
     }
 
     !process.env.TESTCONTEXT ? (testContext = null) : (testContext = JSON.stringify(testContext, null, 1));

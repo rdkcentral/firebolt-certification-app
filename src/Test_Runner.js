@@ -36,7 +36,7 @@ const utils = require('./utils/Utils');
 import LifecycleHistory from './LifeCycleHistory';
 import { Device } from '@firebolt-js/sdk';
 import { MODULE_MAP } from './FireboltExampleInvoker';
-import errorSchema from './source/errorSchema.json';
+import errorSchemaObject from './source/errorSchema.json';
 const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();

@@ -172,11 +172,10 @@ export class Test_Runner {
             for (let exampleIndex = 0; exampleIndex < method.examples.length; exampleIndex++) {
               let paramValues = [];
               // The Subscribe methods are skipped for Transport, which is dynamically added from menubuilder
-              if (communicationMode == CONSTANTS.TRANSPORT) {
-                if (this.methodFilters.isSubscribeMethod(method.examples[exampleIndex]) || this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
-                  break;
-                }
-              } else if (this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
+              if (this.methodFilters.isSubscribeMethod(method.examples[exampleIndex]) || this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
+                break;
+              }
+              if (this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
                 continue;
               }
 

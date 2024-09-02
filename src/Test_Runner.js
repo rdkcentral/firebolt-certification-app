@@ -36,7 +36,7 @@ const utils = require('./utils/Utils');
 import LifecycleHistory from './LifeCycleHistory';
 import { Device } from '@firebolt-js/sdk';
 import { MODULE_MAP } from './FireboltExampleInvoker';
-import errorSchema from './source/errorSchema.json';
+import errorSchemaObject from './source/errorSchema.json';
 const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
@@ -204,9 +204,9 @@ export class Test_Runner {
 
                 if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
                   if (method.examples[exampleIndex].schema) {
-                    method.examples[exampleIndex].schema = errorSchema;
+                    method.examples[exampleIndex].schema = errorSchemaObject.errorSchema;
                   } else {
-                    method.result.schema = errorSchema;
+                    method.result.schema = errorSchemaObject.errorSchema;
                   }
                 }
                 let schemaValidationResultForEachExample = method.examples[exampleIndex].schema ? validator.validate(result, method.examples[exampleIndex].schema) : validator.validate(result, method.result.schema);
@@ -1203,7 +1203,7 @@ export class Test_Runner {
         errorSchemaResult: true,
         methodWithExampleName: methodWithExampleName,
         methodUuid: this.createUUID(),
-        schemaData: errorSchema,
+        schemaData: errorSchemaObject.errorSchema,
       };
     } else {
       NOT_SUPPORTED_ERROR_MESSAGES.some((errorMessage) => error.message.includes(errorMessage));

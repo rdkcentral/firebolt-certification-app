@@ -103,7 +103,7 @@ export class MethodInvoker {
       if (process.env.STANDALONE == true) {
         // if the method is not supported and it gives a valid response, validate against errorschema instead of api schema
         if (message.params.isNotSupportedApi == true && response != undefined) {
-          schemaValidationResult = errorSchemaCheck(response, process.env.COMMUNICATION_MODE);
+          schemaValidationResult = errorSchemaCheck(response);
         }
       }
     } catch (error) {

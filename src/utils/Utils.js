@@ -18,7 +18,7 @@
 
 import { CONSTANTS } from '../constant';
 import FireboltExampleInvoker from '../FireboltExampleInvoker';
-import errorSchema from '../source/errorSchema.json';
+import errorSchemaObject from '../source/errorSchema.json';
 import censorDataJson from 'CensorData';
 
 const { v4: uuidv4 } = require('uuid');
@@ -292,11 +292,10 @@ function filterExamples(programlist, programType, offeringType) {
   return offeringList;
 }
 
-function errorSchemaCheck(err, communicationMode) {
+function errorSchemaCheck(err) {
   let schemaValidationResult;
-  if (errorSchema) {
-    const errorSchemaBasedOnMode = communicationMode == CONSTANTS.TRANSPORT ? errorSchema[CONSTANTS.ERROR_SCHEMA_TRANSPORT] : errorSchema[CONSTANTS.ERROR_SCHEMA_SDK];
-    schemaValidationResult = validator.validate(err, errorSchemaBasedOnMode);
+  if (errorSchemaObject) {
+    schemaValidationResult = validator.validate(err, errorSchemaObject.errorSchema);
   }
   return schemaValidationResult;
 }

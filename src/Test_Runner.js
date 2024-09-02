@@ -36,15 +36,12 @@ const utils = require('./utils/Utils');
 import LifecycleHistory from './LifeCycleHistory';
 import { Device } from '@firebolt-js/sdk';
 import { MODULE_MAP } from './FireboltExampleInvoker';
-import errorSchema from './source/errorSchema.json';
+import errorSchemaObject from './source/errorSchema.json';
 const $RefParser = require('@apidevtools/json-schema-ref-parser');
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 const logger = require('./utils/Logger')('Test_Runner.js');
 const _ = require('lodash');
-
-let validationResult;
-let validationError = {};
 const TAG = '[Test_Runner]: ';
 
 /**
@@ -52,13 +49,13 @@ const TAG = '[Test_Runner]: ';
  */
 let execMode;
 let invokedSdk;
-let errorSchemaBasedOnMode;
+let errorSchemaValue;
 
 /*
 Start and End time of API invocation
 */
 let apiExecutionEndTime;
-let apiExecutionStartTime = new Date();
+let apiExecutionStartTime;
 
 export class Test_Runner {
   /**
@@ -102,7 +99,7 @@ export class Test_Runner {
     // Start time of all API invocation
     const resultStartTime = new Date();
     let suiteStartTime = new Date();
-    errorSchemaBasedOnMode = process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT ? errorSchema[CONSTANTS.ERROR_SCHEMA_TRANSPORT] : errorSchema[CONSTANTS.ERROR_SCHEMA_SDK];
+    errorSchemaValue = errorSchemaObject.errorSchema;
 
     // This is the list of validation Results for each api ,This is the list that will be used for creating the report
     for (const executionMode of execModes) {
@@ -132,6 +129,8 @@ export class Test_Runner {
       // traverse the json data inside loop to get methodname & properties
       for (let methodIndex = 0; this.dereferenceSchemaList != undefined && methodIndex < this.dereferenceSchemaList.methods.length; methodIndex++) {
         const module = this.dereferenceSchemaList.methods[methodIndex].name.split('.')[0];
+        apiExecutionEndTime = 0;
+        apiExecutionStartTime = 0;
         let methodUuid = this.createUUID(); // uuid of this method
         const method = this.dereferenceSchemaList.methods[methodIndex];
         const methodObj = this.dereferenceSchemaList.methods[methodIndex];
@@ -162,6 +161,8 @@ export class Test_Runner {
             methodWithExampleName: methodObj.name,
             methodUuid: this.createUUID(),
             schemaData: schemaMap.schema,
+            apiExecutionStartTime: apiExecutionStartTime,
+            apiExecutionEndTime: apiExecutionEndTime,
           };
           schemaValidationResultSet.push(obj);
         } else if (!this.methodFilters.isRpcMethod(methodObj, invokedSdk, communicationMode)) {
@@ -207,7 +208,7 @@ export class Test_Runner {
                 // Check if the example schema exists
                 if (method.examples[exampleIndex].schema) {
                   // Set the schema properties and required fields based on the exception method
-                  schemaFormat.properties[propertyKey] = isExceptionMethod ? errorSchemaBasedOnMode : schemaMap.schema;
+                  schemaFormat.properties[propertyKey] = isExceptionMethod ? errorSchemaValue : schemaMap.schema;
                   schemaFormat.required = [propertyKey];
                   // Assign the new schema format to the schema map
                   schemaMap.schema = schemaFormat;
@@ -216,7 +217,7 @@ export class Test_Runner {
                   // Check if the property key does not already exist in the result schema properties
                   if (!resultSchemaProperties.hasOwnProperty(propertyKey)) {
                     // Set the schema properties and required fields based on the exception method
-                    schemaFormat.properties[propertyKey] = isExceptionMethod ? errorSchemaBasedOnMode : schemaMap.schema;
+                    schemaFormat.properties[propertyKey] = isExceptionMethod ? errorSchemaValue : schemaMap.schema;
                     schemaFormat.required = [propertyKey];
                     // Assign the new schema format to the schema map
                     schemaMap.schema = schemaFormat;
@@ -246,6 +247,8 @@ export class Test_Runner {
                   methodWithExampleName: methodWithExampleName,
                   methodUuid: methodUuid,
                   schemaData: schemaMap.schema,
+                  apiExecutionStartTime: apiExecutionStartTime,
+                  apiExecutionEndTime: apiExecutionEndTime,
                 };
                 schemaValidationResultSet.push(schemaValidationResultForEachExampleSet);
               } catch (error) {
@@ -259,6 +262,8 @@ export class Test_Runner {
                     methodWithExampleName: methodWithExampleName,
                     methodUuid: methodUuid,
                     schemaData: schemaMap.schema,
+                    apiExecutionStartTime: apiExecutionStartTime,
+                    apiExecutionEndTime: apiExecutionEndTime,
                   };
                 } else {
                   logger.debug('TestContext Debug: Error block on api execution - has error message: ' + errorResponse + ' for method: ' + methodWithExampleName, 'northBoundSchemaValidationAndReportGeneration');
@@ -270,6 +275,8 @@ export class Test_Runner {
                     validationResult: schemaValidationResult,
                     methodUuid: methodUuid,
                     schemaData: schemaMap.schema,
+                    apiExecutionStartTime: apiExecutionStartTime,
+                    apiExecutionEndTime: apiExecutionEndTime,
                   };
                 }
                 schemaValidationResultSet.push(obj);
@@ -284,6 +291,8 @@ export class Test_Runner {
               methodWithExampleName: methodObj.name,
               methodUuid: methodUuid,
               schemaData: schemaMap.schema,
+              apiExecutionStartTime: apiExecutionStartTime,
+              apiExecutionEndTime: apiExecutionEndTime,
             };
             schemaValidationResultSet.push(obj);
           }
@@ -302,7 +311,9 @@ export class Test_Runner {
             schema = schemaValidationRes.schemaData;
           }
           delete schemaValidationRes.schemaData;
-          const apiValidationResult = this.generateAPIValidaionResult(schemaValidationRes, methodObj, apiExecutionStartTime, apiExecutionEndTime, suitesUuid, hasContentValidationExecuted, schema);
+          const executionStartTime = schemaValidationRes.apiExecutionStartTime;
+          const executionEndTime = schemaValidationRes.apiExecutionEndTime;
+          const apiValidationResult = this.generateAPIValidaionResult(schemaValidationRes, methodObj, executionStartTime, executionEndTime, suitesUuid, hasContentValidationExecuted, schema);
           if (apiValidationResult.pass) {
             successList.push(apiValidationResult.uuid);
           } else if (apiValidationResult.skipped) {
@@ -482,12 +493,13 @@ export class Test_Runner {
       sdk = invokedSdk;
     }
     executionMode = executionMode.toUpperCase();
-    apiExecutionStartTime = new Date(); // api execution start time
 
     if (executionMode.includes(CONSTANTS.MANAGE) || executionMode.includes(CONSTANTS.CORE) || executionMode.includes(CONSTANTS.DISCOVERY)) {
+      apiExecutionStartTime = new Date(); // api execution start time
       [response, err] = paramsArray
         ? await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramsArray))
         : await handleAsyncFunction(FireboltExampleInvoker.get().invoke(sdk, method, params, null, paramsArray));
+      apiExecutionEndTime = new Date(); // api execution end time
       // To handle event response trimming observed when events invoked via transport mode
       if (response) {
         if (response.hasOwnProperty('event') == true) {
@@ -501,7 +513,6 @@ export class Test_Runner {
     } else {
       response = CONSTANTS.NOTPERFORMED;
     }
-    apiExecutionEndTime = new Date(); // api execution end time
     // If an error happens while invoking the function throw error
     if (err) {
       throw err;
@@ -855,7 +866,7 @@ export class Test_Runner {
           // Check if the error message is undefined response
           if (parsedResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE) {
             testContext.error = null;
-            convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }', Response: null, Expected: schemaMap, params: params }, null, 1);
+            convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE, Response: null, Expected: schemaMap, params: params }, null, 1);
           } else {
             // Handle other schema validation errors
             convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: 'Expected error, incorrect error format', Response: parsedResponse, Expected: schemaMap, params: params }, null, 1);
@@ -900,7 +911,7 @@ export class Test_Runner {
         // Check if the error message is undefined response
         else if (parsedResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE) {
           testContext.error = null;
-          convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }', Response: null, Expected: schemaMap, params: params }, null, 1);
+          convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE, Response: null, Expected: schemaMap, params: params }, null, 1);
         } else {
           convertedResponse = JSON.stringify({ 'Schema Validation': CONSTANTS.FAILED, Message: 'Unexpected error encountered in the response', Response: parsedResponse, Expected: schemaMap, params: params }, null, 1);
         }
@@ -917,7 +928,7 @@ export class Test_Runner {
       }
     }
     if (typeof convertedError == 'string' || Array.isArray(convertedError) || typeof convertedError == 'undefined') {
-      convertedError = { err: validationError };
+      convertedError = { err: convertedError };
     }
 
     !process.env.TESTCONTEXT ? (testContext = null) : (testContext = JSON.stringify(testContext, null, 1));

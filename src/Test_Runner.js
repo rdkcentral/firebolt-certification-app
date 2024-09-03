@@ -198,30 +198,29 @@ export class Test_Runner {
                   schemaMap = method.result;
                 }
 
+                // Check if the method is an exception method
+                const isExceptionMethod = this.methodFilters.isExceptionMethod(methodObj.name, example.params);
+                const propertyKey = isExceptionMethod ? 'error' : 'result';
 
-                if (this.methodFilters.isExceptionMethod(methodObj.name, example.params)) {
-                  schemaFormat.properties.error = errorSchema;
-                  schemaFormat.required = ['error'];
-                  if (method.examples[exampleIndex].schema) {
-                    method.examples[exampleIndex].schema = schemaFormat;
-                  } else {
-                    if ((method.result.schema.hasOwnProperty('properties') && !method.result.schema.properties.hasOwnProperty('error')) || !method.result.schema.hasOwnProperty('properties')) {
-                      method.result.schema = schemaFormat;
-                    }
-                  }
+                // Check if the example schema exists
+                if (method.examples[exampleIndex].schema) {
+                  // Set the schema properties and required fields based on the exception method
+                  schemaFormat.properties[propertyKey] = isExceptionMethod ? errorSchemaObject.errorSchema : schemaMap.schema;
+                  schemaFormat.required = [propertyKey];
+                  // Assign the new schema format to the schema map
+                  schemaMap.schema = schemaFormat;
                 } else {
-                  schemaFormat.required = ['result'];
-                  if (method.examples[exampleIndex].schema) {
-                    schemaFormat.properties.result = method.examples[exampleIndex].schema;
-                    method.examples[exampleIndex].schema = schemaFormat;
-                  } else {
-                    if ((method.result.schema.hasOwnProperty('properties') && !method.result.schema.properties.hasOwnProperty('result')) || !method.result.schema.hasOwnProperty('properties')) {
-                      schemaFormat.properties.result = method.result.schema;
-                      method.result.schema = schemaFormat;
-                    }
+                  const resultSchemaProperties = method.result.schema.properties || {};
+                  // Check if the property key does not already exist in the result schema properties
+                  if (!resultSchemaProperties.hasOwnProperty(propertyKey)) {
+                    // Set the schema properties and required fields based on the exception method
+                    schemaFormat.properties[propertyKey] = isExceptionMethod ? errorSchemaObject.errorSchema : schemaMap.schema;
+                    schemaFormat.required = [propertyKey];
+                    // Assign the new schema format to the schema map
+                    schemaMap.schema = schemaFormat;
                   }
                 }
-                
+
                 if (communicationMode == CONSTANTS.TRANSPORT) {
                   const paramNames = method.params ? method.params.map((p) => p.name) : [];
                   result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk, paramNames);

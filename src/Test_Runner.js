@@ -171,7 +171,6 @@ export class Test_Runner {
             overrideParamsFromTestData(method);
             for (let exampleIndex = 0; exampleIndex < method.examples.length; exampleIndex++) {
               let paramValues = [];
-              // The Subscribe methods are skipped for Transport, which is dynamically added from menubuilder
               if (this.methodFilters.isSubscribeMethod(method.examples[exampleIndex]) || this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
                 break;
               }

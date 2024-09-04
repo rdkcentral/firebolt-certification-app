@@ -117,7 +117,6 @@ async function getschemaValidationDone(name, response, sdkType) {
  * @param response - response of the method
  */
 function censorData(methodName, response) {
-  let json;
   try {
     const json = censorDataJson;
     if (methodName in json) {

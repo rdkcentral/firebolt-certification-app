@@ -26,17 +26,17 @@ const Validator = require('jsonschema').Validator;
  * and its behavior. We dont need the full OPEN RPC DOC
  */
 
-let MOCK_OPEN_RPC_DOC = {
+const MOCK_OPEN_RPC_DOC = {
   methods: [
     {
-      name: 'account.id',
+      name: 'Account.id',
       summary: 'Firebolt OpenRPC schema',
       params: [],
       result: {
         name: 'id',
         summary: 'the id',
         schema: {
-          type: 'object',
+          type: 'string',
         },
       },
       examples: [
@@ -51,7 +51,7 @@ let MOCK_OPEN_RPC_DOC = {
       ],
     },
     {
-      name: 'account.uid',
+      name: 'Account.uid',
       summary: 'Gets a unique id for the current app & account',
       params: [],
       result: {
@@ -72,8 +72,328 @@ let MOCK_OPEN_RPC_DOC = {
         },
       ],
     },
+    {
+      name: 'Device.id',
+      summary: 'Get the platform back-office device identifier',
+      params: [],
+      result: {
+        name: 'id',
+        summary: 'the id',
+        schema: {
+          type: 'string',
+        },
+      },
+      examples: [
+        {
+          name: 'Default Example',
+          params: [],
+          result: {
+            name: 'Default Result',
+            value: '123',
+          },
+        },
+      ],
+    },
+    {
+      name: 'Device.platform',
+      summary: 'Get the platform ID for this device',
+      params: [],
+      result: {
+        name: 'platformId',
+        summary: 'the platform ID',
+        schema: {
+          type: 'string',
+        },
+      },
+      examples: [
+        {
+          name: 'Getting the platform ID',
+          params: [],
+          result: {
+            name: 'Default Result',
+            value: 'WPE',
+          },
+        },
+      ],
+    },
+    {
+      name: 'Device.uid',
+      summary: 'Gets a unique id for the current app & device',
+      params: [],
+      result: {
+        name: 'uniqueId',
+        summary: 'a unique ID',
+        schema: {
+          type: 'string',
+        },
+      },
+      examples: [
+        {
+          name: 'Getting the unique ID',
+          params: [],
+          result: {
+            name: 'Default Result',
+            value: 'ee6723b8-7ab3-462c-8d93-dbf61227998e',
+          },
+        },
+      ],
+    },
+    {
+      name: 'Device.distributor',
+      summary: 'Get the distributor ID for this device',
+      params: [],
+      result: {
+        name: 'distributorId',
+        summary: 'the distributor ID',
+        schema: {
+          type: 'string',
+        },
+      },
+      examples: [
+        {
+          name: 'Getting the distributor ID',
+          params: [],
+          result: {
+            name: 'Default Result',
+            value: 'Company',
+          },
+        },
+      ],
+    },
+    {
+      name: 'Device.type',
+      summary: 'Get the device type',
+      params: [],
+      result: {
+        name: 'deviceType',
+        summary: 'the device type',
+        schema: {
+          type: 'string',
+        },
+      },
+      examples: [
+        {
+          name: 'Getting the device type',
+          params: [],
+          result: {
+            name: 'Default Result',
+            value: 'STB',
+          },
+        },
+      ],
+    },
+    {
+      name: 'Device.model',
+      summary: 'Get the device model',
+      params: [],
+      result: {
+        name: 'model',
+        summary: 'the device model',
+        schema: {
+          type: 'string',
+        },
+      },
+      examples: [
+        {
+          name: 'Getting the device model',
+          params: [],
+          result: {
+            name: 'Default Result',
+            value: 'xi6',
+          },
+        },
+      ],
+    },
+    {
+      name: 'Device.sku',
+      summary: 'Get the device sku',
+      params: [],
+      result: {
+        name: 'sku',
+        summary: 'the device sku',
+        schema: {
+          type: 'string',
+        },
+      },
+      examples: [
+        {
+          name: 'Getting the device sku',
+          params: [],
+          result: {
+            name: 'Default Result',
+            value: 'AX061AEI',
+          },
+        },
+      ],
+    },
+    {
+      name: 'Device.make',
+      summary: 'Get the device make',
+      params: [],
+      result: {
+        name: 'make',
+        summary: 'the device make',
+        schema: {
+          type: 'string',
+        },
+      },
+    },
+    {
+      name: 'Device.hdcp',
+      summary: 'Get the supported HDCP profiles',
+      params: [],
+      tags: [
+        {
+          name: 'property:readonly',
+        },
+        {
+          name: 'capabilities',
+          'x-uses': ['xrn:firebolt:capability:device:info'],
+        },
+      ],
+      result: {
+        name: 'supportedHdcpProfiles',
+        summary: 'the supported HDCP profiles',
+        schema: {
+          type: 'object',
+          additionalProperties: {
+            type: 'boolean',
+          },
+        },
+      },
+      examples: [
+        {
+          name: 'Getting the supported HDCP profiles',
+          params: [],
+          result: {
+            name: 'Default Result',
+            value: {
+              'hdcp1.4': true,
+              'hdcp2.2': true,
+            },
+          },
+        },
+      ],
+    },
+    {
+      name: 'Accessibility.onClosedCaptionsSettingsChanged',
+      summary: "Get the user's preferred closed-captions settings",
+      params: [
+        {
+          name: 'listen',
+          required: true,
+          schema: {
+            type: 'boolean',
+          },
+        },
+      ],
+      tags: [
+        {
+          name: 'subscriber',
+          'x-subscriber-for': 'Accessibility.closedCaptionsSettings',
+        },
+        {
+          name: 'event',
+          'x-alternative': 'closedCaptionsSettings',
+        },
+        {
+          name: 'capabilities',
+          'x-uses': ['xrn:firebolt:capability:accessibility:closedcaptions'],
+        },
+      ],
+      result: {
+        name: 'closedCaptionsSettings',
+        summary: 'the closed captions settings',
+        schema: {
+          anyOf: [
+            {
+              type: 'object',
+              required: ['event', 'listening'],
+              properties: {
+                event: {
+                  type: 'string',
+                  pattern: '[a-zA-Z]+\\.on[A-Z][a-zA-Z]+',
+                },
+                listening: {
+                  type: 'boolean',
+                },
+              },
+              additionalProperties: false,
+            },
+            {
+              type: 'object',
+              required: ['enabled', 'styles'],
+              properties: {
+                enabled: {
+                  type: 'boolean',
+                  description: 'Whether or not closed-captions should be enabled by default',
+                },
+                styles: {
+                  type: 'object',
+                  description: 'The default styles to use when displaying closed-captions',
+                },
+                preferredLanguages: {
+                  type: 'array',
+                  items: {
+                    type: 'string',
+                    pattern: '^[a-z]{3}$',
+                  },
+                },
+              },
+            },
+          ],
+        },
+      },
+      examples: [
+        {
+          name: 'Getting the closed captions settings',
+          params: [
+            {
+              name: 'listen',
+              value: true,
+            },
+          ],
+          result: {
+            name: 'settings',
+            value: {
+              enabled: true,
+              styles: {
+                fontFamily: 'monospaced_sanserif',
+                fontSize: 1,
+                fontColor: '#ffffff',
+                fontEdge: 'none',
+                fontEdgeColor: '#7F7F7F',
+                fontOpacity: 100,
+                backgroundColor: '#000000',
+                backgroundOpacity: 100,
+                textAlign: 'center',
+                textAlignVertical: 'middle',
+                windowColor: 'white',
+                windowOpacity: 50,
+              },
+              preferredLanguages: ['eng', 'spa'],
+            },
+          },
+        },
+      ],
+    },
   ],
 };
+
+const mockResponses = {
+  'Account.id': '123',
+  'Account.uid': undefined,
+  'Device.platform': { error: 'capability xrn:firebolt:capability:platformn is not supported' },
+  'Device.uid': { error: { code: -32601, message: 'Method not found' } },
+  'Device.distributor': { code: -50100, message: 'capability xrn:firebolt:capability:token:session is not supported' },
+  'Device.type': { error: { message: 'capability xrn:firebolt:capability:Localization.locality is not supported' } },
+  'Device.model': { error: { code: -32601, message: 'capability xrn:firebolt:capability:platformn is not supported' } },
+  'Device.sku': { error: { code: -32601, message: 'Method not found' } },
+  'Device.make': 'Arris',
+  'De vice.hdcp': { 'hdcp1.4': true, 'hdcp2.2': true },
+  'Accessibility.onClosedCaptionsSettingsChanged': 'Successful accessibility.listen(closedCaptionsSettingsChanged)',
+};
+
 const EXTERNAL_SDK_MOCK_OPEN_RPC_DOC = {
   methods: [
     {
@@ -122,7 +442,7 @@ const EXTERNAL_SDK_MOCK_OPEN_RPC_DOC = {
     },
   ],
 };
-const MOCK_OPEN_RPC_RESPONSE = { id: 18, result: {}, jsonrpc: '2.0' };
+
 /**
  * This is the definition of the structure used by Validation view
  * to create the menu and also to show the result.
@@ -152,83 +472,81 @@ const CUSTOM_REPORT_STRUCTURE_SCHEMA = {
   },
 };
 
-jest.mock('@apidevtools/json-schema-ref-parser', () => {
-  return {
-    dereference: () => {
-      return new Promise((resolve, reject) => {
-        if (!mockShouldDereferencerFail) {
-          resolve(MOCK_OPEN_RPC_DOC);
-        } else {
-          reject(new Error('Dereferencer Failure'));
-        }
-      });
-    },
-  };
-});
+jest.mock('@apidevtools/json-schema-ref-parser', () => ({
+  dereference: () =>
+    new Promise((resolve, reject) => {
+      if (!mockShouldDereferencerFail) {
+        resolve(MOCK_OPEN_RPC_DOC);
+      } else {
+        reject(new Error('Dereferencer Failure'));
+      }
+    }),
+}));
+
 /**
  * mock object used to emulate the response from
  * FireBoltExampleInvoker
  */
 const mockFireboltExampleInvoker = {
-  invoke: () => {},
+  invoke: jest.fn((sdk, methodName, params) => {
+    return new Promise((resolve, reject) => {
+      if (mockResponses.hasOwnProperty(methodName)) {
+        const response = mockResponses[methodName];
+        if (response && response.error) {
+          reject(response.error);
+        } else {
+          resolve(response);
+        }
+      } else {
+        resolve({});
+      }
+    });
+  }),
 };
-jest.mock('../../src/FireboltExampleInvoker', () => {
-  return {
-    get: () => {
-      return mockFireboltExampleInvoker;
-    },
-  };
-});
-jest.mock('@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
-  return {
-    send: () => {
-      return {};
-    },
-  };
-});
-jest.mock('../../src/FireboltTransportInvoker', () => {
-  return {
-    get: () => {
-      return mockFireboltTransportInvoker;
-    },
-  };
-});
-jest.mock('@firebolt-js/sdk', () => {
-  return {
-    Accessibility: {},
-    Account: {},
-    Advertising: {},
-    Authentication: {},
-    Device: {},
-    Discovery: {},
-    Keyboard: {},
-    Lifecycle: {
-      ready: () => {},
-      state: () => {
-        return 'initializing'; // dummy state value.
-      }, // returning a Lifecycle.state object
-      close: () => {},
-      finish: () => {},
-    },
-    Localization: {},
-    Metrics: {},
-    Profile: {},
-    Parameters: {},
-    SecondScreen: {},
-  };
-});
-jest.mock('../../src/pubsub/handlers/RegisterProviderHandler', () => {
-  return jest.fn().mockImplementation(() => ({
-    handle: jest.fn().mockResolvedValue(JSON.stringify({ report: 'registered' })),
-  }));
-});
-jest.mock('../../src/Toast', () => {
-  const eventEmitter = {
-    emit: jest.fn(),
-  };
 
+jest.mock('../../src/FireboltExampleInvoker', () => ({
+  get: () => mockFireboltExampleInvoker,
+}));
+
+jest.mock('@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => ({
+  send: jest.fn().mockReturnValue({}),
+}));
+
+jest.mock('../../src/FireboltTransportInvoker', () => ({
+  get: () => mockFireboltTransportInvoker,
+}));
+
+jest.mock('@firebolt-js/sdk', () => ({
+  Accessibility: {},
+  Account: {},
+  Advertising: {},
+  Authentication: {},
+  Device: {},
+  Discovery: {},
+  Keyboard: {},
+  Lifecycle: {
+    ready: jest.fn(),
+    state: jest.fn().mockReturnValue('initializing'),
+    close: jest.fn(),
+    finish: jest.fn(),
+  },
+  Localization: {},
+  Metrics: {},
+  Profile: {},
+  Parameters: {},
+  SecondScreen: {},
+}));
+
+jest.mock('../../src/pubsub/handlers/RegisterProviderHandler', () =>
+  jest.fn().mockImplementation(() => ({
+    handle: jest.fn().mockResolvedValue(JSON.stringify({ report: 'registered' })),
+  }))
+);
+
+jest.mock('../../src/Toast', () => {
+  const eventEmitter = { emit: jest.fn() };
   return {
-    eventEmitter: eventEmitter,
+    eventEmitter,
     showToast: (toastMessage, toastState, toastRef) => {
       eventEmitter.emit('showToast', toastMessage, toastState, toastRef);
     },
@@ -241,194 +559,174 @@ const mockvalidationViewObj = {
 
 jest.mock('../../src/utils/Utils', () => ({
   ...jest.requireActual('../../src/utils/Utils'),
-  pushReportToS3: () => {
-    return 'restApiUrl';
-  },
-  censorData: () => {
-    return 'censoredResponse';
-  },
-  dereferenceOpenRPC: (mode) => {
-    if (mode == 'externalsdk') {
+  pushReportToS3: jest.fn().mockReturnValue('restApiUrl'),
+  censorData: jest.fn((method, response) => {
+    return response;
+  }),
+  dereferenceOpenRPC: jest.fn((mode) => {
+    if (mode === 'externalsdk') {
       return [EXTERNAL_SDK_MOCK_OPEN_RPC_DOC, mode.toLowerCase()];
-    } else if (mode == 'core' || mode == 'manage') {
+    } else if (mode === 'core' || mode === 'manage') {
       return [MOCK_OPEN_RPC_DOC, mode.toLowerCase()];
     }
-  },
+  }),
+}));
+
+jest.mock('lodash', () => ({
+  cloneDeep: jest.fn((value) => value),
 }));
 
 let mockShouldDereferencerFail = false;
 let runner;
 let result;
 const navigation = '';
+const INCLUDE_EVENT_METHODS = [];
+
+jest.mock('../../src/MethodFilters', () => ({
+  __esModule: true,
+  default: jest.fn().mockImplementation(() => ({
+    isExceptionMethod: jest.fn((methodName) => {
+      const exceptionMethods = ['Device.distributor', 'Device.type', 'Device.model', 'Device.sku'];
+      return exceptionMethods.includes(methodName);
+    }),
+    isMethodToBeExcluded: jest.fn((methodObject) => {
+      const excludedMethodsList = ['Device.hdcp'];
+      return excludedMethodsList.includes(methodObject.name);
+    }),
+    isRpcMethod: jest.fn(),
+    isSubscribeMethod: jest.fn(),
+    isSetMethod: jest.fn(),
+    shouldExcludeExample: jest.fn(),
+    isEventMethod: jest.fn((method) => {
+      let isEvent = false;
+      if (method.tags && INCLUDE_EVENT_METHODS.indexOf(method.name) === -1) {
+        method.tags.forEach((tag) => {
+          if (tag.name && tag.name === 'event') {
+            isEvent = true;
+          }
+        });
+      }
+      return isEvent;
+    }),
+  })),
+}));
 
 describe('Test_Runner test cases', () => {
   beforeEach(() => {
     runner = new Test_Runner();
-    (runner.reportGenenration = jest.fn().mockImplementationOnce(() => {
-      return new Promise((resolve) => {
-        resolve('');
-      });
-    })),
-      (runner.invokeLifecycleAPI = jest.fn().mockImplementationOnce((tempParams) => {
-        if (tempParams.methodName == CONSTANTS.LIFECYCLE_METHOD_LIST[1]) {
-          return 'initializing';
-        } else {
-          const mockLifecycleHistoryget = { _history: [{ someKey: 'someValue' }] };
-          return mockLifecycleHistoryget;
-        }
-      }));
+    runner.reportGenenration = jest.fn().mockResolvedValue('');
+    runner.invokeLifecycleAPI = jest.fn().mockImplementation((tempParams) => {
+      if (tempParams.methodName === CONSTANTS.LIFECYCLE_METHOD_LIST[1]) {
+        return 'initializing';
+      } else {
+        return { _history: [{ someKey: 'someValue' }] };
+      }
+    });
   });
+
   describe('northBoundSchemaValidationAndReportGeneration Scenarios', () => {
-    test('Validate northBoundSchemaValidationAndReportGeneration(SDK) when OPEN RPC dereferece call fails', async () => {
+    test('should return empty result when dereference call fails for SDK', async () => {
       mockShouldDereferencerFail = true;
-      result = await runner.northBoundSchemaValidationAndReportGeneration('SDK', navigation, mockvalidationViewObj);
+      result = await runner.northBoundSchemaValidationAndReportGeneration('SDK');
       /** when the dereference fails it should not execute any api and the result list will have 0 elements  */
       expect(result.length).toEqual(0);
     });
-    test('Validate northBoundSchemaValidationAndReportGeneration(CORE) with example with valid response from FireboltExapmpleInvoker', async () => {
-      mockShouldDereferencerFail = false;
-      // Mock a valid response coming back from the Firebolt Invoker
-      mockFireboltExampleInvoker.invoke = () => Promise.resolve(MOCK_OPEN_RPC_RESPONSE);
 
-      result = await runner.northBoundSchemaValidationAndReportGeneration(CONSTANTS.CORE);
-      /**
-       * Since the mocked OPEN_RPC has 2 documents we will have 2 results
-       */
-      expect(result.length).toEqual(2);
-      const v = new Validator();
-      const schemaMapResult = v.validate(result[0], CUSTOM_REPORT_STRUCTURE_SCHEMA);
-      // This would make sure that the result json that is created is in valid strcuture
-      // we are not bothered about the value in the json.
-      expect(schemaMapResult.errors.length).toEqual(0);
-      /**
-       * Validate if the response title is populated correctly
-       */
-      expect(result[1].fullTitle).toEqual('account.uid.Getting the unique ID');
-      expect(result[0].state).toEqual('passed');
-    });
-    test('Validate northBoundSchemaValidationAndReportGeneration(CORE) with a invalid schema response coming back from FireboltExampleInvoker', async () => {
-      mockShouldDereferencerFail = false;
-      // Mock an invalid schema response coming back from the Firebolt Invoker
-      mockFireboltExampleInvoker.invoke = () => Promise.resolve(null);
+    describe('northBoundSchemaValidationAndReportGeneration Scenarios for CORE', () => {
+      beforeAll(async () => {
+        result = await runner.northBoundSchemaValidationAndReportGeneration(CONSTANTS.CORE);
+      });
+      test('should return valid response for Account.id API', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Account.id');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Passed');
+        expect(extractedResult.code.Response.result).toBeDefined();
+      });
 
-      result = await runner.northBoundSchemaValidationAndReportGeneration(CONSTANTS.CORE);
-      /**
-       * Since the mocked OPEN_RPC has 2 documents we will have 2 results
-       */
-      expect(result.length).toEqual(2);
-      // Both results should have resulted in schema validation failure
-      expect(result[0].state).toEqual('failed');
+      test('should fail for Account.uid API due to undefined response', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Account.uid');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
+        expect(extractedResult.code.Response).toBeNull();
+        expect(extractedResult.code.Message).toContain('No result or error in response.');
+      });
+
+      test('should handle different type of response for Device.id API', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Device.id');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
+        expect(extractedResult.code.Response.result).toBeDefined();
+        expect(extractedResult.code.Message).toContain('instance.result is not of a type(s) string');
+      });
+
+      test('should handle unexpected error for Device.platform API', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Device.platform');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
+        expect(extractedResult.code.Response.error).toBeDefined();
+        expect(extractedResult.code.Message).toContain('Unexpected error encountered in the response');
+      });
+
+      test('should handle unexpected error: "method not implemented" for Device.uid API', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Device.uid');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
+        expect(extractedResult.code.Response.error).toBeDefined();
+        expect(extractedResult.code.Message).toContain('Method not implemented by platform');
+      });
+
+      test('should handle expecting error but received result for Device.distributor API', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Device.distributor');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
+        expect(extractedResult.code.Response.result).toBeDefined();
+        expect(extractedResult.code.Message).toContain('Expected error, received result');
+      });
+
+      test('should handle expecting error but incorrect error format for Device.type API', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Device.type');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
+        expect(extractedResult.code.Response.error).toBeDefined();
+        expect(extractedResult.code.Message).toContain('Expected error, incorrect error format');
+      });
+
+      test('should handle expected error but received error for Device.model API', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Device.model');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Passed');
+        expect(extractedResult.code.Response.error).toBeDefined();
+        expect(extractedResult.code.Message).toContain('Expected error, received error');
+      });
+
+      test('should handle method not implemented error for Device.sku API', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Device.sku');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Passed');
+        expect(extractedResult.code.Response.error).toBeDefined();
+        expect(extractedResult.code.Message).toContain('Method not implemented by platform');
+      });
+
+      test('should skip validation for Device.make API due to missing example', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Device.make');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Skipped');
+        expect(extractedResult.code.Response).toBeNull();
+        expect(extractedResult.code.Message).toContain('Could not find an example for Device.make');
+      });
+
+      test('should return valid response for Accessibility.onClosedCaptionsSettingsChanged Event', async () => {
+        const extractedResult = result.find((obj) => obj.title === 'Accessibility.onClosedCaptionsSettingsChanged');
+        extractedResult.code = JSON.parse(extractedResult.code);
+        expect(extractedResult.code['Schema Validation']).toEqual('Passed');
+        expect(extractedResult.code.Response.result).toBeDefined();
+      });
     });
-    test('Validate northBoundSchemaValidationAndReportGeneration when invalid mode is passed', async () => {
-      /** when the invalid mode is passed dereference fails it should not execute any api */
+
+    test('should return error when invalid mode is passed', async () => {
       mockShouldDereferencerFail = false;
       result = await runner.northBoundSchemaValidationAndReportGeneration('undefined', navigation, mockvalidationViewObj);
       expect(result.error).toEqual(CONSTANTS.NOTPERFORMED);
-    });
-
-    test('Validate northBoundSchemaValidationAndReportGeneration(CORE) with no example with valid response from FireboltExapmpleInvoker', async () => {
-      mockShouldDereferencerFail = false;
-      // Mock a valid response coming back from the Firebolt Invoker
-      // Overriding MOCK_OPEN_RPC_DOC value for device module test
-
-      MOCK_OPEN_RPC_DOC = {
-        methods: [
-          {
-            name: 'device.uid',
-            summary: 'Firebolt OpenRPC schema',
-            params: [],
-            result: {
-              name: 'OpenRPC Schema',
-              schema: {
-                type: 'object',
-              },
-            },
-          },
-        ],
-      };
-      mockFireboltExampleInvoker.invoke = () => Promise.resolve(MOCK_OPEN_RPC_RESPONSE);
-
-      result = await runner.northBoundSchemaValidationAndReportGeneration(CONSTANTS.CORE);
-      /**
-       * Since the mocked OPEN_RPC has 2 documents we will have 2 results
-       */
-      expect(result.length).toEqual(1);
-      const v = new Validator();
-      const schemaMapResult = v.validate(result[0], CUSTOM_REPORT_STRUCTURE_SCHEMA);
-      // This would make sure that the result json that is created is in valid strcuture
-      // we are not bothered about the value in the json.
-      expect(schemaMapResult.errors.length).toEqual(0);
-      /**
-       * Validate if the response title is populated correctly
-       */
-      expect(result[0].fullTitle).toEqual('device.uid');
-      expect(result[0].code).toContain('Could not find an example for device.uid');
-    });
-    test('Validate northBoundSchemaValidationAndReportGeneration when module is device (schema and content validation from library)', async () => {
-      /** when the module is device, content and schema validation would be done externally */
-      mockShouldDereferencerFail = false;
-      // Overriding MOCK_OPEN_RPC_DOC value for device module test
-      MOCK_OPEN_RPC_DOC = {
-        methods: [
-          {
-            name: 'device.id',
-            summary: 'Get the platform back-office device identifier',
-            params: [],
-            result: {
-              name: 'id',
-              summary: 'the id',
-              schema: {
-                type: 'string',
-              },
-            },
-            examples: [
-              {
-                name: 'Default Example',
-                params: [],
-                result: {
-                  name: 'Default Result',
-                  value: '123',
-                },
-              },
-            ],
-          },
-        ],
-      };
-      mockFireboltExampleInvoker.invoke = () => Promise.resolve(MOCK_OPEN_RPC_RESPONSE);
-      result = await runner.northBoundSchemaValidationAndReportGeneration(CONSTANTS.CORE, navigation, mockvalidationViewObj);
-      const parsedCode = JSON.parse(result[0].code);
-      // Schema validation is expected to fail as MOCK_OPEN_RPC_RESPONSE is not in the expected schema for device module
-      expect(parsedCode.Schema).toEqual('Failed');
-      // Content validation will be skipped when schema validation fails
-      expect(parsedCode.Content).toEqual('Pending');
-
-      // Reverting MOCK_OPEN_RPC_DOC to previous value
-      MOCK_OPEN_RPC_DOC = {
-        methods: [
-          {
-            name: 'rpc.discover',
-            summary: 'Firebolt OpenRPC schema',
-            params: [],
-            result: {
-              name: 'OpenRPC Schema',
-              schema: {
-                type: 'object',
-              },
-            },
-          },
-          {
-            name: 'account.id',
-            summary: 'Firebolt OpenRPC schema',
-            params: [],
-            result: {
-              name: 'OpenRPC Schema',
-              schema: {
-                type: 'object',
-              },
-            },
-          },
-        ],
-      };
     });
   });
   describe('UUID Generation Validation', () => {

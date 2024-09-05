@@ -26,7 +26,7 @@ const Validator = require('jsonschema').Validator;
  * and its behavior. We dont need the full OPEN RPC DOC
  */
 
-const MOCK_OPEN_RPC_DOC = {
+let MOCK_OPEN_RPC_DOC = {
   methods: [
     {
       name: 'Account.id',
@@ -489,20 +489,30 @@ jest.mock('@apidevtools/json-schema-ref-parser', () => ({
  */
 const mockFireboltExampleInvoker = {
   invoke: jest.fn((sdk, methodName, params) => {
-    return new Promise((resolve, reject) => {
-      if (mockResponses.hasOwnProperty(methodName)) {
-        const response = mockResponses[methodName];
-        if (response && response.error) {
-          reject(response.error);
-        } else {
-          resolve(response);
-        }
-      } else {
-        resolve({});
-      }
-    });
+    return returnMockResponse(methodName);
   }),
 };
+
+const mockFireboltTransportInvoker = {
+  invoke: jest.fn((methodName, params) => {
+    return returnMockResponse(methodName);
+  }),
+};
+
+function returnMockResponse(methodName) {
+  return new Promise((resolve, reject) => {
+    if (mockResponses.hasOwnProperty(methodName)) {
+      const response = mockResponses[methodName];
+      if (response && response.error) {
+        reject(response.error);
+      } else {
+        resolve(response);
+      }
+    } else {
+      resolve({});
+    }
+  });
+}
 
 jest.mock('../../src/FireboltExampleInvoker', () => ({
   get: () => mockFireboltExampleInvoker,
@@ -727,6 +737,105 @@ describe('Test_Runner test cases', () => {
       mockShouldDereferencerFail = false;
       result = await runner.northBoundSchemaValidationAndReportGeneration('undefined', navigation, mockvalidationViewObj);
       expect(result.error).toEqual(CONSTANTS.NOTPERFORMED);
+    });
+
+    test('should handle when mode as passes as an arry', async () => {
+      MOCK_OPEN_RPC_DOC = {
+        methods: [
+          {
+            name: 'Account.id',
+            summary: 'Firebolt OpenRPC schema',
+            params: [],
+            result: {
+              name: 'id',
+              summary: 'the id',
+              schema: {
+                type: 'string',
+              },
+            },
+            examples: [
+              {
+                name: 'Default Example',
+                params: [],
+                result: {
+                  name: 'Default Result',
+                  value: '123',
+                },
+              },
+            ],
+          },
+        ],
+      };
+      result = await runner.northBoundSchemaValidationAndReportGeneration([CONSTANTS.CORE]);
+      const extractedResult = result.find((obj) => obj.title === 'Account.id');
+      extractedResult.code = JSON.parse(extractedResult.code);
+      expect(extractedResult.code['Schema Validation']).toEqual('Passed');
+      expect(extractedResult.code.Response.result).toBeDefined();
+    });
+
+    test('should handle when communication mode is Transport', async () => {
+      MOCK_OPEN_RPC_DOC = {
+        methods: [
+          {
+            name: 'Account.id',
+            summary: 'Firebolt OpenRPC schema',
+            params: [],
+            result: {
+              name: 'id',
+              summary: 'the id',
+              schema: {
+                type: 'string',
+              },
+            },
+            examples: [
+              {
+                name: 'Default Example',
+                params: [],
+                result: {
+                  name: 'Default Result',
+                  value: '123',
+                },
+              },
+            ],
+          },
+        ],
+      };
+      process.env.COMMUNICATION_MODE = 'Transport';
+      result = await runner.northBoundSchemaValidationAndReportGeneration([CONSTANTS.CORE]);
+      const extractedResult = result.find((obj) => obj.title === 'Account.id');
+      extractedResult.code = JSON.parse(extractedResult.code);
+      expect(extractedResult.code['Schema Validation']).toEqual('Passed');
+      expect(extractedResult.code.Response.result).toBeDefined();
+    });
+
+    test('should handle when schema is missing from openRpc', async () => {
+      MOCK_OPEN_RPC_DOC = {
+        methods: [
+          {
+            name: 'Account.id',
+            summary: 'Firebolt OpenRPC schema',
+            params: [],
+            result: {
+              name: 'id',
+              summary: 'the id',
+            },
+            examples: [
+              {
+                name: 'Default Example',
+                params: [],
+                result: {
+                  name: 'Default Result',
+                  value: '123',
+                },
+              },
+            ],
+          },
+        ],
+      };
+      result = await runner.northBoundSchemaValidationAndReportGeneration([CONSTANTS.CORE]);
+      const extractedResult = result.find((obj) => obj.title === 'Account.id');
+      extractedResult.code = JSON.parse(extractedResult.code);
+      expect(extractedResult.code['Schema Validation']).toEqual('Skipped');
     });
   });
   describe('UUID Generation Validation', () => {

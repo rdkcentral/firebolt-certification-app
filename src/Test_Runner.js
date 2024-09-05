@@ -250,19 +250,11 @@ export class Test_Runner {
               } catch (error) {
                 const errorResponse = { error: error };
                 let obj;
-                if (schemaMap == undefined && errorResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE) {
-                  logger.debug('TestContext Debug: Error block on api execution - Acceptable No result: ' + errorResponse.error + ' for method: ' + methodWithExampleName, 'northBoundSchemaValidationAndReportGeneration');
-                  obj = {
-                    error: 'No result object - Acceptable',
-                    param: example.params,
-                    methodWithExampleName: methodWithExampleName,
-                    methodUuid: methodUuid,
-                    schemaData: schemaMap.schema,
-                    apiExecutionStartTime: apiExecutionStartTime,
-                    apiExecutionEndTime: apiExecutionEndTime,
-                  };
-                } else {
-                  logger.debug('TestContext Debug: Error block on api execution - has error message: ' + errorResponse + ' for method: ' + methodWithExampleName, 'northBoundSchemaValidationAndReportGeneration');
+                if (error instanceof Error) {
+                  errorResponse.error = error.message;
+                }
+                logger.debug('TestContext Debug: Error block on api execution - has error message: ' + errorResponse.error + ' for method: ' + methodWithExampleName, 'northBoundSchemaValidationAndReportGeneration');
+                if (schemaMap.schema) {
                   const schemaValidationResult = validator.validate(errorResponse, schemaMap.schema);
                   obj = {
                     error: errorResponse,
@@ -271,6 +263,15 @@ export class Test_Runner {
                     validationResult: schemaValidationResult,
                     methodUuid: methodUuid,
                     schemaData: schemaMap.schema,
+                    apiExecutionStartTime: apiExecutionStartTime,
+                    apiExecutionEndTime: apiExecutionEndTime,
+                  };
+                } else {
+                  obj = {
+                    error: errorResponse,
+                    param: example.params,
+                    methodWithExampleName: methodWithExampleName,
+                    methodUuid: methodUuid,
                     apiExecutionStartTime: apiExecutionStartTime,
                     apiExecutionEndTime: apiExecutionEndTime,
                   };

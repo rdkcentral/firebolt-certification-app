@@ -122,7 +122,7 @@ export default class ValidationView extends lng.Component {
         },
         color: 0xff123456,
       },
-      ContentValidationStateText: {
+      Message: {
         x: 530,
         y: 200,
         w: 1920 - 700,
@@ -198,7 +198,7 @@ export default class ValidationView extends lng.Component {
         this.tag('UpdateText').text = CONSTANTS.VALIDATION_SCROLLMESSAGE;
         this.tag('ApititleText').text = '';
         this.tag('SchemaValidationStateText').text = '';
-        this.tag('ContentValidationStateText').text = '';
+        this.tag('Message').text = '';
         this.tag('ValidationData').text = '';
       }
     } else {
@@ -230,7 +230,7 @@ export default class ValidationView extends lng.Component {
     const { err, fail, code } = _displayparms;
     this.tag('ValidationData').color = 0xff123456;
     let schemaValidationStateText = null,
-      contentValidationStateText = null,
+      message = null,
       validationData = null;
     if (code != undefined) {
       let codeObject = null,
@@ -238,37 +238,31 @@ export default class ValidationView extends lng.Component {
         messageString = null;
       try {
         codeObject = JSON.parse(_displayparms.code);
-        messageString = codeObject.Message;
-        if (typeof codeObject.Message != 'string') {
-          messageString = JSON.stringify(codeObject.Message, null, 1);
+        messageString = codeObject.Response;
+        if (typeof codeObject.Response != 'string') {
+          messageString = JSON.stringify(codeObject.Response, null, 1);
         }
         isCodeTypeObject = true;
       } catch (err) {
         isCodeTypeObject = false;
       }
       if (isCodeTypeObject) {
-        schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + codeObject.Schema;
-        contentValidationStateText = CONSTANTS.CONTENT_VALIDATION_STATUSMESSAGE + codeObject.Content;
-        if (fail) {
-          validationData = CONSTANTS.ERROR_MESSAGE + messageString;
-        } else {
-          validationData = CONSTANTS.API_RESPONSE + messageString;
-        }
+        schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + codeObject['Schema Validation'];
+        message = 'Message: ' + codeObject.Message;
+        validationData = CONSTANTS.API_RESPONSE + messageString;
       } else {
         schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + CONSTANTS.SCHEMA_CONTENT_SKIPPED;
-        contentValidationStateText = CONSTANTS.CONTENT_VALIDATION_STATUSMESSAGE + CONSTANTS.SCHEMA_CONTENT_SKIPPED;
-        validationData = CONSTANTS.ERROR_MESSAGE + 'JSON parse failed (ValidationView)';
+        validationData = CONSTANTS.API_RESPONSE + 'JSON parse failed (ValidationView)';
       }
     } else {
       // Remove if not needed after testing
       schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + CONSTANTS.SCHEMA_CONTENT_SKIPPED;
-      contentValidationStateText = CONSTANTS.CONTENT_VALIDATION_STATUSMESSAGE + CONSTANTS.SCHEMA_CONTENT_SKIPPED;
-      validationData = CONSTANTS.ERROR_MESSAGE + 'Received response as undefined';
+      validationData = CONSTANTS.API_RESPONSE + 'Received response as undefined';
     }
     // Updating values in UI
     this.tag('ApititleText').text = CONSTANTS.API_TITLE + _displayparms.fullTitle;
     this.tag('SchemaValidationStateText').text = schemaValidationStateText;
-    this.tag('ContentValidationStateText').text = contentValidationStateText;
+    this.tag('Message').text = message;
 
     /* 
         Schema data for some APIs are large enough to break the render engine.

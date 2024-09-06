@@ -173,4 +173,5 @@ export const CONSTANTS = {
   ...CONFIG_CONSTANTS,
   VERSIONS: 'Versions',
   NO_RESULT_OR_ERROR_MESSAGE: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }',
+  SCHEMA_VALIDATION: 'Schema Validation',
 };

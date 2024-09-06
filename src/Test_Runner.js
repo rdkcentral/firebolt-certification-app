@@ -264,7 +264,7 @@ export class Test_Runner {
             // Adding on more element to err Object to display method name on the screen for multiple testcases
             logger.debug('TestContext Debug: could not find example for method: ' + methodWithExampleName, 'northBoundSchemaValidationAndReportGeneration');
             const obj = {
-              error: 'Could not find an example for ' + method.name,,
+              error: 'Could not find an example for ' + method.name,
               param: null,
               methodWithExampleName: methodObj.name,
               methodUuid: methodUuid,

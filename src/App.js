@@ -385,9 +385,8 @@ export default class App extends Base {
         if (typeof navigateTo === 'string') {
           try {
             navigateTo = JSON.parse(navigateTo);
-          }
-          catch (e) {
-            console.log("Encountered a string type navigateTo field when expecting object. Attempt to parse field to object was unsuccessful:", e)
+          } catch (e) {
+            console.log('Encountered a string type navigateTo field when expecting object. Attempt to parse field to object was unsuccessful:', e);
           }
         }
         const action = navigateTo.action;

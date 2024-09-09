@@ -381,9 +381,18 @@ export default class App extends Base {
     await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Parameters.initialization', [], [])).then((res) => {
       console.log('Response of Initialization :: ', res);
       if (res != undefined) {
-        const action = res[0].discovery.navigateTo.action;
+        let navigateTo = res[0].discovery.navigateTo;
+        if (typeof navigateTo === 'string') {
+          try {
+            navigateTo = JSON.parse(navigateTo);
+          }
+          catch (e) {
+            console.log("Encountered a string type navigateTo field when expecting object. Attempt to parse field to object was unsuccessful:", e)
+          }
+        }
+        const action = navigateTo.action;
         if (action == 'search') {
-          let query = res[0].discovery.navigateTo.data.query;
+          let query = navigateTo.data.query;
           let lifecycle_validationString;
           query = JSON.parse(query);
           query.params.lifecycle_validation ? (lifecycle_validationString = query.params.lifecycle_validation) : (process.env.LIFECYCLE_VALIDATION = 'false');

@@ -270,6 +270,7 @@ export class Test_Runner {
             schemaValidationResultSet.push(obj);
           }
         }
+        apiExecutionEndTime = new Date(); // api execution end time
         /**
          * Now we have executed and got the validation result for a particular api.
          * Either via the external module testCaseList execution or via the Example based invocation.

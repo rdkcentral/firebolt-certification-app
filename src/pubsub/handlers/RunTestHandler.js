@@ -94,7 +94,7 @@ export default class RunTestHandler extends BaseHandler {
 
   async getValidationReport(message) {
     const sdkMode = message.action;
-    process.env.COMMUNICATION_MODE = message.context.communicationMode;
+    process.env.COMMUNICATION_MODE = message.context.communicationMode ? message.context.communicationMode : CONSTANTS.TRANSPORT;
 
     const sdkInvokerInfo = new Test_Runner();
     let validatedMenu;

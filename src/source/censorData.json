@@ -1,0 +1,20 @@
+{
+  "Advertising.config": {
+    "field": ["privacyData", "ifaValue", "ifa"]
+  },
+  "Authentication.token": {
+    "field": ["value"]
+  },
+  "Authentication.device": {
+    "field": [""]
+  },
+  "Authentication.session": {
+    "field": [""]
+  },
+  "Authentication.root": {
+    "field": [""]
+  },
+  "Advertising.advertisingId": {
+    "field": ["ifa"]
+  }
+}

@@ -19,6 +19,7 @@
 import { CONSTANTS } from '../constant';
 import FireboltExampleInvoker from '../FireboltExampleInvoker';
 import errorSchemaObject from '../source/errorSchema.json';
+import censorDataJson from 'CensorData';
 
 const { v4: uuidv4 } = require('uuid');
 const $RefParser = require('@apidevtools/json-schema-ref-parser');
@@ -116,9 +117,8 @@ async function getschemaValidationDone(name, response, sdkType) {
  * @param response - response of the method
  */
 function censorData(methodName, response) {
-  let json;
   try {
-    json = require('../../plugins/external-test-data/fixtures/censorData.json');
+    const json = censorDataJson;
     if (methodName in json) {
       for (let i = 0; i < json[methodName].field.length; i++) {
         if (response[json[methodName].field[i]]) {

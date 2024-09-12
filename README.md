@@ -18,6 +18,7 @@ It has the following features -
   - [FCA URL deployed and available in the S3](#fca-url-deployed-and-available-in-the-s3)
   - [Below are the steps to run FCA in local system](#below-are-the-steps-to-run-fca-in-local-system)
 - [Supported ways of Execution](#supported-ways-of-execution)
+- [Sanity Suite Flow](./docs/index.md)
 - [Supported targets](#supported-targets)
 - [Supported Modes of execution](#supported-modes-of-execution)
 - [Supported validations](#supported-validations)

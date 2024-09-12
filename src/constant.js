@@ -67,7 +67,7 @@ export const CONSTANTS = {
   CONTENT_ERROR: 'Content Error',
   RDK_SERVICES: 'org.rdk.',
   API_TITLE: 'API TITLE: ',
-  API_RESPONSE: 'API Response: ',
+  API_RESPONSE: 'Response: ',
   INVOKE_TEST_MESSAGE: '**** Click Invoke to run tests ****',
   VALIDATION_MESSAGE: '***** Validation Started ******',
   VALIDATION_SCROLLMESSAGE: "Scroll down through the menu's to view the result",
@@ -172,6 +172,6 @@ export const CONSTANTS = {
   EXCLUDED_METHODS_FOR_MFOS: [],
   ...CONFIG_CONSTANTS,
   VERSIONS: 'Versions',
-  ERROR_SCHEMA_TRANSPORT: 'errorSchemaTransport',
-  ERROR_SCHEMA_SDK: 'errorSchemaSDK',
+  NO_RESULT_OR_ERROR_MESSAGE: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }',
+  SCHEMA_VALIDATION: 'Schema Validation',
 };

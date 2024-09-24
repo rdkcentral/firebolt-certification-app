@@ -94,7 +94,7 @@ module.exports = {
           {
             name: 'runTestHandler',
             alias: ['/plugins/runTestHandler.js', '/src/pubsub/handlers/RunTestHandler.js'],
-          }
+          },
         ],
         'resolve'
       ),

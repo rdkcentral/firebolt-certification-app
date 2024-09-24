@@ -108,6 +108,10 @@ module.exports = {
             name: 'CensorData',
             alias: ['/plugins/censorData.json', '/src/source/censorData.json'],
           },
+          {
+            name: 'runTestHandler',
+            alias: ['/plugins/runTestHandler.js', '/src/pubsub/handlers/RunTestHandler.js'],
+          }
         ],
         'resolve'
       ),

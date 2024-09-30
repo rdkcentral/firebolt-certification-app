@@ -1,12 +1,12 @@
 {
-  "version": "1.4.0-next.3",
+  "version": "1.4.0",
   "name": "firebolt-certification",
   "description": "Reference App to demonstrate Firebolt APIs and Lifecycle",
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
-    "@firebolt-js/discovery-sdk": "1.4.0-next.3",
-    "@firebolt-js/manage-sdk": "1.4.0-next.3",
-    "@firebolt-js/sdk": "1.4.0-next.3",
+    "@firebolt-js/discovery-sdk": "1.4.0",
+    "@firebolt-js/manage-sdk": "1.4.0",
+    "@firebolt-js/sdk": "1.4.0",
     "@lightningjs/core": "2.11.0",
     "@lightningjs/sdk": "^5.0.1",
     "@lightningjs/ui-components": "^2.2.2",

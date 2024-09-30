@@ -44,7 +44,7 @@ import GetEventResponse from './pubsub/handlers/GetEventResponse';
 import GetMethodResponseHandler from './pubsub/handlers/GetMethodResponseHandler';
 import VisibilityStateHandler from '../src/pubsub/handlers/VisibilityStateHandler';
 import LifecycleMethodHandler from './pubsub/handlers/LifecycleMethodHandler';
-import RunTestHandler from 'runTestHandler';
+import RunTestHandler from 'RunTestHandler';
 
 const logger = require('./utils/Logger')('IntentReader.js');
 

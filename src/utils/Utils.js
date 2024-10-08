@@ -326,7 +326,7 @@ function removeSetInMethodName(apiName) {
  * @description get the current appid with Advertising.appBundleId
  */
 async function getCurrentAppID() {
-  if (!process.env.CURRENT_APPID ) {
+  if (!process.env.CURRENT_APPID) {
     try {
       let res = await FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Advertising.appBundleId', []);
       const lastIndex = res.lastIndexOf('.');
@@ -335,7 +335,7 @@ async function getCurrentAppID() {
       return res;
     } catch (error) {
       logger.error('Error while calling Advertising.appBundleId : ' + error, 'App getAppId');
-      process.env.CURRENT_APPID = CONSTANTS.DEFAULT_APP_ID
+      process.env.CURRENT_APPID = CONSTANTS.DEFAULT_APP_ID;
       return process.env.CURRENT_APPID;
     }
   }

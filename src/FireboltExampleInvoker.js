@@ -107,7 +107,6 @@ try {
 } catch (err) {
   logger.error(`Unable to import additional invoker - ${err.message}`, 'MODULE_MAP');
 }
-
 let instance = null;
 
 export default class FireboltExampleInvoker {

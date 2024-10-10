@@ -154,4 +154,3 @@ For pinChallenge and acknowledgeChallenge UI prompts , a timeout of 15s is added
 The prompt is displayed when the user needs to grant/deny a particular api, or the user has to enter a pin in-case of pinChallenge.
 If user wants to grant an api, yes button is pressed, for deniel - no button, and incase if the user wants to dismiss the prompt without any action, back button is pressed.
 
-

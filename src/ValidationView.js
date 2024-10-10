@@ -180,7 +180,9 @@ export default class ValidationView extends lng.Component {
         // Combine defaultSDKs and additionalSDKs into one array
         const allSDKs = [...CONSTANTS.defaultSDKs, ...CONSTANTS.additionalSDKs];
         // Find the SDK configuration for the specified sdk mode
-        const sdkConfig = allSDKs.find((sdk) => sdkMode.includes(sdk.name.toUpperCase()));
+        const sdkConfigs = allSDKs.filter((sdk) => sdkMode.toUpperCase().includes(sdk.name.toUpperCase()));
+        const exactMatch = sdkConfigs.find((sdk) => sdkMode.toUpperCase() === sdk.name.toUpperCase());
+        const sdkConfig = exactMatch || (sdkConfigs.length === 1 && sdkConfigs[0]) || sdkConfigs;
         // If SDK config found and validation method exists
         if (sdkConfig && sdkConfig.validation) {
           if (!sdkConfig.validation()) {

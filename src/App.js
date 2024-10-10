@@ -159,7 +159,6 @@ export default class App extends Base {
       this.pubSubListener();
     }
     getCurrentAppID().then((res) => {
-      process.env.APPID = res;
       this._setState('LoadingState');
     });
   }

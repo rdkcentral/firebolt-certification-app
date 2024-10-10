@@ -109,7 +109,7 @@ module.exports = {
             alias: ['/plugins/censorData.json', '/src/source/censorData.json'],
           },
           {
-            name: 'runTestHandler',
+            name: 'RunTestHandler',
             alias: ['/plugins/runTestHandler.js', '/src/pubsub/handlers/RunTestHandler.js'],
           },
         ],

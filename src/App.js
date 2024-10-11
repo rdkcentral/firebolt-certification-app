@@ -134,7 +134,7 @@ export default class App extends Base {
       logger.error(JSON.stringify(e), 'init');
     }
     if (!process.env.MACADDRESS) {
-      process.env.MACADDRESS = CONSTANTS.DEFAULT_MAC
+      process.env.MACADDRESS = CONSTANTS.DEFAULT_MAC;
     }
     // Get values from Parameter.initialization - End
     if (mfValue) {

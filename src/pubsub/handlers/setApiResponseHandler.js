@@ -45,6 +45,8 @@ export default class SetApiResponseHandler extends BaseHandler {
         return this.setResponseAckChallenge(message);
       case 'userinterest':
         return this.setResponseUserInterestChallenge(message);
+      case 'external':
+        return this.setExternalResponse(message);
       default:
         const defaultIdString = JSON.stringify({
           report: 'Selected module provider is not available',
@@ -101,5 +103,15 @@ export default class SetApiResponseHandler extends BaseHandler {
     process.env.userInterestError = userInterestData.userInterestError;
     const reportIdString = JSON.stringify({ report: 'Received UserInterest apiResponse parameters' });
     return reportIdString;
+  }
+
+  // importing external Api resonse function, which can set the pre-requisite values to external modules
+  setExternalResponse(message) {
+    try {
+      const externalFunction = require('../../../plugins/setExternalApiResponse');
+      return externalFunction.setExternalApiResponse(message);
+    } catch (err) {
+      return JSON.stringify({ report: 'Unable to import and set the data for external module' });
+    }
   }
 }

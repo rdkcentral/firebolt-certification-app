@@ -177,7 +177,7 @@ export default class MenuBuilder {
       function (sdkObject) {
         const sdkObjectCopy = { ...sdkObject };
         // dynamically construct menu items using additionalSDKs config
-        const menuObject = this.createSubMenuObject(sdkObjectCopy.name, ValidationView, sdkObjectCopy.name, CONSTANTS.SDK);
+        const menuObject = this.createSubMenuObject(sdkObjectCopy.name, ValidationView, sdkObjectCopy.name, CONSTANTS.TRANSPORT);
         transportMenuArray.push(menuObject);
       }.bind(this)
     );

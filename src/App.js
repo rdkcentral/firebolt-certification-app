@@ -386,7 +386,7 @@ export default class App extends Base {
       console.log('Response of Initialization :: ', res);
       if (res != undefined) {
         const action = res[0].discovery.navigateTo.action;
-        console.log('2458 action >>>>..',action)
+        console.log('2458 action >>>>..',action);
         if (action == 'search') {
           let query = res[0].discovery.navigateTo.data.query;
           let lifecycle_validationString;
@@ -395,7 +395,7 @@ export default class App extends Base {
           if (lifecycle_validationString == true) {
             process.env.LIFECYCLE_VALIDATION = 'true';
           }
-          console.log('2458 query.params >>>>..',query.params)
+          console.log('2458 query.params >>>>..',query.params);
           if (query.params.pubSubPublishSuffix) {
             process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = query.params.pubSubPublishSuffix;
           }

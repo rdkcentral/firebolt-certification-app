@@ -49,8 +49,6 @@ class PubSubClient {
       console.warn(`WARNING: No pubsub_uuid query parameter or MAC address found. Using default value: ${pubSubTopic}`);
     }
 
-    console.log('2458 subscribe >>>>..',this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX);
-    console.log('2458 publish >>>>..',this.PUBSUB_PUBLISH_TOPIC_SUFFIX);
     process.env.PUBSUB_SUBSCRIBE_TOPIC = pubSubTopic + '_' + appId + this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX;
     process.env.PUBSUB_PUBLISH_TOPIC = pubSubTopic + '_' + appId + this.PUBSUB_PUBLISH_TOPIC_SUFFIX;
 

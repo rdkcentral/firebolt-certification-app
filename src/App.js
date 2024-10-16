@@ -82,6 +82,7 @@ export default class App extends Base {
   }
 
   async _init() {
+    console.log("Debug Log--Line 85 file App.js")
     Settings.setLogLevel('DEBUG');
     eventEmitter.on('showToast', (message, state, tagName, color) => {
       this.showToast(message, state, tagName, color);
@@ -127,11 +128,13 @@ export default class App extends Base {
       process.env.PLATFORM = CONSTANTS.DEFAULT;
     }
     // Get values from Parameter.initialization - Start
+    console.log("Debug Log--Line 131 file App.js")
     try {
       await this.getParameterInitializationValues();
     } catch (e) {
       logger.error(JSON.stringify(e), 'init');
     }
+    console.log("Debug Log--Line 137 file App.js")
     // Get values from Parameter.initialization - End
     if (mfValue) {
       // check whether the mf value passed in url is matches
@@ -161,6 +164,7 @@ export default class App extends Base {
       process.env.APPID = res;
       this._setState('LoadingState');
     });
+    console.log("Debug Log--Line 167 file App.js")
   }
 
   async pubSubListener() {
@@ -378,11 +382,13 @@ export default class App extends Base {
     this.debug = !this.debug;
   }
   async getParameterInitializationValues() {
+    console.log("Debug Log--Line 385 file App.js")
     await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Parameters.initialization', [], [])).then((res) => {
       console.log('Response of Initialization :: ', res);
       if (res != undefined) {
         const action = res[0].discovery.navigateTo.action;
         if (action == 'search') {
+          console.log("Debug Log--Line 391 file App.js")
           let query = res[0].discovery.navigateTo.data.query;
           let lifecycle_validationString;
           query = JSON.parse(query);
@@ -427,6 +433,7 @@ export default class App extends Base {
             process.env.PUB_SUB_URL = query.params.pubSubUrl;
           }
 
+          console.log("Debug Log--Line 436 file App.js")
           if (query.task) {
             setTimeout(() => {
               const intentReader = new IntentReader();

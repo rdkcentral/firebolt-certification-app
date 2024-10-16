@@ -20,6 +20,7 @@ import App from './App';
 import Window from './Window';
 
 window.onload = function () {
+  console.log("Debug Log--Line 23 file src/index.js")
   const systemui = new URLSearchParams(window.location.search).get('systemui');
   process.env.SYSTEMUI = systemui;
   // If systemui is true setting background color to purple.
@@ -48,5 +49,6 @@ window.onload = function () {
   };
 
   const app = new App(options);
+  console.log("Debug Log--Line 52 file src/index.js")
   document.body.appendChild(app.stage.getCanvas());
 };

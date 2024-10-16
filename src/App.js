@@ -121,6 +121,7 @@ export default class App extends Base {
 
     // Set the pubSub URL if present
     process.env.PUB_SUB_URL = new URLSearchParams(window.location.search).get('pubSubUrl');
+    process.env.MACADDRESS = new URLSearchParams(appUrl.search).get('macaddress');
 
     if (platform) {
       process.env.PLATFORM = platform;
@@ -132,6 +133,9 @@ export default class App extends Base {
       await this.getParameterInitializationValues();
     } catch (e) {
       logger.error(JSON.stringify(e), 'init');
+    }
+    if (!process.env.MACADDRESS) {
+      process.env.MACADDRESS = CONSTANTS.DEFAULT_MAC;
     }
     // Get values from Parameter.initialization - End
     if (mfValue) {
@@ -159,7 +163,6 @@ export default class App extends Base {
       this.pubSubListener();
     }
     getCurrentAppID().then((res) => {
-      process.env.APPID = res;
       this._setState('LoadingState');
     });
   }
@@ -391,7 +394,13 @@ export default class App extends Base {
           if (lifecycle_validationString == true) {
             process.env.LIFECYCLE_VALIDATION = 'true';
           }
+          if (query.params.pubSubPublishSuffix) {
+            process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = query.params.pubSubPublishSuffix;
+          }
 
+          if (query.params.pubSubSubscribeSuffix) {
+            process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = query.params.pubSubSubscribeSuffix;
+          }
           process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
 
           try {

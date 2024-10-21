@@ -46,6 +46,7 @@ export default class LifecycleHistory {
   }
 
   async init(appInstance = null) {
+    console.log("Debug Log--Line 137 file LifecycleHistory.js")
     lifecycleValidation = process.env.LIFECYCLE_VALIDATION;
     await Lifecycle.listen('inactive', this._recordHistory.bind(this, 'Lifecycle.onInactive'));
     await Lifecycle.listen('foreground', this._recordHistory.bind(this, 'Lifecycle.onForeground'));
@@ -75,8 +76,10 @@ export default class LifecycleHistory {
         Lifecycle.finished();
       }
     });
+    console.log("Debug Log--Line 79 file LifecycleHistory.js")
 
     if (lifecycleValidation != 'true') {
+      console.log("Debug Log--Line 82 file LifecycleHistory.js")
       /* Require the lifecycle plugins directory, which returns an object
         where each key is a file name in the directory and each value is the 
         default export of that file.
@@ -95,6 +98,7 @@ export default class LifecycleHistory {
         appLifecycle.ready();
       } else {
         // If no such lifecycle exists, call the default 'Lifecycle.ready()' function.
+        console.log("Debug Log--Line 101 file LifecycleHistory.js")
         Lifecycle.ready();
       }
     }

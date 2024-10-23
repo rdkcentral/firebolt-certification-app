@@ -398,14 +398,14 @@ export default class App extends Base {
           if (query.params.pubSubPublishSuffix) {
             console.log('inside if block >>>', query.params.pubSubPublishSuffix);
             process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = query.params.pubSubPublishSuffix;
-            let test = process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX;
+            const test = process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX;
             console.log('PUBSUB_PUBLISH_TOPIC_SUFFIX >>>', test);
           }
 
           if (query.params.pubSubSubscribeSuffix) {
             console.log('inside if block >>>', query.params.pubSubSubscribeSuffix);
             process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = query.params.pubSubSubscribeSuffix;
-            let test = process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX;
+            const test = process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX;
             console.log(' PUBSUB_SUBSCRIBE_TOPIC_SUFFIX >>>', test);
           }
           process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;

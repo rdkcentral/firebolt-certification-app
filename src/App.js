@@ -391,10 +391,6 @@ export default class App extends Base {
           if (lifecycle_validationString == true) {
             process.env.LIFECYCLE_VALIDATION = 'true';
           }
-          if (query.params.pubSubToken) {
-            process.env.PUBSUB_TOKEN = query.params.pubSubToken;
-          }
-
           process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
 
           try {
@@ -429,6 +425,10 @@ export default class App extends Base {
           // Set the pubSub URL if present
           if (query.params.pubSubUrl) {
             process.env.PUB_SUB_URL = query.params.pubSubUrl;
+          }
+          // Set the pubSub token if present
+          if (query.params.pubSubToken) {
+            process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
           }
 
           if (query.task) {

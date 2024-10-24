@@ -173,7 +173,7 @@ function pushReportToS3(report) {
               }
             });
           });
-        } else{
+        } else {
           process.env.MACADDRESS = CONSTANTS.DEFAULT_MAC;
         }
       } else {

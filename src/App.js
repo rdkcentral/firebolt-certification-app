@@ -423,12 +423,17 @@ export default class App extends Base {
           }
 
           // Set the pubSub URL if present
+          console.log('2507 test log - query param', query.params);
+          console.log('2507 test log - query param pubsuburl', query.params.pubSubUrl);
           if (query.params.pubSubUrl) {
             process.env.PUB_SUB_URL = query.params.pubSubUrl;
+            console.log('2507 test log - process env pubsuburl', process.env.PUB_SUB_URL);
           }
           // Set the pubSub token if present
+          console.log('2507 test log - query param pubsubtoken', query.params.pubSubToken);
           if (query.params.pubSubToken) {
             process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
+            console.log('2507 test log - process env pubsubtoken', process.env.PUB_SUB_TOKEN);
           }
 
           if (query.task) {

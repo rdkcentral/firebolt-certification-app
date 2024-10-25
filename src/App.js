@@ -122,6 +122,7 @@ export default class App extends Base {
     // Set the pubSub URL if present
     process.env.PUB_SUB_URL = new URLSearchParams(window.location.search).get('pubSubUrl');
     process.env.MACADDRESS = new URLSearchParams(appUrl.search).get('macaddress');
+    process.env.CURRENT_APPID =  new URLSearchParams(appUrl.search).get('appId');
 
     if (platform) {
       process.env.PLATFORM = platform;

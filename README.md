@@ -115,12 +115,28 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
   - If FCA systemui=true, FCA acts as the base app in case of ripple. The background color will be changed to purple and it will display one more button as "Launch FCA app" to launch FCA as third-party app on Ripple devices.
 - TestContext: testContext=true
   - If testContext=true, it will add the field context in mocha report generated
+- AppId: appId=`<appId>`
+  - `appId` used to launch the app.
+- Mac Address: macAddress=`<macAddress>`
+  -  `macAddress` of the device running the tests.
 
 ## Supported Intent Parameters
+- appType:
+  - Classifier for the app - Launch the certification app for certification validations. Launching a firebolt app for app certification.
+- appId: 
+  - When `appId` is specified in the intent, it will be used to launch the app.
+- macAddress: 
+  -  When `macAddress` is specified in the intent, it indicates the mac address of the device running the tests.
 - PubSub Publish Suffix: 
   -  When `pubSubPublishSuffix` is specified in the intent, it publishes to the topic.
 - PubSub Subscribe Suffix: 
   -  When `pubSubSubscribeSuffix` is specified in the intent, it subscribes to the topic.
+- pubSubUrl: 
+  - Sets the the url to use for a PubSub server.
+- testtoken: 
+  - Utilise the `testtoken`. When `testtoken` is specified in the intent, .
+- registerprovider: 
+  - When `registerProvider = false`, then certification app will not register for userInterest provider.
 
 ## Supported PubSub Handlers
 

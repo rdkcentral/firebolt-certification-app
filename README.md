@@ -119,6 +119,12 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
   - `appId` used to launch the app.
 - Mac Address: macAddress=`<macAddress>`
   -  `macAddress` of the device running the tests.
+- appType: appType=`<appType>`
+  -  `appType` is the type of app being launched.
+- Pub Sub Subscribe suffix : pubSubSubscribeSuffix=`<pubSubSubscribeSuffix>`
+  -  `pubSubSubscribeSuffix` is the subscribe suffix value used for Pub Sub communication.
+- Pub Sub Publish suffix : pubSubPublishSuffix=`<pubSubPublishSuffix>`
+  -  `pubSubPublishSuffix` is the publish suffix value used for Pub Sub communication.
 
 ## Supported Intent Parameters
 - appType:
@@ -133,8 +139,6 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
   -  When `pubSubSubscribeSuffix` is specified in the intent, it subscribes to the topic.
 - pubSubUrl: 
   - Sets the the url to use for a PubSub server.
-- testtoken: 
-  - Utilise the `testtoken`. When `testtoken` is specified in the intent, .
 - registerprovider: 
   - When `registerProvider = false`, then certification app will not register for userInterest provider.
 

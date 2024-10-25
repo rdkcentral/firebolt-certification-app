@@ -123,6 +123,9 @@ export default class App extends Base {
     process.env.PUB_SUB_URL = new URLSearchParams(window.location.search).get('pubSubUrl');
     process.env.MACADDRESS = new URLSearchParams(appUrl.search).get('macaddress');
     process.env.CURRENT_APPID = new URLSearchParams(appUrl.search).get('appId');
+    process.env.APP_TYPE = new URLSearchParams(appUrl.search).get('appType');
+    process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
+    process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
 
     if (platform) {
       process.env.PLATFORM = platform;

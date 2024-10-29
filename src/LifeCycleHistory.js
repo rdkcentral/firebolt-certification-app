@@ -108,13 +108,13 @@ export default class LifecycleHistory {
           const query = JSON.parse(event.data.query);
 
           // Establishing a pubSub connection if FCA receives an intent in the navigateTo event with the following parameters.
-          if (query.params && query.params.appId && query.params.testtoken && query.params.macaddress) {
+          if (query.params && query.params.appId && query.params.macaddress) {
             // PUBSUB_CONNECTION environment variable has a pubsub client instance and calls the isConnected function to check the Websocket status.
             if (!process.env.PUBSUB_CONNECTION || (process.env.PUBSUB_CONNECTION && !process.env.PUBSUB_CONNECTION.isConnected())) {
               process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
               process.env.CURRENT_APPID = query.params.appId;
               process.env.MACADDRESS = query.params.macaddress;
-              process.env.TEST_TOKEN = query.params.testtoken;
+              // process.env.TEST_TOKEN = query.params.testtoken;
               console.log('2507 test log - query param pubsubtoken discovery navigate', query.params.pubSubToken);
               process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
               console.log('2507 test log - process env pubsubtoken discovery navigate', process.env.PUB_SUB_TOKEN);

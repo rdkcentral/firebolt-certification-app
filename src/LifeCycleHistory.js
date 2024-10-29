@@ -114,7 +114,6 @@ export default class LifecycleHistory {
               process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
               process.env.CURRENT_APPID = query.params.appId;
               process.env.MACADDRESS = query.params.macaddress;
-              // process.env.TEST_TOKEN = query.params.testtoken;
               console.log('2507 test log - query param pubsubtoken discovery navigate', query.params.pubSubToken);
               process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
               console.log('2507 test log - process env pubsubtoken discovery navigate', process.env.PUB_SUB_TOKEN);

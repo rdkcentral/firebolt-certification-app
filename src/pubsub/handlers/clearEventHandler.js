@@ -30,9 +30,7 @@ export default class clearEventHandler extends BaseHandler {
   async handle(message) {
     const eventInvokerInfo = new EventInvocation();
     let sdkType;
-    if (!message.params.event.includes('_')) {
-      sdkType = CONSTANTS.CORE.toLowerCase();
-    } else {
+    if (message.params && message.params.event && message.params.event.includes('_')) {
       sdkType = message.params.event.split('_')[0].toLowerCase();
     }
     if (message.action != null && message.action != 'NA') {

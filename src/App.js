@@ -118,7 +118,8 @@ export default class App extends Base {
     process.env.SDKS_AVAILABLE = [...CONSTANTS.defaultSDKs, ...CONSTANTS.additionalSDKs];
 
     // Set the pubSub URL if present
-    process.env.PUB_SUB_URL = new URLSearchParams(window.location.search).get('pubSubUrl');
+    process.env.PUB_SUB_URL = new URLSearchParams(appUrl.search).get('pubSubUrl');
+    process.env.PUB_SUB_TOKEN = new URLSearchParams(appUrl.search).get('pubSubToken');
     process.env.MACADDRESS = new URLSearchParams(appUrl.search).get('macaddress');
     process.env.CURRENT_APPID = new URLSearchParams(appUrl.search).get('appId');
     process.env.APP_TYPE = new URLSearchParams(appUrl.search).get('appType');

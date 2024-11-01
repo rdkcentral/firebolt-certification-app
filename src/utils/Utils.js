@@ -172,6 +172,9 @@ function pushReportToS3(report) {
               }
             });
           });
+        } else {
+          process.env.MACADDRESS = CONSTANTS.DEFAULT_MAC;
+          macAddress = process.env.MACADDRESS;
         }
       } else {
         macAddress = process.env.MACADDRESS;
@@ -327,7 +330,7 @@ function removeSetInMethodName(apiName) {
  * @description get the current appid with Advertising.appBundleId
  */
 async function getCurrentAppID() {
-  if (!process.env.CURRENT_APPID || !process.env.APPID) {
+  if (!process.env.CURRENT_APPID) {
     try {
       let res = await FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Advertising.appBundleId', []);
       const lastIndex = res.lastIndexOf('.');
@@ -336,8 +339,8 @@ async function getCurrentAppID() {
       return res;
     } catch (error) {
       logger.error('Error while calling Advertising.appBundleId : ' + error, 'App getAppId');
-      return error;
-    }
+      process.env.CURRENT_APPID = CONSTANTS.DEFAULT_APP_ID;
+      return process.env.CURRENT_APPID;    }
   }
 }
 
@@ -396,7 +399,7 @@ async function overrideParamsFromTestData(methodObj) {
   try {
     const paramsJson = testDataHandler('overrideParams');
     if (paramsJson && typeof paramsJson == 'object' && Object.keys(paramsJson).length) {
-      const appID = process.env.APPID;
+      const appID = process.env.CURRENT_APPID;
       // Checking if any data present for the passed appId
       const parsedMethod = paramsJson[appID];
       // Fetching the examples from the parsedMethod

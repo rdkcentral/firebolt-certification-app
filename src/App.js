@@ -117,6 +117,11 @@ export default class App extends Base {
     process.env.ID = 0;
     process.env.PUB_SUB_URL = new URLSearchParams(appUrl.search).get('pubSubUrl');
     process.env.PUB_SUB_TOKEN = new URLSearchParams(appUrl.search).get('pubSubToken');
+    process.env.MACADDRESS = new URLSearchParams(appUrl.search).get('macaddress');
+    process.env.CURRENT_APPID = new URLSearchParams(appUrl.search).get('appId');
+    process.env.APP_TYPE = new URLSearchParams(appUrl.search).get('appType');
+    process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
+    process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
     if (platform) {
       process.env.PLATFORM = platform;
     } else {
@@ -154,7 +159,6 @@ export default class App extends Base {
       this.pubSubListener();
     }
     getCurrentAppID().then((res) => {
-      process.env.APPID = res;
       this._setState('LoadingState');
     });
   }
@@ -381,6 +385,13 @@ export default class App extends Base {
           query.params.lifecycle_validation ? (lifecycle_validationString = query.params.lifecycle_validation) : (process.env.LIFECYCLE_VALIDATION = 'false');
           if (lifecycle_validationString == true) {
             process.env.LIFECYCLE_VALIDATION = 'true';
+          }
+          if (query.params.pubSubPublishSuffix) {
+            process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = query.params.pubSubPublishSuffix;
+          }
+
+          if (query.params.pubSubSubscribeSuffix) {
+            process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = query.params.pubSubSubscribeSuffix;
           }
 
           process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;

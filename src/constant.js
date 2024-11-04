@@ -174,4 +174,6 @@ export const CONSTANTS = {
   VERSIONS: 'Versions',
   ERROR_SCHEMA_TRANSPORT: 'errorSchemaTransport',
   ERROR_SCHEMA_SDK: 'errorSchemaSDK',
+  DEFAULT_APP_ID: 'DEFAULT_APP_ID',
+  DEFAULT_MAC: 'DEFAULT_MAC',
 };

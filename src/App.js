@@ -102,8 +102,9 @@ export default class App extends Base {
     const standalone = new URLSearchParams(appUrl.search).get('standalone');
     const standalonePrefix = new URLSearchParams(appUrl.search).get('standalonePrefix');
     this.systemui = new URLSearchParams(window.location.search).get('systemui');
-    this.testToken = new URLSearchParams(window.location.search).get('testtoken');
     this.changeSchema = new URLSearchParams(window.location.search).get('changeSchema');
+    process.env.PUB_SUB_URL = new URLSearchParams(appUrl.search).get('pubSubUrl');
+    process.env.PUB_SUB_TOKEN = new URLSearchParams(appUrl.search).get('pubSubToken');
     process.env.CHANGE_SCHEMA = !CONSTANTS.EXCLUDED_VALUES.includes(this.changeSchema) ? this.changeSchema : false;
     this.pubSubUuidPresent = false;
     this.appContinue = false;
@@ -112,7 +113,6 @@ export default class App extends Base {
     process.env.MF_VALUE = false;
     testContext ? (process.env.TESTCONTEXT = JSON.parse(testContext)) : (process.env.TESTCONTEXT = false);
     process.env.TESTCONTEXT = true; // Making TESTCONTEXT = true by default. This line will be removed in later stages when required
-    process.env.TEST_TOKEN = this.testToken;
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
     process.env.ID = 0;
@@ -398,17 +398,20 @@ export default class App extends Base {
             console.log('Error getting App Id :: ', err);
           }
 
-          if (query.params.testtoken) {
-            process.env.TEST_TOKEN = query.params.testtoken;
-          } else {
-            logger.error('No Test Token Found in Parameter Initialization response...', 'getParameterInitializationValues');
-          }
-
           if (query.params.macaddress) {
             process.env.MACADDRESS = query.params.macaddress;
           } else {
             logger.error('No Mac Address Found in Parameter Initialization response...', 'getParameterInitializationValues');
           }
+          // Set the pubSub URL if present
+          if (query.params.pubSubUrl) {
+            process.env.PUB_SUB_URL = query.params.pubSubUrl;
+          }
+          // Set the pubSub token if present
+          if (query.params.pubSubToken) {
+            process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
+          }
+          
 
           if (query.task) {
             setTimeout(() => {

@@ -120,6 +120,7 @@ function censorData(methodName, response) {
   let json;
   try {
     const json = censorDataJson;
+    methodName = methodName.charAt(0).toUpperCase() + methodName.slice(1);
     if (methodName in json) {
       for (let i = 0; i < json[methodName].field.length; i++) {
         if (response[json[methodName].field[i]]) {

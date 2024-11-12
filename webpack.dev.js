@@ -105,7 +105,7 @@ module.exports = {
             alias: ['/plugins/IntentReader.js', '/src/IntentReader.js'],
           },
           {
-            name: 'runTestHandler',
+            name: 'RunTestHandler',
             alias: ['/plugins/runTestHandler.js', '/src/pubsub/handlers/RunTestHandler.js'],
           },
         ],

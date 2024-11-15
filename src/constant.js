@@ -175,5 +175,4 @@ export const CONSTANTS = {
   NO_RESULT_OR_ERROR_MESSAGE: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }',
   SCHEMA_VALIDATION: 'Schema Validation',
   DEFAULT_APP_ID: 'DEFAULT_APP_ID',
-  DEFAULT_MAC: 'DEFAULT_MAC',
 };

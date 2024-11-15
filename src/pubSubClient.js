@@ -22,8 +22,8 @@ class PubSubClient {
   constructor() {
     this.ws = null;
     this.url = process.env.PUB_SUB_URL ? process.env.PUB_SUB_URL : 'ws://localhost:8080';
-    this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = '_FCS';
-    this.PUBSUB_PUBLISH_TOPIC_SUFFIX = '_FCA';
+    this.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX ? process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX : '_FCS';
+    this.PUBSUB_PUBLISH_TOPIC_SUFFIX = process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX ? process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX : '_FCA';
   }
 
   // Initializes a WS connection

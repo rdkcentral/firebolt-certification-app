@@ -172,6 +172,7 @@ export class Test_Runner {
             for (let exampleIndex = 0; exampleIndex < method.examples.length; exampleIndex++) {
               let paramValues = [];
               if (this.methodFilters.isSubscribeMethod(method.examples[exampleIndex]) || this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
+                console.log('Yes it has subscribe in the method so breaking');
                 break;
               }
               if (this.methodFilters.isSetMethod(method.examples[exampleIndex])) {
@@ -223,6 +224,7 @@ export class Test_Runner {
                 let schemaValidationResultForEachExample = validator.validate(response, schemaMap.schema);
 
                 if (this.methodFilters.isEventMethod(methodObj)) {
+                  console.log('Its Event method');
                   logger.info(TAG + `${methodObj.name} Result => ${JSON.stringify(response)}`, 'northBoundSchemaValidationAndReportGeneration');
                   if (response && response.result && typeof response.result.includes === 'function' && response.result.includes('Successful')) {
                     schemaValidationResultForEachExample = { errors: [] };

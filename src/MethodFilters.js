@@ -69,6 +69,7 @@ export default class MethodFilters {
   isSubscribeMethod(method) {
     let isSubscribe = false;
     if (method.name && method.name.split(' ')[0] === CONSTANTS.SUBSCRIBE) {
+      console.log("Yes it has subscribe in the method so breaking");
       isSubscribe = true;
     }
     return isSubscribe;

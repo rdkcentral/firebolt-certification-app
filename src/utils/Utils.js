@@ -119,6 +119,7 @@ function censorData(methodName, response) {
   let json;
   try {
     json = require('../../plugins/external-test-data/fixtures/censorData.json');
+    methodName = methodName.charAt(0).toUpperCase() + methodName.slice(1);
     if (methodName in json) {
       for (let i = 0; i < json[methodName].field.length; i++) {
         if (response[json[methodName].field[i]]) {
@@ -192,7 +193,6 @@ function pushReportToS3(report) {
             : !process.env.REPORTINGID && process.env.STANDALONE
               ? uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend
               : 'refAppExecReport' + '-' + fileNameAppend;
-
       }
     } catch (error) {
       logger.error(error, 'pushReportToS3');

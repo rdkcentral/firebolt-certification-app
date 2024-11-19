@@ -422,6 +422,11 @@ export default class App extends Base {
           if (query.params.pubSubToken) {
             process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
           }
+          // Set the region if present
+          if (query.params.region) {
+            process.env.REGION = query.params.region;
+            console.log('2507 test log - query params region', process.env.REGION);
+          }
           if (query.task) {
             setTimeout(() => {
               const intentReader = new IntentReader();

@@ -218,7 +218,7 @@ export class EventInvocation {
         };
         Transport.addEventEmitter(emit);
         eventRegistrationID = id;
-      } else if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
+      } else if (process.env.COMMUNICATION_MODE == 'SDK') {
         const resolvedModule = MODULE_MAP[sdkType][module];
         eventRegistrationID = await resolvedModule.listen(eventName, (result) => {
           if (!CONSTANTS.EXCLUDED_VALUES.includes(result)) {
@@ -246,7 +246,7 @@ export class EventInvocation {
       let eventName = event.split('.')[1];
       eventName = eventName.slice(2);
       eventName = eventName.charAt(0).toLowerCase() + eventName.slice(1);
-      if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
+      if (process.env.COMMUNICATION_MODE == 'SDK') {
         MODULE_MAP[sdkType][module].clear(eventName);
       } else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
         const args = Object.assign({ listen: false });
@@ -279,7 +279,7 @@ export class EventInvocation {
           logger.info('Unregister event ' + eventNameWithModuleName + ' registration ID ' + eventRegistrationID, 'clearAllListeners');
 
           // Events are cleared using Firebolt SDK
-          if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
+          if (process.env.COMMUNICATION_MODE == 'SDK') {
             MODULE_MAP[sdkType][module].clear(eventName);
           }
           // Events are cleared by using Transport layer and thus bypassing SDK

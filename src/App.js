@@ -154,7 +154,6 @@ export default class App extends Base {
       this.pubSubListener();
     }
     getCurrentAppID().then((res) => {
-      process.env.APPID = res;
       this._setState('LoadingState');
     });
   }
@@ -381,6 +380,14 @@ export default class App extends Base {
           query.params.lifecycle_validation ? (lifecycle_validationString = query.params.lifecycle_validation) : (process.env.LIFECYCLE_VALIDATION = 'false');
           if (lifecycle_validationString == true) {
             process.env.LIFECYCLE_VALIDATION = 'true';
+          }
+
+          if (query.params.pubSubPublishSuffix) {
+            process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = query.params.pubSubPublishSuffix;
+          }
+
+          if (query.params.pubSubSubscribeSuffix) {
+            process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = query.params.pubSubSubscribeSuffix;
           }
 
           process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;

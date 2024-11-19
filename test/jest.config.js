@@ -34,7 +34,6 @@ module.exports = {
     '^EventInvocation$': '<rootDir>/../src//EventInvocation.js',
     '^IntentReader$': '../src/IntentReader.js',
     '^CensorData$': '<rootDir>/../src/source/censorData.json',
-    '^RunTestHandler$': '<rootDir>/../src/pubsub/handlers/RunTestHandler.js',
   },
   collectCoverage: true,
   coverageThreshold: {

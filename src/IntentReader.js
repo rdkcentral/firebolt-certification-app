@@ -34,6 +34,7 @@ import GetPubSubStatusHandler from './pubsub/handlers/GetPubSubStatusHandler';
 import CallMethodHandler from './pubsub/handlers/CallMethodHandler';
 import DataFetchHandler from './pubsub/handlers/DataFetchHandler';
 import HealthCheckHandler from './pubsub/handlers/HealthCheckHandler';
+import RunTestHandler from './pubsub/handlers/RunTestHandler';
 import RegisterEventHandler from './pubsub/handlers/RegisterEventHandler';
 import ClearEventListeners from './pubsub/handlers/ClearEventListeners';
 import ClearEventHandler from './pubsub/handlers/clearEventHandler';
@@ -44,7 +45,6 @@ import GetEventResponse from './pubsub/handlers/GetEventResponse';
 import GetMethodResponseHandler from './pubsub/handlers/GetMethodResponseHandler';
 import VisibilityStateHandler from '../src/pubsub/handlers/VisibilityStateHandler';
 import LifecycleMethodHandler from './pubsub/handlers/LifecycleMethodHandler';
-import RunTestHandler from 'RunTestHandler';
 
 const logger = require('./utils/Logger')('IntentReader.js');
 

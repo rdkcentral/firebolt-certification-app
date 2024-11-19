@@ -33,6 +33,7 @@ module.exports = {
     '^Test_Runner$': '<rootDir>/../src/Test_Runner.js',
     '^EventInvocation$': '<rootDir>/../src//EventInvocation.js',
     '^IntentReader$': '../src/IntentReader.js',
+    '^RunTestHandler$': '<rootDir>/../src/pubsub/handlers/RunTestHandler.js',
   },
   collectCoverage: true,
   coverageThreshold: {

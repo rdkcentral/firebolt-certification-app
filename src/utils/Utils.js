@@ -173,9 +173,6 @@ function pushReportToS3(report) {
               }
             });
           });
-        } else {
-          process.env.MACADDRESS = CONSTANTS.DEFAULT_MAC;
-          macAddress = process.env.MACADDRESS;
         }
       } else {
         macAddress = process.env.MACADDRESS;

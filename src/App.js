@@ -117,7 +117,7 @@ export default class App extends Base {
     process.env.STANDALONE_PREFIX = standalonePrefix;
     process.env.ID = 0;
     process.env.REGISTERPROVIDER = true;
-
+    process.env.SDKS_AVAILABLE = [...CONSTANTS.defaultSDKs, ...CONSTANTS.additionalSDKs];
     // Set the pubSub URL if present
     process.env.PUB_SUB_URL = new URLSearchParams(window.location.search).get('pubSubUrl');
 

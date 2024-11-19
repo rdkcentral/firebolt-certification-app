@@ -114,6 +114,7 @@ export default class App extends Base {
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
     process.env.STANDALONE_PREFIX = standalonePrefix;
+    process.env.SDKS_AVAILABLE = [...CONSTANTS.defaultSDKs, ...CONSTANTS.additionalSDKs];
     if (platform) {
       process.env.PLATFORM = platform;
     } else {

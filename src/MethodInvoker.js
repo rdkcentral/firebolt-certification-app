@@ -45,7 +45,7 @@ export class MethodInvoker {
 
     mode = message.action != null && message.action != 'NA' ? message.action : mode;
 
-    if (process.env.COMMUNICATION_MODE === CONSTANTS.SDK) {
+    if (process.env.COMMUNICATION_MODE === 'SDK') {
       const paramlist = [];
       if (method.includes('set') && method.split('.')[1] !== 'set' && !CONSTANTS.METHODS_T0_IGNORE_WHICH_HAS_SET.includes(method)) {
         paramlist.push(params['value']);
@@ -81,7 +81,7 @@ export class MethodInvoker {
 
         if (moduleClass) {
           const methodFn = moduleClass[updatedMethod.split('.')[1]];
-          if (methodFn && process.env.COMMUNICATION_MODE === CONSTANTS.SDK) {
+          if (methodFn && process.env.COMMUNICATION_MODE === 'SDK') {
             [response, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(invokedSdk, updatedMethod, params), process.env.TimeoutInMS);
           } else if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
             [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames), process.env.TimeoutInMS);

@@ -173,9 +173,6 @@ function pushReportToS3(report) {
               }
             });
           });
-        } else {
-          process.env.MACADDRESS = CONSTANTS.DEFAULT_MAC;
-          macAddress = process.env.MACADDRESS;
         }
       } else {
         macAddress = process.env.MACADDRESS;
@@ -340,8 +337,7 @@ async function getCurrentAppID() {
       return res;
     } catch (error) {
       logger.error('Error while calling Advertising.appBundleId : ' + error, 'App getAppId');
-      process.env.CURRENT_APPID = CONSTANTS.DEFAULT_APP_ID;
-      return process.env.CURRENT_APPID; 
+      return error;
     }
   }
 }

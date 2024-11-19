@@ -11,7 +11,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
- * limitations under the License
+ * limitations under the License.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -427,20 +427,16 @@ export default class App extends Base {
           }
 
           // Set the pubSub URL if present
-          console.log('2507 test log - query params', query.params);
           if (query.params.pubSubUrl) {
             process.env.PUB_SUB_URL = query.params.pubSubUrl;
-            console.log('2507 test log - query params pubsuburl', process.env.PUB_SUB_URL);
           }
           // Set the pubSub token if present
           if (query.params.pubSubToken) {
             process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
-            console.log('2507 test log - query params pubsubtoken', process.env.PUB_SUB_TOKEN);
           }
           // Set the region if present
           if (query.params.region) {
             process.env.REGION = query.params.region;
-            console.log('2507 test log - query params region', process.env.REGION);
           }
           if (query.task) {
             setTimeout(() => {

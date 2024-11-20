@@ -115,7 +115,6 @@ export default class LifecycleHistory {
               process.env.CURRENT_APPID = query.params.appId;
               process.env.MACADDRESS = query.params.macaddress;
               process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
-              console.log('2507 test log - query params pubsubtoken discovery navigateTo', process.env.PUB_SUB_TOKEN);
               const pubSubListenerCreation = new PubSubCommunication();
               const webSocketConnection = await pubSubListenerCreation.startWebSocket();
             }

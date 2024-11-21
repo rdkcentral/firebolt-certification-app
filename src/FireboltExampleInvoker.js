@@ -17,7 +17,8 @@
  */
 
 import * as CoreSDK from '@firebolt-js/sdk';
-// import FireboltSdkLoader from './utils/FireboltSdkLoader';
+import * as ManageSDK from '@firebolt-js/manage-sdk';
+import FireboltSdkModuleLoader from './utils/FireboltSdkModuleLoader';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();
 const logger = require('./utils/Logger')('FireboltExampleInvoker.js');
@@ -25,16 +26,22 @@ import { removeSetInMethodName } from './utils/Utils';
 import { eventEmitter } from './Toast';
 import { CONSTANTS } from './constant';
 
-console.log(CoreSDK);
-
-let moduleMap;
-
-(async () => {
-  const sdkLoader = new FireboltSdkLoader();
-  moduleMap = await sdkLoader.generateModuleMap();
+const moduleMapPromise = (async () => {
+  let DiscoverySDK;
+  if (DEPENDENCIES.hasOwnProperty('firebolt-js/discovery-sdk')) {
+    try {
+      DiscoverySDK = await import('@firebolt-js/discovery-sdk');
+    } catch (error) {
+      console.warn('DiscoverySDK is not available:', error);
+    }
+  }
+  const sdkModuleLoader = new FireboltSdkModuleLoader(CoreSDK, ManageSDK, DiscoverySDK);
+  const moduleMap = await sdkModuleLoader.generateModuleMap();
+  console.log(moduleMap);
+  return moduleMap;
 })();
 
-export const MODULE_MAP = moduleMap;
+export const MODULE_MAP = moduleMapPromise;
 
 // Commenting the below APIs as they have been deprecated from discovery sdk , can be uncommented when added as ripple-rpc APIs in future ticket
 const MAP = {

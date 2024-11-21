@@ -57,6 +57,7 @@ class FireboltSdkModuleLoader {
    * @param {Object} coreSdk - Core SDK object imported from '@firebolt-js/sdk'.
    * @param {Object} manageSdk - Manage SDK object imported from '@firebolt-js/manage-sdk'.
    * @param {Object|null} discoverySdk - Discovery SDK object imported from '@firebolt-js/discovery-sdk', or null if not available.
+   * @param {Object} dependencies - An object containing the installed dependencies.
    */
   constructor(coreSdk, manageSdk, discoverySdk, dependencies) {
     this.dependencies = dependencies;

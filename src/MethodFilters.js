@@ -68,7 +68,7 @@ export default class MethodFilters {
 
   isSubscribeMethod(method) {
     let isSubscribe = false;
-    if (method.name && method.name.split(' ')[0] === CONSTANTS.SUBSCRIBE) {
+    if (method.name && method.name.startsWith(CONSTANTS.ADDITIONAL_SUBSCRIBE)) {
       isSubscribe = true;
     }
     return isSubscribe;

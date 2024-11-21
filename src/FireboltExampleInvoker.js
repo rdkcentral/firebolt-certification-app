@@ -33,8 +33,7 @@ let DiscoverySDK;
  * If available, require it. Otherwise, log a warning.
  * DEPENDENCIES variable is injected by Webpack DefinePlugin
  */
-
-if (DEPENDENCIES.hasOwnProperty('firebolt-js/discovery-sdk')) {
+if (DEPENDENCIES.hasOwnProperty('@firebolt-js/discovery-sdk')) {
   try {
     DiscoverySDK = require('@firebolt-js/discovery-sdk');
   } catch (error) {

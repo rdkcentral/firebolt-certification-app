@@ -44,11 +44,7 @@ const extractUniqueModules = (methods) => {
     modulesSet.add(moduleName);
   });
 
-  console.log(Array.from(modulesSet));
-  const obj = {
-    Content: 'ksjanllkdwj',
-  };
-  return obj;
+  return Array.from(modulesSet);
 };
 
 /**
@@ -117,16 +113,10 @@ class FireboltSdkModuleLoader {
    */
   _getModulesFromJson(sdkType) {
     if (sdkType === 'discovery') {
-      // const moduleNames = extractUniqueModules(this.sdkJson[sdkType]['methods']);
-      // console.log(moduleNames);
-      // console.log(typeof moduleNames);
-      // this.sdkModules['discovery'] = Object.keys(moduleNames);
-      // console.log(this.sdkModules['discovery']);
-      this.sdkModules[sdkType] = [];
+      const moduleNames = extractUniqueModules(this.sdkJson[sdkType]['methods']);
+      this.sdkModules[sdkType] = moduleNames;
     } else {
       const moduleNames = this.sdkJson[sdkType]['info']['x-module-descriptions'];
-      console.log(Object.keys(moduleNames));
-      console.log(typeof Object.keys(moduleNames));
       this.sdkModules[sdkType] = Object.keys(moduleNames);
     }
   }

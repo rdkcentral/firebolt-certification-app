@@ -31,9 +31,10 @@ let DiscoverySDK;
 /**
  * Dynamically check if the Discovery SDK is available as a dependency.
  * If available, require it. Otherwise, log a warning.
- * DEPENDENCIES variable is injected by Webpack DefinePlugin
  */
-if (DEPENDENCIES.hasOwnProperty('@firebolt-js/discovery-sdk')) {
+const dependencies = DEPENDENCIES; // Injected by Webpack DefinePlugin
+
+if (dependencies.hasOwnProperty('@firebolt-js/discovery-sdk')) {
   try {
     DiscoverySDK = require('@firebolt-js/discovery-sdk');
   } catch (error) {
@@ -42,7 +43,7 @@ if (DEPENDENCIES.hasOwnProperty('@firebolt-js/discovery-sdk')) {
 }
 
 // Initialize the Firebolt SDK Module Loader
-const sdkModuleLoader = new FireboltSdkModuleLoader(CoreSDK, ManageSDK, DiscoverySDK);
+const sdkModuleLoader = new FireboltSdkModuleLoader(CoreSDK, ManageSDK, DiscoverySDK, dependencies);
 
 // Dynamically generate the module map based on the imported SDKs
 const moduleMap = sdkModuleLoader.generateModuleMap();

@@ -58,7 +58,8 @@ class FireboltSdkModuleLoader {
    * @param {Object} manageSdk - Manage SDK object imported from '@firebolt-js/manage-sdk'.
    * @param {Object|null} discoverySdk - Discovery SDK object imported from '@firebolt-js/discovery-sdk', or null if not available.
    */
-  constructor(coreSdk, manageSdk, discoverySdk) {
+  constructor(coreSdk, manageSdk, discoverySdk, dependencies) {
+    this.dependencies = dependencies;
     this.sdkPaths = this._getSdkPaths();
     this.sdkModuleImports = { core: coreSdk, manage: manageSdk, discovery: discoverySdk };
     this.sdkJson = {};
@@ -72,10 +73,9 @@ class FireboltSdkModuleLoader {
    * @returns {Object} An object containing paths to OpenRPC JSON files for each SDK.
    */
   _getSdkPaths() {
-    const dependencies = DEPENDENCIES; // Injected by Webpack DefinePlugin
     const sdkPaths = {};
 
-    for (const [dependency] of Object.entries(dependencies)) {
+    for (const [dependency] of Object.entries(this.dependencies)) {
       if (dependency.startsWith('@firebolt-js/')) {
         const sdkType = dependency.split('/')[1].replace('-sdk', '');
         const sdkKey = sdkType === 'sdk' ? 'core' : sdkType;
@@ -90,19 +90,18 @@ class FireboltSdkModuleLoader {
    * Dynamically imports SDK modules based on package names and SDK types.
    */
   _importSdkJson() {
+    const sdkContexts = {
+      core: coreRpcContext,
+      manage: manageRpcContext,
+      discovery: discoveryRpcContext,
+    };
+
     for (const [sdkType, sdkPath] of Object.entries(this.sdkPaths)) {
       try {
-        let sdkModule;
-        if (sdkType === 'core') {
-          sdkModule = coreRpcContext(`./${sdkPath.split('/').pop()}`);
-        } else if (sdkType === 'manage') {
-          sdkModule = manageRpcContext(`./${sdkPath.split('/').pop()}`);
-        } else if (sdkType === 'discovery') {
-          sdkModule = discoveryRpcContext(`./${sdkPath.split('/').pop()}`);
-        }
+        const sdkModule = sdkContexts[sdkType](`./${sdkPath.split('/').pop()}`);
         this.sdkJson[sdkType] = sdkModule;
-      } catch (err) {
-        console.warn(`Failed to import module for SDK type '${sdkType}': ${err.message}`);
+      } catch (error) {
+        console.warn(`Failed to import module for SDK type '${sdkType}': ${error.message}`);
       }
     }
   }

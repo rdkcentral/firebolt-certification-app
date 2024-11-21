@@ -26,22 +26,30 @@ import { removeSetInMethodName } from './utils/Utils';
 import { eventEmitter } from './Toast';
 import { CONSTANTS } from './constant';
 
-const moduleMapPromise = (async () => {
-  let DiscoverySDK;
-  if (DEPENDENCIES.hasOwnProperty('firebolt-js/discovery-sdk')) {
-    try {
-      DiscoverySDK = await import('@firebolt-js/discovery-sdk');
-    } catch (error) {
-      console.warn('DiscoverySDK is not available:', error);
-    }
-  }
-  const sdkModuleLoader = new FireboltSdkModuleLoader(CoreSDK, ManageSDK, DiscoverySDK);
-  const moduleMap = await sdkModuleLoader.generateModuleMap();
-  console.log(moduleMap);
-  return moduleMap;
-})();
+let DiscoverySDK;
 
-export const MODULE_MAP = moduleMapPromise;
+/**
+ * Dynamically check if the Discovery SDK is available as a dependency.
+ * If available, require it. Otherwise, log a warning.
+ * DEPENDENCIES variable is injected by Webpack DefinePlugin
+ */
+
+if (DEPENDENCIES.hasOwnProperty('firebolt-js/discovery-sdk')) {
+  try {
+    DiscoverySDK = require('@firebolt-js/discovery-sdk');
+  } catch (error) {
+    console.warn('DiscoverySDK is not available:', error);
+  }
+}
+
+// Initialize the Firebolt SDK Module Loader
+const sdkModuleLoader = new FireboltSdkModuleLoader(CoreSDK, ManageSDK, DiscoverySDK);
+
+// Dynamically generate the module map based on the imported SDKs
+const moduleMap = sdkModuleLoader.generateModuleMap();
+
+// Export the dynamically created module map
+export const MODULE_MAP = moduleMap;
 
 // Commenting the below APIs as they have been deprecated from discovery sdk , can be uncommented when added as ripple-rpc APIs in future ticket
 const MAP = {

@@ -18,7 +18,14 @@
 
 const coreRpcContext = require.context('@firebolt-js/sdk/dist', true, /firebolt-core-open-rpc\.json$/);
 const manageRpcContext = require.context('@firebolt-js/manage-sdk/dist', true, /firebolt-manage-open-rpc\.json$/);
-const discoveryRpcContext = require.context('@firebolt-js/discovery-sdk/dist', true, /firebolt-discovery-open-rpc\.json$/);
+let discoveryRpcContext;
+
+try {
+  discoveryRpcContext = require.context('@firebolt-js/discovery-sdk/dist', true, /firebolt-discovery-open-rpc\.json$/);
+} catch (error) {
+  console.warn('Discovery SDK context is not available:', error);
+  discoveryRpcContext = null;
+}
 
 /**
  * Extracts unique module names from a list of method definitions.

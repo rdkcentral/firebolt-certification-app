@@ -338,8 +338,7 @@ async function getCurrentAppID() {
       return res;
     } catch (error) {
       logger.error('Error while calling Advertising.appBundleId : ' + error, 'App getAppId');
-      process.env.CURRENT_APPID = CONSTANTS.DEFAULT_APP_ID;
-      return process.env.CURRENT_APPID;
+      return error;
     }
   }
 }

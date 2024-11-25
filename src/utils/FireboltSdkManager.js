@@ -172,9 +172,13 @@ class SdkConstantGenerator {
     // Define the desired order of SDKs
     const desiredOrder = ['core', 'manage', 'discovery'];
 
-    // Sort the keys of sdkJson based on the desired order
+    // Sort the keys of sdkJson based on the desired order, placing others at the end
     const sortedKeys = Object.keys(sdkJson).sort((a, b) => {
-      return desiredOrder.indexOf(a) - desiredOrder.indexOf(b);
+      const indexA = desiredOrder.indexOf(a);
+      const indexB = desiredOrder.indexOf(b);
+      if (indexA === -1) return 1; // a is not in desiredOrder, place it at the end
+      if (indexB === -1) return -1; // b is not in desiredOrder, place it at the end
+      return indexA - indexB;
     });
 
     // Generate the constants in the desired order
@@ -226,7 +230,6 @@ class FireboltSdkManager {
   generateDefaultSdkConstants() {
     const sdkPaths = SdkPathResolver.resolvePaths(this.dependencies);
     const sdkJson = new SdkJsonLoader(this.sdkContexts).loadJson(sdkPaths);
-    console.log('sdkJson', sdkJson);
     return SdkConstantGenerator.generateConstants(sdkJson);
   }
 }

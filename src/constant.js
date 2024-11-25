@@ -40,7 +40,6 @@ if (dependencies.hasOwnProperty('@firebolt-js/discovery-sdk')) {
 const sdkManager = new FireboltSdkManager(CoreSDK, ManageSDK, DiscoverySDK, dependencies);
 
 const defaultSdks = sdkManager.generateDefaultSdkConstants();
-console.log('defaultSdks', defaultSdks);
 
 export const CONSTANTS = {
   ALL_SDKS: 'ALL SDKS',

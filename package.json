@@ -6,7 +6,7 @@
     "@apidevtools/json-schema-ref-parser": "^9.0.9",
     "@firebolt-js/discovery-sdk": "1.4.1",
     "@firebolt-js/manage-sdk": "1.4.1",
-    "@firebolt-js/sdk": "1.4.1",
+    "@firebolt-js/sdk": "git+ssh://git@github.com:rdkcentral/firebolt-apis.git#test-listener-reg-error-2",
     "@lightningjs/core": "2.11.0",
     "@lightningjs/sdk": "^5.0.1",
     "@lightningjs/ui-components": "^2.2.2",

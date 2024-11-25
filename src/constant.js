@@ -17,9 +17,30 @@
  */
 
 import CONFIG_CONSTANTS from 'config';
-import CORE_OPEN_RPC from '@firebolt-js/sdk/dist/firebolt-core-open-rpc';
-import MANAGE_OPEN_RPC from '@firebolt-js/manage-sdk/dist/firebolt-manage-open-rpc';
-import DISCOVERY_OPEN_RPC from '@firebolt-js/discovery-sdk/dist/firebolt-discovery-open-rpc';
+import * as CoreSDK from '@firebolt-js/sdk';
+import * as ManageSDK from '@firebolt-js/manage-sdk';
+import FireboltSdkModuleLoader from './utils/FireboltSdkModuleLoader';
+
+/**
+ * Dynamically check if the Discovery SDK is available as a dependency.
+ * If available, require it. Otherwise, log a warning.
+ */
+const dependencies = DEPENDENCIES; // Injected by Webpack DefinePlugin
+let DiscoverySDK;
+
+if (dependencies.hasOwnProperty('@firebolt-js/discovery-sdk')) {
+  try {
+    DiscoverySDK = require('@firebolt-js/discovery-sdk');
+  } catch (error) {
+    console.warn('DiscoverySDK is not available:', error);
+  }
+}
+
+// Initialize the Firebolt SDK Module Loader
+const sdkModuleLoader = new FireboltSdkModuleLoader(CoreSDK, ManageSDK, DiscoverySDK, dependencies);
+
+const defaultSdks = sdkModuleLoader.generateDefaultSdkConstants();
+
 export const CONSTANTS = {
   ALL_SDKS: 'ALL SDKS',
   SDK: 'SDK',
@@ -141,33 +162,7 @@ export const CONSTANTS = {
   EXCLUDED_METHODS_FOR_SDK: [],
   EXCLUDED_METHODS_FOR_TRANSPORT: [],
   REGISTERPROVIDER: 'registerprovider',
-  defaultSDKs: [
-    {
-      name: 'Core',
-      openRpc: CORE_OPEN_RPC,
-      validation: function () {
-        return !(process.env.MF_VALUE && !process.env.MOCKOS);
-      },
-      unavailableMessage: 'MockOs is not running',
-    },
-    {
-      name: 'Manage',
-      openRpc: MANAGE_OPEN_RPC,
-      validation: function () {
-        return !(process.env.MF_VALUE && !process.env.MOCKOS);
-      },
-      unavailableMessage: 'MockOs is not running',
-    },
-    {
-      name: 'Discovery',
-      openRpc: DISCOVERY_OPEN_RPC,
-      validation: function () {
-        return !(process.env.MF_VALUE && !process.env.MOCKOS);
-      },
-      unavailableMessage: 'MockOs is not running',
-    },
-  ],
-
+  defaultSDKs: defaultSdks,
   additionalSDKs: [],
   EXCLUDED_METHODS_FOR_MFOS: [],
   ...CONFIG_CONSTANTS,

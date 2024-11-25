@@ -146,6 +146,23 @@ class FireboltSdkModuleLoader {
 
     return this.sdkModulesMap;
   }
+
+  generateDefaultSdkConstants() {
+    this._importSdkJson();
+
+    const defaultSDKs = Object.keys(this.sdkJson).map((sdkType) => {
+      return {
+        name: sdkType.charAt(0).toUpperCase() + sdkType.slice(1), // Capitalize the first letter
+        openRpc: this.sdkJson[sdkType],
+        validation: function () {
+          return !(process.env.MF_VALUE && !process.env.MOCKOS);
+        },
+        unavailableMessage: 'MockOs is not running',
+      };
+    });
+
+    return defaultSDKs;
+  }
 }
 
 export default FireboltSdkModuleLoader;

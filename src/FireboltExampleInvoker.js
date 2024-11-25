@@ -18,7 +18,7 @@
 
 import * as CoreSDK from '@firebolt-js/sdk';
 import * as ManageSDK from '@firebolt-js/manage-sdk';
-import FireboltSdkModuleLoader from './utils/FireboltSdkModuleLoader';
+import FireboltSdkManager from './utils/FireboltSdkManager';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();
 const logger = require('./utils/Logger')('FireboltExampleInvoker.js');
@@ -26,13 +26,12 @@ import { removeSetInMethodName } from './utils/Utils';
 import { eventEmitter } from './Toast';
 import { CONSTANTS } from './constant';
 
-let DiscoverySDK;
-
 /**
  * Dynamically check if the Discovery SDK is available as a dependency.
  * If available, require it. Otherwise, log a warning.
  */
 const dependencies = DEPENDENCIES; // Injected by Webpack DefinePlugin
+let DiscoverySDK;
 
 if (dependencies.hasOwnProperty('@firebolt-js/discovery-sdk')) {
   try {
@@ -43,10 +42,10 @@ if (dependencies.hasOwnProperty('@firebolt-js/discovery-sdk')) {
 }
 
 // Initialize the Firebolt SDK Module Loader
-const sdkModuleLoader = new FireboltSdkModuleLoader(CoreSDK, ManageSDK, DiscoverySDK, dependencies);
+const sdkManager = new FireboltSdkManager(CoreSDK, ManageSDK, DiscoverySDK, dependencies);
 
 // Dynamically generate the module map based on the imported SDKs
-const moduleMap = sdkModuleLoader.generateModuleMap();
+const moduleMap = sdkManager.generateModuleMap();
 
 // Export the dynamically created module map
 export const MODULE_MAP = moduleMap;

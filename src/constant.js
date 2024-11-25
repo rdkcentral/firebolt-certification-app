@@ -19,7 +19,7 @@
 import CONFIG_CONSTANTS from 'config';
 import * as CoreSDK from '@firebolt-js/sdk';
 import * as ManageSDK from '@firebolt-js/manage-sdk';
-import FireboltSdkModuleLoader from './utils/FireboltSdkModuleLoader';
+import FireboltSdkManager from './utils/FireboltSdkManager';
 
 /**
  * Dynamically check if the Discovery SDK is available as a dependency.
@@ -37,9 +37,10 @@ if (dependencies.hasOwnProperty('@firebolt-js/discovery-sdk')) {
 }
 
 // Initialize the Firebolt SDK Module Loader
-const sdkModuleLoader = new FireboltSdkModuleLoader(CoreSDK, ManageSDK, DiscoverySDK, dependencies);
+const sdkManager = new FireboltSdkManager(CoreSDK, ManageSDK, DiscoverySDK, dependencies);
 
-const defaultSdks = sdkModuleLoader.generateDefaultSdkConstants();
+const defaultSdks = sdkManager.generateDefaultSdkConstants();
+console.log('defaultSdks', defaultSdks);
 
 export const CONSTANTS = {
   ALL_SDKS: 'ALL SDKS',

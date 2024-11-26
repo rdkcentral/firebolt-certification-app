@@ -117,6 +117,7 @@ export default class App extends Base {
     process.env.STANDALONE_PREFIX = standalonePrefix;
     process.env.PUB_SUB_URL = new URLSearchParams(appUrl.search).get('pubSubUrl');
     process.env.PUB_SUB_TOKEN = new URLSearchParams(appUrl.search).get('pubSubToken');
+    process.env.REGION = new URLSearchParams(appUrl.search).get('region');
     if (platform) {
       process.env.PLATFORM = platform;
     } else {

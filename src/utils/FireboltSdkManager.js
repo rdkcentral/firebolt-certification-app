@@ -23,7 +23,7 @@
  */
 
 // Contexts for dynamically importing OpenRPC JSON files
-const coreRpcContext = require.context('@firebolt-js/sdk/dist', true, /firebolt-core-open-rpc\.json$/);
+const coreRpcContext = require.context('@firebolt-js/sdk/dist', true, /firebolt-open-rpc\.json$/);
 const manageRpcContext = require.context('@firebolt-js/manage-sdk/dist', true, /firebolt-manage-open-rpc\.json$/);
 let discoveryRpcContext;
 
@@ -76,14 +76,54 @@ class SdkPathResolver {
    */
   static resolvePaths(dependencies) {
     const sdkPaths = {};
-    for (const [dependency] of Object.entries(dependencies)) {
+    for (const [dependency, version] of Object.entries(dependencies)) {
       if (dependency.startsWith('@firebolt-js/')) {
         const sdkType = dependency.split('/')[1].replace('-sdk', '');
         const sdkKey = sdkType === 'sdk' ? 'core' : sdkType;
-        sdkPaths[sdkKey] = `${dependency}/dist/firebolt-${sdkKey}-open-rpc.json`;
+
+        let fileName;
+        if (sdkKey === 'core') {
+          fileName = SdkPathResolver.getCoreFileName(version);
+        } else {
+          fileName = `firebolt-${sdkKey}-open-rpc.json`;
+        }
+
+        sdkPaths[sdkKey] = `${dependency}/dist/${fileName}`;
       }
     }
     return sdkPaths;
+  }
+
+  /**
+   * Determines the file name for the core SDK based on version.
+   * @param {string} version - The version of the core SDK.
+   * @returns {string} The file name for the core SDK.
+   */
+  static getCoreFileName(version) {
+    if (SdkPathResolver.isVersionLessThan(version, '0.11.0')) {
+      return 'firebolt-open-rpc.json';
+    }
+    return 'firebolt-core-open-rpc.json';
+  }
+
+  /**
+   * Compares two semantic versions to check if the first is less than the second.
+   * @param {string} versionA - The version to compare.
+   * @param {string} versionB - The version to compare against.
+   * @returns {boolean} True if versionA is less than versionB, false otherwise.
+   */
+  static isVersionLessThan(versionA, versionB) {
+    const parseVersion = (version) => version.split('.').map(Number);
+    const [majorA, minorA, patchA] = parseVersion(versionA);
+    const [majorB, minorB, patchB] = parseVersion(versionB);
+
+    if (majorA !== majorB) {
+      return majorA < majorB;
+    }
+    if (minorA !== minorB) {
+      return minorA < minorB;
+    }
+    return patchA < patchB;
   }
 }
 

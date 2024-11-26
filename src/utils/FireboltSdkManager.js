@@ -23,7 +23,7 @@
  */
 
 // Contexts for dynamically importing OpenRPC JSON files
-const coreRpcContext = require.context('@firebolt-js/sdk/dist', true, /firebolt-open-rpc\.json$/);
+const coreRpcContext = require.context('@firebolt-js/sdk/dist', true, /-open-rpc\.json$/);
 const manageRpcContext = require.context('@firebolt-js/manage-sdk/dist', true, /firebolt-manage-open-rpc\.json$/);
 let discoveryRpcContext;
 
@@ -33,6 +33,10 @@ try {
   console.warn('Discovery SDK context is not available:', error);
   discoveryRpcContext = null;
 }
+
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
 
 /**
  * Extracts unique module names from a list of method definitions.
@@ -55,7 +59,8 @@ const extractUniqueModules = (methods) => {
 
   methods.forEach((method) => {
     const moduleName = method.name.split('.')[0];
-    modulesSet.add(moduleName);
+    const capitalizedModuleName = capitalizeFirstLetter(moduleName);
+    modulesSet.add(capitalizedModuleName);
   });
 
   return Array.from(modulesSet);

@@ -185,13 +185,23 @@ class SdkModuleMapper {
     const sdkModules = {};
     const sdkModulesMap = {};
 
+    // Set of PascalCase module names
+    const pascalCaseModules = new Set(['SecondScreen', 'SecureStorage', 'ClosedCaptions', 'AcknowledgeChallenge', 'DeveloperTools', 'LifecycleManagement', 'PinChallenge', 'UserGrants', 'VoiceGuidance']);
+
     for (const [sdkType, json] of Object.entries(sdkJson)) {
       // Check if 'x-module-descriptions' exists and has keys, otherwise use extractUniqueModules
       const moduleNames = json.info && json.info['x-module-descriptions'] && Object.keys(json.info['x-module-descriptions']).length > 0 ? Object.keys(json.info['x-module-descriptions']) : extractUniqueModules(json.methods);
 
       sdkModules[sdkType] = moduleNames;
       sdkModulesMap[sdkType] = moduleNames.reduce((acc, module) => {
-        acc[module.toLowerCase()] = sdkImports[sdkType][module];
+        // Find a matching PascalCase module
+        const matchingPascalModule = Array.from(pascalCaseModules).find((pascalModule) => pascalModule.toLowerCase() === module.toLowerCase());
+
+        // Use the PascalCase module if there's a match; otherwise, use the original module
+        const moduleKey = matchingPascalModule || module;
+
+        // Add to the accumulator
+        acc[module.toLowerCase()] = sdkImports[sdkType][moduleKey];
         return acc;
       }, {});
     }

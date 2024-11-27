@@ -24,6 +24,7 @@ import { getschemaValidationDone, getCurrentAppID } from './utils/Utils';
 const logger = require('./utils/Logger')('LifeCycleHistory.js');
 import FireboltExampleInvoker from './FireboltExampleInvoker';
 import IntentReader from 'IntentReader';
+import PubSubCommunication from './PubSubCommunication';
 
 let instance = null;
 let lifecycleValidation;
@@ -105,6 +106,19 @@ export default class LifecycleHistory {
         if (event.data.query != undefined) {
           const intentReader = new IntentReader();
           const query = JSON.parse(event.data.query);
+          // Establishing a pubSub connection if FCA receives an intent in the navigateTo event with the following parameters.
+            if (query.params && query.params.appId && query.params.macaddress) {
+              // PUBSUB_CONNECTION environment variable has a pubsub client instance and calls the isConnected function to check the Websocket status.
+              if (!process.env.PUBSUB_CONNECTION || (process.env.PUBSUB_CONNECTION && !process.env.PUBSUB_CONNECTION.isConnected())) {
+                process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
+                process.env.CURRENT_APPID = query.params.appId;
+                process.env.MACADDRESS = query.params.macaddress;
+                process.env.TEST_TOKEN = query.params.testtoken;
+                process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
+                const pubSubListenerCreation = new PubSubCommunication();
+                const webSocketConnection = await pubSubListenerCreation.startWebSocket();
+              }
+            }
           if (query.task) {
             intentReader.processIntent(query);
           }

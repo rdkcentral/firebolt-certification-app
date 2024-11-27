@@ -163,6 +163,8 @@ export const CONSTANTS = {
   EXCLUDED_METHODS_FOR_TRANSPORT: [],
   REGISTERPROVIDER: 'registerprovider',
   defaultSDKs: defaultSdks,
+  INVOKEPROVIDER: 'invokeProvider',
+  INVOKEMANAGER: 'invokeManager',
   additionalSDKs: [],
   EXCLUDED_METHODS_FOR_MFOS: [],
   ...CONFIG_CONSTANTS,

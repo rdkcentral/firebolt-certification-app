@@ -103,7 +103,6 @@ export default class App extends Base {
     const standalone = new URLSearchParams(appUrl.search).get('standalone');
     const standalonePrefix = new URLSearchParams(appUrl.search).get('standalonePrefix');
     this.systemui = new URLSearchParams(window.location.search).get('systemui');
-    this.testToken = new URLSearchParams(window.location.search).get('testtoken');
     this.pubSubUuidPresent = false;
     this.appContinue = false;
     process.env.LIFECYCLE_VALIDATION = lifecycle;
@@ -111,7 +110,6 @@ export default class App extends Base {
     process.env.MF_VALUE = false;
     testContext ? (process.env.TESTCONTEXT = JSON.parse(testContext)) : (process.env.TESTCONTEXT = false);
     process.env.TESTCONTEXT = true; // Making TESTCONTEXT = true by default. This line will be removed in later stages when required
-    process.env.TEST_TOKEN = this.testToken;
     process.env.REPORTINGID = reportingId;
     process.env.STANDALONE = standalone;
     process.env.STANDALONE_PREFIX = standalonePrefix;
@@ -120,13 +118,14 @@ export default class App extends Base {
     process.env.SDKS_AVAILABLE = [...CONSTANTS.defaultSDKs, ...CONSTANTS.additionalSDKs];
 
     // Set the pubSub URL if present
-    process.env.PUB_SUB_URL = new URLSearchParams(window.location.search).get('pubSubUrl');
+    process.env.PUB_SUB_URL = new URLSearchParams(appUrl.search).get('pubSubUrl');
+    process.env.PUB_SUB_TOKEN = new URLSearchParams(appUrl.search).get('pubSubToken');
     process.env.MACADDRESS = new URLSearchParams(appUrl.search).get('macaddress');
     process.env.CURRENT_APPID = new URLSearchParams(appUrl.search).get('appId');
     process.env.APP_TYPE = new URLSearchParams(appUrl.search).get('appType');
     process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
     process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
-
+    process.env.REGION = new URLSearchParams(appUrl.search).get('region');
     if (platform) {
       process.env.PLATFORM = platform;
     } else {
@@ -418,12 +417,6 @@ export default class App extends Base {
             console.log('Error getting App Id :: ', err);
           }
 
-          if (query.params.testtoken) {
-            process.env.TEST_TOKEN = query.params.testtoken;
-          } else {
-            logger.error('No Test Token Found in Parameter Initialization response...', 'getParameterInitializationValues');
-          }
-
           if (query.params.macaddress) {
             process.env.MACADDRESS = query.params.macaddress;
           } else {
@@ -438,7 +431,14 @@ export default class App extends Base {
           if (query.params.pubSubUrl) {
             process.env.PUB_SUB_URL = query.params.pubSubUrl;
           }
-
+          // Set the pubSub token if present
+          if (query.params.pubSubToken) {
+            process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
+          }
+          // Set the region if present
+          if (query.params.region) {
+            process.env.REGION = query.params.region;
+          }
           if (query.task) {
             setTimeout(() => {
               const intentReader = new IntentReader();

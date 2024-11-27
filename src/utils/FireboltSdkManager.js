@@ -22,6 +22,8 @@
  * based on installed dependencies and OpenRPC JSON definitions.
  */
 
+import { CONSTANTS } from '../constant';
+
 // Contexts for dynamically importing OpenRPC JSON files
 const coreRpcContext = require.context('@firebolt-js/sdk/dist', true, /-open-rpc\.json$/);
 const manageRpcContext = require.context('@firebolt-js/manage-sdk/dist', true, /firebolt-manage-open-rpc\.json$/);
@@ -190,12 +192,13 @@ class SdkModuleMapper {
 
     for (const [sdkType, json] of Object.entries(sdkJson)) {
       // Check if 'x-module-descriptions' exists and has keys, otherwise use extractUniqueModules
-      const moduleNames = json.info && json.info['x-module-descriptions'] && Object.keys(json.info['x-module-descriptions']).length > 0 ? Object.keys(json.info['x-module-descriptions']) : extractUniqueModules(json.methods);
+      const moduleNames =
+        json.info && json.info[CONSTANTS.X_MODULE_DESCRIPTIONS] && Object.keys(json.info['x-module-descriptions']).length > 0 ? Object.keys(json.info['x-module-descriptions']) : extractUniqueModules(json.methods);
 
       sdkModules[sdkType] = moduleNames;
       sdkModulesMap[sdkType] = moduleNames.reduce((acc, module) => {
         // Find a matching PascalCase module
-        const matchingPascalModule = Array.from(pascalCaseModules).find((pascalModule) => pascalModule.toLowerCase() === module.toLowerCase());
+        const matchingPascalModule = CONSTANTS.PASCAL_CASED_MODULES.find((pascalModule) => pascalModule.toLowerCase() === module.toLowerCase());
 
         // Use the PascalCase module if there's a match; otherwise, use the original module
         const moduleKey = matchingPascalModule || module;

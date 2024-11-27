@@ -153,6 +153,8 @@ jest.mock('../src/constant', () => {
     INVOKEMANAGER: 'invokeManager',
     additionalSDKs: [],
     EXCLUDED_METHODS_FOR_MFOS: [],
+    PASCAL_CASED_MODULES: ['SecondScreen', 'SecureStorage', 'ClosedCaptions', 'AcknowledgeChallenge', 'DeveloperTools', 'LifecycleManagement', 'PinChallenge', 'UserGrants', 'VoiceGuidance'],
+    X_MODULE_DESCRIPTIONS: 'x-module-descriptions',
     // ...CONFIG_CONSTANTS,
     VERSIONS: 'Versions',
     NO_RESULT_OR_ERROR_MESSAGE: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }',

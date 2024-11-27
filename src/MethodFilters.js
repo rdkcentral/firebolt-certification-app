@@ -38,7 +38,10 @@ export default class MethodFilters {
 
   isRpcMethod(method, invokedSdk, communicationMode = 'sdk') {
     let isRpc = false;
-    if ((invokedSdk == CONSTANTS.CORE.toLowerCase() || invokedSdk == CONSTANTS.MANAGE.toLowerCase()) && communicationMode == CONSTANTS.TRANSPORT) {
+
+    const mergedSDKs = CONSTANTS.defaultSDKs.concat(CONSTANTS.additionalSDKs);
+    const sdkNames = mergedSDKs.map((sdkObjectCopy) => sdkObjectCopy.name.toLowerCase());
+    if (sdkNames.includes(invokedSdk.toLowerCase()) && communicationMode == CONSTANTS.TRANSPORT) {
       return isRpc;
     } else if (invokedSdk == CONSTANTS.MANAGE.toLowerCase() && method.name.split('.')[1].startsWith('set')) {
       return isRpc;

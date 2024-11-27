@@ -327,7 +327,7 @@ function removeSetInMethodName(apiName) {
  * @description get the current appid with Advertising.appBundleId
  */
 async function getCurrentAppID() {
-  if (!process.env.CURRENT_APPID || !process.env.APPID) {
+  if (!process.env.CURRENT_APPID) {
     try {
       let res = await FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Advertising.appBundleId', []);
       const lastIndex = res.lastIndexOf('.');
@@ -396,7 +396,7 @@ async function overrideParamsFromTestData(methodObj) {
   try {
     const paramsJson = testDataHandler('overrideParams');
     if (paramsJson && typeof paramsJson == 'object' && Object.keys(paramsJson).length) {
-      const appID = process.env.APPID;
+      const appID = process.env.CURRENT_APPID;
       // Checking if any data present for the passed appId
       const parsedMethod = paramsJson[appID];
       // Fetching the examples from the parsedMethod

@@ -13,23 +13,25 @@ It has the following features -
 
 ## Table of Contents
 
-- [Brief overview](#brief-overview)
-- [Setup](#setup)
-  - [FCA URL deployed and available in the S3](#fca-url-deployed-and-available-in-the-s3)
-  - [Below are the steps to run FCA in local system](#below-are-the-steps-to-run-fca-in-local-system)
-- [Supported ways of Execution](#supported-ways-of-execution)
-- [Sanity Suite Flow](./docs/index.md)
-- [Supported targets](#supported-targets)
-- [Supported Modes of execution](#supported-modes-of-execution)
-- [Supported validations](#supported-validations)
-- [Supported ways of retrieving reports](#supported-ways-of-retrieving-reports)
-- [Supported Report Parameters](#supported-report-parameters)
-- [PR and merge process](#pr-and-merge-process)
-- [Supported URL parameters](#supported-url-parameters)
-- [Supported PubSub Handlers](#supported-pubsub-handlers)
-- [Plugins](#plugins)
-- [Connect to mock Firebolt OS](#connect-to-mock-firebolt-os)
-  - [Timeout in UI prompt](#timeout-in-ui-prompt)
+- [firebolt-certification-app](#firebolt-certification-app)
+  - [Brief overview](#brief-overview)
+  - [Table of Contents](#table-of-contents)
+  - [Setup](#setup)
+    - [FCA URL deployed and available in the S3](#fca-url-deployed-and-available-in-the-s3)
+    - [Below are the steps to run FCA in local system](#below-are-the-steps-to-run-fca-in-local-system)
+  - [Supported ways of Execution](#supported-ways-of-execution)
+  - [Supported targets](#supported-targets)
+  - [Supported Modes of execution](#supported-modes-of-execution)
+  - [Supported validations](#supported-validations)
+  - [Supported ways of retrieving reports](#supported-ways-of-retrieving-reports)
+  - [Supported Report Parameters](#supported-report-parameters)
+  - [PR and merge process](#pr-and-merge-process)
+  - [Supported URL parameters](#supported-url-parameters)
+  - [Supported Intent Parameters](#supported-intent-parameters)
+  - [Supported PubSub Handlers](#supported-pubsub-handlers)
+  - [Plugins](#plugins)
+  - [Connect to mock Firebolt OS](#connect-to-mock-firebolt-os)
+    - [Timeout in UI prompt](#timeout-in-ui-prompt)
 
 ## Setup
 
@@ -113,6 +115,32 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
   - If FCA systemui=true, FCA acts as the base app in case of ripple. The background color will be changed to purple and it will display one more button as "Launch FCA app" to launch FCA as third-party app on Ripple devices.
 - TestContext: testContext=true
   - If testContext=true, it will add the field context in mocha report generated
+- AppId: appId=`<appId>`
+  - `appId` used to launch the app.
+- Mac Address: macAddress=`<macAddress>`
+  -  `macAddress` of the device running the tests.
+- appType: appType=`<appType>`
+  -  `appType` is the type of app being launched.
+- Pub Sub Subscribe suffix : pubSubSubscribeSuffix=`<pubSubSubscribeSuffix>`
+  -  `pubSubSubscribeSuffix` is the subscribe suffix value used for Pub Sub communication.
+- Pub Sub Publish suffix : pubSubPublishSuffix=`<pubSubPublishSuffix>`
+  -  `pubSubPublishSuffix` is the publish suffix value used for Pub Sub communication.
+
+## Supported Intent Parameters
+- appType:
+  - Classifier for the app - Launch the certification app for certification validations. Launching a firebolt app for app certification.
+- appId: 
+  - When `appId` is specified in the intent, it will be used to launch the app.
+- macAddress: 
+  -  When `macAddress` is specified in the intent, it indicates the mac address of the device running the tests.
+- PubSub Publish Suffix: 
+  -  When `pubSubPublishSuffix` is specified in the intent, it publishes to the topic.
+- PubSub Subscribe Suffix: 
+  -  When `pubSubSubscribeSuffix` is specified in the intent, it subscribes to the topic.
+- pubSubUrl: 
+  - Sets the the url to use for a PubSub server.
+- registerprovider: 
+  - When `registerProvider = false`, then certification app will not register for userInterest provider.
 
 ## Supported PubSub Handlers
 

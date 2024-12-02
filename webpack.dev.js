@@ -83,6 +83,9 @@ module.exports = {
       // SLOWS PERFORMANCE - DO NOT ENABLE IN PRODUCTION!!
       useInspector: true,
     }),
+    new webpack.DefinePlugin({
+      DEPENDENCIES: JSON.stringify(require('./package.json').dependencies),
+    }),
   ],
   node: {
     fs: 'empty',

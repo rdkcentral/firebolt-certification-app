@@ -24,7 +24,7 @@ try {
   invokeManager = require('../plugins/FireboltExtensionInvoker').default.invokeManager;
   invokeProvider = require('../plugins/FireboltExtensionInvoker').default.invokeProvider;
 } catch (err) {
-  logger.error(`Unable to import additional invoker - ${err.message}`);
+ // logger.error(`Unable to import additional invoker - ${err.message}`);
 }
 
 let instance = null;

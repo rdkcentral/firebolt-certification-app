@@ -209,7 +209,7 @@ export default class MenuBuilder {
     const examples = methodObj.examples;
     if ((hasTag(methodObj, 'property') || hasTag(methodObj, 'property:readonly')) && !hasTag(methodObj, 'property:immutable')) {
       examples.push({
-        name: CONSTANTS.SUBSCRIBE + ' ' + methodObj.name,
+        name: CONSTANTS.ADDITIONAL_SUBSCRIBE + ' ' + methodObj.name,
         schema: {
           type: 'number',
         },

@@ -112,6 +112,7 @@ jest.mock('../src/constant', () => {
     METHODS_TO_BE_EXCLUDED_ONLY_DEVICES: ['mockmodule.mockmethod'],
     PUBSUB_ACK: { pubSubStatus: 'Connection successful' },
     SUBSCRIBE: 'Subscribe',
+    ADDITIONAL_SUBSCRIBE: 'Subscribing additional method',
     PROVIDER_REGISTRATION: 'provider registered successfully',
     PROVIDER_REGISTRATION_FAILED: 'Provider registeration failed',
     NO_PROVIDER_SPECIFIED: 'No provider has been specified',

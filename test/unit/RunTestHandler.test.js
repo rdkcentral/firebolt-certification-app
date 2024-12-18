@@ -167,7 +167,7 @@ describe('RunTestHandler', () => {
       expect(process.env.FIREBOLT_SDK_VERSION).toBe(message.metadata.fireboltVersion);
       expect(process.env.TARGET_VERSION).toBe(message.metadata.targetVersion);
       expect(process.env.MODE).toBe(message.context.communicationMode);
-      expect(process.env.TARGET_PLATFORM).toBe(undefined);
+      expect(process.env.TARGET_PLATFORM).toBe('undefined');
     });
 
     /* test('should log error if there is an exception', () => {

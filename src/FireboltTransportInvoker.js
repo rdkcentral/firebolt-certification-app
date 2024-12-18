@@ -18,7 +18,6 @@
 
 import Transport from '@firebolt-js/sdk/dist/lib/Transport';
 import { CONSTANTS } from './constant';
-const logger = require('./utils/Logger')('FireboltTransportInvoker.js');
 
 let invokeManager, invokeProvider;
 try {

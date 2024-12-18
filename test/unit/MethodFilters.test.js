@@ -19,6 +19,17 @@
 import MethodFilters from '../../src/MethodFilters';
 import { CONSTANTS } from '../../src/constant';
 
+jest.mock('../../src/constant', () => {
+  const mockConstants = jest.requireActual('../../src/constant');
+  return {
+    CONSTANTS: {
+      ...mockConstants.CONSTANTS,
+      METHODS_TO_BE_EXCLUDED_ONLY_DEVICES: ['mockmodule.mockmethod'],
+      TARGET_TO_BE_EXCLUDED: ['SOMETARGET'],
+    },
+  };
+});
+
 jest.mock('../../src/FireboltExampleInvoker', () => {
   return {
     get: () => {

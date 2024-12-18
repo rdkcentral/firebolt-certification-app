@@ -16,9 +16,27 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import * as CoreSDK from '@firebolt-js/sdk';
-import * as ManageSDK from '@firebolt-js/manage-sdk';
-import FireboltSdkManager from './utils/FireboltSdkManager';
+import { Accessibility, Account, Advertising, Authentication, Capabilities, Device, Discovery, Keyboard, Lifecycle, Localization, Metrics, Profile, Parameters, SecondScreen, SecureStorage } from '@firebolt-js/sdk';
+import {
+  Advertising as ManageAdvertising,
+  AcknowledgeChallenge,
+  Device as ManageDevice,
+  Wifi,
+  Account as ManageAccount,
+  ClosedCaptions,
+  Keyboard as ManageKeyboard,
+  Localization as ManageLocalization,
+  PinChallenge,
+  Privacy,
+  VoiceGuidance,
+  UserGrants,
+  Metrics as ManageMetrics,
+  SecureStorage as ManageSecureStorage,
+  Discovery as ManageDiscovery,
+  AudioDescriptions,
+  HDMIInput,
+} from '@firebolt-js/manage-sdk';
+import { Content } from '@firebolt-js/discovery-sdk';
 import DiscoveryInvoker from './invokers/DiscoveryInvoker';
 const discoveryInvoker = new DiscoveryInvoker();
 const logger = require('./utils/Logger')('FireboltExampleInvoker.js');
@@ -26,36 +44,60 @@ import { removeSetInMethodName } from './utils/Utils';
 import { eventEmitter } from './Toast';
 import { CONSTANTS } from './constant';
 
-/**
- * Dynamically check if the Discovery SDK is available as a dependency.
- * If available, require it. Otherwise, log a warning.
- */
-const dependencies = DEPENDENCIES; // Injected by Webpack DefinePlugin
-let DiscoverySDK;
-
-if (dependencies.hasOwnProperty('@firebolt-js/discovery-sdk')) {
-  try {
-    DiscoverySDK = require('@firebolt-js/discovery-sdk');
-  } catch (error) {
-    console.warn('DiscoverySDK is not available:', error);
-  }
-}
-
-// Initialize the Firebolt SDK Module Loader
-const sdkManager = new FireboltSdkManager(CoreSDK, ManageSDK, DiscoverySDK, dependencies);
-
-// Dynamically generate the module map based on the imported SDKs
-const moduleMap = sdkManager.generateModuleMap();
-
-// Export the dynamically created module map
-export const MODULE_MAP = moduleMap;
-
 // Commenting the below APIs as they have been deprecated from discovery sdk , can be uncommented when added as ripple-rpc APIs in future ticket
 const MAP = {
   'discovery.purchasedContent': discoveryInvoker.purchasedContent.bind(discoveryInvoker),
   'discovery.entityInfo': discoveryInvoker.entityInfo.bind(discoveryInvoker),
   // 'content.purchases': discoveryInvoker.getPurchasedContent.bind(discoveryInvoker),
   // 'content.entity': discoveryInvoker.getEntityInfo.bind(discoveryInvoker),
+};
+
+const CORE_MODULE_MAP = {
+  accessibility: Accessibility,
+  account: Account,
+  advertising: Advertising,
+  authentication: Authentication,
+  capabilities: Capabilities,
+  device: Device,
+  discovery: Discovery,
+  keyboard: Keyboard,
+  lifecycle: Lifecycle,
+  localization: Localization,
+  metrics: Metrics,
+  profile: Profile,
+  parameters: Parameters,
+  secondscreen: SecondScreen,
+  securestorage: SecureStorage,
+};
+
+const MANAGE_MODULE_MAP = {
+  advertising: ManageAdvertising,
+  acknowledgechallenge: AcknowledgeChallenge,
+  device: ManageDevice,
+  wifi: Wifi,
+  account: ManageAccount,
+  closedcaptions: ClosedCaptions,
+  keyboard: ManageKeyboard,
+  pinchallenge: PinChallenge,
+  privacy: Privacy,
+  voiceguidance: VoiceGuidance,
+  localization: ManageLocalization,
+  usergrants: UserGrants,
+  metrics: ManageMetrics,
+  securestorage: ManageSecureStorage,
+  discovery: ManageDiscovery,
+  audiodescriptions: AudioDescriptions,
+  hdmiinput: HDMIInput,
+};
+
+const DISCOVERY_MODULE_MAP = {
+  content: Content,
+};
+
+export const MODULE_MAP = {
+  core: CORE_MODULE_MAP,
+  manage: MANAGE_MODULE_MAP,
+  discovery: DISCOVERY_MODULE_MAP,
 };
 
 // importing additional invoker which has external sdk's being exported and adding those modules in the MODULE_MAP

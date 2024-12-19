@@ -188,12 +188,19 @@ describe('MethodFilters', () => {
 
   describe('isSubscribeMethod', () => {
     test('should return true if method has Subscribe in it', () => {
-      method = { name: 'Subscribe device.id' };
+      method = { name: 'Subscribing additional method device.id' };
       result = methodFilters.isSubscribeMethod(method);
       expect(result).toBe(true);
     });
+
     test('should return false if method does not have subscribe in it ', () => {
       method = { name: 'account.id' };
+      result = methodFilters.isSubscribeMethod(method);
+      expect(result).toBe(false);
+    });
+
+    test('should return false if method does not have subscribe in it ', () => {
+      method = { name: 'Subscribe to settings' };
       result = methodFilters.isSubscribeMethod(method);
       expect(result).toBe(false);
     });

@@ -36,6 +36,11 @@ export default class RunTestHandler extends BaseHandler {
     }
 
     const communicationMode = message.context.communicationMode;
+    if (message.params && message.params['sla-validation']) {
+      process.env.SLA_VALIDATION = message.params['sla-validation'];
+    } else {
+      process.env.SLA_VALIDATION = false;
+    }
 
     // Disable PENDING state in suite report via intent override [FIRECERT-838]
     if (message.params && message.params.methodsToBeExcluded && (message.params.certification != null || message.params.certification != undefined)) {

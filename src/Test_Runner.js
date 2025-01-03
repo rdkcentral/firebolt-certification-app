@@ -128,6 +128,8 @@ export class Test_Runner {
       // Invocation of methods based on the openrpc file starts here
       // traverse the json data inside loop to get methodname & properties
       for (let methodIndex = 0; this.dereferenceSchemaList != undefined && methodIndex < this.dereferenceSchemaList.methods.length; methodIndex++) {
+        // Get the global sla based on the OpenRPC object and message and store in environment variable if present
+        await utils.getGlobalSla(this.dereferenceSchemaList);
         const module = this.dereferenceSchemaList.methods[methodIndex].name.split('.')[0];
         apiExecutionEndTime = 0;
         apiExecutionStartTime = 0;
@@ -168,6 +170,8 @@ export class Test_Runner {
         } else if (!this.methodFilters.isRpcMethod(methodObj, invokedSdk, communicationMode)) {
           let example;
           if (method.examples && method.examples.length > 0) {
+            // If the method has x-sla field, overwrite the sla value inside process env variable
+            utils.getMethodSla(method);
             overrideParamsFromTestData(method);
             for (let exampleIndex = 0; exampleIndex < method.examples.length; exampleIndex++) {
               let paramValues = [];
@@ -237,6 +241,7 @@ export class Test_Runner {
                   schemaData: schemaMap.schema,
                   apiExecutionStartTime: apiExecutionStartTime,
                   apiExecutionEndTime: apiExecutionEndTime,
+                  slaValue: process.env.SLA_VALUE,
                 };
                 schemaValidationResultSet.push(schemaValidationResultForEachExampleSet);
               } catch (error) {
@@ -258,6 +263,7 @@ export class Test_Runner {
                     schemaData: schemaMap.schema,
                     apiExecutionStartTime: apiExecutionStartTime,
                     apiExecutionEndTime: apiExecutionEndTime,
+                    slaValue: process.env.SLA_VALUE,
                   };
                 } else {
                   obj = {
@@ -267,6 +273,7 @@ export class Test_Runner {
                     methodUuid: methodUuid,
                     apiExecutionStartTime: apiExecutionStartTime,
                     apiExecutionEndTime: apiExecutionEndTime,
+                    slaValue: process.env.SLA_VALUE,
                   };
                 }
                 schemaValidationResultSet.push(obj);
@@ -303,7 +310,7 @@ export class Test_Runner {
           delete schemaValidationRes.schemaData;
           const executionStartTime = schemaValidationRes.apiExecutionStartTime;
           const executionEndTime = schemaValidationRes.apiExecutionEndTime;
-          const apiValidationResult = this.generateAPIValidaionResult(schemaValidationRes, methodObj, executionStartTime, executionEndTime, suitesUuid, hasContentValidationExecuted, schema);
+          const apiValidationResult = this.generateAPIValidationResult(schemaValidationRes, methodObj, executionStartTime, executionEndTime, suitesUuid, hasContentValidationExecuted, schema);
           if (apiValidationResult.pass) {
             successList.push(apiValidationResult.uuid);
           } else if (apiValidationResult.skipped) {
@@ -804,22 +811,35 @@ export class Test_Runner {
   }
 
   // Consolidated function to generate Validation result for both success case and error case
-  generateAPIValidaionResult(result, methodObj, apiExecutionStartTime, apiExecutionEndTime, suitesUuid, hasContentValidationExecuted, schemaMap) {
+  generateAPIValidationResult(result, methodObj, apiExecutionStartTime, apiExecutionEndTime, suitesUuid, schemaMap) {
+    // Calculate the API invocation duration
+    const apiInvocationDuration = apiExecutionEndTime - apiExecutionStartTime;
+    // Destructure the result object to extract necessary properties
+    const { slaValue, methodWithExampleName, methodUuid: uuid, error, response, param: params, validationResult: schemaValidationResult } = result;
+    let doesErrorMessageContainMethodNotFound = false;
+
+    // Extract the method name from the methodWithExampleName
+    const methodName = methodWithExampleName.split('.').slice(0, 2).join('.');
+    // Check if the method is an exception method
+    let isExceptionMethod = methodFilters.isExceptionMethod(methodName, params);
+    if (methodObj.error) {
+      isExceptionMethod = true;
+    }
+    // Determine the parsed response, prioritizing error over response
+    let parsedResponse = error || response;
+    // Initialize the result state object
     let resultState = {
       bool: { passed: false, failed: false, skipped: false, pending: false },
-      state: 'skipped',
+      state: CONSTANTS.REPORT_STATUS.SKIPPED,
     };
-    let convertedResponse = null;
-    let testContext = null;
-    let convertedError = null;
-    const methodWithExampleName = result.methodWithExampleName;
-    const uuid = result.methodUuid;
-    let parsedResponse = result.error ? result.error : result.response;
-    let doesErrorMessageContainMethodNotFound = false;
-    const params = result.param;
-    const methodName = result.methodWithExampleName.split('.')[0] + '.' + result.methodWithExampleName.split('.')[1];
-    const isExceptionMethod = this.methodFilters.isExceptionMethod(methodName, params);
-    const schemaValidationResult = result.validationResult;
+    let formattedResponse = null,
+      testContext = { params, result: null, error: null },
+      formattedError = null;
+
+    if (process.env.OPENRPC_LINK) {
+      testContext.value = process.env.OPENRPC_LINK;
+    }
+
     // Check if the error message contains "Method not found"
     if (parsedResponse && parsedResponse.error && parsedResponse.error.message) {
       doesErrorMessageContainMethodNotFound = CONSTANTS.ERROR_LIST.some((i) =>
@@ -828,129 +848,270 @@ export class Test_Runner {
           .includes(i.toLowerCase())
       );
     }
-    testContext = {
-      params: params,
-      result: null,
-      error: null,
-    };
-
-    if (!schemaValidationResult && result.error) {
-      resultState = this.setResultState('failed');
-      convertedError = { err: parsedResponse };
-      // Skipping the test case if the response having skipped message
+    // Handle cases where there is no schema validation result and an error exists
+    if (!schemaValidationResult && error) {
+      resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+      formattedError = { err: parsedResponse };
+      // Skipping the test case if the response has skipped message
       if (parsedResponse === CONSTANTS.SKIPPED_MESSAGE) {
-        resultState = this.setResultState('skipped');
-        convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: parsedResponse }, null, 1);
+        resultState = setResultState(CONSTANTS.REPORT_STATUS.SKIPPED);
+        formattedResponse = JSON.stringify(
+          {
+            Message: parsedResponse,
+            [CONSTANTS.SCHEMA_VALIDATION]: {
+              Status: CONSTANTS.SCHEMA_CONTENT_SKIPPED,
+            },
+          },
+          null,
+          1
+        );
       } else {
-        convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: parsedResponse, Response: null, Expected: schemaMap, params: params }, null, 1);
+        formattedResponse = utils.formatResponse(parsedResponse, CONSTANTS.REPORT_STATUS.SKIPPED, null, params, schemaMap);
       }
     } else if (isExceptionMethod) {
-      resultState = this.setResultState('failed');
+      // Handle exception methods
+      resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
       // Check if parsed response contains an error
-      if (parsedResponse && parsedResponse.error) {
+      if (parsedResponse.error) {
+        if (parsedResponse.error instanceof Error) {
+          parsedResponse.error = parsedResponse.error.message;
+        }
         testContext.error = parsedResponse.error;
-        convertedError = { err: parsedResponse.error };
-        // If it is an exception method, and not as per schema, fail the test case.
-        if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
-          // Response did not have error or result
+        formattedError = { err: parsedResponse.error };
+
+        if (schemaValidationResult.errors.length) {
+          // If the response is undefined and the response doesnot have a valid result or error field
           if (parsedResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE) {
             testContext.error = null;
-            convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE, Response: null, Expected: schemaMap, params: params }, null, 1);
-          } else {
-            convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: 'Expected error, incorrect error format', Response: parsedResponse, Expected: schemaMap, params: params }, null, 1);
-          }
-        } else {
-          // If error as per schema, error message contains method not found, marking the test case as pending or failed based on certification flag.
-          if (doesErrorMessageContainMethodNotFound) {
-            convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.PASSED, Message: 'Method not implemented by platform', Response: parsedResponse, params: params }, null, 1);
-            // If the certification flag is enabled, fail the test case; otherwise, mark it as pending.
-            if (!process.env.CERTIFICATION) {
-              resultState = this.setResultState('pending');
+            let message = CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
+
+            // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
+            if (process.env.SLA_VALIDATION) {
+              message =
+                slaValue === null
+                  ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
+                  : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
+                    ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                    : CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
+              formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, null, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
+            } else {
+              // Else slaValidation flag is set to false, return formatted response without SLA Validation property
+              formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, null, params, schemaMap);
             }
           } else {
-            // Exception method, and as per schema, marking the test case as passed.
-            resultState = this.setResultState('passed');
-            convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.PASSED, Message: 'Expected error, received error', Response: parsedResponse, params: params }, null, 1);
+            // If the API is an exception method and expects error, but the error received is not as per expected error schema format
+            let message = 'Expected error, incorrect error format';
+            if (process.env.SLA_VALIDATION) {
+              // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
+              message =
+                slaValue === null
+                  ? 'Expected error, incorrect error format' + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
+                  : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
+                    ? 'Expected error, incorrect error format' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                    : 'Expected error, incorrect error format';
+              formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, parsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
+            } else {
+              // Else slaValidation flag is set to false, return formatted response without SLA Validation property
+              formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, parsedResponse, params, schemaMap);
+            }
+          }
+        } else {
+          // If the API is an exception method expecting error and error as per error schema is received
+          resultState = setResultState(CONSTANTS.REPORT_STATUS.PASSED);
+          // If error as per schema, error message contains method not found, marking the test case as pending or failed based on certification flag.
+          if (doesErrorMessageContainMethodNotFound) {
+            // If the certification flag is enabled, fail the test case; otherwise, mark it as pending.
+            if (!process.env.CERTIFICATION) {
+              resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PENDING);
+            }
+          }
+          const enumValue = utils.checkForEnum(schemaMap) === null ? 'No enums' : utils.checkForEnum(schemaMap);
+          let message = doesErrorMessageContainMethodNotFound ? 'Method not implemented by platform' : 'Expected error, received error';
+          if (process.env.SLA_VALIDATION) {
+            // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
+            if (utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED || utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.SKIPPED) {
+              // If slaValidation fails or skipped due to non availability of sla field, fail the test case and update sla status to failed
+              resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+            } else {
+              // If slaValidation passes, pass the test case and update sla status to passed
+              resultState = setResultState(CONSTANTS.REPORT_STATUS.PASSED);
+            }
+            message =
+              slaValue === null
+                ? CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
+                : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
+                  ? 'Expected error, received error' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                  : 'Expected error, received error';
+
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.PASSED, parsedResponse, params, null, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue, enumValue);
+          } else {
+            // Else slaValidation flag is set to false, return formatted response without SLA Validation property
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.PASSED, parsedResponse, params, null, null, null, null, enumValue);
           }
         }
       } else {
-        // Censoring the response for the specific method
+        // If the API is an exception method expecting error but received result
+        let message = 'Expected error, received result';
         parsedResponse = utils.censorData(methodObj.name, parsedResponse.result);
+        const formattedParsedResponse = { result: parsedResponse };
         testContext.result = parsedResponse;
-        convertedError = { err: CONSTANTS.NO_ERROR_FOUND };
-        // Expecting an error, but received a result, marking the test case as failed.
-        convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: 'Expected error, received result', Response: { result: parsedResponse }, Expected: schemaMap, params: params }, null, 1);
+        formattedError = { err: CONSTANTS.NO_ERROR_FOUND };
+        if (process.env.SLA_VALIDATION) {
+          // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
+          message =
+            slaValue === null
+              ? 'Expected error, received result' + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
+              : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
+                ? 'Expected error, received result' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                : 'Expected error, received result';
+
+          formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, formattedParsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
+        } else {
+          // Else slaValidation flag is set to false, return formatted response without SLA Validation property
+          formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, formattedParsedResponse, params, schemaMap);
+        }
       }
     } else {
-      resultState = this.setResultState('passed');
-      // Check if the response is an error
-      if (parsedResponse && parsedResponse.error) {
+      // Handle non-exception methods
+      resultState = setResultState(CONSTANTS.REPORT_STATUS.PASSED);
+      // Check if parsed response contains an error
+      if (parsedResponse.error) {
+        if (parsedResponse.error instanceof Error) {
+          parsedResponse.error = parsedResponse.error.message;
+        }
         testContext.error = parsedResponse.result;
-        convertedError = { err: parsedResponse };
-        resultState = this.setResultState('failed');
+        formattedError = { err: parsedResponse };
+        resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
         // If error message contains method not found, marking the test case as pending or failed based on certification flag.
         if (doesErrorMessageContainMethodNotFound) {
-          convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: 'Method not implemented by platform', Response: parsedResponse, Expected: schemaMap, params: params }, null, 1);
+          let message = 'Method not implemented by platform';
+          if (process.env.SLA_VALIDATION) {
+            // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
+            message =
+              slaValue === null
+                ? 'Method not implemented by platform' + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
+                : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
+                  ? 'Method not implemented by platform' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                  : 'Method not implemented by platform';
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, parsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
+          } else {
+            // Else slaValidation flag is set to false, return formatted response without SLA Validation property
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, parsedResponse, params, schemaMap);
+          }
           // If the certification flag is enabled, fail the test case; otherwise, mark it as pending.
           if (!process.env.CERTIFICATION) {
             resultState = this.setResultState('pending');
           }
         }
-        // Response did not have error or result
-        else if (parsedResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE) {
+        // If received response does not have a valid result or error field
+        if (parsedResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE) {
+          let message = CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
           testContext.error = null;
-          convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE, Response: null, Expected: schemaMap, params: params }, null, 1);
+          if (process.env.SLA_VALIDATION) {
+            // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
+            message =
+              slaValue === null
+                ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
+                : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
+                  ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                  : CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, null, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
+          } else {
+            // Else slaValidation flag is set to false, return formatted response without SLA Validation property
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, null, params, schemaMap);
+          }
         } else {
-          // Expecting an result, but received an error, marking the test case as failed.
-          convertedResponse = JSON.stringify(
-            { [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: 'Unexpected error encountered in the response', Response: parsedResponse, Expected: schemaMap, params: params },
-            null,
-            1
-          );
+          // If the API is not an exception method and expects result, but received an unexpected error
+          let message = 'Unexpected error encountered in the response';
+
+          if (process.env.SLA_VALIDATION) {
+            // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
+            message =
+              slaValue === null
+                ? 'Unexpected error encountered in the response' + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
+                : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
+                  ? 'Unexpected error encountered in the response' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                  : 'Unexpected error encountered in the response';
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, parsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
+          } else {
+            // Else slaValidation flag is set to false, return formatted response without SLA Validation property
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, parsedResponse, params, schemaMap);
+          }
         }
       } else {
-        // Censoring the response for the specific method
+        // If no error is expected and received a response without error
+        // Censor data in response
         parsedResponse = utils.censorData(methodObj.name, parsedResponse.result);
+        const formattedParsedResponse = { result: parsedResponse };
         testContext.result = parsedResponse;
-        convertedError = { err: CONSTANTS.NO_ERROR_FOUND };
-        // If the response is not as per schema, marking the test case as failed else passed.
-        if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
-          resultState = this.setResultState('failed');
-          convertedResponse = JSON.stringify(
-            { [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: schemaValidationResult.errors[0].stack, Response: { result: parsedResponse }, Expected: schemaMap, params: params },
-            null,
-            1
-          );
+        formattedError = { err: CONSTANTS.NO_ERROR_FOUND };
+        // If the API is not an exception method and expects result, but received result is not as per openRPC schema
+        if (schemaValidationResult.errors.length) {
+          let message = schemaValidationResult.errors[0].stack;
+          resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+          if (process.env.SLA_VALIDATION) {
+            // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
+            message =
+              slaValue === null
+                ? schemaValidationResult.errors[0].stack + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
+                : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
+                  ? schemaValidationResult.errors[0].stack + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                  : schemaValidationResult.errors[0].stack;
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, formattedParsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
+          } else {
+            // Else slaValidation flag is set to false, return formatted response without SLA Validation property
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, formattedParsedResponse, params, schemaMap);
+          }
         } else {
-          convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.PASSED, Message: null, Response: { result: parsedResponse }, params: params }, null, 1);
+          // Else if the API is not an exception method and expects result and result as per openRPC schema is received
+          const enumValue = utils.checkForEnum(schemaMap) === null ? 'No enums' : utils.checkForEnum(schemaMap);
+          let message = null;
+          if (process.env.SLA_VALIDATION) {
+            // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
+            message = slaValue === null ? CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED ? CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE : null;
+            if (utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED || utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.SKIPPED) {
+              // If slaValidation fails or gets skipped due to non availability of sla field, fail the test case and update sla status to failed
+              resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+            } else {
+              // If slaValidation passes, pass the test case and update sla status to passed
+              resultState = setResultState(CONSTANTS.REPORT_STATUS.PASSED);
+            }
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.PASSED, formattedParsedResponse, params, null, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue, enumValue);
+          } else {
+            // Else slaValidation flag is set to false, return formatted response without SLA Validation property
+            formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.PASSED, formattedParsedResponse, params, null, null, null, null, enumValue);
+          }
         }
       }
     }
-    if (typeof convertedError == 'string' || Array.isArray(convertedError) || typeof convertedError == 'undefined') {
-      convertedError = { err: convertedError };
+
+    // Handle cases where formattedError is a string, array, or undefined
+    if (typeof formattedError == CONSTANTS.STRING || Array.isArray(formattedError) || typeof formattedError == CONSTANTS.UNDEFINED) {
+      formattedError = { err: formattedError };
     }
 
-    !process.env.TESTCONTEXT ? (testContext = null) : (testContext = JSON.stringify(testContext, null, 1));
-    const apiInvocationDuration = apiExecutionEndTime - apiExecutionStartTime;
-    const apiValidationResult = {
+    // Format the test context if TESTCONTEXT environment variable is set
+    testContext = process.env.TESTCONTEXT ? JSON.stringify(testContext, null, 1) : null;
+
+    // Return the formatted validation object
+    return {
       title: methodWithExampleName,
       fullTitle: methodObj.name,
       duration: apiInvocationDuration,
       state: resultState.state.toLowerCase(),
       pass: resultState.bool.passed,
       fail: resultState.bool.failed,
-      code: convertedResponse,
-      err: convertedError,
-      uuid: uuid,
+      code: formattedResponse,
+      err: formattedError,
+      uuid,
       parentUUID: suitesUuid,
       timedOut: false,
-      speed: 'fast',
+      speed: CONSTANTS.FAST,
       pending: resultState.bool.pending,
       context: testContext,
       isHook: false,
       skipped: resultState.bool.skipped,
     };
-    return apiValidationResult;
   }
 
   // Method that will set the result state

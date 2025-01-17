@@ -821,7 +821,7 @@ export class Test_Runner {
     // Extract the method name from the methodWithExampleName
     const methodName = methodWithExampleName.split('.').slice(0, 2).join('.');
     // Check if the method is an exception method
-    let isExceptionMethod = methodFilters.isExceptionMethod(methodName, params);
+    let isExceptionMethod = this.methodFilters.isExceptionMethod(methodName, params);
     if (methodObj.error) {
       isExceptionMethod = true;
     }
@@ -850,11 +850,11 @@ export class Test_Runner {
     }
     // Handle cases where there is no schema validation result and an error exists
     if (!schemaValidationResult && error) {
-      resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+      resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
       formattedError = { err: parsedResponse };
       // Skipping the test case if the response has skipped message
       if (parsedResponse === CONSTANTS.SKIPPED_MESSAGE) {
-        resultState = setResultState(CONSTANTS.REPORT_STATUS.SKIPPED);
+        resultState = this.setResultState(CONSTANTS.REPORT_STATUS.SKIPPED);
         formattedResponse = JSON.stringify(
           {
             Message: parsedResponse,
@@ -870,7 +870,7 @@ export class Test_Runner {
       }
     } else if (isExceptionMethod) {
       // Handle exception methods
-      resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+      resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
       // Check if parsed response contains an error
       if (parsedResponse.error) {
         if (parsedResponse.error instanceof Error) {
@@ -917,7 +917,7 @@ export class Test_Runner {
           }
         } else {
           // If the API is an exception method expecting error and error as per error schema is received
-          resultState = setResultState(CONSTANTS.REPORT_STATUS.PASSED);
+          resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PASSED);
           // If error as per schema, error message contains method not found, marking the test case as pending or failed based on certification flag.
           if (doesErrorMessageContainMethodNotFound) {
             // If the certification flag is enabled, fail the test case; otherwise, mark it as pending.
@@ -931,10 +931,10 @@ export class Test_Runner {
             // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
             if (utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED || utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.SKIPPED) {
               // If slaValidation fails or skipped due to non availability of sla field, fail the test case and update sla status to failed
-              resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+              resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
             } else {
               // If slaValidation passes, pass the test case and update sla status to passed
-              resultState = setResultState(CONSTANTS.REPORT_STATUS.PASSED);
+              resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PASSED);
             }
             message =
               slaValue === null
@@ -973,7 +973,7 @@ export class Test_Runner {
       }
     } else {
       // Handle non-exception methods
-      resultState = setResultState(CONSTANTS.REPORT_STATUS.PASSED);
+      resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PASSED);
       // Check if parsed response contains an error
       if (parsedResponse.error) {
         if (parsedResponse.error instanceof Error) {
@@ -981,7 +981,7 @@ export class Test_Runner {
         }
         testContext.error = parsedResponse.result;
         formattedError = { err: parsedResponse };
-        resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+        resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
         // If error message contains method not found, marking the test case as pending or failed based on certification flag.
         if (doesErrorMessageContainMethodNotFound) {
           let message = 'Method not implemented by platform';
@@ -1048,7 +1048,7 @@ export class Test_Runner {
         // If the API is not an exception method and expects result, but received result is not as per openRPC schema
         if (schemaValidationResult.errors.length) {
           let message = schemaValidationResult.errors[0].stack;
-          resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+          resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
           if (process.env.SLA_VALIDATION) {
             // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
             message =
@@ -1071,10 +1071,10 @@ export class Test_Runner {
             message = slaValue === null ? CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED ? CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE : null;
             if (utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED || utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.SKIPPED) {
               // If slaValidation fails or gets skipped due to non availability of sla field, fail the test case and update sla status to failed
-              resultState = setResultState(CONSTANTS.REPORT_STATUS.FAILED);
+              resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
             } else {
               // If slaValidation passes, pass the test case and update sla status to passed
-              resultState = setResultState(CONSTANTS.REPORT_STATUS.PASSED);
+              resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PASSED);
             }
             formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.PASSED, formattedParsedResponse, params, null, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue, enumValue);
           } else {

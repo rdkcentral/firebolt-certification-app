@@ -129,7 +129,7 @@ export class Test_Runner {
       // traverse the json data inside loop to get methodname & properties
       for (let methodIndex = 0; this.dereferenceSchemaList != undefined && methodIndex < this.dereferenceSchemaList.methods.length; methodIndex++) {
         // Get the global sla based on the OpenRPC object and message and store in environment variable if present
-        await utils.getGlobalSla(this.dereferenceSchemaList);
+        await utils.getGlobalSla();
         const module = this.dereferenceSchemaList.methods[methodIndex].name.split('.')[0];
         apiExecutionEndTime = 0;
         apiExecutionStartTime = 0;

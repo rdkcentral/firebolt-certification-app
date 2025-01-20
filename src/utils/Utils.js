@@ -534,23 +534,12 @@ function getMethodSla(method) {
 /**
  * @module utils
  * @function getGlobalSla
- * @description Retrieves the global SLA value from openRPC
- * @param {object} entOsOpenRpcObject - The OpenRPC object
- * @param {object} message - The message object
+ * @description Retrieves the global SLA value from intent
  * @returns {void} Sets the global SLA value in the environment variable if found.
  */
-async function getGlobalSla(entOsOpenRpcObject) {
-  // Check if the certification is ENTOS or extensionSDK is present in the message
-  // Iterate over the entOsOpenRpcObject and check if sla is available in global list, if so store it in env variable
-  for (const key in entOsOpenRpcObject) {
-    const openRpcJson = entOsOpenRpcObject[key];
-
-    if (openRpcJson.CertificationMetadata && openRpcJson.CertificationMetadata['x-global-sla']) {
-      process.env.SLA_VALUE = openRpcJson.CertificationMetadata['x-global-sla'];
-    } else {
-      process.env.SLA_VALUE = null;
-    }
-  }
+async function getGlobalSla() {
+  // Check if GLOBAL_SLA is not null and set SLA_VALUE accordingly
+  process.env.SLA_VALUE = process.env.GLOBAL_SLA !== null ? process.env.GLOBAL_SLA : null;
 }
 
 export {

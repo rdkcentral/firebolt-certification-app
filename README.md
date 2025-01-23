@@ -194,4 +194,4 @@ To compare API execution time of each API with respect to maximum expected api e
 
 ### Execution
 
-To perform sla-validation, `sla-validation` flag needs to be set to true and passed in intent. Default value is false if not passed. 
+To perform sla-validation, `sla-validation` flag needs to be set to true and passed in intent. Default value is false if not passed.

@@ -181,3 +181,17 @@ To activate Mock Firebolt, there are specific start-up scripts that exist inside
 For pinChallenge and acknowledgeChallenge UI prompts , a timeout of 15s is added so that, if no action is taken when the prompts displays on the screen (i.e; neither yes/no/back button ), the prompts will be automatically dismissed with "null" value as the response.
 The prompt is displayed when the user needs to grant/deny a particular api, or the user has to enter a pin in-case of pinChallenge.
 If user wants to grant an api, yes button is pressed, for deniel - no button, and incase if the user wants to dismiss the prompt without any action, back button is pressed.
+
+## SLA Validation
+
+### Overview
+
+There are some additional checks that can be performed to validate the API response time. The maximum expected api execution time can be passed to FCA via intent using the field `globalSLA`. FCA uses this to compare against the actual api execution time in milliseconds. If no `globalSLA` is passed to FCA, sla-validation is skipped and testcase fails showing appropriate error message.
+
+### Objective
+
+To compare API execution time of each API with respect to maximum expected api execution time passed via intent
+
+### Execution
+
+To perform sla-validation, `sla-validation` flag needs to be set to true and passed in intent. Default value is false if not passed. 

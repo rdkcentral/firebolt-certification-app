@@ -170,8 +170,6 @@ export class Test_Runner {
         } else if (!this.methodFilters.isRpcMethod(methodObj, invokedSdk, communicationMode)) {
           let example;
           if (method.examples && method.examples.length > 0) {
-            // If the method has x-sla field, overwrite the sla value inside process env variable
-            utils.getMethodSla(method);
             overrideParamsFromTestData(method);
             for (let exampleIndex = 0; exampleIndex < method.examples.length; exampleIndex++) {
               let paramValues = [];
@@ -311,6 +309,9 @@ export class Test_Runner {
           const executionStartTime = schemaValidationRes.apiExecutionStartTime;
           const executionEndTime = schemaValidationRes.apiExecutionEndTime;
           const apiValidationResult = this.generateAPIValidationResult(schemaValidationRes, methodObj, executionStartTime, executionEndTime, suitesUuid, hasContentValidationExecuted, schema);
+          if (!apiValidationResult) {
+            throw new Error('Unable to generate validation result for ' + method.name);
+          }
           if (apiValidationResult.pass) {
             successList.push(apiValidationResult.uuid);
           } else if (apiValidationResult.skipped) {

@@ -36,8 +36,8 @@ export default class RunTestHandler extends BaseHandler {
     }
 
     const communicationMode = message.context.communicationMode;
-    if (message.params && message.params['sla-validation']) {
-      process.env.SLA_VALIDATION = message.params['sla-validation'];
+    if (message.params && message.params[CONSTANTS.SLA_VALIDATION_INTENT]) {
+      process.env.SLA_VALIDATION = message.params[CONSTANTS.SLA_VALIDATION_INTENT];
     } else {
       process.env.SLA_VALIDATION = false;
     }

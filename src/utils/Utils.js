@@ -511,28 +511,6 @@ function setSLAStatus(actual, expected) {
 
 /**
  * @module utils
- * @function getMethodSla
- * @description Retrieves the SLA value for a specific method.
- * @param {object} method - The method object.
- * @returns {void} Sets the SLA value in the environment variable if found.
- */
-function getMethodSla(method) {
-  let slaValue = null;
-  if (method.tags) {
-    for (const tag of method.tags) {
-      if (tag['x-sla']) {
-        slaValue = tag['x-sla'];
-        break;
-      }
-    }
-    if (slaValue) {
-      process.env.SLA_VALUE = slaValue;
-    }
-  }
-}
-
-/**
- * @module utils
  * @function getGlobalSla
  * @description Retrieves the global SLA value from intent
  * @returns {void} Sets the global SLA value in the environment variable if found.
@@ -560,7 +538,6 @@ export {
   overrideParamsFromTestData,
   parseXACT,
   formatResponse,
-  getMethodSla,
   getGlobalSla,
   setSLAStatus,
   checkForEnum,

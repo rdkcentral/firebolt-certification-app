@@ -194,4 +194,5 @@ export const CONSTANTS = {
   COMPLEX_VALUE_TO_DISPLAY: 'Expected value too complex to display. Refer openrpc in Specification under Additional Context',
   OBJECT: 'object',
   SLA_VALIDATION_INTENT: 'sla-validation',
+  OPENRPC_URL: 'https://rdkcentral.github.io/firebolt/requirements/latest/specifications/firebolt-open-rpc.json',
 };

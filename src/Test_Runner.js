@@ -308,7 +308,7 @@ export class Test_Runner {
           delete schemaValidationRes.schemaData;
           const executionStartTime = schemaValidationRes.apiExecutionStartTime;
           const executionEndTime = schemaValidationRes.apiExecutionEndTime;
-          const apiValidationResult = this.generateAPIValidationResult(schemaValidationRes, methodObj, executionStartTime, executionEndTime, suitesUuid, hasContentValidationExecuted, schema);
+          const apiValidationResult = this.generateAPIValidationResult(schemaValidationRes, methodObj, executionStartTime, executionEndTime, suitesUuid, schema);
           if (!apiValidationResult) {
             throw new Error('Unable to generate validation result for ' + method.name);
           }
@@ -836,10 +836,7 @@ export class Test_Runner {
     let formattedResponse = null,
       testContext = { params, result: null, error: null },
       formattedError = null;
-
-    if (process.env.OPENRPC_LINK) {
-      testContext.value = process.env.OPENRPC_LINK;
-    }
+    testContext.value = `Specification: ${CONSTANTS.OPENRPC_URL}`;
 
     // Check if the error message contains "Method not found"
     if (parsedResponse && parsedResponse.error && parsedResponse.error.message) {

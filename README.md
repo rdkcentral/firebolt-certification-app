@@ -88,11 +88,17 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
 
 ## Supported Report Parameters
 
-- Schema: Schema validation response of each API’s. whether it passed/failed. Validation is done based on the Open RPC document
-- Content: Behavioural validation can be done.
-- Message: Defines the Schema of the API from the Open RPC document.
-- Actual: The API response which is invoked by FCA on the device is stored in actuals.
-- Error: Based on the schema validation done by FCA, if the schema validation fails then reason of failure is stored in error.
+- Message: Appropriate API validation message
+- Schema Validation: Schema validation object of each API’s. Validation is done based on the Open RPC document
+  - Status: Whether schema validation passed/failed/skipped
+  - Response: The API result/error which is invoked by FCA on the device
+  - Expected enums: To display enums or show appropriate message if enums not available or complex to display
+  - Expected: Expected schema to be displayed in case schema validation failed with error
+  - params: API params
+- SLA Validation: SLA validation object if `sla-validation` field passed as true via intent
+  - Status: Whether SLA validation passed/failed
+  - Actual: Actual API execution time
+  - Expected: Expected API execution time passed using `globalSLA` field via intent
 
 ## PR and merge process
 
@@ -141,6 +147,11 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
   - Sets the the url to use for a PubSub server.
 - registerprovider: 
   - When `registerProvider = false`, then certification app will not register for userInterest provider.
+- globalSLA: 
+  - When `globalSLA = <expected time in milliseconds>`, the value is taken as source of truth to validate actual API execution time of each APIs.
+- sla-validation: 
+  - When `sla-validation = true`, then API execution time of each API is compared against maximum expected api execution time passed via intent parameter `globalSLA`. If no `globalSLA` is passed to FCA, sla-validation is skipped and testcase fails showing appropriate error message.
+
 
 ## Supported PubSub Handlers
 
@@ -181,17 +192,3 @@ To activate Mock Firebolt, there are specific start-up scripts that exist inside
 For pinChallenge and acknowledgeChallenge UI prompts , a timeout of 15s is added so that, if no action is taken when the prompts displays on the screen (i.e; neither yes/no/back button ), the prompts will be automatically dismissed with "null" value as the response.
 The prompt is displayed when the user needs to grant/deny a particular api, or the user has to enter a pin in-case of pinChallenge.
 If user wants to grant an api, yes button is pressed, for deniel - no button, and incase if the user wants to dismiss the prompt without any action, back button is pressed.
-
-## SLA Validation
-
-### Overview
-
-There are some additional checks that can be performed to validate the API response time. The maximum expected api execution time can be passed to FCA via intent using the field `globalSLA`. FCA uses this to compare against the actual api execution time in milliseconds. If no `globalSLA` is passed to FCA, sla-validation is skipped and testcase fails showing appropriate error message.
-
-### Objective
-
-To compare API execution time of each API with respect to maximum expected api execution time passed via intent
-
-### Execution
-
-To perform sla-validation, `sla-validation` flag needs to be set to true and passed in intent. Default value is false if not passed.

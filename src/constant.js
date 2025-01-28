@@ -195,4 +195,5 @@ export const CONSTANTS = {
   OBJECT: 'object',
   SLA_VALIDATION_INTENT: 'sla-validation',
   OPENRPC_URL: 'https://rdkcentral.github.io/firebolt/requirements/latest/specifications/firebolt-open-rpc.json',
+  DEFAULT_SLA: 300,
 };

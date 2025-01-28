@@ -517,7 +517,7 @@ function setSLAStatus(actual, expected) {
  */
 async function getGlobalSla() {
   // Check if GLOBAL_SLA is not null and set SLA_VALUE accordingly
-  process.env.SLA_VALUE = process.env.GLOBAL_SLA !== null ? process.env.GLOBAL_SLA : null;
+  process.env.SLA_VALUE = process.env.GLOBAL_SLA !== null ? process.env.GLOBAL_SLA : CONSTANTS.DEFAULT_SLA !== null ? CONSTANTS.DEFAULT_SLA : null;
 }
 
 export {

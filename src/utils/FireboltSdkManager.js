@@ -210,9 +210,10 @@ class SdkModuleMapper {
         }, {});
 
         const actualKey = sdkImportKeys[module.toLowerCase()];
-
+        console.log(actualKey + ' actualKey')
         if (actualKey) {
           acc[actualKey] = sdkImports[sdkType][actualKey]; // Store with correct casing
+          console.log(JSON.stringify(acc) + ' acc')
         } else {
           console.warn(`Module "${module}" not found in sdkImports for ${sdkType}`);
         }

@@ -201,22 +201,9 @@ class SdkModuleMapper {
 
         // Use the PascalCase module if there's a match; otherwise, use the original module
         const moduleKey = matchingPascalModule || module;
-        console.log(matchingPascalModule + ' matchingPascalModule')
-        console.log(moduleKey + ' moduleKey')
-        // Create a case-insensitive map of sdkImports keys
-        const sdkImportKeys = Object.keys(sdkImports[sdkType]).reduce((map, key) => {
-          map[key.toLowerCase()] = key;
-          return map;
-        }, {});
 
-        const actualKey = sdkImportKeys[module.toLowerCase()];
-        console.log(actualKey + ' actualKey')
-        if (actualKey) {
-          acc[actualKey] = sdkImports[sdkType][actualKey]; // Store with correct casing
-          console.log(JSON.stringify(acc) + ' acc')
-        } else {
-          console.warn(`Module "${module}" not found in sdkImports for ${sdkType}`);
-        }
+        // Add to the accumulator
+        acc[module.toLowerCase()] = sdkImports[sdkType][moduleKey];
         return acc;
       }, {});
     }

@@ -26,7 +26,7 @@ import { CONSTANTS } from '../constant';
 // Contexts for dynamically importing OpenRPC JSON files
 const coreRpcContext = require.context('@firebolt-js/sdk/dist', true, /-open-rpc\.json$/);
 const manageRpcContext = require.context('@firebolt-js/manage-sdk/dist', true, /firebolt-manage-open-rpc\.json$/);
-let discoveryRpcContext;
+export let discoveryRpcContext;
 
 try {
   discoveryRpcContext = require.context('@firebolt-js/discovery-sdk/dist', true, /firebolt-discovery-open-rpc\.json$/);

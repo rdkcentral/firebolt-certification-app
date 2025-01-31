@@ -36,6 +36,12 @@ module.exports = {
     '^CensorData$': '<rootDir>/../src/source/censorData.json',
     '^RunTestHandler$': '<rootDir>/../src/pubsub/handlers/RunTestHandler.js',
   },
+  transform: {
+    '^.+\\.[tj]s$': 'babel-jest',
+    '^.+\\.mjs$': 'babel-jest',
+  },
+  transformIgnorePatterns: ['node_modules/(?!(fca-validation-modules|@firebolt-js/sdk|@firebolt-js/manage-sdk|@firebolt-js/discovery-sdk))'],
+  modulePathIgnorePatterns: ['<rootDir>/src/utils/FireboltSdkManager.js'],
   collectCoverage: true,
   coverageThreshold: {
     global: {
@@ -46,5 +52,5 @@ module.exports = {
     },
   },
   coverageDirectory: 'coverage',
-  transformIgnorePatterns: ['node_modules/(?!(fca-validation-modules))'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 };

@@ -17,9 +17,30 @@
  */
 
 import CONFIG_CONSTANTS from 'config';
-import CORE_OPEN_RPC from '@firebolt-js/sdk/dist/firebolt-core-open-rpc';
-import MANAGE_OPEN_RPC from '@firebolt-js/manage-sdk/dist/firebolt-manage-open-rpc';
-import DISCOVERY_OPEN_RPC from '@firebolt-js/discovery-sdk/dist/firebolt-discovery-open-rpc';
+import * as CoreSDK from '@firebolt-js/sdk';
+import * as ManageSDK from '@firebolt-js/manage-sdk';
+import FireboltSdkManager from './utils/FireboltSdkManager';
+
+/**
+ * Dynamically check if the Discovery SDK is available as a dependency.
+ * If available, require it. Otherwise, log a warning.
+ */
+const dependencies = DEPENDENCIES; // Injected by Webpack DefinePlugin
+let DiscoverySDK;
+
+if (dependencies.hasOwnProperty('@firebolt-js/discovery-sdk')) {
+  try {
+    DiscoverySDK = require('@firebolt-js/discovery-sdk');
+  } catch (error) {
+    console.warn('DiscoverySDK is not available:', error);
+  }
+}
+
+// Initialize the Firebolt SDK Module Loader
+const sdkManager = new FireboltSdkManager(CoreSDK, ManageSDK, DiscoverySDK, dependencies);
+
+const defaultSdks = sdkManager.generateDefaultSdkConstants();
+
 export const CONSTANTS = {
   ALL_SDKS: 'ALL SDKS',
   SDK: 'SDK',
@@ -142,37 +163,13 @@ export const CONSTANTS = {
   EXCLUDED_METHODS_FOR_SDK: [],
   EXCLUDED_METHODS_FOR_TRANSPORT: [],
   REGISTERPROVIDER: 'registerprovider',
+  defaultSDKs: defaultSdks,
   INVOKEPROVIDER: 'invokeProvider',
   INVOKEMANAGER: 'invokeManager',
-  defaultSDKs: [
-    {
-      name: 'Core',
-      openRpc: CORE_OPEN_RPC,
-      validation: function () {
-        return !(process.env.MF_VALUE && !process.env.MOCKOS);
-      },
-      unavailableMessage: 'MockOs is not running',
-    },
-    {
-      name: 'Manage',
-      openRpc: MANAGE_OPEN_RPC,
-      validation: function () {
-        return !(process.env.MF_VALUE && !process.env.MOCKOS);
-      },
-      unavailableMessage: 'MockOs is not running',
-    },
-    {
-      name: 'Discovery',
-      openRpc: DISCOVERY_OPEN_RPC,
-      validation: function () {
-        return !(process.env.MF_VALUE && !process.env.MOCKOS);
-      },
-      unavailableMessage: 'MockOs is not running',
-    },
-  ],
-
   additionalSDKs: [],
   EXCLUDED_METHODS_FOR_MFOS: [],
+  PASCAL_CASED_MODULES: ['SecondScreen', 'SecureStorage', 'ClosedCaptions', 'AcknowledgeChallenge', 'DeveloperTools', 'LifecycleManagement', 'PinChallenge', 'UserGrants', 'VoiceGuidance'],
+  X_MODULE_DESCRIPTIONS: 'x-module-descriptions',
   ...CONFIG_CONSTANTS,
   VERSIONS: 'Versions',
   NO_RESULT_OR_ERROR_MESSAGE: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }',

@@ -94,7 +94,9 @@ export default class MethodFilters {
     if (!process.env.METHODS_TO_BE_EXCLUDED) {
       process.env.METHODS_TO_BE_EXCLUDED = getMethodExcludedListBasedOnMode(communicationMode);
     }
-    const excludedMethodsSet = new Set(process.env.METHODS_TO_BE_EXCLUDED.map((m) => m.toLowerCase()));
+    const excludedMethods = process.env.METHODS_TO_BE_EXCLUDED;
+    const excludedMethodsArray = Array.isArray(excludedMethods) ? excludedMethods : typeof excludedMethods === 'string' ? excludedMethods.split(',') : [];
+    const excludedMethodsSet = new Set(excludedMethodsArray.map((m) => m.toLowerCase()));
     const excludedOnlyDevicesSet = new Set(CONSTANTS.METHODS_TO_BE_EXCLUDED_ONLY_DEVICES.map((m) => m.toLowerCase()));
 
     if (method.name && ((process.env.METHODS_TO_BE_EXCLUDED && excludedMethodsSet.has(method.name.toLowerCase())) || excludedOnlyDevicesSet.has(method.name.toLowerCase()))) {

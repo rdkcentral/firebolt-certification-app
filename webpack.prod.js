@@ -66,6 +66,9 @@ module.exports = {
       // Disabled for production
       useInspector: false,
     }),
+    new webpack.DefinePlugin({
+      DEPENDENCIES: JSON.stringify(require('./package.json').dependencies),
+    }),
   ],
   node: {
     fs: 'empty',

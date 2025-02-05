@@ -20,11 +20,13 @@ import { Lifecycle, Parameters, Discovery } from '@firebolt-js/sdk';
 import { BehaviorSubject } from 'rxjs';
 require('dotenv').config();
 import { CONSTANTS } from './constant';
-import { getschemaValidationDone, getCurrentAppID } from './utils/Utils';
+import { getschemaValidationDone, getCurrentAppID, assignModuleCapitalization } from './utils/Utils';
 const logger = require('./utils/Logger')('LifeCycleHistory.js');
 import FireboltExampleInvoker from './FireboltExampleInvoker';
 import IntentReader from 'IntentReader';
 import PubSubCommunication from './PubSubCommunication';
+import { MODULE_MAP } from './FireboltExampleInvoker';
+import { dereferenceOpenRPC } from './utils/Utils';
 
 let instance = null;
 let lifecycleValidation;
@@ -47,13 +49,14 @@ export default class LifecycleHistory {
 
   async init(appInstance = null) {
     lifecycleValidation = process.env.LIFECYCLE_VALIDATION;
-    await Lifecycle.listen('inactive', this._recordHistory.bind(this, 'Lifecycle.onInactive'));
-    await Lifecycle.listen('foreground', this._recordHistory.bind(this, 'Lifecycle.onForeground'));
-    Lifecycle.listen('background', this._recordHistory.bind(this, 'Lifecycle.onBackground'));
-    Lifecycle.listen('suspended', this._recordHistory.bind(this, 'Lifecycle.onSuspended'));
+    const lifecycleModule = await assignModuleCapitalization('Lifecycle');
+    await Lifecycle.listen('inactive', this._recordHistory.bind(this, lifecycleModule + '.onInactive'));
+    await Lifecycle.listen('foreground', this._recordHistory.bind(this, lifecycleModule + '.onForeground'));
+    Lifecycle.listen('background', this._recordHistory.bind(this, lifecycleModule + '.onBackground'));
+    Lifecycle.listen('suspended', this._recordHistory.bind(this, lifecycleModule + '.onSuspended'));
     Lifecycle.listen('unloading', async (event) => {
       let schemaResult, validationResult;
-      await getschemaValidationDone('Lifecycle.onUnloading', event, 'core').then((res) => {
+      await getschemaValidationDone(lifecycleModule + '.onUnloading', event, 'core').then((res) => {
         schemaResult = res;
       });
       if (schemaResult.errors.length > 0 || event == undefined) {

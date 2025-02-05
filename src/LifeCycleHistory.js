@@ -25,8 +25,6 @@ const logger = require('./utils/Logger')('LifeCycleHistory.js');
 import FireboltExampleInvoker from './FireboltExampleInvoker';
 import IntentReader from 'IntentReader';
 import PubSubCommunication from './PubSubCommunication';
-import { MODULE_MAP } from './FireboltExampleInvoker';
-import { dereferenceOpenRPC } from './utils/Utils';
 
 let instance = null;
 let lifecycleValidation;

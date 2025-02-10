@@ -17,6 +17,7 @@
  */
 
 import LifecycleHistory from '../../src/LifeCycleHistory';
+import { assignModuleCapitalization } from '../../src/utils/Utils';
 const logger = require('../../src/utils/Logger')('LifeCycleHistory.test.js');
 const mockValidationResponse = {
   errors: ['error'],
@@ -25,6 +26,9 @@ const mockValidationResponse = {
 jest.mock('../../src/utils/Utils', () => {
   return {
     getschemaValidationDone: () => {
+      return Promise.resolve(mockValidationResponse);
+    },
+    assignModuleCapitalization: () => {
       return Promise.resolve(mockValidationResponse);
     },
   };

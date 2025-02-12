@@ -5,7 +5,7 @@
 FCA is a lightning based application which can be launched on STB's/TV's.
 It has the following features -
 
-- API’s: This option allows a user to invoke Firebolt API's on device and view the API response in UI.
+- API’s: This option allows a user to invoke Firebolt API's on device and view the API response in UI
 - Lifecycle History: Consists of lifecycle state transition of firecert app.
 - Demos: Having a media player with sample video.
 - Start: This feature enables a user to run Firebolt API's Sanity suite. Results of the suite run will be displayed in UI.

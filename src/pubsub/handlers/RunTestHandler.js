@@ -36,6 +36,15 @@ export default class RunTestHandler extends BaseHandler {
     }
 
     const communicationMode = message.context.communicationMode;
+    if (message.params && message.params[CONSTANTS.SLA_VALIDATION_INTENT]) {
+      process.env.SLA_VALIDATION = message.params[CONSTANTS.SLA_VALIDATION_INTENT];
+    } else {
+      process.env.SLA_VALIDATION = false;
+    }
+    // Set the GLOBAL_SLA environment variable to the globalSLA parameter from the message, or null if it doesn't exist
+    if (message.params && message.params.globalSLA) {
+      process.env.GLOBAL_SLA = message.params.globalSLA || null;
+    }
 
     // Disable PENDING state in suite report via intent override [FIRECERT-838]
     if (message.params && message.params.methodsToBeExcluded && (message.params.certification != null || message.params.certification != undefined)) {

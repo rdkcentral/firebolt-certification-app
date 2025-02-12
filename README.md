@@ -5,7 +5,7 @@
 FCA is a lightning based application which can be launched on STB's/TV's.
 It has the following features -
 
-- API’s: This option allows a user to invoke Firebolt API's on device and view the API response in UI.
+- API’s: This option allows a user to invoke Firebolt API's on device and view the API response in UI
 - Lifecycle History: Consists of lifecycle state transition of firecert app.
 - Demos: Having a media player with sample video.
 - Start: This feature enables a user to run Firebolt API's Sanity suite. Results of the suite run will be displayed in UI.
@@ -88,11 +88,17 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
 
 ## Supported Report Parameters
 
-- Schema: Schema validation response of each API’s. whether it passed/failed. Validation is done based on the Open RPC document
-- Content: Behavioural validation can be done.
-- Message: Defines the Schema of the API from the Open RPC document.
-- Actual: The API response which is invoked by FCA on the device is stored in actuals.
-- Error: Based on the schema validation done by FCA, if the schema validation fails then reason of failure is stored in error.
+- Message: Appropriate API validation message
+- Schema Validation: Schema validation object of each API’s. Validation is done based on the Open RPC document
+  - Status: Whether schema validation passed/failed/skipped
+  - Response: The API result/error which is invoked by FCA on the device
+  - Expected enums: To display enums or show appropriate message if enums not available or complex to display
+  - Expected: Expected schema to be displayed in case schema validation failed with error
+  - params: API params
+- SLA Validation: SLA validation object if `sla-validation` field passed as true via intent
+  - Status: Whether SLA validation passed/failed
+  - Actual: Actual API execution time
+  - Expected: Expected API execution time passed using `globalSLA` field via intent
 
 ## PR and merge process
 
@@ -141,6 +147,11 @@ Mode of execution implies the way in which an API is invoked. There are 2 modes 
   - Sets the the url to use for a PubSub server.
 - registerprovider: 
   - When `registerProvider = false`, then certification app will not register for userInterest provider.
+- globalSLA: 
+  - When `globalSLA = <expected time in milliseconds>`, the value is taken as source of truth to validate actual API execution time of each APIs.
+- sla-validation: 
+  - When `sla-validation = true`, then API execution time of each API is compared against maximum expected api execution time passed via intent parameter `globalSLA`. If no `globalSLA` is passed to FCA, sla-validation is skipped and testcase fails showing appropriate error message.
+
 
 ## Supported PubSub Handlers
 

@@ -520,6 +520,23 @@ async function getGlobalSla() {
   process.env.SLA_VALUE = process.env.GLOBAL_SLA !== null ? process.env.GLOBAL_SLA : CONSTANTS.DEFAULT_SLA !== null ? CONSTANTS.DEFAULT_SLA : null;
 }
 
+/**
+ * @function assignModuleCapitalization
+ * @description To assign module capitalization based on open-rpc.
+ */
+
+async function assignModuleCapitalization(moduleName, execution = 'core') {
+  const [deSchemaList, invokedSdk] = await dereferenceOpenRPC(execution);
+  const dereferenceSchemaList = _.cloneDeep(deSchemaList);
+  for (let methodIndex = 0; dereferenceSchemaList != undefined && methodIndex < dereferenceSchemaList.methods.length; methodIndex++) {
+    const module = dereferenceSchemaList.methods[methodIndex].name.split('.')[0];
+    if (moduleName.toLowerCase() === module.toLowerCase()) {
+      return module;
+    }
+  }
+  return moduleName;
+}
+
 export {
   handleAsyncFunction,
   checkMockOSRestInterface,
@@ -541,4 +558,5 @@ export {
   getGlobalSla,
   setSLAStatus,
   checkForEnum,
+  assignModuleCapitalization,
 };

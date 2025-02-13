@@ -807,7 +807,7 @@ export class Test_Runner {
   generateAPIValidaionResult(result, methodObj, apiExecutionStartTime, apiExecutionEndTime, suitesUuid, hasContentValidationExecuted, schemaMap) {
     let resultState = {
       bool: { passed: false, failed: false, skipped: false, pending: false },
-      state: 'skipped',
+      state: CONSTANTS.REPORT_STATUS.SKIPPED,
     };
     let convertedResponse = null;
     let testContext = null;
@@ -835,17 +835,17 @@ export class Test_Runner {
     };
 
     if (!schemaValidationResult && result.error) {
-      resultState = this.setResultState('failed');
+      resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
       convertedError = { err: parsedResponse };
       // Skipping the test case if the response having skipped message
       if (parsedResponse === CONSTANTS.SKIPPED_MESSAGE) {
-        resultState = this.setResultState('skipped');
+        resultState = this.setResultState(CONSTANTS.REPORT_STATUS.SKIPPED);
         convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: parsedResponse }, null, 1);
       } else {
         convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.SCHEMA_CONTENT_SKIPPED, Message: parsedResponse, Response: null, Expected: schemaMap, params: params }, null, 1);
       }
     } else if (isExceptionMethod) {
-      resultState = this.setResultState('failed');
+      resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
       // Check if parsed response contains an error
       if (parsedResponse && parsedResponse.error) {
         testContext.error = parsedResponse.error;
@@ -865,11 +865,11 @@ export class Test_Runner {
             convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.PASSED, Message: 'Method not implemented by platform', Response: parsedResponse, params: params }, null, 1);
             // If the certification flag is enabled, fail the test case; otherwise, mark it as pending.
             if (!process.env.CERTIFICATION) {
-              resultState = this.setResultState('pending');
+              resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PENDING);
             }
           } else {
             // Exception method, and as per schema, marking the test case as passed.
-            resultState = this.setResultState('passed');
+            resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PASSED);
             convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.PASSED, Message: 'Expected error, received error', Response: parsedResponse, params: params }, null, 1);
           }
         }
@@ -882,18 +882,18 @@ export class Test_Runner {
         convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: 'Expected error, received result', Response: { result: parsedResponse }, Expected: schemaMap, params: params }, null, 1);
       }
     } else {
-      resultState = this.setResultState('passed');
+      resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PASSED);
       // Check if the response is an error
       if (parsedResponse && parsedResponse.error) {
         testContext.error = parsedResponse.result;
         convertedError = { err: parsedResponse };
-        resultState = this.setResultState('failed');
+        resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
         // If error message contains method not found, marking the test case as pending or failed based on certification flag.
         if (doesErrorMessageContainMethodNotFound) {
           convertedResponse = JSON.stringify({ [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: 'Method not implemented by platform', Response: parsedResponse, Expected: schemaMap, params: params }, null, 1);
           // If the certification flag is enabled, fail the test case; otherwise, mark it as pending.
           if (!process.env.CERTIFICATION) {
-            resultState = this.setResultState('pending');
+            resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PENDING);
           }
         }
         // Response did not have error or result
@@ -915,7 +915,7 @@ export class Test_Runner {
         convertedError = { err: CONSTANTS.NO_ERROR_FOUND };
         // If the response is not as per schema, marking the test case as failed else passed.
         if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
-          resultState = this.setResultState('failed');
+          resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
           convertedResponse = JSON.stringify(
             { [CONSTANTS.SCHEMA_VALIDATION]: CONSTANTS.FAILED, Message: schemaValidationResult.errors[0].stack, Response: { result: parsedResponse }, Expected: schemaMap, params: params },
             null,
@@ -957,7 +957,7 @@ export class Test_Runner {
   setResultState(status) {
     const resultState = {
       bool: { passed: false, failed: false, skipped: false, pending: false },
-      state: 'skipped',
+      state: CONSTANTS.REPORT_STATUS.SKIPPED,
     };
     for (const state in resultState.bool) {
       if (state === status) {

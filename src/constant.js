@@ -176,4 +176,10 @@ export const CONSTANTS = {
   SCHEMA_VALIDATION: 'Schema Validation',
   MESSAGE: 'Message',
   RESPONSE: 'Response',
+  REPORT_STATUS: {
+    SKIPPED: 'skipped',
+    FAILED: 'failed',
+    PASSED: 'passed',
+    PENDING: 'pending',
+  },
 };

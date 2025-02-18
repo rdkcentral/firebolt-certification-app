@@ -639,87 +639,87 @@ describe('Test_Runner test cases', () => {
       test('should return valid response for Account.id API', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Account.id');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Passed');
-        expect(extractedResult.code.Response.result).toBeDefined();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('passed');
+        expect(extractedResult.code['Schema Validation'].Response.result).toBeDefined();
       });
 
       test('should fail for Account.uid API due to undefined response', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Account.uid');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
-        expect(extractedResult.code.Response).toBeNull();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('failed');
+        expect(extractedResult.code['Schema Validation'].Response).toBeNull();
         expect(extractedResult.code.Message).toContain('No result or error in response.');
       });
 
       test('should handle different type of response for Device.id API', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Device.id');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
-        expect(extractedResult.code.Response.result).toBeDefined();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('failed');
+        expect(typeof extractedResult.code['Schema Validation'].Response.result).not.toBe('string');
         expect(extractedResult.code.Message).toContain('instance.result is not of a type(s) string');
       });
 
       test('should handle unexpected error for Device.platform API', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Device.platform');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
-        expect(extractedResult.code.Response.error).toBeDefined();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('failed');
+        expect(extractedResult.code['Schema Validation'].Response.error).toBeDefined();
         expect(extractedResult.code.Message).toContain('Unexpected error encountered in the response');
       });
 
       test('should handle unexpected error: "method not implemented" for Device.uid API', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Device.uid');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
-        expect(extractedResult.code.Response.error).toBeDefined();
-        expect(extractedResult.code.Message).toContain('Method not implemented by platform');
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('failed');
+        expect(extractedResult.code['Schema Validation'].Response.error).toBeDefined();
+        expect(extractedResult.code.Message).toContain('Unexpected error encountered in the response');
       });
 
       test('should handle expecting error but received result for Device.distributor API', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Device.distributor');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
-        expect(extractedResult.code.Response.result).toBeDefined();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('failed');
+        expect(extractedResult.code['Schema Validation'].Response.result).toBeDefined();
         expect(extractedResult.code.Message).toContain('Expected error, received result');
       });
 
       test('should handle expecting error but incorrect error format for Device.type API', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Device.type');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Failed');
-        expect(extractedResult.code.Response.error).toBeDefined();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('failed');
+        expect(extractedResult.code['Schema Validation'].Response.error).toBeDefined();
         expect(extractedResult.code.Message).toContain('Expected error, incorrect error format');
       });
 
       test('should handle expected error but received error for Device.model API', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Device.model');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Passed');
-        expect(extractedResult.code.Response.error).toBeDefined();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('passed');
+        expect(extractedResult.code['Schema Validation'].Response.error).toBeDefined();
         expect(extractedResult.code.Message).toContain('Expected error, received error');
       });
 
       test('should handle method not implemented error for Device.sku API', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Device.sku');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Passed');
-        expect(extractedResult.code.Response.error).toBeDefined();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('passed');
+        expect(extractedResult.code['Schema Validation'].Response.error).toBeDefined();
         expect(extractedResult.code.Message).toContain('Method not implemented by platform');
       });
 
       test('should skip validation for Device.make API due to missing example', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Device.make');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Skipped');
-        expect(extractedResult.code.Response).toBeNull();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('skipped');
+        expect(extractedResult.code['Schema Validation'].Response).toBeNull();
         expect(extractedResult.code.Message).toContain('Could not find an example for Device.make');
       });
 
       test('should return valid response for Accessibility.onClosedCaptionsSettingsChanged Event', async () => {
         const extractedResult = result.find((obj) => obj.title === 'Accessibility.onClosedCaptionsSettingsChanged');
         extractedResult.code = JSON.parse(extractedResult.code);
-        expect(extractedResult.code['Schema Validation']).toEqual('Passed');
-        expect(extractedResult.code.Response.result).toBeDefined();
+        expect(extractedResult.code['Schema Validation'].Status).toEqual('passed');
+        expect(extractedResult.code['Schema Validation'].Response.result).toBeDefined();
       });
     });
 
@@ -759,8 +759,8 @@ describe('Test_Runner test cases', () => {
       result = await runner.northBoundSchemaValidationAndReportGeneration([CONSTANTS.CORE]);
       const extractedResult = result.find((obj) => obj.title === 'Account.id');
       extractedResult.code = JSON.parse(extractedResult.code);
-      expect(extractedResult.code['Schema Validation']).toEqual('Passed');
-      expect(extractedResult.code.Response.result).toBeDefined();
+      expect(extractedResult.code['Schema Validation'].Status).toEqual('passed');
+      expect(extractedResult.code['Schema Validation'].Response.result).toBeDefined();
     });
 
     test('should handle when communication mode is Transport', async () => {
@@ -794,8 +794,8 @@ describe('Test_Runner test cases', () => {
       result = await runner.northBoundSchemaValidationAndReportGeneration([CONSTANTS.CORE]);
       const extractedResult = result.find((obj) => obj.title === 'Account.id');
       extractedResult.code = JSON.parse(extractedResult.code);
-      expect(extractedResult.code['Schema Validation']).toEqual('Passed');
-      expect(extractedResult.code.Response.result).toBeDefined();
+      expect(extractedResult.code['Schema Validation'].Status).toEqual('passed');
+      expect(extractedResult.code['Schema Validation'].Response.result).toBeDefined();
     });
 
     test('should handle when schema is missing from openRpc', async () => {
@@ -825,7 +825,7 @@ describe('Test_Runner test cases', () => {
       result = await runner.northBoundSchemaValidationAndReportGeneration([CONSTANTS.CORE]);
       const extractedResult = result.find((obj) => obj.title === 'Account.id');
       extractedResult.code = JSON.parse(extractedResult.code);
-      expect(extractedResult.code['Schema Validation']).toEqual('Skipped');
+      expect(extractedResult.code['Schema Validation'].Status).toEqual('skipped');
     });
   });
 

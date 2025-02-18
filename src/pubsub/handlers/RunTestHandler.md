@@ -6,6 +6,20 @@ For example if we are runing an test suite an array of method parameters are pas
 * [Valid Intent and Response](#valid-intent-and-response)
 * [Invalid Intent and Response](#invalid-intent-and-response)
 
+## SLA Validation
+
+### Overview
+
+There are some additional checks that can be performed to validate the API response time. The maximum expected api execution time can be passed to FCA via intent using the field `globalSLA`. FCA uses this to compare against the actual api execution time in milliseconds. If no `globalSLA` is passed to FCA, sla-validation is skipped and testcase fails showing appropriate error message.
+
+### Objective
+
+To compare API execution time of each API with respect to maximum expected api execution time passed via intent
+
+### Execution
+
+To perform sla-validation, `sla-validation` flag needs to be set to true and passed in intent. Default value is false if not passed.
+
 ## Valid Intent and Response
 
 - Sample Intent of single test
@@ -49,7 +63,7 @@ For example if we are runing an test suite an array of method parameters are pas
     - context: { "source": "device"}
 
 - Optional Intent Fields :
-    - data: { query: {"params": {"certification":true,"exceptionMethods": [{{"method":"authentication.token","param":{"type":"distributor"}},"options":{"clientId":"your-client"}},.......],"methodsToBeExcluded":["accessory.pair",...],"modulesToBeExcluded":["keyboard",....],"metadata": {"target":"your-Target-device","targetVersion":"1c238a16","fireboltVersion":"0.10.0","deviceModel":"your-device-model","devicePartner":"your-device-Partner","fbVersion":"0.10.0"}}}}
+    - data: { query: {"params": {"certification":true,"exceptionMethods": [{{"method":"authentication.token","param":{"type":"distributor"}},"options":{"clientId":"your-client"}},.......],"methodsToBeExcluded":["accessory.pair",...],"modulesToBeExcluded":["keyboard",....],"metadata": {"target":"your-Target-device","targetVersion":"1c238a16","fireboltVersion":"0.10.0","deviceModel":"your-device-model","devicePartner":"your-device-Partner","fbVersion":"0.10.0","sla-validation":true,"globalSLA":20}}}}
 
 ## Invalid Intent and Response
 
@@ -82,3 +96,4 @@ For example if we are runing an test suite an array of method parameters are pas
 - Sample response
 
             Invalid lifecycle method passed
+

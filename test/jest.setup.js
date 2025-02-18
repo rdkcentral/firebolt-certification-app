@@ -161,6 +161,28 @@ jest.mock('../src/constant', () => {
     NO_RESULT_OR_ERROR_MESSAGE: 'No result or error in response. eg: {jsonrpc: "2.0", id: x }',
     SCHEMA_VALIDATION: 'Schema Validation',
     PLATFORM_LIST: [],
+    RESPONSE: 'Response',
+    MESSAGE: 'Message',
+    REPORT_STATUS: {
+      SKIPPED: 'skipped',
+      FAILED: 'failed',
+      PASSED: 'passed',
+      PENDING: 'pending',
+    },
+    SLA_VALIDATION: 'SLA Validation',
+    SLA_VALIDATION_FAILED_MESSAGE: 'Method response time exceeded expected value',
+    SLA_VALIDATION_SKIPPED_MESSAGE: 'Unable to perform SLA Validation because expected response time not present in openrpc',
+    STATUS: 'Status',
+    FAST: 'fast',
+    ACTUAL: 'Actual',
+    EXPECTED: 'Expected',
+    STRING: 'string',
+    UNDEFINED: 'undefined',
+    COMPLEX_VALUE_TO_DISPLAY: 'Expected value too complex to display. Refer openrpc in Specification under Additional Context',
+    OBJECT: 'object',
+    SLA_VALIDATION_INTENT: 'sla-validation',
+    OPENRPC_URL: 'https://rdkcentral.github.io/firebolt/requirements/latest/specifications/firebolt-open-rpc.json',
+    DEFAULT_SLA: 300,
   };
 
   return { CONSTANTS };

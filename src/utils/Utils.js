@@ -420,6 +420,107 @@ async function overrideParamsFromTestData(methodObj) {
 }
 
 /**
+ * @module utils
+ * @function formatResponse
+ * @description Formats the response based on the given parameters.
+ * @param {string} message - The message to include in the response.
+ * @param {string} schemaStatus - The status of schema validation.
+ * @param {object} response - The response data.
+ * @param {object} params - Additional parameters
+ * @param {object|null} expected - The expected data (optional, defaults to null).
+ * @param {boolean} sla_validation - Whether to include SLA validation (optional, defaults to false).
+ * @param {number|null} apiInvocationDuration - The actual API invocation duration in milli seconds (defaults to null when sla_validation is false).
+ * @param {number|null} slaValue - The expected SLA value in  illi seconds (optional, defaults to null when sla_validation is false).
+ * @param {number|null} enumValue - The enum value if present (optional, defaults to null).
+ * @returns {object} The formatted response.
+ */
+function formatResponse(message, schemaStatus, response, params, expected = null, sla_validation = false, apiInvocationDuration = null, slaValue = null, enumValue = null) {
+  const formattedResponse = {
+    [CONSTANTS.MESSAGE]: message,
+    [CONSTANTS.SCHEMA_VALIDATION]: {
+      [CONSTANTS.STATUS]: schemaStatus,
+      [CONSTANTS.RESPONSE]: response,
+    },
+  };
+
+  if (expected !== null) {
+    formattedResponse[CONSTANTS.SCHEMA_VALIDATION].Expected = expected;
+  }
+  if (enumValue !== null) {
+    formattedResponse[CONSTANTS.SCHEMA_VALIDATION]['Expected enums'] = enumValue;
+  }
+  if (params !== null) {
+    formattedResponse[CONSTANTS.SCHEMA_VALIDATION].params = params;
+  }
+
+  if (sla_validation) {
+    formattedResponse[CONSTANTS.SLA_VALIDATION] = {
+      [CONSTANTS.STATUS]: setSLAStatus(apiInvocationDuration, slaValue),
+      [CONSTANTS.ACTUAL]: apiInvocationDuration + 'ms',
+      [CONSTANTS.EXPECTED]: slaValue ? slaValue + 'ms' : null,
+    };
+  }
+
+  return JSON.stringify(formattedResponse, null, 1);
+}
+
+/**
+ * @module utils
+ * @function checkForEnum
+ * @description Checks if the schema contains enum values and provides relevant information.
+ * @param {object} schemaMap - The schema map containing properties and result information.
+ * @returns {string|null} A message indicating enum validation or complex value, or null if not applicable.
+ */
+function checkForEnum(schemaMap) {
+  if (schemaMap && schemaMap.properties && schemaMap.properties.result && schemaMap.properties.result.enum) {
+    return `Response was validated to be one of: [ ${schemaMap.properties.result.enum} ]`;
+  } else {
+    const checkNestedEnums = (obj) => {
+      if (obj && typeof obj === CONSTANTS.OBJECT) {
+        return Object.values(obj).some((value) => value && typeof value === CONSTANTS.OBJECT && (value.enum || checkNestedEnums(value)));
+      }
+      return false;
+    };
+
+    if (schemaMap.properties && checkNestedEnums(schemaMap.properties.result)) {
+      return CONSTANTS.COMPLEX_VALUE_TO_DISPLAY;
+    } else {
+      return null;
+    }
+  }
+}
+
+/**
+ * @module utils
+ * @function setSLAStatus
+ * @description Determines the SLA status based on actual and expected values.
+ * @param {number} actual - The actual value (e.g., API invocation duration).
+ * @param {number} expected - The expected value (e.g., SLA threshold).
+ * @returns {string} The SLA status ("PASSED", "FAILED", or "SKIPPED").
+ */
+
+function setSLAStatus(actual, expected) {
+  if (expected == null) {
+    return CONSTANTS.REPORT_STATUS.SKIPPED;
+  } else if (actual < expected) {
+    return CONSTANTS.REPORT_STATUS.PASSED;
+  } else {
+    return CONSTANTS.REPORT_STATUS.FAILED;
+  }
+}
+
+/**
+ * @module utils
+ * @function getGlobalSla
+ * @description Retrieves the global SLA value from intent
+ * @returns {void} Sets the global SLA value in the environment variable if found.
+ */
+async function getGlobalSla() {
+  // Check if GLOBAL_SLA is not null and set SLA_VALUE accordingly
+  process.env.SLA_VALUE = process.env.GLOBAL_SLA !== null ? process.env.GLOBAL_SLA : CONSTANTS.DEFAULT_SLA !== null ? CONSTANTS.DEFAULT_SLA : null;
+}
+
+/**
  * @function assignModuleCapitalization
  * @description To assign module capitalization based on open-rpc.
  */
@@ -453,5 +554,9 @@ export {
   findTypeInOneOF,
   overrideParamsFromTestData,
   parseXACT,
+  formatResponse,
+  getGlobalSla,
+  setSLAStatus,
+  checkForEnum,
   assignModuleCapitalization,
 };

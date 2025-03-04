@@ -197,7 +197,6 @@ export default class Card extends lng.Component {
           console.log('result : ' + JSON.stringify(result));
         } else {
           result = await FireboltExampleInvoker.get().invoke(this._params.sdk, methodCap, paramValues, handleResult);
-          console.log('result for ex : ' + JSON.stringify(result));
         }
       }
       showResult(result);

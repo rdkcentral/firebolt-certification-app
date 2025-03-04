@@ -194,6 +194,7 @@ export default class Card extends lng.Component {
         const paramNames = method.params ? method.params.map((p) => p.name) : [];
         if (this.methodFilters.isRpcMethod(method, CONSTANTS.CORE.toLowerCase())) {
           result = await FireboltTransportInvoker.get().invoke(method.name, paramValueForTransport, paramNames);
+          console.log('result : ' + JSON.stringify(result));
         } else {
           result = await FireboltExampleInvoker.get().invoke(this._params.sdk, methodCap, paramValues, handleResult);
         }

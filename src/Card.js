@@ -139,9 +139,11 @@ export default class Card extends lng.Component {
   }
 
   async $invokeMethod() {
+    console.log('Inside $invokeMethod');
     const methodSignature = this._getMethodSignature();
     const exampleIndex = this._params.exampleIndex ? this._params.exampleIndex : 0;
     logger.info('call methodSignature ' + methodSignature, 'invokeMethod');
+    console.log('call methodSignature ' + methodSignature);
     const method = this._params.method;
     const methodCap = method.name.charAt(0).toUpperCase() + method.name.slice(1);
     try {
@@ -156,6 +158,7 @@ export default class Card extends lng.Component {
       }
       logger.info(`${methodCap}(${paramValues.join(', ')})`, 'invokeMethod');
       const showResult = (result) => {
+        console.log('Inside showResult' + JSON.stringify(result));
         this.tag('ResultText').patch({ color: 0xff000000 });
         this.tag('ResultText').text.text = JSON.stringify(censorData(methodCap, result), null, 2);
       };
@@ -173,16 +176,19 @@ export default class Card extends lng.Component {
       if (!process.env.MOCKOS && process.env.MF_VALUE) {
         result = CONSTANTS.MOCKOS_UNAVAILABLE;
       } else if (externalInvokerKey) {
+        console.log('Inside External Invoker');
         const jsonObj = {};
         for (const param of example.params) {
           jsonObj[param.name] = param.value;
         }
         const invoker = new externalInvokers[externalInvokerKey]();
         const message = { params: { method: method.name, methodParams: jsonObj } };
+        console.log('Calling  Invoker');
         result = await invoker
           .invoke(message)
           .then((response) => {
             logger.info('invoker success response : ' + JSON.stringify(response.apiResponse.result));
+            console.log('invoker success response : ' + JSON.stringify(response));
             return response.apiResponse.result;
           })
           .catch((err) => {
@@ -193,9 +199,13 @@ export default class Card extends lng.Component {
         paramValueForTransport = example.params.map((p) => p.value);
         const paramNames = method.params ? method.params.map((p) => p.name) : [];
         if (this.methodFilters.isRpcMethod(method, CONSTANTS.CORE.toLowerCase())) {
+          console.log('Inside IF');
           result = await FireboltTransportInvoker.get().invoke(method.name, paramValueForTransport, paramNames);
+          console.log('result : ' + JSON.stringify(result));
         } else {
+          console.log('Inside ELSE');
           result = await FireboltExampleInvoker.get().invoke(this._params.sdk, methodCap, paramValues, handleResult);
+          console.log('result for exampleInvoker: ' + JSON.stringify(result));
         }
       }
       showResult(result);
@@ -206,6 +216,7 @@ export default class Card extends lng.Component {
   }
 
   _getFocused() {
+    console.log('Inside ExecuteButton');
     return this.tag('ExecuteButton');
   }
 }

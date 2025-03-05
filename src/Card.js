@@ -176,17 +176,19 @@ export default class Card extends lng.Component {
       if (!process.env.MOCKOS && process.env.MF_VALUE) {
         result = CONSTANTS.MOCKOS_UNAVAILABLE;
       } else if (externalInvokerKey) {
+        console.log('Inside External Invoker');
         const jsonObj = {};
         for (const param of example.params) {
           jsonObj[param.name] = param.value;
         }
         const invoker = new externalInvokers[externalInvokerKey]();
         const message = { params: { method: method.name, methodParams: jsonObj } };
+        console.log('Calling  Invoker');
         result = await invoker
           .invoke(message)
           .then((response) => {
             logger.info('invoker success response : ' + JSON.stringify(response.apiResponse.result));
-            console.log('invoker success response : ' + JSON.stringify(response.apiResponse.result));
+            console.log('invoker success response : ' + JSON.stringify(response));
             return response.apiResponse.result;
           })
           .catch((err) => {
@@ -197,9 +199,11 @@ export default class Card extends lng.Component {
         paramValueForTransport = example.params.map((p) => p.value);
         const paramNames = method.params ? method.params.map((p) => p.name) : [];
         if (this.methodFilters.isRpcMethod(method, CONSTANTS.CORE.toLowerCase())) {
+          console.log('Inside IF');
           result = await FireboltTransportInvoker.get().invoke(method.name, paramValueForTransport, paramNames);
           console.log('result : ' + JSON.stringify(result));
         } else {
+          console.log('Inside ELSE');
           result = await FireboltExampleInvoker.get().invoke(this._params.sdk, methodCap, paramValues, handleResult);
           console.log('result for exampleInvoker: ' + JSON.stringify(result));
         }

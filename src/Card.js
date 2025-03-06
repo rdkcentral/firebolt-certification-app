@@ -184,16 +184,17 @@ export default class Card extends lng.Component {
         const invoker = new externalInvokers[externalInvokerKey]();
         const message = { params: { method: method.name, methodParams: jsonObj } };
         console.log('Calling  Invoker');
-        result = await invoker
-          .invoke(message)
+        result = await Promise.resolve(invoker.invoke(message))
           .then((response) => {
             console.log('Full invoker response:', response); // Log full response first
-            if (response && response.apiResponse) {
-              console.log('invoker success response:', JSON.stringify(response.apiResponse.result));
-              return response.apiResponse.result;
+            // Check different response structures
+            if (response?.apiResponse?.result !== undefined) {
+              return response.apiResponse.result; // Case 1: If response contains apiResponse.result
+            } else if (response?.result !== undefined) {
+              return response.result; // Case 2: If response contains result
             } else {
-              console.log('Unexpected response structure:', JSON.stringify(response));
-              return response;
+              console.warn('Unexpected response structure:', JSON.stringify(response));
+              return response; // Default case
             }
           })
           .catch((err) => {

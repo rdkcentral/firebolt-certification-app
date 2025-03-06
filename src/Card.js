@@ -187,11 +187,17 @@ export default class Card extends lng.Component {
         result = await invoker
           .invoke(message)
           .then((response) => {
-            logger.info('invoker success response : ' + JSON.stringify(response.apiResponse.result));
-            console.log('invoker success response : ' + JSON.stringify(response));
-            return response.apiResponse.result;
+            console.log('Full invoker response:', response); // Log full response first
+            if (response && response.apiResponse) {
+              console.log('invoker success response:', JSON.stringify(response.apiResponse.result));
+              return response.apiResponse.result;
+            } else {
+              console.log('Unexpected response structure:', JSON.stringify(response));
+              return response;
+            }
           })
           .catch((err) => {
+            console.error('Error in invoke:', err);
             return err;
           });
       } else {

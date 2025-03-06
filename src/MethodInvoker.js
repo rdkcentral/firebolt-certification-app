@@ -124,6 +124,8 @@ export class MethodInvoker {
       return this.formatResult(message.task, response, err, schemaValidationResult, params, schemaMap);
     } else {
       if (err === undefined) {
+        console.log('response', JSON.stringify(response));
+        console.log('Type of response', typeof response);
         return { jsonrpc: '2.0', result: response, id: process.env.ID };
       } else {
         return { jsonrpc: '2.0', error: err, id: process.env.ID };

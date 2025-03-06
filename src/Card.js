@@ -186,6 +186,7 @@ export default class Card extends lng.Component {
         console.log('Calling  Invoker');
         result = await Promise.resolve(invoker.invoke(message))
           .then((response) => {
+            console.log('Type of Response : ' + typeof response);
             console.log('Full invoker response:', response); // Log full response first
             // Check different response structures
             if (response?.apiResponse?.result !== undefined) {

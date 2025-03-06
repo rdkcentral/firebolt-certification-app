@@ -191,7 +191,7 @@ export default class Card extends lng.Component {
             if (response?.apiResponse?.result !== undefined) {
               return response.apiResponse.result; // Case 1: If response contains apiResponse.result
             } else if (response?.result !== undefined) {
-              return response.result; // Case 2: If response contains result
+              return JSON.stringify(response.result, null, 2); // Case 2: If response contains result
             } else {
               console.warn('Unexpected response structure:', JSON.stringify(response));
               return response; // Default case

@@ -117,20 +117,15 @@ async function getschemaValidationDone(name, response, sdkType) {
  * @param response - response of the method
  */
 function censorData(methodName, response) {
-  console.log('censorDataJson MethodNames', methodName);
-  console.log('censorDataJson Response', JSON.stringify(response));
   try {
     const json = censorDataJson;
     methodName = methodName.charAt(0).toUpperCase() + methodName.slice(1);
     if (methodName in json) {
-      console.log('Yes MethodName in jsons', methodName);
       for (let i = 0; i < json[methodName].field.length; i++) {
         if (response[json[methodName].field[i]]) {
-          console.log('Yes response[json[methodName].field[i]]', response[json[methodName].field[i]]);
           const response_length = response[json[methodName].field[i]].length;
           response[json[methodName].field[i]] = response[json[methodName].field[i]].replace(response[json[methodName].field[i]].substring(2, response_length - 2), '*******');
         } else if (json[methodName].field[i] === '' && typeof response == 'string') {
-          console.log("Inside else because json[methodName].field[i] === '' && typeof response == 'string':::", json[methodName].field[i]);
           const response_length = response.length;
           response = response.replace(response.substring(2, response_length - 2), '*******');
         }

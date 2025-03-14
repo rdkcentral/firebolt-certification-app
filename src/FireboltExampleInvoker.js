@@ -103,7 +103,11 @@ export default class FireboltExampleInvoker {
       const methodFn = moduleClass[updatedMethod];
       if (methodFn) {
         // use SDK
-        return await methodFn(...params);
+        const functionString = methodFn.toString();
+        const parameterString = functionString.match(/\(([^)]*)\)/)[1];
+        const parameterNames = parameterString.split(',').map(param => param.trim());
+        const paramsArray = parameterNames.map(paramName => params.hasOwnProperty(paramName) ? params[paramName] : undefined);
+        return await methodFn(...paramsArray);
       } else if (method.match(/^on[A-Z][a-zA-Z]+$/) && moduleClass.listen) {
         let id;
         console.log('params:', params);

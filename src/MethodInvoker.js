@@ -50,11 +50,7 @@ export class MethodInvoker {
       if (method.includes('set') && method.split('.')[1] !== 'set' && !CONSTANTS.METHODS_T0_IGNORE_WHICH_HAS_SET.includes(method)) {
         paramlist.push(params['value']);
       } else {
-        for (const key in params) {
-          if (params.hasOwnProperty(key)) {
-            paramlist.push(params[key]);
-          }
-        }
+        paramlist = params;
       }
       params = paramlist;
     } else if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {

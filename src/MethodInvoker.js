@@ -46,7 +46,7 @@ export class MethodInvoker {
     mode = message.action != null && message.action != 'NA' ? message.action : mode;
 
     if (process.env.COMMUNICATION_MODE === CONSTANTS.SDK) {
-      const paramlist = [];
+      let paramlist = [];
       if (method.includes('set') && method.split('.')[1] !== 'set' && !CONSTANTS.METHODS_T0_IGNORE_WHICH_HAS_SET.includes(method)) {
         paramlist.push(params['value']);
       } else {

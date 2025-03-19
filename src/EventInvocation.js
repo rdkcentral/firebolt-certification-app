@@ -117,129 +117,7 @@ class EventHandler {
   }
 }
 
-export class EventInvocation {
-  // This method accepts the message params and return the listener response and schema response
-  async northBoundEventHandling(message) {
-    const eventParams = message.params;
-    const moduleWithEventName = eventParams.event;
-    const params = eventParams.params;
-    const [listenerResponse, uniqueListenerKey] = await this.registerEvent(moduleWithEventName, params);
-    const registrationResponse = {};
-
-    if (process.env.STANDALONE == true) {
-      registrationResponse['eventName'] = moduleWithEventName;
-      registrationResponse['eventListenerId'] = uniqueListenerKey;
-      if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
-        registrationResponse['eventListenerResponse'] = {
-          listenerResponse: listenerResponse,
-          error: null,
-        };
-        // Handling not supported api to check error schema if it gives a valid response
-        let schemaValidationResult = {};
-        let schemaValidationStatus = CONSTANTS.PASS;
-        if (message.params.isNotSupportedApi == true) {
-          schemaValidationResult = errorSchemaCheck(listenerResponse);
-          schemaValidationStatus = CONSTANTS.FAIL;
-        }
-        registrationResponse['eventListenerSchemaResult'] = {
-          status: schemaValidationStatus,
-          eventSchemaResult: schemaValidationResult,
-        };
-        eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
-      } else {
-        if (CONSTANTS.ERROR_LIST.includes(listenerResponse.message)) {
-          const responseCode = CONSTANTS.STATUS_CODE[3];
-          registrationResponse['responseCode'] = responseCode;
-        }
-        registrationResponse['eventListenerResponse'] = { result: null, error: listenerResponse };
-        // In case of error, validate error against errorschema
-        const schemaValidationResult = errorSchemaCheck(listenerResponse);
-        if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
-          registrationResponse['eventListenerSchemaResult'] = {
-            status: CONSTANTS.FAIL,
-            eventSchemaResult: {},
-          };
-        } else {
-          registrationResponse['eventListenerSchemaResult'] = {
-            status: CONSTANTS.PASS,
-            eventSchemaResult: schemaValidationResult,
-          };
-        }
-      }
-      return registrationResponse;
-    } else {
-      registrationResponse['jsonrpc'] = '2.0';
-      registrationResponse['id'] = null;
-      if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
-        registrationResponse['id'] = listenerResponse;
-        registrationResponse['result'] = {
-          listening: true,
-          event: moduleWithEventName,
-        };
-        eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
-      } else {
-        registrationResponse['error'] = listenerResponse;
-      }
-      return registrationResponse;
-    }
-  }
-
-  // This method will listen to event and capture the event response after triggering
-  async registerEvent(moduleWithEventName, params) {
-    const paramlist = [];
-    const [sdkType, module] = this.getSdkTypeAndModule(moduleWithEventName);
-    const [schemaList, invokedSdk] = await dereferenceOpenRPC(sdkType);
-    const EventHandlerObject = new EventHandler(moduleWithEventName, schemaList);
-    const eventName = EventHandlerObject.getEventName();
-    let eventRegistrationID;
-    for (const key in params) {
-      if (params.hasOwnProperty(key)) {
-        paramlist.push(params[key]);
-      }
-    }
-    // To prevent uncaught exceptions when it received invalid eventName or module names.
-    try {
-      if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
-        if (moduleWithEventName.includes('_')) {
-          moduleWithEventName = moduleWithEventName.split('_')[1];
-        }
-
-        const { id, promise } = await this.registerEventInTransport(moduleWithEventName);
-        const result = await promise;
-        if (result && result.message) {
-          throw result.message;
-        }
-
-        // Recieving Event Response
-        const emit = (eventId, value) => {
-          if (id == eventId && !CONSTANTS.EXCLUDED_VALUES.includes(value)) {
-            EventHandlerObject.handleEvent(value);
-          }
-        };
-        Transport.addEventEmitter(emit);
-        eventRegistrationID = id;
-      } else if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
-        const resolvedModule = MODULE_MAP[sdkType][module];
-        eventRegistrationID = await resolvedModule.listen(eventName, (result) => {
-          if (!CONSTANTS.EXCLUDED_VALUES.includes(result)) {
-            EventHandlerObject.handleEvent(result);
-          }
-        });
-      }
-    } catch (err) {
-      logger.error('No listener Id :' + JSON.stringify(err), 'registerEvent');
-      return [err, null];
-    }
-
-    // Construct unique key for event handler. A UUID can be added to the key to make it more unique.
-    if (eventRegistrationID) {
-      const eventNameWithoutSDK = moduleWithEventName.includes('_') ? moduleWithEventName.split('_')[1] : moduleWithEventName;
-      const uniqueListenerKey = eventNameWithoutSDK + '-' + eventRegistrationID;
-      eventHandlerMap.set(uniqueListenerKey, EventHandlerObject);
-      return [eventRegistrationID, uniqueListenerKey];
-    }
-  }
-
+class EventRegistrationInterface {
   clearEventListeners(event) {
     try {
       const [sdkType, module] = this.getSdkTypeAndModule(event);
@@ -322,6 +200,133 @@ export class EventInvocation {
   getHistory(eventKey, numberOfEvents) {
     return eventHandlerMap.get(eventKey).getHistory(numberOfEvents);
   }
+  // Registering the event in Transport mode
+  async registerEventInTransport(methodName, params) {
+    const module = methodName.split('.')[0].toLowerCase();
+    const method = methodName.split('.')[1];
+    const args = Object.assign({ listen: true }, params);
+    return await Transport.listen(module, method, args);
+  }
+}
+
+// 1.0 Implementation
+class EventRegistration1_0 extends EventRegistrationInterface {
+  // This method will listen to event and capture the event response after triggering
+  async registerEvent(moduleWithEventName, params) {
+    const paramlist = [];
+    const [sdkType, module] = this.getSdkTypeAndModule(moduleWithEventName);
+    const [schemaList, invokedSdk] = await dereferenceOpenRPC(sdkType);
+    const EventHandlerObject = new EventHandler(moduleWithEventName, schemaList);
+    const eventName = EventHandlerObject.getEventName();
+    let eventRegistrationID;
+    for (const key in params) {
+      if (params.hasOwnProperty(key)) {
+        paramlist.push(params[key]);
+      }
+    }
+    // To prevent uncaught exceptions when it received invalid eventName or module names.
+    try {
+      if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
+        if (moduleWithEventName.includes('_')) {
+          moduleWithEventName = moduleWithEventName.split('_')[1];
+        }
+
+        const { id, promise } = await this.registerEventInTransport(moduleWithEventName);
+        const result = await promise;
+        if (result && result.message) {
+          throw result.message;
+        }
+
+        // Recieving Event Response
+        const emit = (eventId, value) => {
+          if (id == eventId && !CONSTANTS.EXCLUDED_VALUES.includes(value)) {
+            EventHandlerObject.handleEvent(value);
+          }
+        };
+        Transport.addEventEmitter(emit);
+        eventRegistrationID = id;
+      } else if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
+        const resolvedModule = MODULE_MAP[sdkType][module];
+        eventRegistrationID = await resolvedModule.listen(eventName, (result) => {
+          if (!CONSTANTS.EXCLUDED_VALUES.includes(result)) {
+            EventHandlerObject.handleEvent(result);
+          }
+        });
+      }
+    } catch (err) {
+      logger.error('No listener Id :' + JSON.stringify(err), 'registerEvent');
+      return [err, null];
+    }
+
+    // Construct unique key for event handler. A UUID can be added to the key to make it more unique.
+    if (eventRegistrationID) {
+      const eventNameWithoutSDK = moduleWithEventName.includes('_') ? moduleWithEventName.split('_')[1] : moduleWithEventName;
+      const uniqueListenerKey = eventNameWithoutSDK + '-' + eventRegistrationID;
+      eventHandlerMap.set(uniqueListenerKey, EventHandlerObject);
+      return [eventRegistrationID, uniqueListenerKey];
+    }
+  }
+
+  eventListenerResponseHandler(moduleWithEventName, response) {
+    const [listenerResponse, uniqueListenerKey] = response;
+    const registrationResponse = {};
+    if (process.env.STANDALONE == true) {
+      registrationResponse['eventName'] = moduleWithEventName;
+      registrationResponse['eventListenerId'] = uniqueListenerKey;
+      if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
+        registrationResponse['eventListenerResponse'] = {
+          listenerResponse: listenerResponse,
+          error: null,
+        };
+        // Handling not supported api to check error schema if it gives a valid response
+        let schemaValidationResult = {};
+        let schemaValidationStatus = CONSTANTS.PASS;
+        if (message.params.isNotSupportedApi == true) {
+          schemaValidationResult = errorSchemaCheck(listenerResponse);
+          schemaValidationStatus = CONSTANTS.FAIL;
+        }
+        registrationResponse['eventListenerSchemaResult'] = {
+          status: schemaValidationStatus,
+          eventSchemaResult: schemaValidationResult,
+        };
+        eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
+      } else {
+        if (CONSTANTS.ERROR_LIST.includes(listenerResponse.message)) {
+          const responseCode = CONSTANTS.STATUS_CODE[3];
+          registrationResponse['responseCode'] = responseCode;
+        }
+        registrationResponse['eventListenerResponse'] = { result: null, error: listenerResponse };
+        // In case of error, validate error against errorschema
+        const schemaValidationResult = errorSchemaCheck(listenerResponse);
+        if (schemaValidationResult && schemaValidationResult.errors && schemaValidationResult.errors.length > 0) {
+          registrationResponse['eventListenerSchemaResult'] = {
+            status: CONSTANTS.FAIL,
+            eventSchemaResult: {},
+          };
+        } else {
+          registrationResponse['eventListenerSchemaResult'] = {
+            status: CONSTANTS.PASS,
+            eventSchemaResult: schemaValidationResult,
+          };
+        }
+      }
+      return registrationResponse;
+    } else {
+      registrationResponse['jsonrpc'] = '2.0';
+      registrationResponse['id'] = null;
+      if (listenerResponse && Number.isInteger(listenerResponse) && listenerResponse > 0) {
+        registrationResponse['id'] = listenerResponse;
+        registrationResponse['result'] = {
+          listening: true,
+          event: moduleWithEventName,
+        };
+        eventHandlerMap.get(uniqueListenerKey).setEventListener(registrationResponse);
+      } else {
+        registrationResponse['error'] = listenerResponse;
+      }
+      return registrationResponse;
+    }
+  }
 
   // Return the event response object for the eventName passed as the param
   getEventResponse(message) {
@@ -344,12 +349,186 @@ export class EventInvocation {
       return { error: { code: 'FCAError', message: 'Event response fetch error: ' + err.message } };
     }
   }
+}
+
+// 2.0 Implementation
+class EventRegistration2_0 extends EventRegistrationInterface {
+  // This method will listen to an event and capture the event response after triggering
+  async registerEvent(moduleWithEventName, params) {
+    const paramlist = Object.values(params); // Simplified parameter extraction
+    const [sdkType, module] = this.getSdkTypeAndModule(moduleWithEventName);
+    const [schemaList] = await dereferenceOpenRPC(sdkType);
+    const EventHandlerObject = new EventHandler(moduleWithEventName, schemaList);
+    const eventName = EventHandlerObject.getEventName();
+    let eventRegistrationID;
+
+    try {
+      if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
+        eventRegistrationID = await this.handleTransportEvent(moduleWithEventName, eventName);
+      } else if (process.env.COMMUNICATION_MODE === CONSTANTS.SDK) {
+        eventRegistrationID = await this.handleSdkEvent(sdkType, module, eventName, moduleWithEventName);
+      }
+    } catch (err) {
+      logger.error(`Error registering event: ${JSON.stringify(err)}`, 'registerEvent');
+      return [err, null];
+    }
+
+    if (eventRegistrationID) {
+      firebolt2EventHandler.set(moduleWithEventName, EventHandlerObject);
+      return null;
+    }
+  }
+
+  // Helper method to handle Transport events
+  async handleTransportEvent(moduleWithEventName, eventName) {
+    const { id, promise } = await this.registerEventInTransport(moduleWithEventName);
+    const result = await promise;
+
+    if (result.message) throw new Error(result.message);
+
+    Transport.addEventEmitter((eventId, value) => {
+      if (id === eventId && !CONSTANTS.EXCLUDED_VALUES.includes(value)) {
+        this.eventHandler(moduleWithEventName, value);
+      }
+    });
+
+    return id;
+  }
+
+  // Helper method to handle SDK events
+  async handleSdkEvent(sdkType, module, eventName, moduleWithEventName) {
+    const resolvedModule = MODULE_MAP[sdkType][module];
+    return await resolvedModule.listen(eventName, (result) => {
+      if (!CONSTANTS.EXCLUDED_VALUES.includes(result)) {
+        this.eventHandler(moduleWithEventName, result);
+      }
+    });
+  }
+
+  // Construct a unique listener key
+  constructUniqueListenerKey(moduleWithEventName, eventRegistrationID) {
+    const eventNameWithoutSDK = moduleWithEventName.includes('_') ? moduleWithEventName.split('_')[1] : moduleWithEventName;
+    return `${eventNameWithoutSDK}-${eventRegistrationID}`;
+  }
+
+  // Handle event responses
+  eventHandler(eventName, response) {
+    eventHistory.push({
+      eventName,
+      eventResponse: response,
+      eventTime: new Date(),
+    });
+  }
+
+  // Return the event response object for the eventName passed as the param
+  getEventResponse(message) {
+    try {
+      const eventName = message.params.event;
+      const filteredEvents = eventHistory.filter((event) => event.eventName === eventName);
+      return filteredEvents.length ? filteredEvents[filteredEvents.length - 1] : { [eventName]: null };
+    } catch (err) {
+      return { error: { code: 'FCAError', message: `Event response fetch error: ${err.message}` } };
+    }
+  }
+  eventListenerResponseHandler(moduleWithEventName, response) {
+    let count = 1;
+    const registrationResponse = {};
+    registrationResponse['jsonrpc'] = '2.0';
+    registrationResponse['id'] = null;
+    if (response === null) {
+      registrationResponse['id'] = count++;
+      registrationResponse['result'] = response;
+      firebolt2EventHandler.get(moduleWithEventName).setEventListener(registrationResponse);
+    } else {
+      registrationResponse['error'] = response;
+    }
+    return registrationResponse;
+  }
+}
+
+export class EventInvocation {
+  constructor() {
+    this.eventRegistration = this.initializeEventRegistration();
+  }
+
+  // Initialize Event Registration based on SDK version
+  initializeEventRegistration() {
+    const sdkVersion = '2.0'; // process.env.FIREBOLT_VERSION;
+    if (sdkVersion === '1.0') {
+      return new EventRegistration1_0();
+    } else if (sdkVersion === '2.0') {
+      return new EventRegistration2_0();
+    } else {
+      throw new Error('Invalid SDK version');
+    }
+  }
+
+  async northBoundEventHandling(message) {
+    try {
+      const { event: moduleWithEventName, params } = message.params;
+      const response = await this.eventRegistration.registerEvent(moduleWithEventName, params);
+      return this.eventRegistration.eventListenerResponseHandler(moduleWithEventName, response);
+    } catch (error) {
+      return this.handleError('northBoundEventHandling', error);
+    }
+  }
+
+  clearEventListeners(event) {
+    try {
+      return this.eventRegistration.clearEventListeners(event);
+    } catch (error) {
+      return this.handleError('clearEventListeners', error);
+    }
+  }
+
+  // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
+  clearAllListeners() {
+    try {
+      return this.eventRegistration.clearAllListeners();
+    } catch (error) {
+      return this.handleError('clearAllListeners', error);
+    }
+  }
+
+  // Check and assign SDK type from incoming params
+  getSdkTypeAndModule(moduleWithEventName) {
+    try {
+      return this.eventRegistration.getSdkTypeAndModule(moduleWithEventName);
+    } catch (error) {
+      return this.handleError('getSdkTypeAndModule', error);
+    }
+  }
+
+  // Return event history for the provided unique key
+  getHistory(eventKey, numberOfEvents) {
+    try {
+      return this.eventRegistration.getHistory(eventKey, numberOfEvents);
+    } catch (error) {
+      return this.handleError('getHistory', error);
+    }
+  }
+
+  // Return the event response object for the eventName passed as the param
+  getEventResponse(message) {
+    try {
+      return this.eventRegistration.getEventResponse(message);
+    } catch (error) {
+      return this.handleError('getEventResponse', error);
+    }
+  }
 
   // Registering the event in Transport mode
   async registerEventInTransport(methodName, params) {
-    const module = methodName.split('.')[0].toLowerCase();
-    const method = methodName.split('.')[1];
-    const args = Object.assign({ listen: true }, params);
-    return await Transport.listen(module, method, args);
+    try {
+      return await this.eventRegistration.registerEventInTransport(methodName, params);
+    } catch (error) {
+      return this.handleError('registerEventInTransport', error);
+    }
+  }
+
+  // Centralized error handling
+  handleError(methodName, error) {
+    console.error(`Error in ${methodName}:`, error.message);
+    return { error: { code: 'FCAError', message: `Error in ${methodName}: ${error.message}` } };
   }
 }

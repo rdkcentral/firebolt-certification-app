@@ -126,7 +126,7 @@ export default class App extends Base {
     process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
     process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
     process.env.REGION = new URLSearchParams(appUrl.search).get('region');
-    process.env.FIREBOLT_VERSION = new URLSearchParams(appUrl.search).get('fireboltVersion');
+    process.env.SDK_VERSION = new URLSearchParams(appUrl.search).get('sdkVersion');
 
     if (platform) {
       process.env.PLATFORM = platform;
@@ -426,16 +426,6 @@ export default class App extends Base {
 
           if (query.params.hasOwnProperty(CONSTANTS.REGISTERPROVIDER)) {
             process.env.REGISTERPROVIDER = query.params.registerprovider;
-          }
-
-          if (query.params.hasOwnProperty('fireboltVersion')) {
-            const fireboltVersion = query.params.fireboltVersion;
-            process.env.FIREBOLT_VERSION = fireboltVersion;
-            // TODO: Load firebolt 2.0 fca sdk if sdkVersion is 2.0
-            // if (fireboltVersion === '2.0') {
-            //   // Load Firebolt 2.0 FCA SDK
-            //   window.location.href = `https:<FCA_URL>/index.html?sdkVersion=${fireboltVersion}`;
-            // }
           }
 
           // Set the pubSub URL if present

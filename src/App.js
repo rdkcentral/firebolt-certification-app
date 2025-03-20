@@ -126,6 +126,7 @@ export default class App extends Base {
     process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
     process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
     process.env.REGION = new URLSearchParams(appUrl.search).get('region');
+    process.env.SDK_VERSION = new URLSearchParams(appUrl.search).get('sdkVersion');
 
     if (platform) {
       process.env.PLATFORM = platform;

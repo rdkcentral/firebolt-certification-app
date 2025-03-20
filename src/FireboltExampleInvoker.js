@@ -131,7 +131,7 @@ export default class FireboltExampleInvoker {
   }
 
   /**
- * Extracts and Maps function parameters to values in a provided object.
+ *  Extracts and maps function parameters by comparing them with the SDK function
  *
  * @param {Function} methodFn - Function to analyze.
  * @param {Object} params - Object with parameter values.

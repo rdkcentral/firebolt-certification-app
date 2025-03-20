@@ -130,6 +130,13 @@ export default class FireboltExampleInvoker {
     throw Error('Could not find an example for ' + methodName);
   }
 
+  /**
+ * Extracts and Maps function parameters to values in a provided object.
+ *
+ * @param {Function} methodFn - Function to analyze.
+ * @param {Object} params - Object with parameter values.
+ * @returns {Array} Array of values or `undefined`.
+ */
   getParamsListFromSDK(methodFn, params) {
     const functionString = methodFn.toString();
     const parameterString = functionString.match(/\(([^)]*)\)/)[1];

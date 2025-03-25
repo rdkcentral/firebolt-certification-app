@@ -103,6 +103,9 @@ export default class FireboltExampleInvoker {
       const methodFn = moduleClass[updatedMethod];
       if (methodFn) {
         // use SDK
+        if (typeof params === 'object') {
+          params = this.getParamsListFromSDK(methodFn, params);
+        }
         return await methodFn(...params);
       } else if (method.match(/^on[A-Z][a-zA-Z]+$/) && moduleClass.listen) {
         let id;
@@ -125,5 +128,20 @@ export default class FireboltExampleInvoker {
       }
     }
     throw Error('Could not find an example for ' + methodName);
+  }
+
+  /**
+   *  Extracts and maps function parameters by comparing them with the SDK function
+   *
+   * @param {Function} methodFn - Function to analyze.
+   * @param {Object} params - Object with parameter values.
+   * @returns {Array} Array of values or `undefined`.
+   */
+  getParamsListFromSDK(methodFn, params) {
+    const functionString = methodFn.toString();
+    const parameterString = functionString.match(/\(([^)]*)\)/)[1];
+    const parameterNames = parameterString.split(',').map((param) => param.trim());
+    const paramsArray = parameterNames.map((paramName) => (params.hasOwnProperty(paramName) ? params[paramName] : undefined));
+    return paramsArray;
   }
 }

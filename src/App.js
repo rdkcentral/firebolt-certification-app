@@ -86,9 +86,9 @@ export default class App extends Base {
     eventEmitter.on('showToast', (message, state, tagName, color) => {
       this.showToast(message, state, tagName, color);
     });
-    eventEmitter.on('accessibilityCheck', (voiceAnnouncement) => {
-      this.accessibilityCheck(voiceAnnouncement);
-    });
+    // eventEmitter.on('accessibilityCheck', (voiceAnnouncement) => {
+    //   this.accessibilityCheck(voiceAnnouncement);
+    // });
     this.toastStates = [];
     this.overlayed = false;
     this.overlayDismissTimer = null;
@@ -96,7 +96,7 @@ export default class App extends Base {
     const lifecycle = new URLSearchParams(appUrl.search).get('lifecycle_validation');
     const mfValue = new URLSearchParams(window.location.search).get('mf');
     const voiceGuidanceOverride = new URLSearchParams(window.location.search).get('voiceGuidance');
-    this.accessibilityCheck(voiceGuidanceOverride === 'false' ? CONSTANTS.DISABLE_VOICE_ANNOUNCEMENT : CONSTANTS.ENABLE_VOICE_ANNOUNCEMENT);
+    // this.accessibilityCheck(voiceGuidanceOverride === 'false' ? CONSTANTS.DISABLE_VOICE_ANNOUNCEMENT : CONSTANTS.ENABLE_VOICE_ANNOUNCEMENT);
     const platform = new URLSearchParams(appUrl.search).get('platform');
     const testContext = new URLSearchParams(window.location.search).get('testContext');
     const reportingId = new URLSearchParams(appUrl.search).get('reportingId');
@@ -337,12 +337,12 @@ export default class App extends Base {
   }
 
   // Fetching closedCaptions value and setting the announcer to true if the closed caption is enabled
-  async accessibilityCheck(voiceAnnouncementVal) {
-    const closedCaptionsMethodVal = await Accessibility.voiceGuidance();
-    if (closedCaptionsMethodVal && closedCaptionsMethodVal.enabled == true && voiceAnnouncementVal) {
-      this.announcerEnabled = voiceAnnouncementVal;
-    }
-  }
+  // async accessibilityCheck(voiceAnnouncementVal) {
+  //   const closedCaptionsMethodVal = await Accessibility.voiceGuidance();
+  //   if (closedCaptionsMethodVal && closedCaptionsMethodVal.enabled == true && voiceAnnouncementVal) {
+  //     this.announcerEnabled = voiceAnnouncementVal;
+  //   }
+  // }
 
   // Set AppID
   async setAppId(appId) {

@@ -103,7 +103,7 @@ export default class FireboltExampleInvoker {
       const methodFn = moduleClass[updatedMethod];
       if (methodFn) {
         // use SDK
-        if (typeof params === 'object') {
+        if (typeof params === 'object' && !Array.isArray(params)) {
           params = this.getParamsListFromSDK(methodFn, params);
         }
         return await methodFn(...params);

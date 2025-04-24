@@ -1,75 +1,68 @@
+// Import the API calls configuration from a JSON file
 import websocketCalls from './config/websocketCalls.json';
 
-export function startLoadTest(webSocketUrl) {
-  console.log('Starting Load Test with WebSocket URL:', webSocketUrl);
+/**
+ * Starts the Load Test by sending WebSocket messages at a fixed interval.
+ * @param {string} webSocketUrl - The WebSocket server URL.
+ * @param {function} logCallback - Callback function to log messages.
+ */
+export function startLoadTest(webSocketUrl, logCallback) {
+  logCallback('Starting Load Test with WebSocket URL: ' + webSocketUrl);
   const ws = new WebSocket(webSocketUrl);
   const apiCalls = websocketCalls.apiCalls;
   let callIndex = 0;
   let sentMessages = 0;
   let receivedResponses = 0;
 
-  // Map to track sent messages and their IDs
-  const requestMap = new Map();
-
+  // Handle WebSocket connection open event
   ws.onopen = () => {
-    console.log('WebSocket connection established for Load Testing.');
+    logCallback('WebSocket connection established for Load Testing.');
 
-    // Send alternating JSON-RPC API calls every 10ms
+    // Send API calls at a fixed interval (10ms)
     const intervalId = setInterval(() => {
       if (ws.readyState === WebSocket.OPEN) {
-        // Clone the API call and assign a unique ID
         const apiCall = { ...apiCalls[callIndex] };
         apiCall.id = Date.now() + Math.random(); // Generate a unique ID
         const message = JSON.stringify(apiCall);
 
-        // Send the API call and track it in the request map
         ws.send(message);
-        console.log(`Sent: ${message}`);
-        requestMap.set(apiCall.id, apiCall);
-        callIndex = (callIndex + 1) % apiCalls.length;
+        logCallback(`Sent: ${message}`);
+        callIndex = (callIndex + 1) % apiCalls.length; // Cycle through API calls
         sentMessages++;
       }
     }, 10);
 
     // Stop the test after 10 minutes
-    setTimeout(
-      () => {
-        clearInterval(intervalId);
-        ws.close();
-        console.log(`Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
-        if (sentMessages !== receivedResponses) {
-          console.error('Mismatch between sent messages and received responses!');
-        }
-      },
-      10 * 60 * 1000
-    ); // 10 minutes
+    setTimeout(() => {
+      clearInterval(intervalId);
+      ws.close();
+      logCallback(`Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+    }, 10 * 60 * 1000); // 10 minutes
   };
 
+  // Handle WebSocket message event
   ws.onmessage = (event) => {
-    const response = JSON.parse(event.data);
-    console.log(`Received: ${event.data}`);
-
-    // Validate the response by matching the ID
-    if (requestMap.has(response.id)) {
-      console.log(`Response matched for ID: ${response.id}`);
-      requestMap.delete(response.id); // Remove the matched request
-      receivedResponses++;
-    } else {
-      console.error(`Unexpected response ID: ${response.id}`);
-    }
+    logCallback(`Received: ${event.data}`);
   };
 
+  // Handle WebSocket error event
   ws.onerror = (error) => {
-    console.error('WebSocket error:', error);
+    logCallback('WebSocket error: ' + error.message);
   };
 
+  // Handle WebSocket close event
   ws.onclose = () => {
-    console.log('WebSocket connection closed.');
+    logCallback('WebSocket connection closed.');
   };
 }
 
-export function startStressTest(webSocketUrl) {
-  console.log('Starting Stress Test with WebSocket URL:', webSocketUrl);
+/**
+ * Starts the Stress Test by sending WebSocket messages at a dynamically decreasing interval.
+ * @param {string} webSocketUrl - The WebSocket server URL.
+ * @param {function} logCallback - Callback function to log messages.
+ */
+export function startStressTest(webSocketUrl, logCallback = console.log) {
+  logCallback('Starting Stress Test with WebSocket URL: ' + webSocketUrl);
   const ws = new WebSocket(webSocketUrl);
   const apiCalls = websocketCalls.apiCalls;
   let sentMessages = 0;
@@ -79,21 +72,20 @@ export function startStressTest(webSocketUrl) {
   // Map to track sent messages and their IDs
   const requestMap = new Map();
 
+  // Handle WebSocket connection open event
   ws.onopen = () => {
-    console.log('WebSocket connection established for Stress Testing.');
+    logCallback('WebSocket connection established for Stress Testing.');
 
     // Function to send a random API call
     const sendRandomApiCall = () => {
       if (ws.readyState === WebSocket.OPEN) {
-        // Select a random API call
         const randomIndex = Math.floor(Math.random() * apiCalls.length);
         const apiCall = { ...apiCalls[randomIndex] };
         apiCall.id = Date.now() + Math.random(); // Generate a unique ID
         const message = JSON.stringify(apiCall);
 
-        // Send the API call and track it in the request map
         ws.send(message);
-        console.log(`Sent: ${message}`);
+        logCallback(`Sent: ${message}`);
         requestMap.set(apiCall.id, apiCall);
         sentMessages++;
       }
@@ -106,7 +98,7 @@ export function startStressTest(webSocketUrl) {
       // Adjust the interval every 30 seconds
       setTimeout(() => {
         interval = Math.max(100, interval - 100); // Decrease interval by 0.1 seconds (100ms), minimum 100ms
-        console.log(`Adjusting interval to ${interval}ms`);
+        logCallback(`Adjusting interval to ${interval}ms`);
         clearInterval(intervalId);
         intervalId = setInterval(sendRandomApiCall, interval);
       }, 30000); // Every 30 seconds
@@ -115,44 +107,48 @@ export function startStressTest(webSocketUrl) {
     let intervalId = setInterval(adjustInterval, interval);
 
     // Stop the test after 30 minutes
-    setTimeout(
-      () => {
-        clearInterval(intervalId);
-        ws.close();
-        console.log(`Stress Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
-        if (sentMessages !== receivedResponses) {
-          console.error('Mismatch between sent messages and received responses!');
-        }
-      },
-      30 * 60 * 1000
-    ); // 30 minutes
+    setTimeout(() => {
+      clearInterval(intervalId);
+      ws.close();
+      logCallback(`Stress Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+      if (sentMessages !== receivedResponses) {
+        logCallback('Mismatch between sent messages and received responses!');
+      }
+    }, 30 * 60 * 1000); // 30 minutes
   };
 
+  // Handle WebSocket message event
   ws.onmessage = (event) => {
     const response = JSON.parse(event.data);
-    console.log(`Received: ${event.data}`);
+    logCallback(`Received: ${event.data}`);
 
-    // Validate the response by matching the ID
     if (requestMap.has(response.id)) {
-      console.log(`Response matched for ID: ${response.id}`);
-      requestMap.delete(response.id); // Remove the matched request
+      logCallback(`Response matched for ID: ${response.id}`);
+      requestMap.delete(response.id);
       receivedResponses++;
     } else {
-      console.error(`Unexpected response ID: ${response.id}`);
+      logCallback(`Unexpected response ID: ${response.id}`);
     }
   };
 
+  // Handle WebSocket error event
   ws.onerror = (error) => {
-    console.error('WebSocket error:', error);
+    logCallback('WebSocket error: ' + error.message);
   };
 
+  // Handle WebSocket close event
   ws.onclose = () => {
-    console.log('WebSocket connection closed.');
+    logCallback('WebSocket connection closed.');
   };
 }
 
-export function startSoakTest(webSocketUrl) {
-  console.log('Starting Soak Test with WebSocket URL:', webSocketUrl);
+/**
+ * Starts the Soak Test by sending two WebSocket messages at random intervals within a 5-second window.
+ * @param {string} webSocketUrl - The WebSocket server URL.
+ * @param {function} logCallback - Callback function to log messages.
+ */
+export function startSoakTest(webSocketUrl, logCallback = console.log) {
+  logCallback('Starting Soak Test with WebSocket URL: ' + webSocketUrl);
   const ws = new WebSocket(webSocketUrl);
   const apiCalls = websocketCalls.apiCalls;
   let sentMessages = 0;
@@ -161,21 +157,20 @@ export function startSoakTest(webSocketUrl) {
   // Map to track sent messages and their IDs
   const requestMap = new Map();
 
+  // Handle WebSocket connection open event
   ws.onopen = () => {
-    console.log('WebSocket connection established for Soak Testing.');
+    logCallback('WebSocket connection established for Soak Testing.');
 
     // Function to send a random API call
     const sendRandomApiCall = () => {
       if (ws.readyState === WebSocket.OPEN) {
-        // Select a random API call
         const randomIndex = Math.floor(Math.random() * apiCalls.length);
         const apiCall = { ...apiCalls[randomIndex] };
         apiCall.id = Date.now() + Math.random(); // Generate a unique ID
         const message = JSON.stringify(apiCall);
 
-        // Send the API call and track it in the request map
         ws.send(message);
-        console.log(`Sent: ${message}`);
+        logCallback(`Sent: ${message}`);
         requestMap.set(apiCall.id, apiCall);
         sentMessages++;
       }
@@ -199,38 +194,109 @@ export function startSoakTest(webSocketUrl) {
     const intervalId = setInterval(scheduleCalls, 5000);
 
     // Stop the test after 30 minutes
-    setTimeout(
-      () => {
-        clearInterval(intervalId);
-        ws.close();
-        console.log(`Soak Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
-        if (sentMessages !== receivedResponses) {
-          console.error('Mismatch between sent messages and received responses!');
-        }
-      },
-      30 * 60 * 1000
-    ); // 30 minutes
+    setTimeout(() => {
+      clearInterval(intervalId);
+      ws.close();
+      logCallback(`Soak Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+      if (sentMessages !== receivedResponses) {
+        logCallback('Mismatch between sent messages and received responses!');
+      }
+    }, 30 * 60 * 1000); // 30 minutes
   };
 
+  // Handle WebSocket message event
   ws.onmessage = (event) => {
     const response = JSON.parse(event.data);
-    console.log(`Received: ${event.data}`);
+    logCallback(`Received: ${event.data}`);
 
-    // Validate the response by matching the ID
     if (requestMap.has(response.id)) {
-      console.log(`Response matched for ID: ${response.id}`);
-      requestMap.delete(response.id); // Remove the matched request
+      logCallback(`Response matched for ID: ${response.id}`);
+      requestMap.delete(response.id);
       receivedResponses++;
     } else {
-      console.error(`Unexpected response ID: ${response.id}`);
+      logCallback(`Unexpected response ID: ${response.id}`);
     }
   };
 
+  // Handle WebSocket error event
   ws.onerror = (error) => {
-    console.error('WebSocket error:', error);
+    logCallback('WebSocket error: ' + error.message);
   };
 
+  // Handle WebSocket close event
   ws.onclose = () => {
-    console.log('WebSocket connection closed.');
+    logCallback('WebSocket connection closed.');
   };
 }
+
+import { startLoadTest } from '../../src/loadTesting';
+
+describe('startLoadTest', () => {
+  let mockWebSocket;
+  let logCallback;
+
+  beforeEach(() => {
+    mockWebSocket = {
+      readyState: 1,
+      send: jest.fn(),
+      close: jest.fn(),
+      onopen: null,
+      onmessage: null,
+      onerror: null,
+      onclose: null,
+    };
+    global.WebSocket = jest.fn(() => mockWebSocket);
+    logCallback = jest.fn();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('should establish WebSocket connection and send messages', () => {
+    startLoadTest('ws://localhost:9998', logCallback);
+
+    // Simulate WebSocket open
+    mockWebSocket.onopen();
+
+    expect(logCallback).toHaveBeenCalledWith('WebSocket connection established for Load Testing.');
+    expect(mockWebSocket.send).toHaveBeenCalled();
+  });
+
+  test('should log received messages', () => {
+    startLoadTest('ws://localhost:9998', logCallback);
+
+    // Simulate WebSocket open
+    mockWebSocket.onopen();
+
+    // Simulate receiving a message
+    const message = JSON.stringify({ id: 1, result: 'success' });
+    mockWebSocket.onmessage({ data: message });
+
+    expect(logCallback).toHaveBeenCalledWith(`Received: ${message}`);
+  });
+
+  test('should handle WebSocket errors', () => {
+    startLoadTest('ws://localhost:9998', logCallback);
+
+    // Simulate WebSocket error
+    const error = new Error('WebSocket error');
+    mockWebSocket.onerror(error);
+
+    expect(logCallback).toHaveBeenCalledWith('WebSocket error: WebSocket error');
+  });
+
+  test('should close WebSocket after 10 minutes', () => {
+    jest.useFakeTimers();
+    startLoadTest('ws://localhost:9998', logCallback);
+
+    // Simulate WebSocket open
+    mockWebSocket.onopen();
+
+    jest.advanceTimersByTime(10 * 60 * 1000); // 10 minutes
+
+    expect(mockWebSocket.close).toHaveBeenCalled();
+    expect(logCallback).toHaveBeenCalledWith(expect.stringContaining('Load Testing completed.'));
+    jest.useRealTimers();
+  });
+});

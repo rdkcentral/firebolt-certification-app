@@ -27,6 +27,11 @@ import LifeCycleHistoryView from './LifecycleHistoryView';
 import LifecycleHistory from './LifeCycleHistory';
 import Launchfca from './Launchfca';
 import modules from 'externalViews';
+import { startLoadTest } from './loadTesting';
+import LoadTestingView from './LoadTestingView';
+import { startStressTest } from './loadTesting';
+import StressTestingView from './StressTestingView';
+import SoakTestingView from './SoakTestingView';
 
 require('dotenv').config();
 let additionalRpcExamples = null;
@@ -76,6 +81,10 @@ export default class MenuBuilder {
       {
         title: 'Start',
         menus: this.constructFireboltCertificationMenu(),
+      },
+      {
+        title: 'Performance Testing',
+        menus: this.constructPerformanceTestingMenu(),
       },
     ];
 
@@ -184,6 +193,31 @@ export default class MenuBuilder {
     const transportMenuObject = this.createMenuObject(CONSTANTS.TRANSPORT, transportMenuArray);
     certificationMenu.push(transportMenuObject);
     return [...certificationMenu];
+  }
+
+  constructPerformanceTestingMenu() {
+    const submenuItems = [
+      this.createSubMenuObject(
+        'Load Testing',
+        LoadTestingView,
+        'LoadTesting',
+        CONSTANTS.PERFORMANCE
+      ),
+      this.createSubMenuObject(
+        'Stress Testing',
+        StressTestingView,
+        'StressTesting',
+        CONSTANTS.PERFORMANCE
+      ),
+      this.createSubMenuObject(
+        'Soak Testing',
+        SoakTestingView, // Use the SoakTestingView component
+        'SoakTesting',
+        CONSTANTS.PERFORMANCE
+      ),
+    ];
+
+    return submenuItems;
   }
 
   addPolymorphicPullExamples(methodObj) {

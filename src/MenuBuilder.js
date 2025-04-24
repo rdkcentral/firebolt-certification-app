@@ -197,18 +197,8 @@ export default class MenuBuilder {
 
   constructPerformanceTestingMenu() {
     const submenuItems = [
-      this.createSubMenuObject(
-        'Load Testing',
-        LoadTestingView,
-        'LoadTesting',
-        CONSTANTS.PERFORMANCE
-      ),
-      this.createSubMenuObject(
-        'Stress Testing',
-        StressTestingView,
-        'StressTesting',
-        CONSTANTS.PERFORMANCE
-      ),
+      this.createSubMenuObject('Load Testing', LoadTestingView, 'LoadTesting', CONSTANTS.PERFORMANCE),
+      this.createSubMenuObject('Stress Testing', StressTestingView, 'StressTesting', CONSTANTS.PERFORMANCE),
       this.createSubMenuObject(
         'Soak Testing',
         SoakTestingView, // Use the SoakTestingView component

@@ -32,14 +32,17 @@ export function startLoadTest(webSocketUrl) {
     }, 10);
 
     // Stop the test after 10 minutes
-    setTimeout(() => {
-      clearInterval(intervalId);
-      ws.close();
-      console.log(`Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
-      if (sentMessages !== receivedResponses) {
-        console.error('Mismatch between sent messages and received responses!');
-      }
-    }, 10 * 60 * 1000); // 10 minutes
+    setTimeout(
+      () => {
+        clearInterval(intervalId);
+        ws.close();
+        console.log(`Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+        if (sentMessages !== receivedResponses) {
+          console.error('Mismatch between sent messages and received responses!');
+        }
+      },
+      10 * 60 * 1000
+    ); // 10 minutes
   };
 
   ws.onmessage = (event) => {
@@ -112,14 +115,17 @@ export function startStressTest(webSocketUrl) {
     let intervalId = setInterval(adjustInterval, interval);
 
     // Stop the test after 30 minutes
-    setTimeout(() => {
-      clearInterval(intervalId);
-      ws.close();
-      console.log(`Stress Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
-      if (sentMessages !== receivedResponses) {
-        console.error('Mismatch between sent messages and received responses!');
-      }
-    }, 30 * 60 * 1000); // 30 minutes
+    setTimeout(
+      () => {
+        clearInterval(intervalId);
+        ws.close();
+        console.log(`Stress Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+        if (sentMessages !== receivedResponses) {
+          console.error('Mismatch between sent messages and received responses!');
+        }
+      },
+      30 * 60 * 1000
+    ); // 30 minutes
   };
 
   ws.onmessage = (event) => {
@@ -193,14 +199,17 @@ export function startSoakTest(webSocketUrl) {
     const intervalId = setInterval(scheduleCalls, 5000);
 
     // Stop the test after 30 minutes
-    setTimeout(() => {
-      clearInterval(intervalId);
-      ws.close();
-      console.log(`Soak Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
-      if (sentMessages !== receivedResponses) {
-        console.error('Mismatch between sent messages and received responses!');
-      }
-    }, 30 * 60 * 1000); // 30 minutes
+    setTimeout(
+      () => {
+        clearInterval(intervalId);
+        ws.close();
+        console.log(`Soak Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+        if (sentMessages !== receivedResponses) {
+          console.error('Mismatch between sent messages and received responses!');
+        }
+      },
+      30 * 60 * 1000
+    ); // 30 minutes
   };
 
   ws.onmessage = (event) => {

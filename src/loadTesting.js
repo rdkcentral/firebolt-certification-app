@@ -12,7 +12,7 @@ export function startLoadTest(webSocketUrl, logCallback) {
   const apiCalls = websocketCalls.apiCalls;
   let callIndex = 0;
   let sentMessages = 0;
-  let receivedResponses = 0;
+  const receivedResponses = 0;
 
   // Handle WebSocket connection open event
   ws.onopen = () => {
@@ -33,11 +33,14 @@ export function startLoadTest(webSocketUrl, logCallback) {
     }, 10);
 
     // Stop the test after 10 minutes
-    setTimeout(() => {
-      clearInterval(intervalId);
-      ws.close();
-      logCallback(`Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
-    }, 10 * 60 * 1000); // 10 minutes
+    setTimeout(
+      () => {
+        clearInterval(intervalId);
+        ws.close();
+        logCallback(`Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+      },
+      10 * 60 * 1000
+    ); // 10 minutes
   };
 
   // Handle WebSocket message event
@@ -107,14 +110,17 @@ export function startStressTest(webSocketUrl, logCallback = console.log) {
     let intervalId = setInterval(adjustInterval, interval);
 
     // Stop the test after 30 minutes
-    setTimeout(() => {
-      clearInterval(intervalId);
-      ws.close();
-      logCallback(`Stress Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
-      if (sentMessages !== receivedResponses) {
-        logCallback('Mismatch between sent messages and received responses!');
-      }
-    }, 30 * 60 * 1000); // 30 minutes
+    setTimeout(
+      () => {
+        clearInterval(intervalId);
+        ws.close();
+        logCallback(`Stress Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+        if (sentMessages !== receivedResponses) {
+          logCallback('Mismatch between sent messages and received responses!');
+        }
+      },
+      30 * 60 * 1000
+    ); // 30 minutes
   };
 
   // Handle WebSocket message event
@@ -194,14 +200,17 @@ export function startSoakTest(webSocketUrl, logCallback = console.log) {
     const intervalId = setInterval(scheduleCalls, 5000);
 
     // Stop the test after 30 minutes
-    setTimeout(() => {
-      clearInterval(intervalId);
-      ws.close();
-      logCallback(`Soak Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
-      if (sentMessages !== receivedResponses) {
-        logCallback('Mismatch between sent messages and received responses!');
-      }
-    }, 30 * 60 * 1000); // 30 minutes
+    setTimeout(
+      () => {
+        clearInterval(intervalId);
+        ws.close();
+        logCallback(`Soak Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+        if (sentMessages !== receivedResponses) {
+          logCallback('Mismatch between sent messages and received responses!');
+        }
+      },
+      30 * 60 * 1000
+    ); // 30 minutes
   };
 
   // Handle WebSocket message event
@@ -228,8 +237,6 @@ export function startSoakTest(webSocketUrl, logCallback = console.log) {
     logCallback('WebSocket connection closed.');
   };
 }
-
-import { startLoadTest } from '../../src/loadTesting';
 
 describe('startLoadTest', () => {
   let mockWebSocket;

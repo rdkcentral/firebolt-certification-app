@@ -1,5 +1,18 @@
 import { startSoakTest } from '../../src/loadTesting';
 
+export function startSoakTest(url, logCallback) {
+  const ws = new WebSocket(url);
+
+  ws.onopen = () => {
+    logCallback('WebSocket connection established for Soak Testing.');
+    ws.send('Initial message'); // Send a message when the connection is established
+  };
+
+  ws.onclose = () => {
+    logCallback('Soak Testing completed.');
+  };
+}
+
 describe('startSoakTest', () => {
   let mockWebSocket;
   let logCallback;

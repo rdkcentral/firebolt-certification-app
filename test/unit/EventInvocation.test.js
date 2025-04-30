@@ -766,12 +766,12 @@ describe('EventInvocation', () => {
 
     test('should return event object with response - single event fired', () => {
       currentCallback({ foo: 'bar1' });
-      const message = { params: { event: 'accessibility.onClosedCaptionsSettingsChanged-6' } };
+      const message = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
       const expectedResponse = {
-        eventName: 'modulechanged',
+        eventName: 'mocksdk_mockmodule.onmodulechanged',
         eventListenerId: 6,
         eventResponse: { foo: 'bar1' },
-        eventTime: '2023-05-10T14:27:35.806Z',
+        eventTime: '2025-03-20T09:45:10.557Z',
       };
       result = eventInvocation.getEventResponse(message);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
@@ -786,9 +786,9 @@ describe('EventInvocation', () => {
 
     test('should return event object with last response - multiple events fired', () => {
       currentCallback({ foo: 'bar2' });
-      const message = { params: { event: 'accessibility.onClosedCaptionsSettingsChanged-6' } };
+      const message = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
       const expectedResponse = {
-        eventName: 'modulechanged',
+        eventName: 'mocksdk_mockmodule.onmodulechanged',
         eventListenerId: 6,
         eventResponse: { foo: 'bar2' },
         eventTime: '2023-05-10T14:18:18.347Z',

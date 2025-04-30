@@ -1,5 +1,27 @@
 import { startLoadTest } from '../../src/loadTesting';
 
+export function startLoadTest(url, logCallback) {
+  const ws = new WebSocket(url);
+
+  ws.onopen = () => {
+    logCallback('WebSocket connection established for Load Testing.');
+    ws.send('Start Load Test'); // Ensure a message is sent when the connection opens
+  };
+
+  ws.onmessage = (event) => {
+    logCallback(`Received: ${event.data}`);
+  };
+
+  ws.onerror = (error) => {
+    logCallback(`WebSocket error: ${error.message}`);
+  };
+
+  setTimeout(() => {
+    ws.close();
+    logCallback('Load Testing completed.');
+  }, 10 * 60 * 1000);
+}
+
 describe('startLoadTest', () => {
   let mockWebSocket;
   let logCallback;

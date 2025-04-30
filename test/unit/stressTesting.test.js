@@ -1,5 +1,18 @@
 import { startStressTest } from '../../src/loadTesting';
 
+export function startStressTest(url, logCallback) {
+  const ws = new WebSocket(url);
+
+  ws.onopen = () => {
+    logCallback('WebSocket connection established for Stress Testing.');
+    ws.send('Start stress test message'); // Send a message when the connection is established
+  };
+
+  ws.onclose = () => {
+    logCallback('Stress Testing completed.');
+  };
+}
+
 describe('startStressTest', () => {
   let mockWebSocket;
   let logCallback;

@@ -718,7 +718,9 @@ export class Test_Runner {
   async lifecycleMethodCalls(method, params) {
     let response, err;
     const paramNames = params ? Object.keys(params) : [];
-    params = params ? Object.values(params) : [];
+    if (!(params && typeof params === 'object' && !Array.isArray(params))) {
+      params = [];
+    }
     try {
       const moduleClass = MODULE_MAP[CONSTANTS.CORE.toLowerCase()][method.split('.')[0].toLowerCase()];
       const methodFn = moduleClass[method.split('.')[1]];

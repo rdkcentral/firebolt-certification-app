@@ -59,12 +59,14 @@ export function startLoadTest(webSocketUrl, logCallback) {
   }, 10);
 
   // Stop the test after 10 minutes
-  setTimeout(() => {
+  setTimeout(
+    () => {
     clearInterval(intervalId);
     logCallback(
       `Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`
     );
-  }, 10 * 60 * 1000); // 10 minutes
+  }, 10 * 60 * 1000
+); // 10 minutes
 }
 
 /**
@@ -171,7 +173,8 @@ export function startSoakTest(webSocketUrl, logCallback = console.log) {
   const intervalId = setInterval(scheduleCalls, 5000);
 
   // Stop the test after 30 minutes
-  setTimeout(() => {
+  setTimeout(
+    () => {
     clearInterval(intervalId);
     logCallback(
       `Soak Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`
@@ -179,5 +182,6 @@ export function startSoakTest(webSocketUrl, logCallback = console.log) {
     if (sentMessages !== receivedResponses) {
       logCallback('Mismatch between sent messages and received responses!');
     }
-  }, 30 * 60 * 1000); // 30 minutes
+  }, 30 * 60 * 1000
+); // 30 minutes
 }

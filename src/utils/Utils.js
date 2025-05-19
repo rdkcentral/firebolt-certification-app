@@ -138,7 +138,7 @@ function censorData(methodName, response) {
 }
 
 // Push report to S3 and return report URL
-function pushReport(report) {
+function pushReportToS3(report) {
   return new Promise(async (resolve, reject) => {
     const request = new XMLHttpRequest();
     let macAddress, reportName;
@@ -165,7 +165,7 @@ function pushReport(report) {
                 parsingSuccessful = true;
                 for (const resItem of res) {
                   if (resItem.$.key === 'device:ccpPki:estbMac') {
-                    logger.info(resItem._, 'pushReport');
+                    logger.info(resItem._, 'pushReportToS3');
                     macAddress = resItem._;
                   }
                 }
@@ -193,7 +193,7 @@ function pushReport(report) {
               : 'refAppExecReport' + '-' + fileNameAppend;
       }
     } catch (error) {
-      logger.error(error, 'pushReport');
+      logger.error(error, 'pushReportToS3');
       reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend;
     }
 
@@ -203,17 +203,17 @@ function pushReport(report) {
       const prefix = process.env.STANDALONE_PREFIX ? process.env.STANDALONE_PREFIX : 'standaloneReports';
       const reportNameSplit = reportName.split('-');
       const reportId = reportNameSplit[0];
-      let restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
-      logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReport');
+      const restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
+      logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReportToS3');
       request.open('POST', restApiUrl);
       request.setRequestHeader('content-type', 'application/json');
       request.send(report);
       request.onload = () => {
-        logger.info('Response on load: ' + request, 'pushReport');
+        logger.info('Response on load: ' + request, 'pushReportToS3');
         if (request.status == 200) {
           resolve(restApiUrl);
         } else {
-          logger.error(`Error ${request.status}: ${request.statusText}`, 'pushReport');
+          logger.error(`Error ${request.status}: ${request.statusText}`, 'pushReportToS3');
           reject(request.status);
         }
       };
@@ -532,7 +532,7 @@ export {
   TRUE_VALUES,
   dereferenceOpenRPC,
   getschemaValidationDone,
-  pushReport,
+  pushReportToS3,
   testDataHandler,
   censorData,
   filterExamples,

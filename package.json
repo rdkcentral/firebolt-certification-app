@@ -17,7 +17,6 @@
     "glob-parent": "^5.1.2",
     "json-schema-ref-parser": "^9.0.9",
     "jsonschema": "1.4.1",
-    "lint": "^0.8.19",
     "perf_hooks": "^0.0.1",
     "rxjs": "7.2.0",
     "uuid": "^9.0.0",

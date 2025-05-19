@@ -138,7 +138,7 @@ function censorData(methodName, response) {
 }
 
 // Push report to S3 and return report URL
-function pushReportToS3(report) {
+function pushReport(report) {
   return new Promise(async (resolve, reject) => {
     const request = new XMLHttpRequest();
     let macAddress, reportName;
@@ -165,7 +165,7 @@ function pushReportToS3(report) {
                 parsingSuccessful = true;
                 for (const resItem of res) {
                   if (resItem.$.key === 'device:ccpPki:estbMac') {
-                    logger.info(resItem._, 'pushReportToS3');
+                    logger.info(resItem._, 'pushReport');
                     macAddress = resItem._;
                   }
                 }
@@ -193,42 +193,31 @@ function pushReportToS3(report) {
               : 'refAppExecReport' + '-' + fileNameAppend;
       }
     } catch (error) {
-      logger.error(error, 'pushReportToS3');
+      logger.error(error, 'pushReport');
       reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend;
     }
 
-    let restApiUrl = CONSTANTS.REPORT_PUBLISH_URL + reportName + '.json';
-
-    logger.debug('standalone', process.env.STANDALONE);
-
     // Uplaods to standalone url if standalone param is passed in url
     if (process.env.STANDALONE == 'true') {
+      logger.debug('standalone', process.env.STANDALONE);
       const prefix = process.env.STANDALONE_PREFIX ? process.env.STANDALONE_PREFIX : 'standaloneReports';
       const reportNameSplit = reportName.split('-');
       const reportId = reportNameSplit[0];
-      restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
-      logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReportToS3');
+      let restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
+      logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReport');
+      request.open('POST', restApiUrl);
+      request.setRequestHeader('content-type', 'application/json');
+      request.send(report);
+      request.onload = () => {
+        logger.info('Response on load: ' + request, 'pushReport');
+        if (request.status == 200) {
+          resolve(restApiUrl);
+        } else {
+          logger.error(`Error ${request.status}: ${request.statusText}`, 'pushReport');
+          reject(request.status);
+        }
+      };
     }
-
-    logger.info('URL: ' + restApiUrl, 'pushReportToS3');
-    request.open('POST', restApiUrl);
-    request.setRequestHeader('content-type', 'application/json');
-
-    // CORS headers - Disable CORS verification by uncommenting below lines
-    // request.setRequestHeader("Access-Control-Allow-Origin","*")
-    // request.setRequestHeader('Access-Control-Allow-Methods','POST,OPTIONS');
-    // request.setRequestHeader('Access-Control-Allow-Headers','Origin, Content-Type');
-
-    request.send(report);
-    request.onload = () => {
-      logger.info('Response on load: ' + request, 'pushReportToS3');
-      if (request.status == 200) {
-        resolve(restApiUrl);
-      } else {
-        logger.error(`Error ${request.status}: ${request.statusText}`, 'pushReportToS3');
-        reject(request.status);
-      }
-    };
   });
 }
 
@@ -543,7 +532,7 @@ export {
   TRUE_VALUES,
   dereferenceOpenRPC,
   getschemaValidationDone,
-  pushReportToS3,
+  pushReport,
   testDataHandler,
   censorData,
   filterExamples,

@@ -59,10 +59,11 @@ export function startLoadTest(webSocketUrl, logCallback) {
   }, 10);
 
   // Stop the test after 10 minutes
-  setTimeout(
+  setTimeout (
     () => {
     clearInterval(intervalId);
-    logCallback(
+    logCallback
+    (
       `Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`
     );
   }, 10 * 60 * 1000

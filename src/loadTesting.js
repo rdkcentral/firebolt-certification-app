@@ -14,7 +14,7 @@ try {
       send: async (method, params) => {
         const [module, methodName] = method.split('.');
         return Transport.send(module, methodName, params);
-      }
+      },
     };
   }
 } catch (err) {
@@ -23,7 +23,7 @@ try {
     send: async (method, params) => {
       const [module, methodName] = method.split('.');
       return Transport.send(module, methodName, params);
-    }
+    },
   };
 }
 

@@ -229,6 +229,8 @@ export default class ValidationView extends lng.Component {
   // Console UI view to display the result obtained after validation.
 
   fetchResult(_displayparms) {
+    console.log('***Inside fetchResult');
+    console.log('***Display Params:', JSON.stringify(_displayparms));
     const { err, fail, code } = _displayparms;
     this.tag('ValidationData').color = 0xff123456;
     let schemaValidationStateText = null,
@@ -240,12 +242,16 @@ export default class ValidationView extends lng.Component {
         messageString = null;
       try {
         codeObject = JSON.parse(_displayparms.code);
+        console.log('***Code Object:', JSON.stringify(codeObject));
         messageString = codeObject.Response;
         if (typeof codeObject.Response != 'string') {
           messageString = JSON.stringify(codeObject.Response, null, 1);
         }
+        console.log('***Message String:', messageString);
+        console.log('**Setting isCodeTypeObject to true');
         isCodeTypeObject = true;
       } catch (err) {
+        console.log('***Inside Catch so setting isCodeTypeObject to false:', err);
         isCodeTypeObject = false;
       }
       if (isCodeTypeObject) {

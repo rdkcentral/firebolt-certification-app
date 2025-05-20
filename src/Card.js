@@ -156,8 +156,8 @@ export default class Card extends lng.Component {
       }
       logger.info(`${methodCap}(${paramValues.join(', ')})`, 'invokeMethod');
       const showResult = (result) => {
-        console.log("***INside card.js showResult***");
-        console.log('Result***:',result);
+        console.log('***INside card.js showResult***');
+        console.log('Result***:', result);
         this.tag('ResultText').patch({ color: 0xff000000 });
         this.tag('ResultText').text.text = JSON.stringify(censorData(methodCap, result), null, 2);
       };

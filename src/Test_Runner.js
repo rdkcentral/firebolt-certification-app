@@ -325,6 +325,7 @@ export class Test_Runner {
           // call function returns response of each api to display progress in console
           await this.delay(100);
           if (validationViewObj) {
+            console.log('Sending to fetch Result to the apiValidation', JSON.stringify(apiValidationResult));
             validationViewObj.fetchResult(apiValidationResult);
           }
         }
@@ -343,6 +344,7 @@ export class Test_Runner {
     const viewMenu = [];
     for (let i = 0; i < validationViewMenu.length; i++) {
       for (const menus of validationViewMenu[i]) {
+        console.log('Pushing Menus from the validationViewMenu', JSON.stringify(menus));
         viewMenu.push(menus);
       }
     }
@@ -718,9 +720,7 @@ export class Test_Runner {
   async lifecycleMethodCalls(method, params) {
     let response, err;
     const paramNames = params ? Object.keys(params) : [];
-    if (!(params && typeof params === 'object' && !Array.isArray(params))) {
-      params = [];
-    }
+    params = params ? Object.values(params) : [];
     try {
       const moduleClass = MODULE_MAP[CONSTANTS.CORE.toLowerCase()][method.split('.')[0].toLowerCase()];
       const methodFn = moduleClass[method.split('.')[1]];

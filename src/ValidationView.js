@@ -246,7 +246,7 @@ export default class ValidationView extends lng.Component {
         messageString = codeObject.Response;
         if (typeof codeObject.Response != 'string') {
           messageString = JSON.stringify(codeObject.Response, null, 1);
-        }   
+        }
         console.log('***Message String:', messageString);
         console.log('**Setting isCodeTypeObject to true');
         isCodeTypeObject = true;

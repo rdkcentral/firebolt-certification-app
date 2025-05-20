@@ -238,8 +238,8 @@ export default class ValidationView extends lng.Component {
       validationData = null;
     if (code != undefined) {
       let codeObject = null,
-        isCodeTypeObject = true,
-        
+        isCodeTypeObject = true;
+
       try {
         codeObject = JSON.parse(_displayparms.code);
         console.log('***Code Object:', JSON.stringify(codeObject));

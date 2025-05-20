@@ -243,10 +243,11 @@ export default class ValidationView extends lng.Component {
       try {
         codeObject = JSON.parse(_displayparms.code);
         console.log('***Code Object:', JSON.stringify(codeObject));
-        messageString = codeObject.Response;
-        if (typeof codeObject.Response != 'string') {
-          messageString = JSON.stringify(codeObject.Response, null, 1);
-        }
+
+        const response = codeObject.Response ?? codeObject['Schema Validation']?.Response?.result ?? null;
+
+        let messageString = typeof response === 'string' ? response : JSON.stringify(response, null, 1);
+
         console.log('***Message String:', messageString);
         console.log('**Setting isCodeTypeObject to true');
         isCodeTypeObject = true;
@@ -255,7 +256,7 @@ export default class ValidationView extends lng.Component {
         isCodeTypeObject = false;
       }
       if (isCodeTypeObject) {
-        schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + codeObject['Schema Validation'];
+        schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + codeObject['Schema Validation']?.Status;
         message = 'Message: ' + codeObject.Message;
         validationData = CONSTANTS.API_RESPONSE + messageString;
       } else {

@@ -90,6 +90,8 @@ export default class App extends Base {
       this.accessibilityCheck(voiceAnnouncement);
     });
     this.toastStates = [];
+    // Setting the default execution to the Firebolt v2
+    process.env.FIREBOLT_V2 = true;
     this.overlayed = false;
     this.overlayDismissTimer = null;
     const appUrl = window.location;
@@ -126,6 +128,7 @@ export default class App extends Base {
     process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
     process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
     process.env.REGION = new URLSearchParams(appUrl.search).get('region');
+    process.env.SDK_VERSION = new URLSearchParams(appUrl.search).get('sdkVersion');
 
     if (platform) {
       process.env.PLATFORM = platform;

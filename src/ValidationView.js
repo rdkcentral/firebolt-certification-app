@@ -244,7 +244,10 @@ export default class ValidationView extends lng.Component {
         codeObject = JSON.parse(_displayparms.code);
         console.log('***Code Object:', JSON.stringify(codeObject));
 
-        const response = codeObject.Response ?? codeObject['Schema Validation']?.Response?.result ?? null;
+        let response = codeObject.Response;
+        if (response === undefined || response === null) {
+          response = codeObject['Schema Validation']?.Response?.result || null;
+        }
 
         let messageString = typeof response === 'string' ? response : JSON.stringify(response, null, 1);
 

@@ -357,7 +357,6 @@ class EventRegistration extends EventRegistrationInterface {
 class EventRegistrationV2 extends EventRegistrationInterface {
   // This method will listen to an event and capture the event response after triggering
   async registerEvent(moduleWithEventName, params) {
-    const paramlist = Object.values(params); // Simplified parameter extraction
     const [sdkType, module] = this.getSdkTypeAndModule(moduleWithEventName);
     const [schemaList] = await dereferenceOpenRPC(sdkType);
     const EventHandlerObject = new EventHandler(moduleWithEventName, schemaList);
@@ -372,29 +371,29 @@ class EventRegistrationV2 extends EventRegistrationInterface {
       }
     } catch (err) {
       logger.error(`Error registering event: ${JSON.stringify(err)}`, 'registerEvent');
-      return [err, null];
+      return err;
     }
 
     if (eventRegistrationID) {
       eventHandlerMapV2.set(moduleWithEventName, EventHandlerObject);
-      return null;
+      return eventRegistrationID;
     }
   }
 
   // Helper method to handle Transport events
   async handleTransportEvent(moduleWithEventName, eventName) {
-    const { id, promise } = await this.registerEventInTransport(moduleWithEventName);
-    const result = await promise;
-
-    if (result.message) throw new Error(result.message);
-
-    Transport.addEventEmitter((eventId, value) => {
-      if (id === eventId && !CONSTANTS.EXCLUDED_VALUES.includes(value)) {
-        this.eventHandler(moduleWithEventName, value);
+    const event = moduleWithEventName.charAt(0).toLowerCase() + moduleWithEventName.slice(1);
+    const args = { listen: true };
+    const emit = (value) => {
+      console.log('Transport event emitter--------');
+      if (!CONSTANTS.EXCLUDED_VALUES.includes(value)) {
+        this.eventHandler(event, value);
       }
-    });
-
-    return id;
+    };
+    const gateway = await this.loadV2TransportModule();
+    console.log('Gateway:------', gateway);
+    gateway.subscribe(event, emit);
+    return await gateway.request(event, args);
   }
 
   // Helper method to handle SDK events
@@ -433,27 +432,34 @@ class EventRegistrationV2 extends EventRegistrationInterface {
     }
   }
   eventListenerResponseHandler(moduleWithEventName, response) {
-    let count = 1;
     const registrationResponse = {};
     registrationResponse['jsonrpc'] = '2.0';
-    registrationResponse['id'] = null;
-    if (response === null) {
-      registrationResponse['id'] = count++;
+    if (response && Number.isInteger(response) && response > 0) {
+      registrationResponse['id'] = response;
+      registrationResponse['result'] = {
+        listening: true,
+        event: moduleWithEventName,
+      };
+      eventHandlerMapV2.get(moduleWithEventName).setEventListener(registrationResponse);
+    } else if (response && response.hasOwnProperty('listening') && response.listening) {
+      registrationResponse['jsonrpc'] = '2.0';
+      registrationResponse['id'] = null;
       registrationResponse['result'] = response;
       eventHandlerMapV2.get(moduleWithEventName).setEventListener(registrationResponse);
     } else {
       registrationResponse['error'] = response;
+      registrationResponse['id'] = null;
     }
     return registrationResponse;
   }
 
   // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
   clearAllListeners() {
-    logger.info('Clearing registered listeners' + JSON.stringify(eventHandlerMapV2), 'clearAllListeners');
+    logger.info('Clearing registered listeners v2' + JSON.stringify(Object.fromEntries(eventHandlerMapV2)), 'clearAllListeners');
     try {
       eventHistory = [];
       if (eventHandlerMapV2.size >= 1) {
-        eventHandlerMapV2.forEach((EventHandlerObject, uniqueListenerKey) => {
+        eventHandlerMapV2.forEach(async (EventHandlerObject, uniqueListenerKey) => {
           // The key in the eventhHanldermap is in the format SDK_ModuleName-<registrationID>
           const eventNameWithModuleName = EventHandlerObject.moduleWithEventName;
           const eventName = EventHandlerObject.event;
@@ -467,12 +473,13 @@ class EventRegistrationV2 extends EventRegistrationInterface {
           }
           // Events are cleared by using Transport layer and thus bypassing SDK
           else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
+            const gateway = await this.loadV2TransportModule();
             const args = Object.assign({ listen: false });
-            Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
+            gateway.request(eventNameWithModuleName, args);
           }
         });
         eventHandlerMapV2.clear();
-        logger.info('After clearing listeners' + JSON.stringify(eventHandlerMapV2), 'clearAllListeners');
+        logger.info('After clearing listeners' + JSON.stringify(Object.fromEntries(eventHandlerMapV2)), 'clearAllListeners');
         return 'Cleared Listeners';
       } else {
         logger.info('No active Listeners', 'clearAllListeners');
@@ -482,6 +489,16 @@ class EventRegistrationV2 extends EventRegistrationInterface {
       logger.error('Error while clearing all event listeners' + err, 'clearAllListeners');
       const response = { error: { code: 'FCAError', message: 'Error while clearing all event listeners: ' + err.message } };
       return response;
+    }
+  }
+
+  async loadV2TransportModule() {
+    try {
+      const GatewayImport = await import('@firebolt-js/sdk/dist/lib/Gateway/index.mjs');
+      return GatewayImport.default;
+    } catch (error) {
+      logger.error(`Error loading V2 modules for transport mode : ${JSON.stringify(error.message)}`, loadV2TransportModule);
+      throw new Error(`Error loading V2 modules for transport mode: ${error.message}`);
     }
   }
 }
@@ -495,7 +512,8 @@ export class EventInvocation {
   initializeEventRegistration() {
     const sdkVersion = process.env.SDK_VERSION;
     const pattern = /(2|\d{2,})\.\d+\.\d+/;
-    if (sdkVersion && pattern.test(sdkVersion)) {
+    process.env.FIREBOLT_V2 = true;
+    if (process.env.FIREBOLT_V2) {
       return new EventRegistrationV2();
     } else {
       return new EventRegistration();
@@ -504,8 +522,10 @@ export class EventInvocation {
 
   async northBoundEventHandling(message) {
     try {
+      console.log('----------------------');
       const { event: moduleWithEventName, params } = message.params;
       const response = await this.eventRegistration.registerEvent(moduleWithEventName, params);
+      console.log('Event response:', response);
       return this.eventRegistration.eventListenerResponseHandler(moduleWithEventName, response);
     } catch (error) {
       return this.handleError('northBoundEventHandling', error);

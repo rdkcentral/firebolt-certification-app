@@ -90,6 +90,8 @@ export default class App extends Base {
       this.accessibilityCheck(voiceAnnouncement);
     });
     this.toastStates = [];
+    // Setting the default execution to the Firebolt v2
+    process.env.FIREBOLT_V2 = true;
     this.overlayed = false;
     this.overlayDismissTimer = null;
     const appUrl = window.location;

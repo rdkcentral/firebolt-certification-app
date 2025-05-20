@@ -239,7 +239,7 @@ export default class ValidationView extends lng.Component {
     if (code != undefined) {
       let codeObject = null,
         isCodeTypeObject = true,
-        messageString = null;
+        
       try {
         codeObject = JSON.parse(_displayparms.code);
         console.log('***Code Object:', JSON.stringify(codeObject));
@@ -248,7 +248,7 @@ export default class ValidationView extends lng.Component {
         if (response === undefined && codeObject['Schema Validation'] && codeObject['Schema Validation'].Response && codeObject['Schema Validation'].Response.result) {
           response = codeObject['Schema Validation'].Response.result;
         }
-        let messageString = typeof response === 'string' ? response : JSON.stringify(response, null, 1);
+        const messageString = typeof response === 'string' ? response : JSON.stringify(response, null, 1);
 
         console.log('***Message String:', messageString);
         console.log('**Setting isCodeTypeObject to true');

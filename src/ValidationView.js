@@ -258,7 +258,8 @@ export default class ValidationView extends lng.Component {
         isCodeTypeObject = false;
       }
       if (isCodeTypeObject) {
-        schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + codeObject['Schema Validation']?.Status;
+        const schemaValidation = codeObject['Schema Validation'];
+        schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + (schemaValidation && schemaValidation.Status ? schemaValidation.Status : 'null');
         message = 'Message: ' + codeObject.Message;
         validationData = CONSTANTS.API_RESPONSE + messageString;
       } else {

@@ -238,18 +238,23 @@ export default class ValidationView extends lng.Component {
       let codeObject = null,
         isCodeTypeObject = true,
         messageString = null;
+
       try {
         codeObject = JSON.parse(_displayparms.code);
-        messageString = codeObject.Response;
-        if (typeof codeObject.Response != 'string') {
-          messageString = JSON.stringify(codeObject.Response, null, 1);
+
+        let response = codeObject.Response;
+        if (response === undefined && codeObject['Schema Validation'] && codeObject['Schema Validation'].Response && codeObject['Schema Validation'].Response.result) {
+          response = codeObject['Schema Validation'].Response.result;
         }
+        messageString = typeof response === 'string' ? response : JSON.stringify(response, null, 1);
+
         isCodeTypeObject = true;
       } catch (err) {
         isCodeTypeObject = false;
       }
       if (isCodeTypeObject) {
-        schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + codeObject['Schema Validation'];
+        const schemaValidation = codeObject['Schema Validation'];
+        schemaValidationStateText = CONSTANTS.SCHEMA_VALIDATION_STATUSMESSAGE + (schemaValidation && schemaValidation.Status ? schemaValidation.Status : 'null');
         message = 'Message: ' + codeObject.Message;
         validationData = CONSTANTS.API_RESPONSE + messageString;
       } else {

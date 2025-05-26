@@ -59,8 +59,7 @@ export default class FireboltTransportInvoker {
         return await invokeManager.send(module, method, jsonParams);
       } else if (invoker == CONSTANTS.INVOKESDK) {
         return await invokeSDK.send(module, method, jsonParams);
-      }
-      else {
+      } else {
         return await Transport.send(module, method, jsonParams);
       }
     } else {

@@ -7,9 +7,9 @@ const logger = createLogger('FireboltTransportInvoker.js');
 // Fallback mechanism for invokeProvider
 let invokeProvider;
 try {
-  // Dynamic import for compatibility with ES modules
-  const ext = await import('../plugins/FireboltExtensionInvoker.js');
-  invokeProvider = ext.default.invokeProvider;
+  // Use require for sync import
+  const ext = require('../plugins/FireboltExtensionInvoker').default;
+  invokeProvider = ext.invokeProvider;
   if (!invokeProvider) {
     logger.warn('invokeProvider not found in FireboltExtensionInvoker.js. Falling back to Transport.');
     invokeProvider = {

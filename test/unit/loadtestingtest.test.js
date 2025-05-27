@@ -43,11 +43,3 @@ describe('Load Testing Functions', () => {
     expect(logCallback).toHaveBeenCalledWith(expect.stringContaining('Soak Testing completed.'));
   });
 });
-
-// jest.config.js
-module.exports = {
-  // ...other config...
-  moduleNameMapper: {
-    '^@firebolt-js/sdk/dist/lib/Transport$': '<rootDir>/__mocks__/@firebolt-js/sdk/dist/lib/Transport.js'
-  }
-};

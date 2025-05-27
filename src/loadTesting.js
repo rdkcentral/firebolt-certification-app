@@ -1,13 +1,15 @@
 import Transport from '@firebolt-js/sdk/dist/lib/Transport';
-import { CONSTANTS } from './constant';
-const logger = require('./utils/Logger')('FireboltTransportInvoker.js');
 import websocketCalls from './config/websocketCalls.json';
+import createLogger from './utils/Logger';
+
+const logger = createLogger('FireboltTransportInvoker.js');
 
 // Fallback mechanism for invokeProvider
 let invokeProvider;
 try {
-  const ext = require('../plugins/FireboltExtensionInvoker').default;
-  invokeProvider = ext.invokeProvider;
+  // Dynamic import for compatibility with ES modules
+  const ext = await import('../plugins/FireboltExtensionInvoker.js');
+  invokeProvider = ext.default.invokeProvider;
   if (!invokeProvider) {
     logger.warn('invokeProvider not found in FireboltExtensionInvoker.js. Falling back to Transport.');
     invokeProvider = {

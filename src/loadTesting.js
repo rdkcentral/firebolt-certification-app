@@ -4,14 +4,25 @@ import createLogger from './utils/Logger';
 
 const logger = createLogger('FireboltTransportInvoker.js');
 
-// Fallback mechanism for invokeProvider
 let invokeProvider;
-try {
-  // Use dynamic import for ES modules
-  const ext = await import('../plugins/FireboltExtensionInvoker.js');
-  invokeProvider = ext.default.invokeProvider;
-  if (!invokeProvider) {
-    logger.warn('invokeProvider not found in FireboltExtensionInvoker.js. Falling back to Transport.');
+let invokeProviderInitialized = false;
+
+async function initInvokeProvider() {
+  if (invokeProviderInitialized) return;
+  try {
+    const ext = await import('../plugins/FireboltExtensionInvoker.js');
+    invokeProvider = ext.default.invokeProvider;
+    if (!invokeProvider) {
+      logger.warn('invokeProvider not found in FireboltExtensionInvoker.js. Falling back to Transport.');
+      invokeProvider = {
+        send: async (method, params) => {
+          const [module, methodName] = method.split('.');
+          return Transport.send(module, methodName, params);
+        },
+      };
+    }
+  } catch (err) {
+    logger.error(`Unable to import invokeProvider - ${err.message}. Falling back to Transport.`);
     invokeProvider = {
       send: async (method, params) => {
         const [module, methodName] = method.split('.');
@@ -19,14 +30,7 @@ try {
       },
     };
   }
-} catch (err) {
-  logger.error(`Unable to import invokeProvider - ${err.message}. Falling back to Transport.`);
-  invokeProvider = {
-    send: async (method, params) => {
-      const [module, methodName] = method.split('.');
-      return Transport.send(module, methodName, params);
-    },
-  };
+  invokeProviderInitialized = true;
 }
 
 /**
@@ -34,7 +38,8 @@ try {
  * @param {string} webSocketUrl - The WebSocket server URL (not used anymore).
  * @param {function} logCallback - Callback function to log messages.
  */
-export function startLoadTest(webSocketUrl, logCallback) {
+export async function startLoadTest(webSocketUrl, logCallback) {
+  await initInvokeProvider();
   logCallback('Starting Load Test using invokeProvider.send');
 
   const apiCalls = websocketCalls.apiCalls;

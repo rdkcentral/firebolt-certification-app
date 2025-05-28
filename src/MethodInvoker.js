@@ -31,7 +31,6 @@ export class MethodInvoker {
   async invoke(message) {
     let response, method, params, mode, err, paramNames, module, methodObj, schemaMap, schemaValidationResult;
     process.env.ID = process.env.ID + 1;
-    process.env.COMMUNICATION_MODE = message.context.communicationMode;
     params = message.params.methodParams;
     if (message.params.method.includes('_')) {
       method = message.params.method.split('_')[1];

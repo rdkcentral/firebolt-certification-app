@@ -47,6 +47,15 @@ export default class CallMethodHandler extends BaseHandler {
       }
 
       process.env.TimeoutInMS = message.responseTimeout ? message.responseTimeout : null;
+      let communicationMode = message.context.communicationMode;
+      // TODO: Need to correct after deciding the variable name for SDK 2.0
+      if (process.env.FIREBOLT_V2 >= '2.0.0') {
+        if (process.env.LIFECYCLE_VALIDATION == true) {
+          communicationMode = CONSTANTS.TRANSPORT;
+        }
+      }
+      process.env.COMMUNICATION_MODE = communicationMode;
+
       const result = await invoker.invoke(message);
       if (process.env.STANDALONE == true) {
         return JSON.stringify({ report: result });

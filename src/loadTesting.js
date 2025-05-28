@@ -66,12 +66,13 @@ export async function startLoadTest(webSocketUrl, logCallback) {
   }, 10);
 
   // Stop the test after 10 minutes
-  setTimeout(() => {
-    clearInterval(intervalId);
-    logCallback(
-      `Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`
-    );
-  }, 10 * 60 * 1000); // 10 minutes
+  setTimeout(
+    () => {
+      clearInterval(intervalId);
+      logCallback(`Load Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+    },
+    10 * 60 * 1000
+  ); // 10 minutes
 }
 
 /**
@@ -121,15 +122,16 @@ export async function startStressTest(webSocketUrl, logCallback = console.log) {
   let intervalId = setInterval(adjustInterval, interval);
 
   // Stop the test after 30 minutes
-  setTimeout(() => {
-    clearInterval(intervalId);
-    logCallback(
-      `Stress Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`
-    );
-    if (sentMessages !== receivedResponses) {
-      logCallback('Mismatch between sent messages and received responses!');
-    }
-  }, 30 * 60 * 1000); // 30 minutes
+  setTimeout(
+    () => {
+      clearInterval(intervalId);
+      logCallback(`Stress Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+      if (sentMessages !== receivedResponses) {
+        logCallback('Mismatch between sent messages and received responses!');
+      }
+    },
+    30 * 60 * 1000
+  ); // 30 minutes
 }
 
 /**
@@ -180,13 +182,14 @@ export async function startSoakTest(webSocketUrl, logCallback = console.log) {
   const intervalId = setInterval(scheduleCalls, 5000);
 
   // Stop the test after 30 minutes
-  setTimeout(() => {
-    clearInterval(intervalId);
-    logCallback(
-      `Soak Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`
-    );
-    if (sentMessages !== receivedResponses) {
-      logCallback('Mismatch between sent messages and received responses!');
-    }
-  }, 30 * 60 * 1000); // 30 minutes
+  setTimeout(
+    () => {
+      clearInterval(intervalId);
+      logCallback(`Soak Testing completed. Sent: ${sentMessages}, Received: ${receivedResponses}`);
+      if (sentMessages !== receivedResponses) {
+        logCallback('Mismatch between sent messages and received responses!');
+      }
+    },
+    30 * 60 * 1000
+  ); // 30 minutes
 }

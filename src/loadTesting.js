@@ -1,28 +1,15 @@
 import Transport from '@firebolt-js/sdk/dist/lib/Transport';
+import { CONSTANTS } from './constant';
+const logger = require('./utils/Logger')('FireboltTransportInvoker.js');
 import websocketCalls from './config/websocketCalls.json';
-import createLogger from './utils/Logger';
 
-const logger = createLogger('FireboltTransportInvoker.js');
-
+// Fallback mechanism for invokeProvider
 let invokeProvider;
-let invokeProviderInitialized = false;
-
-async function initInvokeProvider() {
-  if (invokeProviderInitialized) return;
-  try {
-    const ext = await import('../plugins/FireboltExtensionInvoker.js');
-    invokeProvider = ext.default.invokeProvider;
-    if (!invokeProvider) {
-      logger.warn('invokeProvider not found in FireboltExtensionInvoker.js. Falling back to Transport.');
-      invokeProvider = {
-        send: async (method, params) => {
-          const [module, methodName] = method.split('.');
-          return Transport.send(module, methodName, params);
-        },
-      };
-    }
-  } catch (err) {
-    logger.error(`Unable to import invokeProvider - ${err.message}. Falling back to Transport.`);
+try {
+  const ext = require('../plugins/FireboltExtensionInvoker').default;
+  invokeProvider = ext.invokeProvider;
+  if (!invokeProvider) {
+    logger.warn('invokeProvider not found in FireboltExtensionInvoker.js. Falling back to Transport.');
     invokeProvider = {
       send: async (method, params) => {
         const [module, methodName] = method.split('.');
@@ -30,7 +17,14 @@ async function initInvokeProvider() {
       },
     };
   }
-  invokeProviderInitialized = true;
+} catch (err) {
+  logger.error(`Unable to import invokeProvider - ${err.message}. Falling back to Transport.`);
+  invokeProvider = {
+    send: async (method, params) => {
+      const [module, methodName] = method.split('.');
+      return Transport.send(module, methodName, params);
+    },
+  };
 }
 
 /**
@@ -38,8 +32,7 @@ async function initInvokeProvider() {
  * @param {string} webSocketUrl - The WebSocket server URL (not used anymore).
  * @param {function} logCallback - Callback function to log messages.
  */
-export async function startLoadTest(webSocketUrl, logCallback) {
-  await initInvokeProvider();
+export function startLoadTest(webSocketUrl, logCallback) {
   logCallback('Starting Load Test using invokeProvider.send');
 
   const apiCalls = websocketCalls.apiCalls;

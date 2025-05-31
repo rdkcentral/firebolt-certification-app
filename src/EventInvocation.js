@@ -32,7 +32,7 @@ const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 const eventHandlerMap = new Map();
 const eventHandlerMapV2 = new Map();
-let eventHistory = [];
+const eventHistory = new Map();
 const logger = require('./utils/Logger')('EventInvocation.js');
 
 class EventHandler {
@@ -79,7 +79,6 @@ class EventHandler {
       const eventSchemaResponse = this.eventSchemaValidation(eventData);
       eventDataObject = {
         eventName: this.eventName,
-        eventListenerId: this.eventListener.eventListenerId,
         eventResponse: eventData,
         eventSchemaResult: eventSchemaResponse,
         eventTime: new Date(),
@@ -87,12 +86,16 @@ class EventHandler {
     } else {
       eventDataObject = {
         eventName: this.eventName,
-        eventListenerId: this.eventListener.id,
         eventResponse: eventData,
         eventTime: new Date(),
       };
     }
-    eventHistory.push(eventDataObject);
+    const eventMap = eventHistory.get(this.eventName);
+    if (!eventMap) {
+      eventHistory.set(this.eventName, [eventDataObject]);
+    } else {
+      eventMap.push(eventDataObject);
+    }
   }
   // Schema validation for resolved event data
   eventSchemaValidation(eventResponse) {
@@ -299,11 +302,11 @@ class EventRegistration extends EventRegistrationInterface {
       let filteredEventDataObjectList;
       const eventName = message.params.event;
       if (process.env.STANDALONE == true) {
-        filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
+        filteredEventDataObjectList = eventHistory.get(eventName.split('-')[0]);
       } else {
-        filteredEventDataObjectList = eventHistory.filter((element) => element.eventName == eventName);
+        filteredEventDataObjectList = eventHistory.get(eventName);
       }
-      if (filteredEventDataObjectList.length) {
+      if (filteredEventDataObjectList && filteredEventDataObjectList.length) {
         const eventDataObject = filteredEventDataObjectList[filteredEventDataObjectList.length - 1];
         return eventDataObject;
       } else {
@@ -317,8 +320,9 @@ class EventRegistration extends EventRegistrationInterface {
 
   // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
   clearAllListeners() {
-    logger.info('Clearing registered listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
+    logger.info('Clearing registered listeners' + JSON.stringify(Object.fromEntries(eventHandlerMap)), 'clearAllListeners');
     try {
+      eventHistory.clear();
       if (eventHandlerMap.size >= 1) {
         eventHandlerMap.forEach((EventHandlerObject, uniqueListenerKey) => {
           // The key in the eventhHanldermap is in the format SDK_ModuleName-<registrationID>
@@ -365,9 +369,9 @@ class EventRegistrationV2 extends EventRegistrationInterface {
 
     try {
       if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
-        eventRegistrationID = await this.handleTransportEvent(moduleWithEventName, eventName);
+        eventRegistrationID = await this.handleTransportEvent(moduleWithEventName, eventName, EventHandlerObject);
       } else if (process.env.COMMUNICATION_MODE === CONSTANTS.SDK) {
-        eventRegistrationID = await this.handleSdkEvent(sdkType, module, eventName, moduleWithEventName);
+        eventRegistrationID = await this.handleSdkEvent(sdkType, module, eventName, moduleWithEventName, EventHandlerObject);
       }
     } catch (err) {
       logger.error(`Error registering event: ${JSON.stringify(err)}`, 'registerEvent');
@@ -381,27 +385,30 @@ class EventRegistrationV2 extends EventRegistrationInterface {
   }
 
   // Helper method to handle Transport events
-  async handleTransportEvent(moduleWithEventName, eventName) {
+  async handleTransportEvent(moduleWithEventName, eventName, EventHandlerObject) {
     const event = moduleWithEventName.charAt(0).toLowerCase() + moduleWithEventName.slice(1);
     const args = { listen: true };
     const emit = (value) => {
       console.log('Transport event emitter--------');
       if (!CONSTANTS.EXCLUDED_VALUES.includes(value)) {
-        this.eventHandler(event, value);
+        EventHandlerObject.handleEvent(value);
       }
     };
     const gateway = await this.loadV2TransportModule();
+    if (!gateway || gateway === 'notFound') {
+      throw new Error('Gateway module not loaded. Please check your .');
+    }
     console.log('Gateway:------', gateway);
     gateway.subscribe(event, emit);
     return await gateway.request(event, args);
   }
 
   // Helper method to handle SDK events
-  async handleSdkEvent(sdkType, module, eventName, moduleWithEventName) {
+  async handleSdkEvent(sdkType, module, eventName, moduleWithEventName, EventHandlerObject) {
     const resolvedModule = MODULE_MAP[sdkType][module];
     return await resolvedModule.listen(eventName, (result) => {
       if (!CONSTANTS.EXCLUDED_VALUES.includes(result)) {
-        this.eventHandler(moduleWithEventName, result);
+        EventHandlerObject.handleEvent(result);
       }
     });
   }
@@ -412,25 +419,17 @@ class EventRegistrationV2 extends EventRegistrationInterface {
     return `${eventNameWithoutSDK}-${eventRegistrationID}`;
   }
 
-  // Handle event responses
-  eventHandler(eventName, response) {
-    eventHistory.push({
-      eventName,
-      eventResponse: response,
-      eventTime: new Date(),
-    });
-  }
-
   // Return the event response object for the eventName passed as the param
   getEventResponse(message) {
     try {
       const eventName = message.params.event;
-      const filteredEvents = eventHistory.filter((event) => event.eventName === eventName);
-      return filteredEvents.length ? filteredEvents[filteredEvents.length - 1] : { [eventName]: null };
+      const filteredEvents = eventHistory.get(eventName);
+      return filteredEvents && filteredEvents.length ? filteredEvents[filteredEvents.length - 1] : { [eventName]: null };
     } catch (err) {
       return { error: { code: 'FCAError', message: `Event response fetch error: ${err.message}` } };
     }
   }
+
   eventListenerResponseHandler(moduleWithEventName, response) {
     const registrationResponse = {};
     registrationResponse['jsonrpc'] = '2.0';
@@ -457,7 +456,7 @@ class EventRegistrationV2 extends EventRegistrationInterface {
   clearAllListeners() {
     logger.info('Clearing registered listeners v2' + JSON.stringify(Object.fromEntries(eventHandlerMapV2)), 'clearAllListeners');
     try {
-      eventHistory = [];
+      eventHistory.clear();
       if (eventHandlerMapV2.size >= 1) {
         eventHandlerMapV2.forEach(async (EventHandlerObject, uniqueListenerKey) => {
           // The key in the eventhHanldermap is in the format SDK_ModuleName-<registrationID>
@@ -474,6 +473,9 @@ class EventRegistrationV2 extends EventRegistrationInterface {
           // Events are cleared by using Transport layer and thus bypassing SDK
           else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
             const gateway = await this.loadV2TransportModule();
+            if (!gateway || gateway === 'notFound') {
+              throw new Error('Gateway module not loaded. Please check your .');
+            }
             const args = Object.assign({ listen: false });
             gateway.request(eventNameWithModuleName, args);
           }
@@ -493,13 +495,17 @@ class EventRegistrationV2 extends EventRegistrationInterface {
   }
 
   async loadV2TransportModule() {
-    try {
-      const GatewayImport = await import('@firebolt-js/sdk/dist/lib/Gateway/index.mjs');
-      return GatewayImport.default;
-    } catch (error) {
-      logger.error(`Error loading V2 modules for transport mode : ${JSON.stringify(error.message)}`, loadV2TransportModule);
-      throw new Error(`Error loading V2 modules for transport mode: ${error.message}`);
+    let gateway;
+    if (!gateway) {
+      try {
+        const GatewayImport = await import('@firebolt-js/sdk/dist/lib/Gateway/index.mjs');
+        return GatewayImport.default;
+      } catch (error) {
+        logger.error(`Error loading V2 modules for transport mode : ${JSON.stringify(error.message)}`, loadV2TransportModule);
+        return 'notFound';
+      }
     }
+    return 'notFound';
   }
 }
 

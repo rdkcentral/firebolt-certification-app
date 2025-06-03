@@ -223,7 +223,7 @@ function pushReportToS3(report) {
 
 /**
  * @function testDataHandler
- * @description Fetching and parsing params/content from external repo
+ * @description Fetching and parsing params/content
  * @param {String} requestType - Type of request. param or content. Currently only content is supported
  * @param {String} dataIdentifier - Key to be used to fetch param or content data from external repo
  */
@@ -236,7 +236,7 @@ function testDataHandler(requestType, dataIdentifier) {
     const moduleName = dataIdentifier.toLowerCase();
     if (moduleName) {
       try {
-        const moduleImportPath = require(`../../plugins/external-test-data/fixtures/modules/${moduleName}.json`);
+        const moduleImportPath = require(`../../plugins/${moduleName}.json`);
         const stringifyData = JSON.stringify(eval(moduleImportPath));
         const parsedData = JSON.parse(stringifyData);
         if (parsedData) {
@@ -250,7 +250,7 @@ function testDataHandler(requestType, dataIdentifier) {
     }
   } else if (requestType == 'overrideParams') {
     try {
-      const moduleImportPath = require(`../../plugins/external-test-data/fixtures/overrideParams.json`);
+      const moduleImportPath = require(`../../plugins/overrideParams.json`);
       return moduleImportPath;
     } catch (error) {
       logger.error('Test data repo error: ', error);

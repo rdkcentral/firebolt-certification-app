@@ -18,7 +18,7 @@
 
 import { EventInvocation } from '../../src/EventInvocation';
 import { MODULE_MAP } from '../../src/FireboltExampleInvoker';
-import Transport from '@firebolt-js/sdk/dist/lib/Transport/index.mjs';
+import Transport from 'Transport';
 
 const schemaList = {
   openrpc: '1.2.4',
@@ -663,7 +663,7 @@ describe('EventInvocation', () => {
 
     // Check on how to mock the Gateway from firebolt v2 and use it in the test
     // test('validate EventInvocation method with communicationMode Transport', async () => {
-    //   process.env.FIREBOLT_V2 = true;
+    //   process.env.FCA_FIREBOLT_SDK_VERSION = true;
     //   process.env.COMMUNICATION_MODE = 'Transport';
     //   const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
     //   const expectedResponse = {
@@ -674,10 +674,10 @@ describe('EventInvocation', () => {
     //     },
     //     id: 1,
     //   };
-    //   console.log('process.env.FIREBOLT_V2-----:', process.env.FIREBOLT_V2);
+    //   console.log('process.env.FCA_FIREBOLT_SDK_VERSION-----:', process.env.FCA_FIREBOLT_SDK_VERSION);
     //   const result = await eventInvocation.northBoundEventHandling(eventParams);
     //   console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-    //   process.env.FIREBOLT_V2 == true ? expect(Transport.listen).toHaveBeenCalled() : expect(gateway.subscribe).toHaveBeenCalled();
+    //   process.env.FCA_FIREBOLT_SDK_VERSION == true ? expect(Transport.listen).toHaveBeenCalled() : expect(gateway.subscribe).toHaveBeenCalled();
     //   expect(result.result).toStrictEqual(expectedResponse.result);
     // });
   });

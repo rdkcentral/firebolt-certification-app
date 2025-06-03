@@ -98,6 +98,10 @@ module.exports = {
             name: 'RunTestHandler',
             alias: ['/plugins/runTestHandler.js', '/src/pubsub/handlers/RunTestHandler.js'],
           },
+          {
+            name: 'Transport',
+            alias: ['@firebolt-js/sdk/dist/lib/Transport/index.mjs', '@firebolt-js/sdk/dist/lib/Gateway/index.mjs'],
+          },
         ],
         'resolve'
       ),

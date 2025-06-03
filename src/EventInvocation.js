@@ -26,7 +26,7 @@
 import { dereferenceOpenRPC, errorSchemaCheck } from './utils/Utils';
 import { MODULE_MAP } from './FireboltExampleInvoker';
 import { CONSTANTS } from './constant';
-import Transport from '@firebolt-js/sdk/dist/lib/Transport/index.mjs';
+import Transport from 'Transport';
 
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
@@ -516,10 +516,7 @@ export class EventInvocation {
 
   // Initialize Event Registration based on SDK version
   initializeEventRegistration() {
-    const sdkVersion = process.env.SDK_VERSION;
-    const pattern = /(2|\d{2,})\.\d+\.\d+/;
-    process.env.FIREBOLT_V2 = true;
-    if (process.env.FIREBOLT_V2) {
+    if (process.env.FCA_FIREBOLT_SDK_VERSION) {
       return new EventRegistrationV2();
     } else {
       return new EventRegistration();

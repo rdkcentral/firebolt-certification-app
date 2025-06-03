@@ -16,7 +16,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Transport from '@firebolt-js/sdk/dist/lib/Transport';
+import Transport from 'Transport';
 import { CONSTANTS } from './constant';
 const logger = require('./utils/Logger')('FireboltTransportInvoker.js');
 
@@ -56,16 +56,8 @@ export default class FireboltTransportInvoker {
         return await invokeProvider.send(module, method, jsonParams);
       } else if (invoker == CONSTANTS.INVOKEMANAGER) {
         return await invokeManager.send(module, method, jsonParams);
-      } else if (process.env.FIREBOLT_V2) {
-        try {
-          const Gateway = await import('@firebolt-js/sdk/dist/lib/Gateway/index.mjs');
-          const gatewayRequest = Gateway.default;
-          const promise = await gatewayRequest.request(`${module}.${method}`, jsonParams);
-          return promise;
-        } catch (error) {
-          console.error('Error importing Gateway:', error);
-          throw Error('Error importing Gateway:' + error);
-        }
+      } else if (process.env.FCA_FIREBOLT_SDK_VERSION) {
+        return await Transport.request(`${module}.${method}`, jsonParams);
       } else {
         // Default to transport
         return await Transport.send(module, method, jsonParams);

@@ -91,7 +91,7 @@ export default class App extends Base {
     });
     this.toastStates = [];
     // Setting the default execution to the Firebolt v2
-    process.env.FIREBOLT_V2 = true;
+    process.env.FCA_FIREBOLT_SDK_VERSION = true;
     this.overlayed = false;
     this.overlayDismissTimer = null;
     const appUrl = window.location;

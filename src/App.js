@@ -90,8 +90,9 @@ export default class App extends Base {
       this.accessibilityCheck(voiceAnnouncement);
     });
     this.toastStates = [];
-    // Setting the default execution to the Firebolt v2
-    process.env.FCA_FIREBOLT_SDK_VERSION = true;
+    // Setting the firebolt version by fetching it from open-rpc
+    // Commented out for now, until the implementation of fetching the version is done
+    // process.env.FCA_FIREBOLT_SDK_VERSION = true;
     this.overlayed = false;
     this.overlayDismissTimer = null;
     const appUrl = window.location;

@@ -175,6 +175,46 @@ class EventRegistrationInterface {
     const args = Object.assign({ listen: true }, params);
     return await Transport.listen(module, method, args);
   }
+
+  clearAllListeners(eventHandlerMap) {
+    logger.info('Clearing registered listeners' + JSON.stringify(Object.fromEntries(eventHandlerMap)), 'clearAllListeners');
+    try {
+      eventHistory.clear();
+      if (eventHandlerMap.size >= 1) {
+        eventHandlerMap.forEach(async (EventHandlerObject, uniqueListenerKey) => {
+          // The key in the eventhHanldermap is in the format SDK_ModuleName-<registrationID>
+          const eventNameWithModuleName = EventHandlerObject.moduleWithEventName;
+          const eventName = EventHandlerObject.event;
+          const [sdkType, module] = this.getSdkTypeAndModule(eventNameWithModuleName);
+          logger.info('Unregistered event- ' + eventNameWithModuleName, 'clearAllListeners');
+
+          // Events are cleared using Firebolt SDK
+          if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
+            MODULE_MAP[sdkType][module].clear(eventName);
+          }
+          // Events are cleared by using Transport layer and thus bypassing SDK
+          else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
+            const args = { listen: false };
+            if (process.env.FCA_FIREBOLT_SDK_VERSION) {
+              await Transport.request(eventNameWithModuleName, args);
+            } else {
+              await Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
+            }
+          }
+        });
+        eventHandlerMap.clear();
+        logger.info('After clearing listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
+        return 'Cleared Listeners';
+      } else {
+        logger.info('No active Listeners', 'clearAllListeners');
+        return 'No active listeners';
+      }
+    } catch (err) {
+      logger.error('Error while clearing all event listeners' + err.message, 'clearAllListeners');
+      const response = { error: { code: 'FCAError', message: 'Error while clearing all event listeners: ' + err.message } };
+      return response;
+    }
+  }
 }
 
 // 1.0 Implementation
@@ -320,40 +360,7 @@ class EventRegistration extends EventRegistrationInterface {
 
   // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
   clearAllListeners() {
-    logger.info('Clearing registered listeners' + JSON.stringify(Object.fromEntries(eventHandlerMap)), 'clearAllListeners');
-    try {
-      eventHistory.clear();
-      if (eventHandlerMap.size >= 1) {
-        eventHandlerMap.forEach((EventHandlerObject, uniqueListenerKey) => {
-          // The key in the eventhHanldermap is in the format SDK_ModuleName-<registrationID>
-          const eventNameWithModuleName = EventHandlerObject.moduleWithEventName;
-          const eventName = EventHandlerObject.eventName;
-          const eventRegistrationID = uniqueListenerKey.split('-')[1];
-          const [sdkType, module] = this.getSdkTypeAndModule(eventNameWithModuleName);
-          logger.info('Unregister event ' + eventNameWithModuleName + ' registration ID ' + eventRegistrationID, 'clearAllListeners');
-
-          // Events are cleared using Firebolt SDK
-          if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
-            MODULE_MAP[sdkType][module].clear(eventName);
-          }
-          // Events are cleared by using Transport layer and thus bypassing SDK
-          else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
-            const args = Object.assign({ listen: false });
-            Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
-          }
-        });
-        eventHandlerMap.clear();
-        logger.info('After clearing listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
-        return 'Cleared Listeners';
-      } else {
-        logger.info('No active Listeners', 'clearAllListeners');
-        return 'No active listeners';
-      }
-    } catch (err) {
-      logger.error('Error while clearing all event listeners' + err, 'clearAllListeners');
-      const response = { error: { code: 'FCAError', message: 'Error while clearing all event listeners: ' + err.message } };
-      return response;
-    }
+    super.clearAllListeners(eventHandlerMap);
   }
 }
 
@@ -394,13 +401,9 @@ class EventRegistrationV2 extends EventRegistrationInterface {
         EventHandlerObject.handleEvent(value);
       }
     };
-    const gateway = await this.loadV2TransportModule();
-    if (!gateway || gateway === 'notFound') {
-      throw new Error('Gateway module not loaded. Please check your .');
-    }
     console.log('Gateway:------', gateway);
-    gateway.subscribe(event, emit);
-    return await gateway.request(event, args);
+    Transport.subscribe(event, emit);
+    return await Transport.request(event, args);
   }
 
   // Helper method to handle SDK events
@@ -454,58 +457,7 @@ class EventRegistrationV2 extends EventRegistrationInterface {
 
   // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
   clearAllListeners() {
-    logger.info('Clearing registered listeners v2' + JSON.stringify(Object.fromEntries(eventHandlerMapV2)), 'clearAllListeners');
-    try {
-      eventHistory.clear();
-      if (eventHandlerMapV2.size >= 1) {
-        eventHandlerMapV2.forEach(async (EventHandlerObject, uniqueListenerKey) => {
-          // The key in the eventhHanldermap is in the format SDK_ModuleName-<registrationID>
-          const eventNameWithModuleName = EventHandlerObject.moduleWithEventName;
-          const eventName = EventHandlerObject.event;
-          const eventRegistrationID = uniqueListenerKey.split('-')[1];
-          const [sdkType, module] = this.getSdkTypeAndModule(eventNameWithModuleName);
-          logger.info('Unregister event ' + eventNameWithModuleName + ' registration ID ' + eventRegistrationID, 'clearAllListeners');
-
-          // Events are cleared using Firebolt SDK
-          if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
-            MODULE_MAP[sdkType][module].clear(eventName);
-          }
-          // Events are cleared by using Transport layer and thus bypassing SDK
-          else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
-            const gateway = await this.loadV2TransportModule();
-            if (!gateway || gateway === 'notFound') {
-              throw new Error('Gateway module not loaded. Please check your .');
-            }
-            const args = Object.assign({ listen: false });
-            gateway.request(eventNameWithModuleName, args);
-          }
-        });
-        eventHandlerMapV2.clear();
-        logger.info('After clearing listeners' + JSON.stringify(Object.fromEntries(eventHandlerMapV2)), 'clearAllListeners');
-        return 'Cleared Listeners';
-      } else {
-        logger.info('No active Listeners', 'clearAllListeners');
-        return 'No active listeners';
-      }
-    } catch (err) {
-      logger.error('Error while clearing all event listeners' + err, 'clearAllListeners');
-      const response = { error: { code: 'FCAError', message: 'Error while clearing all event listeners: ' + err.message } };
-      return response;
-    }
-  }
-
-  async loadV2TransportModule() {
-    let gateway;
-    if (!gateway) {
-      try {
-        const GatewayImport = await import('@firebolt-js/sdk/dist/lib/Gateway/index.mjs');
-        return GatewayImport.default;
-      } catch (error) {
-        logger.error(`Error loading V2 modules for transport mode : ${JSON.stringify(error.message)}`, loadV2TransportModule);
-        return 'notFound';
-      }
-    }
-    return 'notFound';
+    super.clearAllListeners(eventHandlerMapV2);
   }
 }
 

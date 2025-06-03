@@ -204,10 +204,10 @@ class EventRegistrationInterface {
         });
         eventHandlerMap.clear();
         logger.info('After clearing listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
-        return 'Cleared Listeners';
+        return CONSTANTS.CLEARED_LISTENERS;
       } else {
         logger.info('No active Listeners', 'clearAllListeners');
-        return 'No active listeners';
+        return CONSTANTS.NO_ACTIVE_LISTENERS;
       }
     } catch (err) {
       logger.error('Error while clearing all event listeners' + err.message, 'clearAllListeners');
@@ -266,7 +266,7 @@ class EventRegistration extends EventRegistrationInterface {
       return [err, null];
     }
 
-    // Construct unique key for event handler. A UUID can be added to the key to make it more unique.
+    // Construct unique key for event handler. Using the event registration ID.
     if (eventRegistrationID) {
       const eventNameWithoutSDK = moduleWithEventName.includes('_') ? moduleWithEventName.split('_')[1] : moduleWithEventName;
       const uniqueListenerKey = eventNameWithoutSDK + '-' + eventRegistrationID;
@@ -396,12 +396,10 @@ class EventRegistrationV2 extends EventRegistrationInterface {
     const event = moduleWithEventName.charAt(0).toLowerCase() + moduleWithEventName.slice(1);
     const args = { listen: true };
     const emit = (value) => {
-      console.log('Transport event emitter--------');
       if (!CONSTANTS.EXCLUDED_VALUES.includes(value)) {
         EventHandlerObject.handleEvent(value);
       }
     };
-    console.log('Gateway:------', gateway);
     Transport.subscribe(event, emit);
     return await Transport.request(event, args);
   }
@@ -477,10 +475,8 @@ export class EventInvocation {
 
   async northBoundEventHandling(message) {
     try {
-      console.log('----------------------');
       const { event: moduleWithEventName, params } = message.params;
       const response = await this.eventRegistration.registerEvent(moduleWithEventName, params);
-      console.log('Event response:', response);
       return this.eventRegistration.eventListenerResponseHandler(moduleWithEventName, response);
     } catch (error) {
       return this.handleError('northBoundEventHandling', error);

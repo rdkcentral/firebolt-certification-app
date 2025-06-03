@@ -117,7 +117,7 @@ module.exports = {
           },
           {
             name: 'Transport',
-            alias: ['@firebolt-js/sdk/dist/lib/Transport/index.mjs', '@firebolt-js/sdk/dist/lib/Gateway/index.mjs'],
+            alias: ['@firebolt-js/sdk/dist/lib/Gateway/index.mjs', '@firebolt-js/sdk/dist/lib/Transport/index.mjs'],
           },
         ],
         'resolve'

@@ -123,7 +123,7 @@ class EventHandler {
 }
 
 class EventRegistrationInterface {
-  clearEventListeners(event) {
+  async clearEventListeners(event) {
     try {
       const [sdkType, module] = this.getSdkTypeAndModule(event);
       let eventName = event.split('.')[1];
@@ -132,8 +132,12 @@ class EventRegistrationInterface {
       if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
         MODULE_MAP[sdkType][module].clear(eventName);
       } else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
-        const args = Object.assign({ listen: false });
-        Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
+        const args = { listen: false };
+        if (process.env.IS_BIDIRECTIONAL_SDK === true || process.env.IS_BIDIRECTIONAL_SDK === 'true') {
+          await Transport.request(`${module}.on${eventName[0].toUpperCase()}${eventName.substr(1)}`, args);
+        } else {
+          await Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
+        }
       }
       return true;
     } catch (err) {
@@ -195,7 +199,7 @@ class EventRegistrationInterface {
           // Events are cleared by using Transport layer and thus bypassing SDK
           else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
             const args = { listen: false };
-            if (process.env.FCA_FIREBOLT_SDK_VERSION) {
+            if (process.env.IS_BIDIRECTIONAL_SDK === true || process.env.IS_BIDIRECTIONAL_SDK === 'true') {
               await Transport.request(eventNameWithModuleName, args);
             } else {
               await Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
@@ -360,7 +364,7 @@ class EventRegistration extends EventRegistrationInterface {
 
   // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
   clearAllListeners() {
-    super.clearAllListeners(eventHandlerMap);
+    return super.clearAllListeners(eventHandlerMap);
   }
 }
 
@@ -455,7 +459,7 @@ class EventRegistrationV2 extends EventRegistrationInterface {
 
   // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
   clearAllListeners() {
-    super.clearAllListeners(eventHandlerMapV2);
+    return super.clearAllListeners(eventHandlerMapV2);
   }
 }
 
@@ -466,7 +470,7 @@ export class EventInvocation {
 
   // Initialize Event Registration based on SDK version
   initializeEventRegistration() {
-    if (process.env.FCA_FIREBOLT_SDK_VERSION) {
+    if (process.env.IS_BIDIRECTIONAL_SDK === true || process.env.IS_BIDIRECTIONAL_SDK === 'true') {
       return new EventRegistrationV2();
     } else {
       return new EventRegistration();
@@ -483,9 +487,9 @@ export class EventInvocation {
     }
   }
 
-  clearEventListeners(event) {
+  async clearEventListeners(event) {
     try {
-      return this.eventRegistration.clearEventListeners(event);
+      return await this.eventRegistration.clearEventListeners(event);
     } catch (error) {
       return this.handleError('clearEventListeners', error);
     }

@@ -401,6 +401,8 @@ const schemaList = {
   ],
 };
 
+process.env.IS_BIDIRECTIONAL_SDK = false;
+
 // Mocking $abc library and its functions
 
 const mockFireboltExampleInvoker = {
@@ -470,35 +472,6 @@ jest.mock('../../src/FireboltExampleInvoker', () => {
     MODULE_MAP: mockModuleMap,
   };
 });
-
-jest.mock('../../node_modules/@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
-  let callId = 0;
-  callId++;
-  return {
-    listen: jest.fn().mockImplementation(() => {
-      console.log('Returning promise and id');
-      const result = { id: callId, promise: Promise.resolve('success') };
-      console.log('Returning result: ' + JSON.stringify(result));
-      return result;
-    }),
-    send: jest.fn(),
-    addEventEmitter: jest.fn(),
-  };
-});
-
-// jest.mock('../../node_modules/@firebolt-js/sdk/dist/lib/Gateway/index.mjs', () => {
-//   return {
-//     subscribe: jest.fn().mockImplementation((event, emit) => {
-//       console.log('Subscribe function called');
-//     }),
-//     request: jest.fn().mockImplementation((event, args) => {
-//       console.log('Returning registration response');
-//       const result = { listening: true, event: event };
-//       console.log('Returning result: ' + JSON.stringify(result));
-//       return result;
-//     }),
-//   };
-// });
 
 jest.mock('@firebolt-js/sdk', () => {
   return {
@@ -577,13 +550,21 @@ describe('EventInvocation', () => {
     });
   });
   describe('northBoundEventHandling and registerEvent', () => {
-    let eventInvocation;
+    let actualVersion;
     beforeAll(() => {
       jest.clearAllMocks();
+      jest.resetModules();
       console.log('initializing eventInvocation');
       process.env.COMMUNICATION_MODE = 'SDK';
       eventInvocation = new EventInvocation();
     });
+    beforeEach(() => {
+      actualVersion = process.env.IS_BIDIRECTIONAL_SDK;
+    });
+    afterEach(() => {
+      process.env.IS_BIDIRECTIONAL_SDK = actualVersion;
+    });
+    let eventInvocation;
     test('validate EventInvocation method with communicationMode SDK', async () => {
       const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
       const expectedResponse = {
@@ -662,69 +643,166 @@ describe('EventInvocation', () => {
     });
 
     // Check on how to mock the Gateway from firebolt v2 and use it in the test
-    // test('validate EventInvocation method with communicationMode Transport', async () => {
-    //   process.env.FCA_FIREBOLT_SDK_VERSION = true;
-    //   process.env.COMMUNICATION_MODE = 'Transport';
-    //   const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
-    //   const expectedResponse = {
-    //     jsonrpc: '2.0',
-    //     result: {
-    //       listening: true,
-    //       event: 'mocksdk_mockmodule.onmodulechanged',
-    //     },
-    //     id: 1,
-    //   };
-    //   console.log('process.env.FCA_FIREBOLT_SDK_VERSION-----:', process.env.FCA_FIREBOLT_SDK_VERSION);
-    //   const result = await eventInvocation.northBoundEventHandling(eventParams);
-    //   console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-    //   process.env.FCA_FIREBOLT_SDK_VERSION == true ? expect(Transport.listen).toHaveBeenCalled() : expect(gateway.subscribe).toHaveBeenCalled();
-    //   expect(result.result).toStrictEqual(expectedResponse.result);
-    // });
+    test('validate EventInvocation method with communicationMode Transport', async () => {
+      process.env.COMMUNICATION_MODE = 'Transport';
+      const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
+      const expectedResponse = {
+        jsonrpc: '2.0',
+        result: {
+          listening: true,
+          event: 'mocksdk_mockmodule.onmodulechanged',
+        },
+        id: 1,
+      };
+      let eventtInvocationImport, transport;
+      if (Transport.request == null) {
+        // v1 events
+        jest.mock('../../node_modules/@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
+          let callId = 0;
+          callId++;
+          return {
+            listen: jest.fn().mockImplementation(() => {
+              console.log('Returning promise and id');
+              const result = { id: callId, promise: Promise.resolve('success') };
+              console.log('Returning result: ' + JSON.stringify(result));
+              return result;
+            }),
+            send: jest.fn(),
+            addEventEmitter: jest.fn(),
+          };
+        });
+        process.env.IS_BIDIRECTIONAL_SDK = false;
+        // re-import the modules after mocking it
+        eventtInvocationImport = require('../../src/EventInvocation');
+        transport = require('../../node_modules/@firebolt-js/sdk/dist/lib/Transport/index.mjs');
+      } else {
+        // v2 events
+        jest.doMock('../../node_modules/@firebolt-js/sdk/dist/lib/Gateway/index.mjs', () => {
+          let callId = 0;
+          callId++;
+          return {
+            request: jest.fn().mockImplementation(() => {
+              console.log('Returning promise and id');
+              const result = { id: callId, promise: Promise.resolve('success') };
+              console.log('Returning result: ' + JSON.stringify(result));
+              return result;
+            }),
+            subscribe: jest.fn().mockImplementation((eventName, callBack) => {
+              console.log('subscribe function called for event: ' + eventName);
+            }),
+          };
+        });
+        process.env.IS_BIDIRECTIONAL_SDK = true;
+        // re-import the modules after mocking it
+        eventtInvocationImport = require('../../src/EventInvocation');
+        transport = require('../../node_modules/@firebolt-js/sdk/dist/lib/Gateway/index.mjs');
+      }
+      // re-import the modules after mocking it
+      const eventInvocation = eventtInvocationImport.EventInvocation;
+      const eventInvocationTest = new eventInvocation();
+      const result = await eventInvocationTest.northBoundEventHandling(eventParams);
+      if (transport.request == null) {
+        expect(transport.listen).toHaveBeenCalled();
+      } else {
+        expect(transport.request).toHaveBeenCalled();
+        expect(transport.subscribe).toHaveBeenCalled();
+      }
+    });
   });
 
   describe('clearEventListeners', () => {
     let eventInvocation;
+    let actualVersion;
     beforeAll(() => {
       jest.clearAllMocks();
+      jest.resetModules();
       console.log('initializing eventInvocation');
       process.env.COMMUNICATION_MODE = 'SDK';
       eventInvocation = new EventInvocation();
     });
-    test('should call clear on the eventName and return true', () => {
+    beforeEach(() => {
+      actualVersion = process.env.IS_BIDIRECTIONAL_SDK;
+    });
+    afterEach(() => {
+      process.env.IS_BIDIRECTIONAL_SDK = actualVersion;
+    });
+    test('should call clear on the eventName and return true', async () => {
       const event = 'mocksdk_mockmodule.onmodulechanged';
-      const result = eventInvocation.clearEventListeners(event);
+      const result = await eventInvocation.clearEventListeners(event);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(result).toBe(true);
       expect(MODULE_MAP.mocksdk.mockmodule.clear).toHaveBeenCalledWith(event.split('.')[1].slice(2));
     });
 
-    test('should return error on issues with event name', () => {
+    test('should return error on issues with event name', async () => {
       const event = 'onmodulechanged';
-      const result = eventInvocation.clearEventListeners(event);
+      const result = await eventInvocation.clearEventListeners(event);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(result.error).toBeDefined();
       expect(result.error.code).toBe('FCAError');
       expect(result.error.message).toBeDefined();
     });
 
-    test('should return error on issues with event name', () => {
+    test('should return error on issues with event name', async () => {
       const event = 'mockmodule.modulechanged';
-      const result = eventInvocation.clearEventListeners(event);
+      const result = await eventInvocation.clearEventListeners(event);
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(result.error).toBeDefined();
       expect(result.error.code).toBe('FCAError');
       expect(result.error.message).toBeDefined();
     });
 
-    test('should clear listener by sending listen false when communication mode is transport', () => {
+    test('should clear listener by sending listen false when communication mode is transport', async () => {
       const event = 'mocksdk_mockmodule.onmodulechanged';
       process.env.COMMUNICATION_MODE = 'Transport';
-      const result = eventInvocation.clearEventListeners(event);
-      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-      expect(result).toBe(true);
-      expect(Transport.send).toHaveBeenCalledWith('mockmodule', 'onModulechanged', {
-        listen: false,
-      });
+      if (Transport.request == null) {
+        // v1 events
+        jest.mock('../../node_modules/@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
+          let callId = 0;
+          callId++;
+          return {
+            send: jest.fn(),
+          };
+        });
+        process.env.IS_BIDIRECTIONAL_SDK = false;
+        // re-import the modules after mocking it
+        const eventInvocationImport = require('../../src/EventInvocation');
+        const Transport = require('Transport');
+        const eventInvocation = eventInvocationImport.EventInvocation;
+        const eventInvocationTest = new eventInvocation();
+        const result = await eventInvocationTest.clearEventListeners(event);
+        console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
+        expect(result).toBe(true);
+        expect(Transport.send).toHaveBeenCalledWith('mockmodule', 'onModulechanged', {
+          listen: false,
+        });
+      } else {
+        // v2 events
+        jest.doMock('../../node_modules/@firebolt-js/sdk/dist/lib/Gateway/index.mjs', () => {
+          let callId = 0;
+          callId++;
+          return {
+            request: jest.fn().mockImplementation(() => {
+              console.log('Returning promise and id');
+              const result = { id: callId, promise: Promise.resolve('success') };
+              console.log('Returning result: ' + JSON.stringify(result));
+              return result;
+            }),
+          };
+        });
+        process.env.IS_BIDIRECTIONAL_SDK = true;
+        // re-import the modules after mocking it
+        const eventInvocationImport = require('../../src/EventInvocation');
+        const Transport = require('Transport');
+        const eventInvocation = eventInvocationImport.EventInvocation;
+        const eventInvocationTest = new eventInvocation();
+        const result = await eventInvocationTest.clearEventListeners(event);
+        console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
+        expect(result).toBe(true);
+        expect(Transport.request).toHaveBeenCalledWith('mockmodule.onModulechanged', {
+          listen: false,
+        });
+      }
     });
   });
 

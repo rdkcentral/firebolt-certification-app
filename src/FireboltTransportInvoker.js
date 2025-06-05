@@ -56,7 +56,7 @@ export default class FireboltTransportInvoker {
         return await invokeProvider.send(module, method, jsonParams);
       } else if (invoker == CONSTANTS.INVOKEMANAGER) {
         return await invokeManager.send(module, method, jsonParams);
-      } else if (process.env.FCA_FIREBOLT_SDK_VERSION) {
+      } else if (process.env.IS_BIDIRECTIONAL_SDK === true || process.env.IS_BIDIRECTIONAL_SDK === 'true') {
         return await Transport.request(`${module}.${method}`, jsonParams);
       } else {
         // Default to transport

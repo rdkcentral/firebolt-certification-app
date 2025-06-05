@@ -91,8 +91,10 @@ export default class App extends Base {
     });
     this.toastStates = [];
     // Setting the firebolt version by fetching it from open-rpc
-    // Commented out for now, until the implementation of fetching the version is done
-    // process.env.FCA_FIREBOLT_SDK_VERSION = true;
+    // Added the current firebolt version as default value, until the implementation of fetching the version is done
+    process.env.FCA_FIREBOLT_SDK_VERSION = '1.5.0';
+    const pattern = /(2|\d{2,})\.\d+\.\d+/;
+    process.env.IS_BIDIRECTIONAL_SDK = pattern.test(process.env.FCA_FIREBOLT_SDK_VERSION);
     this.overlayed = false;
     this.overlayDismissTimer = null;
     const appUrl = window.location;

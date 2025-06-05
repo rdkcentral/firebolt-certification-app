@@ -891,8 +891,8 @@ export class Test_Runner {
                 slaValue === null
                   ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
                   : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
-                    ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
-                    : CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
+                  ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                  : CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
               formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, null, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
             } else {
               // Else slaValidation flag is set to false, return formatted response without SLA Validation property
@@ -907,8 +907,8 @@ export class Test_Runner {
                 slaValue === null
                   ? 'Expected error, incorrect error format' + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
                   : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
-                    ? 'Expected error, incorrect error format' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
-                    : 'Expected error, incorrect error format';
+                  ? 'Expected error, incorrect error format' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                  : 'Expected error, incorrect error format';
               formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, parsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
             } else {
               // Else slaValidation flag is set to false, return formatted response without SLA Validation property
@@ -940,8 +940,8 @@ export class Test_Runner {
               slaValue === null
                 ? CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
                 : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
-                  ? 'Expected error, received error' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
-                  : 'Expected error, received error';
+                ? 'Expected error, received error' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                : 'Expected error, received error';
 
             formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.PASSED, parsedResponse, params, null, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue, enumValue);
           } else {
@@ -962,8 +962,8 @@ export class Test_Runner {
             slaValue === null
               ? 'Expected error, received result' + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
               : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
-                ? 'Expected error, received result' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
-                : 'Expected error, received result';
+              ? 'Expected error, received result' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+              : 'Expected error, received result';
 
           formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, formattedParsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
         } else {
@@ -991,8 +991,8 @@ export class Test_Runner {
               slaValue === null
                 ? 'Method not implemented by platform' + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
                 : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
-                  ? 'Method not implemented by platform' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
-                  : 'Method not implemented by platform';
+                ? 'Method not implemented by platform' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                : 'Method not implemented by platform';
             formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, parsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
           } else {
             // Else slaValidation flag is set to false, return formatted response without SLA Validation property
@@ -1013,8 +1013,8 @@ export class Test_Runner {
               slaValue === null
                 ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
                 : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
-                  ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
-                  : CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
+                ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                : CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
             formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, null, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
           } else {
             // Else slaValidation flag is set to false, return formatted response without SLA Validation property
@@ -1030,8 +1030,8 @@ export class Test_Runner {
               slaValue === null
                 ? 'Unexpected error encountered in the response' + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
                 : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
-                  ? 'Unexpected error encountered in the response' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
-                  : 'Unexpected error encountered in the response';
+                ? 'Unexpected error encountered in the response' + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                : 'Unexpected error encountered in the response';
             formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, parsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
           } else {
             // Else slaValidation flag is set to false, return formatted response without SLA Validation property
@@ -1055,8 +1055,8 @@ export class Test_Runner {
               slaValue === null
                 ? schemaValidationResult.errors[0].stack + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
                 : utils.setSLAStatus(apiInvocationDuration, slaValue) === CONSTANTS.REPORT_STATUS.FAILED
-                  ? schemaValidationResult.errors[0].stack + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
-                  : schemaValidationResult.errors[0].stack;
+                ? schemaValidationResult.errors[0].stack + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
+                : schemaValidationResult.errors[0].stack;
             formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, formattedParsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
           } else {
             // Else slaValidation flag is set to false, return formatted response without SLA Validation property

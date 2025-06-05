@@ -189,8 +189,8 @@ function pushReportToS3(report) {
           process.env.REPORTINGID && process.env.STANDALONE
             ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend
             : !process.env.REPORTINGID && process.env.STANDALONE
-              ? uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend
-              : 'refAppExecReport' + '-' + fileNameAppend;
+            ? uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend
+            : 'refAppExecReport' + '-' + fileNameAppend;
       }
     } catch (error) {
       logger.error(error, 'pushReportToS3');

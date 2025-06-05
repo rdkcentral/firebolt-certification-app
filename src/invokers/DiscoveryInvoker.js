@@ -17,7 +17,7 @@
  */
 
 import { Discovery } from '@firebolt-js/sdk';
-import { testDataHandler, filterExamples } from '../utils/Utils';
+import {  filterExamples } from '../utils/Utils';
 
 const MOCK_PURCHASED_CONTENT = {
   data: {
@@ -97,26 +97,6 @@ export default class DiscoveryInvoker {
           // don't care about the listening ack
           resolve({ message: 'purchasedContent has been requested' });
           return MOCK_PURCHASED_CONTENT;
-        } else {
-          const PURCHASEDCONTENTEXAMPLES = testDataHandler('content', 'PURCHASEDCONTENT');
-          if (!process.env.scenario && process.env.scenario != false) {
-            const limit = req.limit;
-            const programType = req.programType;
-            const offeringType = req.offeringType;
-            const purchasedContent = PURCHASEDCONTENTEXAMPLES.PURCHASEDCONTENT_POSITIVE;
-
-            if (limit) {
-              const filteredList = filterExamples(PURCHASEDCONTENTEXAMPLES.PURCHASEDCONTENT_POSITIVE.entries, programType, offeringType);
-              const entries = filteredList.slice(-limit);
-              purchasedContent.entries = entries;
-              return purchasedContent;
-            }
-          } else {
-            const PURCHASEDCONTENTEXAMPLES_NEG = PURCHASEDCONTENTEXAMPLES;
-            delete PURCHASEDCONTENTEXAMPLES_NEG.PURCHASEDCONTENT_POSITIVE;
-            const purchasedContent = PURCHASEDCONTENTEXAMPLES_NEG;
-            return purchasedContent[process.env.purchasedContentTestCase];
-          }
         }
         return null;
       });
@@ -133,17 +113,6 @@ export default class DiscoveryInvoker {
           const rv = { ...MOCK_ENITY_INFO };
           rv.entity.identifiers.entityId = req.entityId;
           return rv;
-        } else {
-          const ENTITYINFOEXAMPLES = testDataHandler('content', 'CONTENT');
-          const entityInfoLength = Object.keys(ENTITYINFOEXAMPLES).length;
-          for (let entityInfoObj = 0; entityInfoObj < entityInfoLength; entityInfoObj++) {
-            const entityInfoValues = Object.values(ENTITYINFOEXAMPLES);
-            if (entityInfoValues[entityInfoObj].entity && entityInfoValues[entityInfoObj].entity.identifiers && entityInfoValues[entityInfoObj].entity.identifiers.entityId) {
-              if (req.entityId == entityInfoValues[entityInfoObj].entity.identifiers.entityId) {
-                return entityInfoValues[entityInfoObj];
-              }
-            }
-          }
         }
         return null;
       });

@@ -17,7 +17,7 @@
  */
 
 import { Discovery } from '@firebolt-js/sdk';
-import {  filterExamples } from '../utils/Utils';
+import { filterExamples } from '../utils/Utils';
 
 const MOCK_PURCHASED_CONTENT = {
   data: {

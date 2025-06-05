@@ -526,6 +526,43 @@ async function assignModuleCapitalization(moduleName, execution = 'core') {
   return moduleName;
 }
 
+/**
+ * @function getSchemaFromOpenRpc
+ * @description To get the schema from OpenRPC based on method name and type.
+ * @param {string} methodName - The name of the method to search in OpenRPC.
+ * @param {string} type - The type of schema to retrieve ('result' or 'listen').
+ * @param {string} sdkType - The SDK type to use for fetching OpenRPC data (default is 'core').
+ */
+async function getSchemaFromOpenRpc(methodName, type, sdkType = 'core') {
+  const [openrpcData, invokedSdk] = await dereferenceOpenRPC(sdkType);
+  if (!openrpcData || !openrpcData.methods) return null;
+  const method = openrpcData.methods.find((m) => m.name === methodName);
+  if (!method) return null;
+
+  // Check if method is an event (has a tag with name 'event')
+  const isEvent = Array.isArray(method.tags) && method.tags.some((tag) => tag.name === 'event');
+
+  if (isEvent) {
+    if (type === 'result') {
+      // For events, find x-subscriber-for and return referenced method's result.schema
+      const eventTag = method.tags.find((tag) => tag.name === 'event' && tag['x-subscriber-for']);
+      if (eventTag) {
+        const subscribeForName = eventTag['x-subscriber-for'];
+        const referencedMethod = openrpcData.methods.find((m) => m.name === subscribeForName);
+        if (referencedMethod && referencedMethod.result && referencedMethod.result.schema) {
+          return referencedMethod.result.schema;
+        }
+      }
+      return null;
+    } else {
+      return method.result && method.result.schema ? method.result.schema : null;
+    }
+  }
+
+  // For regular methods, always return their result.schema
+  return method.result && method.result.schema ? method.result.schema : null;
+}
+
 export {
   handleAsyncFunction,
   checkMockOSRestInterface,
@@ -548,4 +585,5 @@ export {
   setSLAStatus,
   checkForEnum,
   assignModuleCapitalization,
+  getSchemaFromOpenRpc,
 };

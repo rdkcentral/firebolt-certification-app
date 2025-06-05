@@ -755,6 +755,7 @@ describe('EventInvocation', () => {
     test('should clear listener by sending listen false when communication mode is transport', async () => {
       const event = 'mocksdk_mockmodule.onmodulechanged';
       process.env.COMMUNICATION_MODE = 'Transport';
+      let eventInvocationImport, transportImport;
       if (Transport.request == null) {
         // v1 events
         jest.mock('../../node_modules/@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
@@ -766,16 +767,8 @@ describe('EventInvocation', () => {
         });
         process.env.IS_BIDIRECTIONAL_SDK = false;
         // re-import the modules after mocking it
-        const eventInvocationImport = require('../../src/EventInvocation');
-        const Transport = require('Transport');
-        const eventInvocation = eventInvocationImport.EventInvocation;
-        const eventInvocationTest = new eventInvocation();
-        const result = await eventInvocationTest.clearEventListeners(event);
-        console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-        expect(result).toBe(true);
-        expect(Transport.send).toHaveBeenCalledWith('mockmodule', 'onModulechanged', {
-          listen: false,
-        });
+        eventInvocationImport = require('../../src/EventInvocation');
+        transportImport = require('Transport');
       } else {
         // v2 events
         jest.doMock('../../node_modules/@firebolt-js/sdk/dist/lib/Gateway/index.mjs', () => {
@@ -792,14 +785,20 @@ describe('EventInvocation', () => {
         });
         process.env.IS_BIDIRECTIONAL_SDK = true;
         // re-import the modules after mocking it
-        const eventInvocationImport = require('../../src/EventInvocation');
-        const Transport = require('Transport');
-        const eventInvocation = eventInvocationImport.EventInvocation;
-        const eventInvocationTest = new eventInvocation();
-        const result = await eventInvocationTest.clearEventListeners(event);
-        console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
-        expect(result).toBe(true);
-        expect(Transport.request).toHaveBeenCalledWith('mockmodule.onModulechanged', {
+        eventInvocationImport = require('../../src/EventInvocation');
+        transportImport = require('Transport');
+      }
+      const eventInvocation = eventInvocationImport.EventInvocation;
+      const eventInvocationTest = new eventInvocation();
+      const result = await eventInvocationTest.clearEventListeners(event);
+      console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
+      expect(result).toBe(true);
+      if (Transport.request == null) {
+        expect(transportImport.send).toHaveBeenCalledWith('mockmodule', 'onModulechanged', {
+          listen: false,
+        });
+      } else {
+        expect(transportImport.request).toHaveBeenCalledWith('mockmodule.onModulechanged', {
           listen: false,
         });
       }

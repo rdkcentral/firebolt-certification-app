@@ -22,7 +22,7 @@ const { CONSTANTS } = require('../constant');
 const logConfiguration = {
   transports: [
     new winston.transports.Console({ level: CONSTANTS.LOGGER_LEVEL }),
-    new winston.transports.File({ filename: 'opt/logs/fca.log', level: CONSTANTS.LOGGER_LEVEL }})
+    new winston.transports.File({ filename: 'opt/logs/fca.log', level: CONSTANTS.LOGGER_LEVEL })
   ],
   format: winston.format.combine(
     winston.format.timestamp({

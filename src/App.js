@@ -39,6 +39,7 @@ import { withAnnouncer } from '@lightningjs/ui-components';
 const Base = withAnnouncer(lng.Application);
 import Toast, { eventEmitter } from './Toast';
 import IntentReader from 'IntentReader';
+const packagejson = require('../package.json');
 
 export default class App extends Base {
   static _template() {
@@ -126,6 +127,7 @@ export default class App extends Base {
     process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
     process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
     process.env.REGION = new URLSearchParams(appUrl.search).get('region');
+    process.env.FIREBOLT_V2 = packagejson.version;
 
     if (platform) {
       process.env.PLATFORM = platform;

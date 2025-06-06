@@ -528,182 +528,202 @@ export class Test_Runner {
    * will be disabled. API calls will be made based on the messages sent from bolt.
    */
   async invokeLifecycleAPI(methods) {
-    let response,
-      result = null,
-      error = null,
-      schemaResult,
-      contentResult;
-    const method = methods.methodName;
-    const params = {};
-    process.env.APP_TYPE = process.env.APP_TYPE ? process.env.APP_TYPE : CONSTANTS.FIREBOLT_CONST;
-    const openRpc = CONSTANTS.defaultSDKs.find((sdk) => sdk.name.toUpperCase().includes(CONSTANTS.CORE)).openRpc;
-    try {
-      this.dereferenceSchemaList = await $RefParser.dereference(openRpc);
-    } catch (err) {
-      logger.error(err, 'invokeLifecycleAPI');
-    }
-    const lifecycleMethods = [];
-    for (let methodIndex = 0; this.dereferenceSchemaList !== undefined && methodIndex < this.dereferenceSchemaList.methods.length; methodIndex++) {
-      const module = this.dereferenceSchemaList.methods[methodIndex].name;
-      if (CONSTANTS.LIFECYCLE_METHOD_LIST.includes(module)) {
-        lifecycleMethods.push(this.dereferenceSchemaList.methods[methodIndex]);
-      }
-    }
-    switch (method) {
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[0]:
+    const version = process.env.FIREBOLT_V2;
+    const lifecycleVersionHandlers = {
+      '1.0': async () => {
+        let response,
+          result = null,
+          error = null,
+          schemaResult,
+          contentResult;
+        const method = methods.methodName;
+        const params = {};
+        process.env.APP_TYPE = process.env.APP_TYPE ? process.env.APP_TYPE : CONSTANTS.FIREBOLT_CONST;
+        const openRpc = CONSTANTS.defaultSDKs.find((sdk) => sdk.name.toUpperCase().includes(CONSTANTS.CORE)).openRpc;
         try {
-          result = await this.lifecycleMethodCalls(method, params);
-          if (process.env.STANDALONE == true) {
-            const stateSchema = this.getMethodSchema('Lifecycle.ready', lifecycleMethods);
-            schemaResult = this.schemaValidation(result.response, stateSchema);
-          }
+          this.dereferenceSchemaList = await $RefParser.dereference(openRpc);
         } catch (err) {
-          error = err;
-          result.error = error;
+          logger.error(err, 'invokeLifecycleAPI');
         }
-        if (process.env.STANDALONE == true) {
-          response = this.createResultObject(result.response, result.error, schemaResult);
-        } else {
-          response = this.createResultObject(result.response, result.error);
+        const lifecycleMethods = [];
+        for (let methodIndex = 0; this.dereferenceSchemaList !== undefined && methodIndex < this.dereferenceSchemaList.methods.length; methodIndex++) {
+          const module = this.dereferenceSchemaList.methods[methodIndex].name;
+          if (CONSTANTS.LIFECYCLE_METHOD_LIST.includes(module)) {
+            lifecycleMethods.push(this.dereferenceSchemaList.methods[methodIndex]);
+          }
         }
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[1]:
-        /*
+        switch (method) {
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[0]:
+            try {
+              result = await this.lifecycleMethodCalls(method, params);
+              if (process.env.STANDALONE == true) {
+                const stateSchema = this.getMethodSchema('Lifecycle.ready', lifecycleMethods);
+                schemaResult = this.schemaValidation(result.response, stateSchema);
+              }
+            } catch (err) {
+              error = err;
+              result.error = error;
+            }
+            if (process.env.STANDALONE == true) {
+              response = this.createResultObject(result.response, result.error, schemaResult);
+            } else {
+              response = this.createResultObject(result.response, result.error);
+            }
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[1]:
+            /*
                 In this case we dont need to look at history
                 we are trying to return the current state of the app 
                 which can then be validated at bolt end.
                 */
-        try {
-          result = await this.lifecycleMethodCalls(method, params);
-          if (process.env.STANDALONE == true) {
-            const stateSchema = this.getMethodSchema('Lifecycle.state', lifecycleMethods);
-            schemaResult = this.schemaValidation(result.response, stateSchema);
-          }
-        } catch (err) {
-          error = err;
-          result.error = error;
-        }
-        if (process.env.STANDALONE == true) {
-          response = this.createResultObject(result.response, result.error, schemaResult);
-        } else {
-          response = this.createResultObject(result.response, result.error);
-        }
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[2]:
-        try {
-          result = await this.lifecycleMethodCalls(method, methods.methodParams);
-          if (process.env.STANDALONE == true) {
-            const stateSchema = this.getMethodSchema('Lifecycle.close', lifecycleMethods);
-            schemaResult = this.schemaValidation(result.response, stateSchema);
-          }
-        } catch (err) {
-          error = err;
-          result.error = error;
-        }
-        if (process.env.STANDALONE == true) {
-          response = this.createResultObject(result.response, result.error, schemaResult);
-        } else {
-          response = this.createResultObject(result.response, result.error);
-        }
-        break;
+            try {
+              result = await this.lifecycleMethodCalls(method, params);
+              if (process.env.STANDALONE == true) {
+                const stateSchema = this.getMethodSchema('Lifecycle.state', lifecycleMethods);
+                schemaResult = this.schemaValidation(result.response, stateSchema);
+              }
+            } catch (err) {
+              error = err;
+              result.error = error;
+            }
+            if (process.env.STANDALONE == true) {
+              response = this.createResultObject(result.response, result.error, schemaResult);
+            } else {
+              response = this.createResultObject(result.response, result.error);
+            }
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[2]:
+            try {
+              result = await this.lifecycleMethodCalls(method, methods.methodParams);
+              if (process.env.STANDALONE == true) {
+                const stateSchema = this.getMethodSchema('Lifecycle.close', lifecycleMethods);
+                schemaResult = this.schemaValidation(result.response, stateSchema);
+              }
+            } catch (err) {
+              error = err;
+              result.error = error;
+            }
+            if (process.env.STANDALONE == true) {
+              response = this.createResultObject(result.response, result.error, schemaResult);
+            } else {
+              response = this.createResultObject(result.response, result.error);
+            }
+            break;
 
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[3]:
-        /**
-         * Directly calling finish is not an expected behavior of the app.
-         * Finish should ideally be called by the app when unload event is generated.
-         * For testing, we expect bolt to launch multiple apps and create a memory crunch
-         * which would force the platform to generate and unload event.
-         * TODO: Approach for the validation of lifecycle.finish() is yet to be decided.
-         */
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[4]:
-        try {
-          result = LifecycleHistory.get();
-        } catch (err) {
-          error = err;
-        }
-        response = this.createResultObject(result, error);
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[5]:
-        if (process.env.STANDALONE == true) {
-          try {
-            const OnInactiveEvent = LifecycleHistory.get();
-            const OnInactiveHistory = OnInactiveEvent._history._value[0].event;
-            const OnInActiveList = this.getMethodSchema('Lifecycle.onInactive', lifecycleMethods);
-            schemaResult = this.schemaValidation(OnInactiveHistory, OnInActiveList);
-            if (OnInactiveHistory.state == 'inactive' && OnInactiveHistory.previous == 'initializing') {
-              contentResult = CONSTANTS.PASS;
-            } else {
-              contentResult = CONSTANTS.FAIL;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[3]:
+            /**
+             * Directly calling finish is not an expected behavior of the app.
+             * Finish should ideally be called by the app when unload event is generated.
+             * For testing, we expect bolt to launch multiple apps and create a memory crunch
+             * which would force the platform to generate and unload event.
+             * TODO: Approach for the validation of lifecycle.finish() is yet to be decided.
+             */
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[4]:
+            try {
+              result = LifecycleHistory.get();
+            } catch (err) {
+              error = err;
             }
-          } catch (err) {
-            error = err;
-          }
-          response = this.createResultObject(result, error, schemaResult, contentResult);
-        } else {
-          response = this.createResultObject(result, error);
-        }
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[6]:
-        if (process.env.STANDALONE == true) {
-          try {
-            const onForegroundEvent = LifecycleHistory.get();
-            const onForegroundHistory = onForegroundEvent._history._value[1].event;
-            const onForegroundList = this.getMethodSchema('Lifecycle.onForeground', lifecycleMethods);
-            schemaResult = this.schemaValidation(onForegroundHistory, onForegroundList);
-            if (onForegroundHistory.state == 'foreground' && onForegroundHistory.previous == 'inactive') {
-              contentResult = CONSTANTS.PASS;
+            response = this.createResultObject(result, error);
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[5]:
+            if (process.env.STANDALONE == true) {
+              try {
+                const OnInactiveEvent = LifecycleHistory.get();
+                const OnInactiveHistory = OnInactiveEvent._history._value[0].event;
+                const OnInActiveList = this.getMethodSchema('Lifecycle.onInactive', lifecycleMethods);
+                schemaResult = this.schemaValidation(OnInactiveHistory, OnInActiveList);
+                if (OnInactiveHistory.state == 'inactive' && OnInactiveHistory.previous == 'initializing') {
+                  contentResult = CONSTANTS.PASS;
+                } else {
+                  contentResult = CONSTANTS.FAIL;
+                }
+              } catch (err) {
+                error = err;
+              }
+              response = this.createResultObject(result, error, schemaResult, contentResult);
             } else {
-              contentResult = CONSTANTS.FAIL;
+              response = this.createResultObject(result, error);
             }
-          } catch (err) {
-            error = err;
-          }
-          response = this.createResultObject(result, error, schemaResult, contentResult);
-        } else {
-          response = this.createResultObject(result, error);
-        }
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[7]:
-        if (process.env.STANDALONE == true) {
-          try {
-            const onBackgroundEvent = LifecycleHistory.get();
-            const onBackgroundHistory = onBackgroundEvent._history._value[2].event;
-            const onBackgroundList = this.getMethodSchema('Lifecycle.onBackground', lifecycleMethods);
-            schemaResult = this.schemaValidation(onBackgroundHistory, onBackgroundList);
-            if (onBackgroundHistory.state == 'background' && onBackgroundHistory.previous == 'foreground') {
-              contentResult = CONSTANTS.PASS;
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[6]:
+            if (process.env.STANDALONE == true) {
+              try {
+                const onForegroundEvent = LifecycleHistory.get();
+                const onForegroundHistory = onForegroundEvent._history._value[1].event;
+                const onForegroundList = this.getMethodSchema('Lifecycle.onForeground', lifecycleMethods);
+                schemaResult = this.schemaValidation(onForegroundHistory, onForegroundList);
+                if (onForegroundHistory.state == 'foreground' && onForegroundHistory.previous == 'inactive') {
+                  contentResult = CONSTANTS.PASS;
+                } else {
+                  contentResult = CONSTANTS.FAIL;
+                }
+              } catch (err) {
+                error = err;
+              }
+              response = this.createResultObject(result, error, schemaResult, contentResult);
             } else {
-              contentResult = CONSTANTS.FAIL;
+              response = this.createResultObject(result, error);
             }
-          } catch (err) {
-            error = err;
-          }
-          response = this.createResultObject(result, error, schemaResult, contentResult);
-        } else {
-          response = this.createResultObject(result, error);
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[7]:
+            if (process.env.STANDALONE == true) {
+              try {
+                const onBackgroundEvent = LifecycleHistory.get();
+                const onBackgroundHistory = onBackgroundEvent._history._value[2].event;
+                const onBackgroundList = this.getMethodSchema('Lifecycle.onBackground', lifecycleMethods);
+                schemaResult = this.schemaValidation(onBackgroundHistory, onBackgroundList);
+                if (onBackgroundHistory.state == 'background' && onBackgroundHistory.previous == 'foreground') {
+                  contentResult = CONSTANTS.PASS;
+                } else {
+                  contentResult = CONSTANTS.FAIL;
+                }
+              } catch (err) {
+                error = err;
+              }
+              response = this.createResultObject(result, error, schemaResult, contentResult);
+            } else {
+              response = this.createResultObject(result, error);
+            }
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[8]:
+            result = await this.lifecycleMethodCalls(method, params);
+            response = this.createResultObject(result.response, result.error);
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[10]:
+            result = await this.lifecycleMethodCalls(method, params);
+            response = this.createResultObject(result.response, result.error);
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[11]:
+            result = await this.lifecycleMethodCalls(method, params);
+            response = this.createResultObject(result.response, result.error);
+            break;
+          case CONSTANTS.LIFECYCLE_METHOD_LIST[12]:
+            result = await this.lifecycleMethodCalls(method, params);
+            response = this.createResultObject(result.response, result.error);
+            break;
+          default:
+            response = 'Invalid lifecycle method passed';
         }
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[8]:
-        result = await this.lifecycleMethodCalls(method, params);
-        response = this.createResultObject(result.response, result.error);
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[10]:
-        result = await this.lifecycleMethodCalls(method, params);
-        response = this.createResultObject(result.response, result.error);
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[11]:
-        result = await this.lifecycleMethodCalls(method, params);
-        response = this.createResultObject(result.response, result.error);
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[12]:
-        result = await this.lifecycleMethodCalls(method, params);
-        response = this.createResultObject(result.response, result.error);
-        break;
-      default:
-        response = 'Invalid lifecycle method passed';
+        return response;
+      },
+      '2.0': async () => {
+        return 'Lifecycle 2.0 Implementation is pending.';
+      },
+    };
+    let handler;
+    if (version && version >= '2.0.0') {
+      handler = lifecycleVersionHandlers['2.0'];
+    } else {
+      handler = lifecycleVersionHandlers['1.0'];
     }
-    return response;
+
+    if (handler) {
+      return await handler();
+    } else {
+      throw new Error('Invalid version specified');
+    }
   }
   getMethodSchema(method, apiSchema) {
     const methodSchema = [];

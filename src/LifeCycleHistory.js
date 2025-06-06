@@ -46,88 +46,108 @@ export default class LifecycleHistory {
   }
 
   async init(appInstance = null) {
-    lifecycleValidation = process.env.LIFECYCLE_VALIDATION;
-    const lifecycleModule = await assignModuleCapitalization('Lifecycle');
-    await Lifecycle.listen('inactive', this._recordHistory.bind(this, lifecycleModule + '.onInactive'));
-    await Lifecycle.listen('foreground', this._recordHistory.bind(this, lifecycleModule + '.onForeground'));
-    Lifecycle.listen('background', this._recordHistory.bind(this, lifecycleModule + '.onBackground'));
-    Lifecycle.listen('suspended', this._recordHistory.bind(this, lifecycleModule + '.onSuspended'));
-    Lifecycle.listen('unloading', async (event) => {
-      let schemaResult, validationResult;
-      await getschemaValidationDone(lifecycleModule + '.onUnloading', event, 'core').then((res) => {
-        schemaResult = res;
-      });
-      if (schemaResult.errors.length > 0 || event == undefined) {
-        validationResult = CONSTANTS.FAIL;
-      } else {
-        validationResult = CONSTANTS.PASS;
-      }
-      if (event && event.state) {
-        const h = this._history.getValue();
-        h.push({
-          event: event,
-          source: event.source || 'n/a',
-          timestamp: Date.now(),
-          schemaValidationStatus: validationResult,
+    const version = process.env.FIREBOLT_V2;
+    const versionHandlers = {
+      '1.0': async () => {
+        lifecycleValidation = process.env.LIFECYCLE_VALIDATION;
+        const lifecycleModule = await assignModuleCapitalization('Lifecycle');
+        await Lifecycle.listen('inactive', this._recordHistory.bind(this, lifecycleModule + '.onInactive'));
+        await Lifecycle.listen('foreground', this._recordHistory.bind(this, lifecycleModule + '.onForeground'));
+        Lifecycle.listen('background', this._recordHistory.bind(this, lifecycleModule + '.onBackground'));
+        Lifecycle.listen('suspended', this._recordHistory.bind(this, lifecycleModule + '.onSuspended'));
+        Lifecycle.listen('unloading', async (event) => {
+          let schemaResult, validationResult;
+          await getschemaValidationDone(lifecycleModule + '.onUnloading', event, 'core').then((res) => {
+            schemaResult = res;
+          });
+          if (schemaResult.errors.length > 0 || event == undefined) {
+            validationResult = CONSTANTS.FAIL;
+          } else {
+            validationResult = CONSTANTS.PASS;
+          }
+          if (event && event.state) {
+            const h = this._history.getValue();
+            h.push({
+              event: event,
+              source: event.source || 'n/a',
+              timestamp: Date.now(),
+              schemaValidationStatus: validationResult,
+            });
+            this._history.next(h);
+          }
+          if (event && event.state && lifecycleValidation != 'true') {
+            Lifecycle.finished();
+          }
         });
-        this._history.next(h);
-      }
-      if (event && event.state && lifecycleValidation != 'true') {
-        Lifecycle.finished();
-      }
-    });
 
-    if (lifecycleValidation != 'true') {
-      /* Require the lifecycle plugins directory, which returns an object
+        if (lifecycleValidation != 'true') {
+          /* Require the lifecycle plugins directory, which returns an object
         where each key is a file name in the directory and each value is the 
         default export of that file.
       */
-      const lifecyclePlugins = require('../plugins/lifecycle');
+          const lifecyclePlugins = require('../plugins/lifecycle');
 
-      /* Get the lifecycle for the current app type. For example, if
+          /* Get the lifecycle for the current app type. For example, if
         process.env.APP_TYPE is 'foo', this will return the default export
         of the 'foo.js' file in the lifecycle plugins directory.
       */
-      const appLifecycle = lifecyclePlugins[process.env.APP_TYPE];
+          const appLifecycle = lifecyclePlugins[process.env.APP_TYPE];
 
-      // Check if a lifecycle for the current app type exists and if it has a 'ready' function.
-      if (appLifecycle && typeof appLifecycle === 'function') {
-        // If such a lifecycle exists, call its 'ready' function.
-        appLifecycle.ready();
-      } else {
-        // If no such lifecycle exists, call the default 'Lifecycle.ready()' function.
-        Lifecycle.ready();
-      }
-    }
-    // register for Discovery.onNavigateTo event
-    Discovery.listen('navigateTo', async (event) => {
-      logger.info('Printing onNavigate To event received: ' + JSON.stringify(event));
-
-      try {
-        if (event.data.query != undefined) {
-          const intentReader = new IntentReader();
-          const query = JSON.parse(event.data.query);
-
-          // Establishing a pubSub connection if FCA receives an intent in the navigateTo event with the following parameters.
-          if (query.params && query.params.appId && query.params.macaddress) {
-            // PUBSUB_CONNECTION environment variable has a pubsub client instance and calls the isConnected function to check the Websocket status.
-            if (!process.env.PUBSUB_CONNECTION || (process.env.PUBSUB_CONNECTION && !process.env.PUBSUB_CONNECTION.isConnected())) {
-              process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
-              process.env.CURRENT_APPID = query.params.appId;
-              process.env.MACADDRESS = query.params.macaddress;
-              process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
-              const pubSubListenerCreation = new PubSubCommunication();
-              const webSocketConnection = await pubSubListenerCreation.startWebSocket();
-            }
-          }
-          if (query.task) {
-            intentReader.processIntent(query);
+          // Check if a lifecycle for the current app type exists and if it has a 'ready' function.
+          if (appLifecycle && typeof appLifecycle === 'function') {
+            // If such a lifecycle exists, call its 'ready' function.
+            appLifecycle.ready();
+          } else {
+            // If no such lifecycle exists, call the default 'Lifecycle.ready()' function.
+            Lifecycle.ready();
           }
         }
-      } catch (error) {
-        logger.error(JSON.stringify(error), 'intentReader error');
-      }
-    });
+        // register for Discovery.onNavigateTo event
+        Discovery.listen('navigateTo', async (event) => {
+          logger.info('Printing onNavigate To event received: ' + JSON.stringify(event));
+
+          try {
+            if (event.data.query != undefined) {
+              const intentReader = new IntentReader();
+              const query = JSON.parse(event.data.query);
+
+              // Establishing a pubSub connection if FCA receives an intent in the navigateTo event with the following parameters.
+              if (query.params && query.params.appId && query.params.macaddress) {
+                // PUBSUB_CONNECTION environment variable has a pubsub client instance and calls the isConnected function to check the Websocket status.
+                if (!process.env.PUBSUB_CONNECTION || (process.env.PUBSUB_CONNECTION && !process.env.PUBSUB_CONNECTION.isConnected())) {
+                  process.env.APP_TYPE = query.params.appType ? query.params.appType.toLowerCase() : CONSTANTS.FIREBOLT_CONST;
+                  process.env.CURRENT_APPID = query.params.appId;
+                  process.env.MACADDRESS = query.params.macaddress;
+                  process.env.PUB_SUB_TOKEN = query.params.pubSubToken;
+                  const pubSubListenerCreation = new PubSubCommunication();
+                  const webSocketConnection = await pubSubListenerCreation.startWebSocket();
+                }
+              }
+              if (query.task) {
+                intentReader.processIntent(query);
+              }
+            }
+          } catch (error) {
+            logger.error(JSON.stringify(error), 'intentReader error');
+          }
+        });
+      },
+      '2.0': () => {
+        // Logic for version 2.0
+        console.log('Executing version 2.0 logic');
+      },
+    };
+    let handler;
+    if (version && version >= '2.0.0') {
+      handler = versionHandlers['2.0'];
+    } else {
+      handler = versionHandlers['1.0'];
+    }
+    if (handler) {
+      await handler(); // Ensure async consistency
+    } else {
+      throw new Error('Invalid version specified');
+    }
   }
 
   async _recordHistory(eventName, event) {

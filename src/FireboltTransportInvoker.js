@@ -17,7 +17,7 @@
  */
 
 import Transport from '@firebolt-js/sdk/dist/lib/Transport';
-import { getInvoker } from '../plugins/FireboltExtensionInvoker.js';
+const { getInvoker } = require('../plugins/FireboltExtensionInvoker');
 
 let instance = null;
 

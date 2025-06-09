@@ -17,7 +17,16 @@
  */
 
 import Transport from '@firebolt-js/sdk/dist/lib/Transport';
-const { getInvoker } = require('../plugins/FireboltExtensionInvoker');
+import { CONSTANTS } from './constant';
+const logger = require('./utils/Logger')('FireboltTransportInvoker.js');
+
+let invokeManager, invokeProvider;
+try {
+  invokeManager = require('../plugins/FireboltExtensionInvoker').default.invokeManager;
+  invokeProvider = require('../plugins/FireboltExtensionInvoker').default.invokeProvider;
+} catch (err) {
+  logger.error(`Unable to import additional invoker - ${err.message}`);
+}
 
 let instance = null;
 
@@ -33,7 +42,7 @@ export default class FireboltTransportInvoker {
     return instance;
   }
 
-  async invoke(methodName, params, paramNamesArray, sdk = null) {
+  async invoke(methodName, params, paramNamesArray, invoker = null) {
     const module = methodName.split('.')[0];
     const method = methodName.split('.')[1];
     if (paramNamesArray) {
@@ -43,9 +52,10 @@ export default class FireboltTransportInvoker {
         // For each param, construct json using param name and value
         jsonParams[paramNamesArray[i]] = params[i];
       }
-      const invoker = getInvoker(sdk);
-      if (sdk && invoker) {
-        return await invoker.send(module, method, jsonParams);
+      if (invoker == CONSTANTS.INVOKEPROVIDER) {
+        return await invokeProvider.send(module, method, jsonParams);
+      } else if (invoker == CONSTANTS.INVOKEMANAGER) {
+        return await invokeManager.send(module, method, jsonParams);
       } else {
         return await Transport.send(module, method, jsonParams);
       }

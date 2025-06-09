@@ -19,7 +19,7 @@
 import Transport from '@firebolt-js/sdk/dist/lib/Transport';
 let getInvoker;
 try {
-  getInvoker = require('../plugins/FireboltExtensionInvoker').default.getInvoker;
+  getInvoker = require('../plugins/FireboltExtensionInvoker').getInvoker;
 } catch (err) {
   logger.error(`Unable to import transport invoker for extension sdk - ${err.message}`);
 }

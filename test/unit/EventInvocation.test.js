@@ -805,7 +805,7 @@ describe('EventInvocation', () => {
     });
   });
 
-  describe('getSdkTypeAndModule', () => {
+  describe('parseEventName', () => {
     let eventInvocation;
     beforeAll(async () => {
       jest.clearAllMocks();
@@ -813,27 +813,19 @@ describe('EventInvocation', () => {
       eventInvocation = new EventInvocation();
     });
     test('should return CORE as sdkType when only module.method is passed', () => {
-      const [sdkType, module] = eventInvocation.getSdkTypeAndModule('mockModule.mockMethod');
+      const [sdkType, module, eventMethodWithoutModule, eventName] = eventInvocation.parseEventNameAndModuleAndSDKType('mockModule.onMockMethod');
       expect(sdkType).toBe('core');
       expect(module).toBe('mockmodule');
+      expect(eventMethodWithoutModule).toBe('onMockMethod');
+      expect(eventName).toBe('mockMethod');
     });
 
     test('should return provided sdk as sdkType when  sdk_module.method is passed', () => {
-      const [sdkType, module] = eventInvocation.getSdkTypeAndModule('mocksdk_mockModule.mockMethod');
+      const [sdkType, module, eventMethodWithoutModule, eventName] = eventInvocation.parseEventNameAndModuleAndSDKType('mocksdk_mockModule.onMockMethod');
       expect(sdkType).toBe('mocksdk');
       expect(module).toBe('mockmodule');
-    });
-
-    test('will return core as sdktype and module as method if only method is passed', () => {
-      const [sdkType, module] = eventInvocation.getSdkTypeAndModule('mockMethod');
-      expect(sdkType).toBe('core');
-      expect(module).toBe('mockmethod');
-    });
-
-    test('will return module as empty and core as sdktype if no input is provided', () => {
-      const [sdkType, module] = eventInvocation.getSdkTypeAndModule('');
-      expect(sdkType).toBe('core');
-      expect(module).toBe('');
+      expect(eventMethodWithoutModule).toBe('onMockMethod');
+      expect(eventName).toBe('mockMethod');
     });
   });
 

@@ -46,9 +46,9 @@ export default class LifecycleHistory {
   }
 
   async init(appInstance = null) {
-    const version = process.env.FIREBOLT_V2;
+    const version = (process.env.FIREBOLT_V2 || '').split('.')[0]; // Get major version as string, e.g., '2'
     const versionHandlers = {
-      '1.0': async () => {
+      version1: async () => {
         lifecycleValidation = process.env.LIFECYCLE_VALIDATION;
         const lifecycleModule = await assignModuleCapitalization('Lifecycle');
         await Lifecycle.listen('inactive', this._recordHistory.bind(this, lifecycleModule + '.onInactive'));
@@ -132,19 +132,15 @@ export default class LifecycleHistory {
           }
         });
       },
-      '2.0': () => {
+      version2: () => {
         // Logic for version 2.0
         console.log('Executing version 2.0 logic');
       },
     };
-    let handler;
-    if (version && version >= '2.0.0') {
-      handler = versionHandlers['2.0'];
-    } else {
-      handler = versionHandlers['1.0'];
-    }
+
+    const handler = version && version >= '2' ? lifecycleVersionHandlers.version2 : lifecycleVersionHandlers.version1;
     if (handler) {
-      await handler(); // Ensure async consistency
+      await handler();
     } else {
       throw new Error('Invalid version specified');
     }

@@ -528,9 +528,9 @@ export class Test_Runner {
    * will be disabled. API calls will be made based on the messages sent from bolt.
    */
   async invokeLifecycleAPI(methods) {
-    const version = process.env.FIREBOLT_V2;
+    const version = (process.env.FIREBOLT_V2 || '').split('.')[0]; // Get major version as string, e.g., '2'
     const lifecycleVersionHandlers = {
-      '1.0': async () => {
+      version1: async () => {
         let response,
           result = null,
           error = null,
@@ -708,17 +708,11 @@ export class Test_Runner {
         }
         return response;
       },
-      '2.0': async () => {
+      version2: async () => {
         return 'Lifecycle 2.0 Implementation is pending.';
       },
     };
-    let handler;
-    if (version && version >= '2.0.0') {
-      handler = lifecycleVersionHandlers['2.0'];
-    } else {
-      handler = lifecycleVersionHandlers['1.0'];
-    }
-
+    const handler = version && version >= '2' ? lifecycleVersionHandlers.version2 : lifecycleVersionHandlers.version1;
     if (handler) {
       return await handler();
     } else {

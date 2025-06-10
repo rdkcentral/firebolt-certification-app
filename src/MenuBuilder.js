@@ -21,10 +21,9 @@ import Card from './Card';
 import MethodFilters from './MethodFilters';
 import ValidationView from './ValidationView';
 import { CONSTANTS } from './constant';
-import { overrideParamsFromTestData } from './utils/Utils';
+import { overrideParamsFromTestData, getLifecycleHistoryClass } from './utils/Utils';
 import MediaView from './MediaView';
 import LifeCycleHistoryView from './LifecycleHistoryView';
-import LifecycleHistory from './LifeCycleHistory';
 import Launchfca from './Launchfca';
 import modules from 'externalViews';
 
@@ -48,6 +47,7 @@ const hasTag = (method, tag) => {
 export default class MenuBuilder {
   build() {
     this.methodFilters = new MethodFilters();
+    const LifecycleHistoryClass = getLifecycleHistoryClass();
 
     this.menus = [];
 
@@ -60,7 +60,7 @@ export default class MenuBuilder {
         title: 'Lifecycle History',
         view: LifeCycleHistoryView,
         params: {
-          history: LifecycleHistory.get().history,
+          history: LifecycleHistoryClass.get().history,
         },
       },
       {

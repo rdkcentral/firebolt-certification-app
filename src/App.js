@@ -19,14 +19,13 @@
 import lng from '@lightningjs/core';
 import Menu from './Menu';
 import MenuBuilder from './MenuBuilder';
-import LifecycleHistory from './LifeCycleHistory';
 import { Settings, Accessibility, Discovery } from '@firebolt-js/sdk';
 import FireboltExampleInvoker from './FireboltExampleInvoker';
 import Modal from './Modal';
 import PubSubCommunication from './PubSubCommunication';
 import { CONSTANTS } from './constant';
 require('dotenv').config({ override: true });
-import { checkMockOSRestInterface, TRUE_VALUES, getCurrentAppID } from './utils/Utils';
+import { checkMockOSRestInterface, TRUE_VALUES, getCurrentAppID, getLifecycleHistoryClass} from './utils/Utils';
 import { AcknowledgeChallenge, Keyboard, PinChallenge } from '@firebolt-js/manage-sdk';
 import PinChallengeProviderDelegater from './providers/PinChallengeDelegater';
 import KeyboardProviderDelegater from './providers/KeyboardProviderDelegater';
@@ -227,7 +226,8 @@ export default class App extends Base {
             }
             process.env.APPOBJECT = this;
             const menusBuilder = new MenuBuilder();
-            LifecycleHistory.get().init(this);
+            const LifecycleHistoryClass = getLifecycleHistoryClass();
+            LifecycleHistoryClass.get().init(this);
             const menu = new URLSearchParams(window.location.search).get('menu');
             this.tag('Main').patch({
               MainMenu: {

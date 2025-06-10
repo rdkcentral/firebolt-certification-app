@@ -21,4 +21,4 @@ export const ready = () => {
 }
 ```
 
-Note: This enhancement is leveraged in `/src/LifeCycleHistory.js`.
+Note: This enhancement is leveraged in `/src/LifeCycleHistoryV1.js`.

@@ -33,7 +33,8 @@ import MethodFilters from './MethodFilters';
 import { CONSTANTS } from './constant';
 import { handleAsyncFunction, errorSchemaCheck, overrideParamsFromTestData } from './utils/Utils';
 const utils = require('./utils/Utils');
-import LifecycleHistory from './LifeCycleHistory';
+import LifeCycleHistoryV1 from './LifeCycleHistoryV1';
+import LifeCycleHistoryV2 from './LifeCycleHistoryV2';
 import { Device } from '@firebolt-js/sdk';
 import { MODULE_MAP } from './FireboltExampleInvoker';
 import errorSchemaObject from './source/errorSchema.json';
@@ -529,6 +530,11 @@ export class Test_Runner {
    */
   async invokeLifecycleAPI(methods) {
     const version = (process.env.FIREBOLT_V2 || '').split('.')[0]; // Get major version as string, e.g., '2'
+    const lifecycleHistoryVersion = {
+        '1': LifeCycleHistoryV1,
+        '2': LifeCycleHistoryV2
+    };
+    const LifecycleHistoryClass = lifecycleHistoryVersion[version];
     const lifecycleVersionHandlers = {
       version1: async () => {
         let response,
@@ -621,7 +627,7 @@ export class Test_Runner {
             break;
           case CONSTANTS.LIFECYCLE_METHOD_LIST[4]:
             try {
-              result = LifecycleHistory.get();
+              result = LifecycleHistoryClass.get();
             } catch (err) {
               error = err;
             }
@@ -630,7 +636,7 @@ export class Test_Runner {
           case CONSTANTS.LIFECYCLE_METHOD_LIST[5]:
             if (process.env.STANDALONE == true) {
               try {
-                const OnInactiveEvent = LifecycleHistory.get();
+                const OnInactiveEvent = LifecycleHistoryClass.get();
                 const OnInactiveHistory = OnInactiveEvent._history._value[0].event;
                 const OnInActiveList = this.getMethodSchema('Lifecycle.onInactive', lifecycleMethods);
                 schemaResult = this.schemaValidation(OnInactiveHistory, OnInActiveList);
@@ -650,7 +656,7 @@ export class Test_Runner {
           case CONSTANTS.LIFECYCLE_METHOD_LIST[6]:
             if (process.env.STANDALONE == true) {
               try {
-                const onForegroundEvent = LifecycleHistory.get();
+                const onForegroundEvent = LifecycleHistoryClass.get();
                 const onForegroundHistory = onForegroundEvent._history._value[1].event;
                 const onForegroundList = this.getMethodSchema('Lifecycle.onForeground', lifecycleMethods);
                 schemaResult = this.schemaValidation(onForegroundHistory, onForegroundList);
@@ -670,7 +676,7 @@ export class Test_Runner {
           case CONSTANTS.LIFECYCLE_METHOD_LIST[7]:
             if (process.env.STANDALONE == true) {
               try {
-                const onBackgroundEvent = LifecycleHistory.get();
+                const onBackgroundEvent = LifecycleHistoryClass.get();
                 const onBackgroundHistory = onBackgroundEvent._history._value[2].event;
                 const onBackgroundList = this.getMethodSchema('Lifecycle.onBackground', lifecycleMethods);
                 schemaResult = this.schemaValidation(onBackgroundHistory, onBackgroundList);

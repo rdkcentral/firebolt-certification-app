@@ -20,8 +20,6 @@ import { CONSTANTS } from '../constant';
 import FireboltExampleInvoker from '../FireboltExampleInvoker';
 import errorSchemaObject from '../source/errorSchema.json';
 import censorDataJson from 'CensorData';
-import LifeCycleHistoryV1 from '../LifeCycleHistoryV1';
-import LifeCycleHistoryV2 from '../LifeCycleHistoryV2';
 
 const { v4: uuidv4 } = require('uuid');
 const $RefParser = require('@apidevtools/json-schema-ref-parser');
@@ -528,19 +526,6 @@ async function assignModuleCapitalization(moduleName, execution = 'core') {
   return moduleName;
 }
 
-function getLifecycleHistoryClass() {
-  const version = (process.env.FIREBOLT_V2 || '').split('.')[0];
-  const lifecycleHistoryVersion = {
-    '1': LifeCycleHistoryV1,
-    '2': LifeCycleHistoryV2
-  };
-  const LifecycleHistoryClass = lifecycleHistoryVersion[version];
-  if (!LifecycleHistoryClass) {
-    throw new Error(`Unsupported lifecycle history version: ${version}`);
-  }
-  return LifecycleHistoryClass;
-}
-
 export {
   handleAsyncFunction,
   checkMockOSRestInterface,
@@ -563,5 +548,4 @@ export {
   setSLAStatus,
   checkForEnum,
   assignModuleCapitalization,
-  getLifecycleHistoryClass,
 };

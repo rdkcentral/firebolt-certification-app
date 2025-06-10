@@ -19,12 +19,6 @@
 import { Lifecycle, Parameters, Discovery } from '@firebolt-js/sdk';
 import { BehaviorSubject } from 'rxjs';
 require('dotenv').config();
-import { CONSTANTS } from './constant';
-import { getschemaValidationDone, getCurrentAppID, assignModuleCapitalization } from './utils/Utils';
-const logger = require('./utils/Logger')('LifeCycleHistoryV2.js');
-import FireboltExampleInvoker from './FireboltExampleInvoker';
-import IntentReader from 'IntentReader';
-import PubSubCommunication from './PubSubCommunication';
 
 let instance = null;
 let lifecycleValidation;
@@ -47,6 +41,5 @@ export default class LifeCycleHistoryV2 {
 
   async init(appInstance = null) {
     // TODO: Lifecycle 2.0 changes go here
-  };
-
+  }
 }

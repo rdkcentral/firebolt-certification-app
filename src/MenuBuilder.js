@@ -21,9 +21,11 @@ import Card from './Card';
 import MethodFilters from './MethodFilters';
 import ValidationView from './ValidationView';
 import { CONSTANTS } from './constant';
-import { overrideParamsFromTestData, getLifecycleHistoryClass } from './utils/Utils';
+import { overrideParamsFromTestData } from './utils/Utils';
 import MediaView from './MediaView';
 import LifeCycleHistoryView from './LifecycleHistoryView';
+import LifeCycleHistoryV1 from './LifeCycleHistoryV1';
+import LifeCycleHistoryV2 from './LifeCycleHistoryV2';
 import Launchfca from './Launchfca';
 import modules from 'externalViews';
 
@@ -47,7 +49,12 @@ const hasTag = (method, tag) => {
 export default class MenuBuilder {
   build() {
     this.methodFilters = new MethodFilters();
-    const LifecycleHistoryClass = getLifecycleHistoryClass();
+    const version = (process.env.FIREBOLT_V2 || '').split('.')[0];
+    const lifecycleHistoryVersion = {
+      1: LifeCycleHistoryV1,
+      2: LifeCycleHistoryV2,
+    };
+    const LifecycleHistoryClass = lifecycleHistoryVersion[version];
 
     this.menus = [];
 

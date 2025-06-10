@@ -531,8 +531,8 @@ export class Test_Runner {
   async invokeLifecycleAPI(methods) {
     const version = (process.env.FIREBOLT_V2 || '').split('.')[0]; // Get major version as string, e.g., '2'
     const lifecycleHistoryVersion = {
-        '1': LifeCycleHistoryV1,
-        '2': LifeCycleHistoryV2
+      1: LifeCycleHistoryV1,
+      2: LifeCycleHistoryV2,
     };
     const LifecycleHistoryClass = lifecycleHistoryVersion[version];
     const lifecycleVersionHandlers = {

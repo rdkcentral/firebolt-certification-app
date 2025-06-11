@@ -19,18 +19,19 @@
 import { Lifecycle, Parameters, Discovery } from '@firebolt-js/sdk';
 import { BehaviorSubject } from 'rxjs';
 require('dotenv').config();
+const logger = require('./utils/Logger')('LifeCycleHistoryV2.js');
 
 let instance = null;
 let lifecycleValidation;
 
-export default class LifeCycleHistoryV2 {
+export default class LifecycleHistoryV2 {
   /**
    *
-   * @returns {LifeCycleHistoryV2}
+   * @returns {LifecycleHistoryV2}
    */
   static get() {
     if (instance == null) {
-      instance = new LifeCycleHistoryV2();
+      instance = new LifecycleHistoryV2();
     }
     return instance;
   }
@@ -41,5 +42,8 @@ export default class LifeCycleHistoryV2 {
 
   async init(appInstance = null) {
     // TODO: Lifecycle 2.0 changes go here
+  }
+  get history() {
+    return this._history;
   }
 }

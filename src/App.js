@@ -41,8 +41,6 @@ const Base = withAnnouncer(lng.Application);
 import Toast, { eventEmitter } from './Toast';
 import IntentReader from 'IntentReader';
 const packagejson = require('../package.json');
-import { Test_Runner } from './Test_Runner';
-const sdkInvokerInfo = new Test_Runner();
 
 export default class App extends Base {
   static _template() {
@@ -171,7 +169,6 @@ export default class App extends Base {
     getCurrentAppID().then((res) => {
       this._setState('LoadingState');
     });
-    sdkInvokerInfo.invokeLifecycleAPI({methodName: 'Lifecycle.history'});
   }
 
   async pubSubListener() {

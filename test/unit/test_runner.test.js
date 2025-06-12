@@ -616,7 +616,7 @@ describe('Test_Runner test cases', () => {
     runner = new Test_Runner();
     runner.reportGenenration = jest.fn().mockResolvedValue('');
     runner.invokeLifecycleAPI = jest.fn().mockImplementation((tempParams) => {
-      if (tempParams.methodName === CONSTANTS.LIFECYCLE_METHOD_LIST[1]) {
+      if (tempParams.methodName === CONSTANTS.LIFECYCLE.STATE) {
         return 'initializing';
       } else {
         return { _history: [{ someKey: 'someValue' }] };
@@ -850,7 +850,7 @@ describe('Test_Runner test cases', () => {
       mockShouldDereferencerFail = false;
       const tempParams = {
         mode: 'Lifecycle.validation',
-        methodName: CONSTANTS.LIFECYCLE_METHOD_LIST[0],
+        methodName: CONSTANTS.LIFECYCLE.READY,
       };
       result = await runner.invokeLifecycleAPI(tempParams);
       // There will not be any events in the history.
@@ -864,7 +864,7 @@ describe('Test_Runner test cases', () => {
       mockShouldDereferencerFail = false;
       const tempParams = {
         mode: 'Lifecycle.validation',
-        methodName: CONSTANTS.LIFECYCLE_METHOD_LIST[1],
+        methodName: CONSTANTS.LIFECYCLE.STATE,
       };
       const response = await runner.invokeLifecycleAPI(tempParams);
       expect(response).not.toBe(undefined);
@@ -881,7 +881,7 @@ describe('Test_Runner test cases', () => {
       mockShouldDereferencerFail = false;
       const tempParams = {
         mode: 'Lifecycle.validation',
-        methodName: CONSTANTS.LIFECYCLE_METHOD_LIST[2],
+        methodName: CONSTANTS.LIFECYCLE.CLOSE,
         reason: 'userExit',
       };
       result = await runner.invokeLifecycleAPI(tempParams);
@@ -895,7 +895,7 @@ describe('Test_Runner test cases', () => {
     test('Validate the invoke lifecycle.history() method in LifecycleValidation ', async () => {
       const tempParams = {
         mode: 'Lifecycle.validation',
-        methodName: CONSTANTS.LIFECYCLE_METHOD_LIST[4],
+        methodName: CONSTANTS.LIFECYCLE.HISTORY,
       };
       result = await runner.invokeLifecycleAPI(tempParams);
       expect(result).not.toBe(undefined);

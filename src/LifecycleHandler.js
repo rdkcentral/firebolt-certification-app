@@ -44,19 +44,30 @@ class LifecycleHandler {
   constructor() {
     const version = (process.env.FIREBOLT_V2 || '').split('.')[0];
     this.version = version && version >= '2' ? 2 : 1;
+    logger.info(`LifecycleHandler initialized with version: ${process.env.FIREBOLT_V2}`, 'LifecycleHandler.js');
     this.LifeCycleHistory = LIFE_CYCLE_HISTORY_MAP[this.version];
     this.lifecycleVersionHandlerMap = {
-      1: this.invokeLifecycleVersion1.bind(this),
-      2: this.invokeLifecycleVersion2.bind(this),
+      1: new LifecycleVersion1(this),
+      2: new LifecycleVersion2(this),
     };
   }
 
   async handle(methods) {
     const handler = this.lifecycleVersionHandlerMap[this.version] || this.lifecycleVersionHandlerMap[1];
-    return handler(methods);
+    return handler.handle(methods);
+  }
+}
+
+class LifecycleVersion1 {
+  constructor(parent) {
+    this.parent = parent;
   }
 
-  async invokeLifecycleVersion1(methods) {
+  get LifeCycleHistory() {
+    return this.parent.LifeCycleHistory;
+  }
+
+  async handle(methods) {
     let response,
       result = null,
       error = null,
@@ -79,7 +90,7 @@ class LifecycleHandler {
       }
     }
     switch (method) {
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[0]:
+      case CONSTANTS.LIFECYCLE.READY:
         try {
           result = await this.lifecycleMethodCalls(method, params);
           if (process.env.STANDALONE == true) {
@@ -96,7 +107,7 @@ class LifecycleHandler {
           response = this.createResultObject(result.response, result.error);
         }
         break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[1]:
+      case CONSTANTS.LIFECYCLE.STATE:
         /*
                 In this case we dont need to look at history
                 we are trying to return the current state of the app 
@@ -118,7 +129,7 @@ class LifecycleHandler {
           response = this.createResultObject(result.response, result.error);
         }
         break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[2]:
+      case CONSTANTS.LIFECYCLE.CLOSE:
         try {
           result = await this.lifecycleMethodCalls(method, methods.methodParams);
           if (process.env.STANDALONE == true) {
@@ -135,17 +146,7 @@ class LifecycleHandler {
           response = this.createResultObject(result.response, result.error);
         }
         break;
-
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[3]:
-        /**
-         * Directly calling finish is not an expected behavior of the app.
-         * Finish should ideally be called by the app when unload event is generated.
-         * For testing, we expect bolt to launch multiple apps and create a memory crunch
-         * which would force the platform to generate and unload event.
-         * TODO: Approach for the validation of lifecycle.finish() is yet to be decided.
-         */
-        break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[4]:
+      case CONSTANTS.LIFECYCLE.HISTORY:
         try {
           result = this.LifeCycleHistory.get();
         } catch (err) {
@@ -153,7 +154,7 @@ class LifecycleHandler {
         }
         response = this.createResultObject(result, error);
         break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[5]:
+      case CONSTANTS.LIFECYCLE.ON_INACTIVE:
         if (process.env.STANDALONE == true) {
           try {
             const OnInactiveEvent = this.LifeCycleHistory.get();
@@ -173,7 +174,7 @@ class LifecycleHandler {
           response = this.createResultObject(result, error);
         }
         break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[6]:
+      case CONSTANTS.LIFECYCLE.ON_FOREGROUND:
         if (process.env.STANDALONE == true) {
           try {
             const onForegroundEvent = this.LifeCycleHistory.get();
@@ -193,7 +194,7 @@ class LifecycleHandler {
           response = this.createResultObject(result, error);
         }
         break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[7]:
+      case CONSTANTS.LIFECYCLE.ON_BACKGROUND:
         if (process.env.STANDALONE == true) {
           try {
             const onBackgroundEvent = this.LifeCycleHistory.get();
@@ -213,19 +214,26 @@ class LifecycleHandler {
           response = this.createResultObject(result, error);
         }
         break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[8]:
+      case CONSTANTS.LIFECYCLE.FINISHED:
+        /**
+         * Directly calling finish is not an expected behavior of the app.
+         * Finish should ideally be called by the app when unload event is generated.
+         * For testing, we expect bolt to launch multiple apps and create a memory crunch
+         * which would force the platform to generate and unload event.
+         * TODO: Approach for the validation of lifecycle.finish() is yet to be decided.
+         */
         result = await this.lifecycleMethodCalls(method, params);
         response = this.createResultObject(result.response, result.error);
         break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[10]:
+      case CONSTANTS.LIFECYCLE.BACKGROUND:
         result = await this.lifecycleMethodCalls(method, params);
         response = this.createResultObject(result.response, result.error);
         break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[11]:
+      case CONSTANTS.LIFECYCLE.SUSPEND:
         result = await this.lifecycleMethodCalls(method, params);
         response = this.createResultObject(result.response, result.error);
         break;
-      case CONSTANTS.LIFECYCLE_METHOD_LIST[12]:
+      case CONSTANTS.LIFECYCLE.UNSUSPEND:
         result = await this.lifecycleMethodCalls(method, params);
         response = this.createResultObject(result.response, result.error);
         break;
@@ -233,9 +241,6 @@ class LifecycleHandler {
         response = 'Invalid lifecycle method passed';
     }
     return response;
-  }
-  async invokeLifecycleVersion2(methods) {
-    return 'Lifecycle 2.0 Implementation is pending.';
   }
 
   async lifecycleMethodCalls(method, params) {
@@ -299,6 +304,20 @@ class LifecycleHandler {
       }
     }
     return methodSchema;
+  }
+}
+
+class LifecycleVersion2 {
+  constructor(parent) {
+    this.parent = parent;
+  }
+
+  get LifeCycleHistory() {
+    return this.parent.LifeCycleHistory;
+  }
+
+  async handle(methods) {
+    return 'Lifecycle 2.0 Implementation is pending.';
   }
 }
 

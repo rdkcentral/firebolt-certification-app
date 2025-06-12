@@ -129,7 +129,7 @@ class EventRegistrationInterface {
         MODULE_MAP[sdkType][module].clear(eventName);
       } else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
         const args = { listen: false };
-        if (process.env.IS_BIDIRECTIONAL_SDK === true || process.env.IS_BIDIRECTIONAL_SDK === 'true') {
+        if (process.env.IS_BIDIRECTIONAL_SDK === true || (typeof process.env.IS_BIDIRECTIONAL_SDK === 'string' && process.env.IS_BIDIRECTIONAL_SDK.toLowerCase() === 'true')) {
           await Transport.request(`${module}.on${eventName[0].toUpperCase()}${eventName.substr(1)}`, args);
         } else {
           await Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
@@ -206,7 +206,7 @@ class EventRegistrationInterface {
           // Events are cleared by using Transport layer and thus bypassing SDK
           else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
             const args = { listen: false };
-            if (process.env.IS_BIDIRECTIONAL_SDK === true || process.env.IS_BIDIRECTIONAL_SDK === 'true') {
+            if (process.env.IS_BIDIRECTIONAL_SDK === true || (typeof process.env.IS_BIDIRECTIONAL_SDK === 'string' && process.env.IS_BIDIRECTIONAL_SDK.toLowerCase() === 'true')) {
               await Transport.request(eventNameWithModuleName, args);
             } else {
               await Transport.send(module, eventMethodWithoutModule, args);
@@ -475,7 +475,7 @@ export class EventInvocation {
 
   // Initialize Event Registration based on SDK version
   initializeEventRegistration() {
-    if (process.env.IS_BIDIRECTIONAL_SDK === true || process.env.IS_BIDIRECTIONAL_SDK === 'true') {
+    if (process.env.IS_BIDIRECTIONAL_SDK === true || (typeof process.env.IS_BIDIRECTIONAL_SDK === 'string' && process.env.IS_BIDIRECTIONAL_SDK.toLowerCase() === 'true')) {
       return new EventRegistrationV2();
     } else {
       return new EventRegistration();

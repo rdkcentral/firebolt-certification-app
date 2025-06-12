@@ -447,7 +447,6 @@ jest.mock('../../src/FireboltExampleInvoker', () => {
       callId++;
       const id = callId; // a mock ID value
       eventList.push(eventName + '-' + id);
-      console.log('eventList----:', eventList);
       return Promise.resolve(id);
     }
   });
@@ -565,6 +564,59 @@ describe('EventInvocation', () => {
       process.env.IS_BIDIRECTIONAL_SDK = actualVersion;
     });
     let eventInvocation;
+    test('validate EventInvocation method and throw error for invalid event', async () => {
+      const eventParams = { params: { event: 'onmodulechanged' } };
+      const error = {
+        error: {
+          code: 'FCAError',
+          message: "Error in northBoundEventHandling: Invalid event name format: onmodulechanged, expected format is 'moduleName.onEventName' or sdkType_moduleName.onEventName'",
+        },
+      };
+      const result = await eventInvocation.northBoundEventHandling(eventParams);
+      expect(result).toStrictEqual(error);
+    });
+    test('validate EventInvocation method and throw error for no event name', async () => {
+      const eventParams = { params: { event: null } };
+      const error = {
+        error: {
+          code: 'FCAError',
+          message: 'Error in northBoundEventHandling: Invalid parameters: event name is required',
+        },
+      };
+      const result = await eventInvocation.northBoundEventHandling(eventParams);
+      expect(result).toStrictEqual(error);
+    });
+    test('validate EventInvocation method and throw error for params', async () => {
+      const eventParams = { params: null };
+      const error = {
+        error: {
+          code: 'FCAError',
+          message: 'Error in northBoundEventHandling: Invalid parameters: event name is required',
+        },
+      };
+      const result = await eventInvocation.northBoundEventHandling(eventParams);
+      expect(result).toStrictEqual(error);
+    });
+    test('validate EventInvocation method and throw error module_map method not found', async () => {
+      const eventParams = { params: { event: 'mocksdk.mockeventmodule1' } };
+      const error = {
+        jsonrpc: '2.0',
+        id: null,
+        error: 'Module mocksdk from sdk core does not exist.',
+      };
+      const result = await eventInvocation.northBoundEventHandling(eventParams);
+      expect(result.error.message).toBe(error.error);
+    });
+    test('validate EventInvocation method and throw error module_map module not found', async () => {
+      const eventParams = { params: { event: 'mocksdk1.mockeventmodule' } };
+      const error = {
+        jsonrpc: '2.0',
+        id: null,
+        error: 'Module mocksdk1 from sdk core does not exist.',
+      };
+      const result = await eventInvocation.northBoundEventHandling(eventParams);
+      expect(result.error.message).toBe(error.error);
+    });
     test('validate EventInvocation method with communicationMode SDK', async () => {
       const eventParams = { params: { event: 'mocksdk_mockmodule.onmodulechanged' } };
       const expectedResponse = {
@@ -794,11 +846,11 @@ describe('EventInvocation', () => {
       console.log(expect.getState().currentTestName + ' : ' + JSON.stringify(result));
       expect(result).toBe(true);
       if (Transport.request == null) {
-        expect(transportImport.send).toHaveBeenCalledWith('mockmodule', 'onModulechanged', {
+        expect(transportImport.send).toHaveBeenCalledWith('mockmodule', 'onmodulechanged', {
           listen: false,
         });
       } else {
-        expect(transportImport.request).toHaveBeenCalledWith('mockmodule.onModulechanged', {
+        expect(transportImport.request).toHaveBeenCalledWith('mockmodule.onmodulechanged', {
           listen: false,
         });
       }

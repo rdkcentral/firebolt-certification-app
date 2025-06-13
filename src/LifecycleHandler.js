@@ -90,7 +90,7 @@ class LifecycleVersion1 {
       }
     }
     switch (method) {
-      case CONSTANTS.LIFECYCLE.READY:
+      case CONSTANTS.LIFECYCLE_METHODS.READY:
         try {
           result = await this.lifecycleMethodCalls(method, params);
           if (process.env.STANDALONE == true) {
@@ -107,7 +107,7 @@ class LifecycleVersion1 {
           response = this.createResultObject(result.response, result.error);
         }
         break;
-      case CONSTANTS.LIFECYCLE.STATE:
+      case CONSTANTS.LIFECYCLE_METHODS.STATE:
         /*
                 In this case we dont need to look at history
                 we are trying to return the current state of the app 
@@ -129,7 +129,7 @@ class LifecycleVersion1 {
           response = this.createResultObject(result.response, result.error);
         }
         break;
-      case CONSTANTS.LIFECYCLE.CLOSE:
+      case CONSTANTS.LIFECYCLE_METHODS.CLOSE:
         try {
           result = await this.lifecycleMethodCalls(method, methods.methodParams);
           if (process.env.STANDALONE == true) {
@@ -146,7 +146,7 @@ class LifecycleVersion1 {
           response = this.createResultObject(result.response, result.error);
         }
         break;
-      case CONSTANTS.LIFECYCLE.HISTORY:
+      case CONSTANTS.LIFECYCLE_METHODS.HISTORY:
         try {
           result = this.LifeCycleHistory.get();
         } catch (err) {
@@ -154,7 +154,7 @@ class LifecycleVersion1 {
         }
         response = this.createResultObject(result, error);
         break;
-      case CONSTANTS.LIFECYCLE.ON_INACTIVE:
+      case CONSTANTS.LIFECYCLE_METHODS.ON_INACTIVE:
         if (process.env.STANDALONE == true) {
           try {
             const OnInactiveEvent = this.LifeCycleHistory.get();
@@ -174,7 +174,7 @@ class LifecycleVersion1 {
           response = this.createResultObject(result, error);
         }
         break;
-      case CONSTANTS.LIFECYCLE.ON_FOREGROUND:
+      case CONSTANTS.LIFECYCLE_METHODS.ON_FOREGROUND:
         if (process.env.STANDALONE == true) {
           try {
             const onForegroundEvent = this.LifeCycleHistory.get();
@@ -194,7 +194,7 @@ class LifecycleVersion1 {
           response = this.createResultObject(result, error);
         }
         break;
-      case CONSTANTS.LIFECYCLE.ON_BACKGROUND:
+      case CONSTANTS.LIFECYCLE_METHODS.ON_BACKGROUND:
         if (process.env.STANDALONE == true) {
           try {
             const onBackgroundEvent = this.LifeCycleHistory.get();
@@ -214,7 +214,7 @@ class LifecycleVersion1 {
           response = this.createResultObject(result, error);
         }
         break;
-      case CONSTANTS.LIFECYCLE.FINISHED:
+      case CONSTANTS.LIFECYCLE_METHODS.FINISHED:
         /**
          * Directly calling finish is not an expected behavior of the app.
          * Finish should ideally be called by the app when unload event is generated.
@@ -225,15 +225,15 @@ class LifecycleVersion1 {
         result = await this.lifecycleMethodCalls(method, params);
         response = this.createResultObject(result.response, result.error);
         break;
-      case CONSTANTS.LIFECYCLE.BACKGROUND:
+      case CONSTANTS.LIFECYCLE_METHODS.BACKGROUND:
         result = await this.lifecycleMethodCalls(method, params);
         response = this.createResultObject(result.response, result.error);
         break;
-      case CONSTANTS.LIFECYCLE.SUSPEND:
+      case CONSTANTS.LIFECYCLE_METHODS.SUSPEND:
         result = await this.lifecycleMethodCalls(method, params);
         response = this.createResultObject(result.response, result.error);
         break;
-      case CONSTANTS.LIFECYCLE.UNSUSPEND:
+      case CONSTANTS.LIFECYCLE_METHODS.UNSUSPEND:
         result = await this.lifecycleMethodCalls(method, params);
         response = this.createResultObject(result.response, result.error);
         break;

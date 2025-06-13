@@ -88,7 +88,7 @@ export const CONSTANTS = {
     'Lifecycle.suspend',
     'Lifecycle.unsuspend',
   ],
-  LIFECYCLE: {
+  LIFECYCLE_METHODS: {
     READY: 'Lifecycle.ready',
     STATE: 'Lifecycle.state',
     CLOSE: 'Lifecycle.close',

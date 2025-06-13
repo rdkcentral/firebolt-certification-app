@@ -553,6 +553,7 @@ async function getSchemaFromOpenRpc(methodName, type, sdkType = 'core') {
           return referencedMethod.result.schema;
         }
       }
+      logger.info(`No "x-subscriber-for" found for event: ${methodName}`, 'getSchemaFromOpenRpc');
       return null;
     } else {
       return method.result && method.result.schema ? method.result.schema : null;

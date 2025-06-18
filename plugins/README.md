@@ -7,7 +7,6 @@ Plugins are powerful tools that enable custom functionality to be added to FCA. 
 * [External Views](#external-views)
 * [Lifecycle](#lifecycle)
 * [Config](#configjs)
-* [External Test Data](#external-test-data)
 
 ## PubSub Client
 
@@ -34,7 +33,3 @@ This direcotry contain additional lifecycle functionality for app types not incl
 ## Config.js
 
 This file contains a JSON object where variables can be defined. Variables defined here will be appended to the constants in `src/constants.js`. If a variable is already defined in `src/constants.js` it would be overriden with the value present in this file. Additional details on how to use the config plugin can be found [here](./config.md).
-
-## External Test Data
-
-External test data is used within the firebolt-certification-app repository for a couple of functions that require importing data-sets outside of the application. Details on how external test data is used and how developers can leverage the functionality can be found here [here](./external-test-data/externalTestData.md).

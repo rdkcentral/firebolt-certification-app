@@ -31,7 +31,7 @@ import FireboltTransportInvoker from './FireboltTransportInvoker';
 
 import MethodFilters from './MethodFilters';
 import { CONSTANTS } from './constant';
-import { handleAsyncFunction, errorSchemaCheck, overrideParamsFromTestData } from './utils/Utils';
+import { handleAsyncFunction, errorSchemaCheck } from './utils/Utils';
 const utils = require('./utils/Utils');
 import LifeCycleHistoryV1 from './LifeCycleHistoryV1';
 import LifeCycleHistoryV2 from './LifeCycleHistoryV2';
@@ -171,7 +171,6 @@ export class Test_Runner {
         } else if (!this.methodFilters.isRpcMethod(methodObj, invokedSdk, communicationMode)) {
           let example;
           if (method.examples && method.examples.length > 0) {
-            overrideParamsFromTestData(method);
             for (let exampleIndex = 0; exampleIndex < method.examples.length; exampleIndex++) {
               let paramValues = [];
               if (this.methodFilters.isSubscribeMethod(method.examples[exampleIndex]) || this.methodFilters.isSetMethod(method.examples[exampleIndex])) {

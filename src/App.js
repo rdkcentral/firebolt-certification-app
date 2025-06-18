@@ -128,7 +128,7 @@ export default class App extends Base {
     process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
     process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
     process.env.REGION = new URLSearchParams(appUrl.search).get('region');
-    process.env.FIREBOLT_V2 = packagejson.version;
+    process.env.FCA_FIREBOLT_SDK_VERSION = packagejson.dependencies['@firebolt-js/sdk'] || '';
 
     if (platform) {
       process.env.PLATFORM = platform;
@@ -228,7 +228,7 @@ export default class App extends Base {
             }
             process.env.APPOBJECT = this;
             const menusBuilder = new MenuBuilder();
-            const version = (process.env.FIREBOLT_V2 || '').split('.')[0];
+            const version = (process.env.FCA_FIREBOLT_SDK_VERSION || '').split('.')[0];
             const lifecycleHistoryVersion = {
               1: LifeCycleHistoryV1,
               2: LifeCycleHistoryV2,

@@ -47,7 +47,7 @@ export default class CallMethodHandler extends BaseHandler {
       }
 
       process.env.TimeoutInMS = message.responseTimeout ? message.responseTimeout : null;
-      // TODO: Need to correct after deciding the variable name for SDK 2.0
+
       if (process.env.FCA_FIREBOLT_SDK_VERSION >= '2.0.0') {
         if (process.env.LIFECYCLE_VALIDATION == true) {
           message.context.communicationMode = CONSTANTS.TRANSPORT;

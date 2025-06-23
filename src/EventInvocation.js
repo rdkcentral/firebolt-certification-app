@@ -339,9 +339,9 @@ export class EventInvocation {
         filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
       } else {
         console.log('Divya(src/EvnetInvocation) eventName: ' + eventName);
-        console.log('Divya(src/EvnetInvocation) eventHistory: ' + JSON.stringify(eventHistory));
-        console.log('Filtering eventHistory for eventListenerId: ' + element.eventListenerId.toString());
+
         filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId.toString() == eventName.split('-').pop());
+        console.log('Divya(src/EvnetInvocation) filteredEventDataObjectList: ' + JSON.stringify(filteredEventDataObjectList));
       }
       if (filteredEventDataObjectList.length) {
         const eventDataObject = filteredEventDataObjectList[filteredEventDataObjectList.length - 1];

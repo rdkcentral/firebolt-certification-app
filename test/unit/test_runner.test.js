@@ -616,7 +616,7 @@ describe('Test_Runner test cases', () => {
     runner = new Test_Runner();
     runner.reportGenenration = jest.fn().mockResolvedValue('');
     runner.invokeLifecycleAPI = jest.fn().mockImplementation((tempParams) => {
-      if (tempParams.methodName === CONSTANTS.LIFECYCLE_METHODS.STATE) {
+      if (tempParams.methodName === CONSTANTS.LIFECYCLE_METHODS_V1.STATE) {
         return 'initializing';
       } else {
         return { _history: [{ someKey: 'someValue' }] };
@@ -850,7 +850,7 @@ describe('Test_Runner test cases', () => {
       mockShouldDereferencerFail = false;
       const tempParams = {
         mode: 'Lifecycle.validation',
-        methodName: CONSTANTS.LIFECYCLE_METHODS.READY,
+        methodName: CONSTANTS.LIFECYCLE_METHODS_V1.READY,
       };
       result = await runner.invokeLifecycleAPI(tempParams);
       // There will not be any events in the history.
@@ -864,7 +864,7 @@ describe('Test_Runner test cases', () => {
       mockShouldDereferencerFail = false;
       const tempParams = {
         mode: 'Lifecycle.validation',
-        methodName: CONSTANTS.LIFECYCLE_METHODS.STATE,
+        methodName: CONSTANTS.LIFECYCLE_METHODS_V1.STATE,
       };
       const response = await runner.invokeLifecycleAPI(tempParams);
       expect(response).not.toBe(undefined);
@@ -881,7 +881,7 @@ describe('Test_Runner test cases', () => {
       mockShouldDereferencerFail = false;
       const tempParams = {
         mode: 'Lifecycle.validation',
-        methodName: CONSTANTS.LIFECYCLE_METHODS.CLOSE,
+        methodName: CONSTANTS.LIFECYCLE_METHODS_V1.CLOSE,
         reason: 'userExit',
       };
       result = await runner.invokeLifecycleAPI(tempParams);
@@ -895,7 +895,7 @@ describe('Test_Runner test cases', () => {
     test('Validate the invoke lifecycle.history() method in LifecycleValidation ', async () => {
       const tempParams = {
         mode: 'Lifecycle.validation',
-        methodName: CONSTANTS.LIFECYCLE_METHODS.HISTORY,
+        methodName: CONSTANTS.LIFECYCLE_METHODS_V1.HISTORY,
       };
       result = await runner.invokeLifecycleAPI(tempParams);
       expect(result).not.toBe(undefined);

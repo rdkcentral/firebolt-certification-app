@@ -31,7 +31,7 @@ jest.mock('../src/constant', () => {
     APP_NAVIGATION_UI: 'UI',
     APP_NAVIGATION_MESSENGER: 'MESSENGER',
     SCROLL_MENU_MESSAGE: "Scroll down through the menu's to view the result",
-    LIFECYCLE_METHODS: {
+    LIFECYCLE_METHODS_V1: {
       READY: 'Lifecycle.ready',
       STATE: 'Lifecycle.state',
       CLOSE: 'Lifecycle.close',

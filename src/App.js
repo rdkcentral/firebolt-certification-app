@@ -90,6 +90,11 @@ export default class App extends Base {
       this.accessibilityCheck(voiceAnnouncement);
     });
     this.toastStates = [];
+    // Setting the firebolt version by fetching it from open-rpc
+    // Added the current firebolt version as default value, until the implementation of fetching the version is done
+    process.env.FCA_FIREBOLT_SDK_VERSION = '1.5.0';
+    const pattern = /(2|\d{2,})\.\d+\.\d+/;
+    process.env.IS_BIDIRECTIONAL_SDK = pattern.test(process.env.FCA_FIREBOLT_SDK_VERSION);
     this.overlayed = false;
     this.overlayDismissTimer = null;
     const appUrl = window.location;
@@ -126,6 +131,7 @@ export default class App extends Base {
     process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
     process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
     process.env.REGION = new URLSearchParams(appUrl.search).get('region');
+    process.env.SDK_VERSION = new URLSearchParams(appUrl.search).get('sdkVersion');
 
     if (platform) {
       process.env.PLATFORM = platform;

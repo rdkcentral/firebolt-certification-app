@@ -18,6 +18,7 @@
 
 import { Test_Runner } from '../../src/Test_Runner';
 import { CONSTANTS } from '../../src/constant';
+import Transport from 'Transport';
 const Validator = require('jsonschema').Validator;
 /**
  * This is a moc stucture of the actual OPEN RPC document
@@ -508,10 +509,6 @@ jest.mock('../../src/FireboltExampleInvoker', () => ({
   get: () => mockFireboltExampleInvoker,
 }));
 
-jest.mock('@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => ({
-  send: jest.fn().mockReturnValue({}),
-}));
-
 jest.mock('../../src/FireboltTransportInvoker', () => ({
   get: () => mockFireboltTransportInvoker,
 }));
@@ -611,6 +608,8 @@ jest.mock('../../src/MethodFilters', () => ({
   })),
 }));
 
+process.env.IS_BIDIRECTIONAL_SDK = false;
+
 describe('Test_Runner test cases', () => {
   beforeEach(() => {
     runner = new Test_Runner();
@@ -625,6 +624,9 @@ describe('Test_Runner test cases', () => {
   });
 
   describe('northBoundSchemaValidationAndReportGeneration Scenarios', () => {
+    beforeAll(() => {
+      jest.resetModules();
+    });
     test('should return empty result when dereference call fails for SDK', async () => {
       mockShouldDereferencerFail = true;
       result = await runner.northBoundSchemaValidationAndReportGeneration('SDK');
@@ -791,7 +793,50 @@ describe('Test_Runner test cases', () => {
         ],
       };
       process.env.COMMUNICATION_MODE = 'Transport';
-      result = await runner.northBoundSchemaValidationAndReportGeneration([CONSTANTS.CORE]);
+      let runner;
+      if (Transport.request == null) {
+        // v1 events
+        jest.mock('../../node_modules/@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
+          let callId = 0;
+          callId++;
+          return {
+            listen: jest.fn().mockImplementation(() => {
+              console.log('Returning promise and id');
+              const result = { id: callId, promise: Promise.resolve('success') };
+              console.log('Returning result: ' + JSON.stringify(result));
+              return result;
+            }),
+            send: jest.fn(),
+            addEventEmitter: jest.fn(),
+          };
+        });
+        process.env.IS_BIDIRECTIONAL_SDK = false;
+        // re-import the modules after mocking it
+        const testRunner = require('../../src/Test_Runner').Test_Runner;
+        runner = new testRunner();
+      } else {
+        // v2 events
+        jest.doMock('Transport', () => {
+          let callId = 0;
+          callId++;
+          return {
+            request: jest.fn().mockImplementation(() => {
+              console.log('Returning promise and id');
+              const result = { id: callId, promise: Promise.resolve('success') };
+              console.log('Returning result: ' + JSON.stringify(result));
+              return result;
+            }),
+            subscribe: jest.fn().mockImplementation((eventName, callBack) => {
+              console.log('subscribe function called for event: ' + eventName);
+            }),
+          };
+        });
+        process.env.IS_BIDIRECTIONAL_SDK = true;
+        // re-import the modules after mocking it
+        const testRunner = require('../../src/Test_Runner').Test_Runner;
+        runner = new testRunner();
+      }
+      const result = await runner.northBoundSchemaValidationAndReportGeneration([CONSTANTS.CORE]);
       const extractedResult = result.find((obj) => obj.title === 'Account.id');
       extractedResult.code = JSON.parse(extractedResult.code);
       expect(extractedResult.code['Schema Validation'].Status).toEqual('passed');

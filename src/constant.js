@@ -169,6 +169,7 @@ export const CONSTANTS = {
   defaultSDKs: defaultSdks,
   INVOKEPROVIDER: 'invokeProvider',
   INVOKEMANAGER: 'invokeManager',
+  INVOKEDSDK: 'invokeSDK',
   additionalSDKs: [],
   EXCLUDED_METHODS_FOR_MFOS: [],
   PASCAL_CASED_MODULES: ['SecondScreen', 'SecureStorage', 'ClosedCaptions', 'AcknowledgeChallenge', 'DeveloperTools', 'LifecycleManagement', 'PinChallenge', 'UserGrants', 'VoiceGuidance'],

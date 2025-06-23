@@ -197,78 +197,28 @@ function pushReportToS3(report) {
       reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend;
     }
 
-    let restApiUrl = CONSTANTS.REPORT_PUBLISH_URL + reportName + '.json';
-
-    logger.debug('standalone', process.env.STANDALONE);
-
     // Uplaods to standalone url if standalone param is passed in url
     if (process.env.STANDALONE == 'true') {
+      logger.debug('standalone', process.env.STANDALONE);
       const prefix = process.env.STANDALONE_PREFIX ? process.env.STANDALONE_PREFIX : 'standaloneReports';
       const reportNameSplit = reportName.split('-');
       const reportId = reportNameSplit[0];
-      restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
+      const restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
       logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReportToS3');
-    }
-
-    logger.info('URL: ' + restApiUrl, 'pushReportToS3');
-    request.open('POST', restApiUrl);
-    request.setRequestHeader('content-type', 'application/json');
-
-    // CORS headers - Disable CORS verification by uncommenting below lines
-    // request.setRequestHeader("Access-Control-Allow-Origin","*")
-    // request.setRequestHeader('Access-Control-Allow-Methods','POST,OPTIONS');
-    // request.setRequestHeader('Access-Control-Allow-Headers','Origin, Content-Type');
-
-    request.send(report);
-    request.onload = () => {
-      logger.info('Response on load: ' + request, 'pushReportToS3');
-      if (request.status == 200) {
-        resolve(restApiUrl);
-      } else {
-        logger.error(`Error ${request.status}: ${request.statusText}`, 'pushReportToS3');
-        reject(request.status);
-      }
-    };
-  });
-}
-
-/**
- * @function testDataHandler
- * @description Fetching and parsing params/content from external repo
- * @param {String} requestType - Type of request. param or content. Currently only content is supported
- * @param {String} dataIdentifier - Key to be used to fetch param or content data from external repo
- */
-function testDataHandler(requestType, dataIdentifier) {
-  if (requestType == 'param') {
-    // Params are not used by FCA for now
-    logger.info('RequestType: params. Skipping repo fetch');
-    return;
-  } else if (requestType == 'content') {
-    const moduleName = dataIdentifier.toLowerCase();
-    if (moduleName) {
-      try {
-        const moduleImportPath = require(`../../plugins/external-test-data/fixtures/modules/${moduleName}.json`);
-        const stringifyData = JSON.stringify(eval(moduleImportPath));
-        const parsedData = JSON.parse(stringifyData);
-        if (parsedData) {
-          return parsedData;
+      request.open('POST', restApiUrl);
+      request.setRequestHeader('content-type', 'application/json');
+      request.send(report);
+      request.onload = () => {
+        logger.info('Response on load: ' + request, 'pushReportToS3');
+        if (request.status == 200) {
+          resolve(restApiUrl);
         } else {
-          logger.error('Error: Requested data not found in external repo');
+          logger.error(`Error ${request.status}: ${request.statusText}`, 'pushReportToS3');
+          reject(request.status);
         }
-      } catch (err) {
-        logger.error('Test data repo error: ', err);
-      }
+      };
     }
-  } else if (requestType == 'overrideParams') {
-    try {
-      const moduleImportPath = require(`../../plugins/external-test-data/fixtures/overrideParams.json`);
-      return moduleImportPath;
-    } catch (error) {
-      logger.error('Test data repo error: ', error);
-    }
-  } else {
-    throw CONSTANTS.INVALID_REQUEST_TYPE;
-  }
+  });
 }
 
 /**
@@ -385,38 +335,6 @@ function findTypeInOneOF(schemaMap) {
     }
   }
   return false;
-}
-
-/**
- * @function overrideParamsFromTestData
- * @description To modify the params in openRPC from the external repo based on App.
- * @param methodObj - Method object taken from OPEN-RPC
- */
-async function overrideParamsFromTestData(methodObj) {
-  try {
-    const paramsJson = testDataHandler('overrideParams');
-    if (paramsJson && typeof paramsJson == 'object' && Object.keys(paramsJson).length) {
-      const appID = process.env.CURRENT_APPID;
-      // Checking if any data present for the passed appId
-      const parsedMethod = paramsJson[appID];
-      // Fetching the examples from the parsedMethod
-      if (parsedMethod) {
-        // Fetching the examples from the parsedMethod
-        const result = parsedMethod.find((res) => res.name == methodObj.name);
-        if (result) {
-          // Overriding the params of copy of OPENRPC from the testData
-          result.examples.forEach((example) => {
-            const extractedMethod = methodObj.examples.find((exampleName) => exampleName.name == example.name);
-            if (extractedMethod) {
-              extractedMethod.params = example.params;
-            }
-          });
-        }
-      }
-    }
-  } catch (error) {
-    logger.error(JSON.stringify(error), 'overrideParams');
-  }
 }
 
 /**
@@ -544,7 +462,6 @@ export {
   dereferenceOpenRPC,
   getschemaValidationDone,
   pushReportToS3,
-  testDataHandler,
   censorData,
   filterExamples,
   errorSchemaCheck,
@@ -552,7 +469,6 @@ export {
   getCurrentAppID,
   getMethodExcludedListBasedOnMode,
   findTypeInOneOF,
-  overrideParamsFromTestData,
   parseXACT,
   formatResponse,
   getGlobalSla,

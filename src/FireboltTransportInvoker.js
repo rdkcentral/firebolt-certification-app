@@ -17,17 +17,14 @@
  */
 
 import Transport from 'Transport';
-import { CONSTANTS } from './constant';
 const logger = require('./utils/Logger')('FireboltTransportInvoker.js');
+let getInvoker;
 
-let invokeManager, invokeProvider;
 try {
-  invokeManager = require('../plugins/FireboltExtensionInvoker').default.invokeManager;
-  invokeProvider = require('../plugins/FireboltExtensionInvoker').default.invokeProvider;
+  getInvoker = require('../plugins/FireboltExtensionInvoker').getInvoker;
 } catch (err) {
-  logger.error(`Unable to import additional invoker - ${err.message}`);
+  logger.error(`Unable to import transport invoker for extension sdk - ${err.message}`);
 }
-
 let instance = null;
 
 export default class FireboltTransportInvoker {
@@ -42,7 +39,7 @@ export default class FireboltTransportInvoker {
     return instance;
   }
 
-  async invoke(methodName, params, paramNamesArray, invoker = null) {
+  async invoke(methodName, params, paramNamesArray, sdk = null) {
     const module = methodName.split('.')[0];
     const method = methodName.split('.')[1];
     if (paramNamesArray) {
@@ -52,11 +49,10 @@ export default class FireboltTransportInvoker {
         // For each param, construct json using param name and value
         jsonParams[paramNamesArray[i]] = params[i];
       }
-      if (invoker == CONSTANTS.INVOKEPROVIDER) {
-        return await invokeProvider.send(module, method, jsonParams);
-      } else if (invoker == CONSTANTS.INVOKEMANAGER) {
-        return await invokeManager.send(module, method, jsonParams);
-      } else if (process.env.IS_BIDIRECTIONAL_SDK === true || process.env.IS_BIDIRECTIONAL_SDK === 'true') {
+      const invoker = getInvoker(sdk);
+      if (sdk && invoker) {
+        return await invoker.send(module, method, jsonParams);
+      } else if (process.env.IS_BIDIRECTIONAL_SDK === true || (typeof process.env.IS_BIDIRECTIONAL_SDK === 'string' && process.env.IS_BIDIRECTIONAL_SDK.toLowerCase() === 'true')) {
         return await Transport.request(`${module}.${method}`, jsonParams);
       } else {
         // Default to transport

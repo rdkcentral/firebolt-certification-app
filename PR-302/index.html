@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<style>
+html, body {margin: 0; height: 100%; overflow: hidden}
+</style>
+<head>
+    <meta charset="UTF-8" />
+    <title>1.5.0 - Firebolt Certification App - version 1.5.0</title>
+    
+    <script>
+        window.COMMITHASH = 'c6119fa4441e41f087c6750117f515c187ba0997';
+        window.APP_VERSION = 'version 1.5.0';
+        
+        console.log('appVersion=' + window.APP_VERSION + ' commitHash=' + window.COMMITHASH)
+    </script>
+    <script type="text/javascript">
+        const fbEndpoint = new URLSearchParams(window.location.search).get('__firebolt_endpoint')
+        if (fbEndpoint) {
+            window.__firebolt = window.__firebolt || {}
+            window.__firebolt.endpoint = fbEndpoint
+        }
+    </script>
+<script type="text/javascript" src="startupScripts.bundle.c0fe0f3600a5f262818b.js"></script><script type="text/javascript" src="main.bundle.c0fe0f3600a5f262818b.js"></script></head>
+<body>
+    
+<!--
+version 1.5.0
+-->
+</body>
+</html>

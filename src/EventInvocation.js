@@ -26,19 +26,20 @@
 import { dereferenceOpenRPC, errorSchemaCheck } from './utils/Utils';
 import { MODULE_MAP } from './FireboltExampleInvoker';
 import { CONSTANTS } from './constant';
-import Transport from '@firebolt-js/sdk/dist/lib/Transport/index.mjs';
+import Transport from 'Transport';
 
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 const eventHandlerMap = new Map();
-const eventHistory = [];
+const eventHistoryMap = new Map();
 const logger = require('./utils/Logger')('EventInvocation.js');
 
 class EventHandler {
   constructor(moduleWithEventName, schemaList) {
     this.moduleWithEventName = moduleWithEventName;
     const event = moduleWithEventName.split('.')[1];
-    this.eventName = this.parseEventName(event);
+    this.eventName = moduleWithEventName;
+    this.event = this.parseEventName(event);
     if (process.env.STANDALONE == true) {
       this.eventSchema = this.getSchema(moduleWithEventName, schemaList);
     }
@@ -52,7 +53,7 @@ class EventHandler {
   }
   // Return short event name
   getEventName() {
-    return this.eventName;
+    return this.event;
   }
   // Fetch schema from dereferenced RPC using event name
   getSchema(moduleWithEventName, schemaList) {
@@ -77,7 +78,6 @@ class EventHandler {
       const eventSchemaResponse = this.eventSchemaValidation(eventData);
       eventDataObject = {
         eventName: this.eventName,
-        eventListenerId: this.eventListener.eventListenerId,
         eventResponse: eventData,
         eventSchemaResult: eventSchemaResponse,
         eventTime: new Date(),
@@ -85,12 +85,16 @@ class EventHandler {
     } else {
       eventDataObject = {
         eventName: this.eventName,
-        eventListenerId: this.eventListener.id,
         eventResponse: eventData,
         eventTime: new Date(),
       };
     }
-    eventHistory.push(eventDataObject);
+    const eventMap = eventHistoryMap.get(this.eventName);
+    if (!eventMap) {
+      eventHistoryMap.set(this.eventName, [eventDataObject]);
+    } else {
+      eventMap.push(eventDataObject);
+    }
   }
   // Schema validation for resolved event data
   eventSchemaValidation(eventResponse) {
@@ -113,19 +117,211 @@ class EventHandler {
   }
   // Return queried number of events from history
   getEventHistory(numberOfEvents) {
-    return eventHistory.slice(-numberOfEvents);
+    return eventHistoryMap.slice(-numberOfEvents);
   }
 }
 
-export class EventInvocation {
-  // This method accepts the message params and return the listener response and schema response
-  async northBoundEventHandling(message) {
-    const eventParams = message.params;
-    const moduleWithEventName = eventParams.event;
-    const params = eventParams.params;
-    const [listenerResponse, uniqueListenerKey] = await this.registerEvent(moduleWithEventName, params);
-    const registrationResponse = {};
+class EventRegistrationInterface {
+  async clearEventListeners(event) {
+    try {
+      checkEventNameFormat(event);
+      const [sdkType, module, eventMethodWithoutModule, eventName] = this.parseEventNameAndModuleAndSDKType(event);
+      if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
+        const resolvedModule = this.getModuleMap(sdkType, module);
+        if (!resolvedModule.clear || typeof resolvedModule.clear !== 'function') {
+          throw new Error(`Module- ${module} from sdk- ${module} does not support event de-registration.`);
+        }
+        resolvedModule.clear(eventName);
+      } else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
+        const args = { listen: false };
+        if (process.env.IS_BIDIRECTIONAL_SDK === true || (typeof process.env.IS_BIDIRECTIONAL_SDK === 'string' && process.env.IS_BIDIRECTIONAL_SDK.toLowerCase() === 'true')) {
+          await Transport.request(`${module}.${eventMethodWithoutModule}`, args);
+        } else {
+          await Transport.send(module, eventMethodWithoutModule, args);
+        }
+      }
+      return true;
+    } catch (err) {
+      logger.error('Error while clearing event listeners: ' + err.message);
+      const response = {
+        error: {
+          code: 'FCAError',
+          message: 'Error while clearing event listeners: ' + err.message,
+        },
+      };
+      return response;
+    }
+  }
 
+  /**
+   * parseEventNameAndModuleAndSDKType
+   * This method parses the module with event name to extract SDK type, module, event name without module, and formatted event name.
+   * @param {String} moduleWithEventName - The module with event name in the format 'sdkType_moduleName.onEventName'.
+   * @returns - array containing sdkType, module, eventNameWithoutModule, and formatted eventName.
+   * @example
+   * parseEventNameAndModuleAndSDKType('sdk_foo.onExampleEvent')
+   * parseEventNameAndModuleAndSDKType('foo.onExampleEvent')
+   * returns ['firebolt', 'foo', 'onExampleEvent', 'exampleEvent']
+   */
+  parseEventNameAndModuleAndSDKType(moduleWithEventName) {
+    let sdkType;
+    let module;
+    if (!moduleWithEventName.includes('_')) {
+      sdkType = CONSTANTS.CORE.toLowerCase();
+      module = moduleWithEventName.split('.')[0].toLowerCase();
+    } else {
+      sdkType = moduleWithEventName.split('_')[0].toLowerCase();
+      module = moduleWithEventName.split('.')[0].toLowerCase();
+      module = module.split('_')[1];
+    }
+    sdkType = process.env.SDK_TYPE ? process.env.SDK_TYPE : sdkType;
+    const eventMethodWithoutModule = moduleWithEventName.split('.')[1];
+    let eventName = eventMethodWithoutModule.slice(2);
+    eventName = eventName.charAt(0).toLowerCase() + eventName.slice(1);
+    return [sdkType, module, eventMethodWithoutModule, eventName];
+  }
+
+  // Return event history for the provided unique key
+  getHistory(eventKey, numberOfEvents) {
+    return eventHandlerMap.get(eventKey).getHistory(numberOfEvents);
+  }
+  // Registering the event in Transport mode
+  async registerEventInTransport(methodName, params) {
+    const module = methodName.split('.')[0].toLowerCase();
+    const method = methodName.split('.')[1];
+    const args = Object.assign({ listen: true }, params);
+    return await Transport.listen(module, method, args);
+  }
+
+  clearAllListeners(eventHandlerMap) {
+    logger.info('Clearing registered listeners' + JSON.stringify(Object.fromEntries(eventHandlerMap)), 'clearAllListeners');
+    try {
+      eventHistoryMap.clear();
+      if (eventHandlerMap.size >= 1) {
+        eventHandlerMap.forEach(async (EventHandlerObject, _uniqueListenerKey) => {
+          // The key in the eventHandlermap is in the format SDK_ModuleName-<registrationID>
+          const eventNameWithModuleName = EventHandlerObject.moduleWithEventName;
+          const eventName = EventHandlerObject.event;
+          const [sdkType, module, eventMethodWithoutModule] = this.parseEventNameAndModuleAndSDKType(eventNameWithModuleName);
+          logger.info('Unregistered event- ' + eventNameWithModuleName, 'clearAllListeners');
+
+          // Events are cleared using Firebolt SDK
+          if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
+            const resolvedModule = this.getModuleMap(sdkType, module);
+            if (!resolvedModule.listen || typeof resolvedModule.listen !== 'function') {
+              throw new Error(`Module- ${module} from sdk- ${module} does not support event de-registration.`);
+            }
+            resolvedModule.clear(eventName);
+          }
+          // Events are cleared by using Transport layer and thus bypassing SDK
+          else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
+            const args = { listen: false };
+            if (process.env.IS_BIDIRECTIONAL_SDK === true || (typeof process.env.IS_BIDIRECTIONAL_SDK === 'string' && process.env.IS_BIDIRECTIONAL_SDK.toLowerCase() === 'true')) {
+              await Transport.request(eventNameWithModuleName, args);
+            } else {
+              await Transport.send(module, eventMethodWithoutModule, args);
+            }
+          }
+        });
+        eventHandlerMap.clear();
+        logger.info('After clearing listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
+        return CONSTANTS.CLEARED_LISTENERS;
+      } else {
+        logger.info('No active Listeners', 'clearAllListeners');
+        return CONSTANTS.NO_ACTIVE_LISTENERS;
+      }
+    } catch (err) {
+      logger.error('Error while clearing all event listeners' + err.message, 'clearAllListeners');
+      const response = { error: { code: 'FCAError', message: 'Error while clearing all event listeners: ' + err.message } };
+      return response;
+    }
+  }
+
+  /**
+   * getModuleMap
+   * This method parses the module with event name to extract SDK type, module, event name without module, and formatted event name.
+   * @param {String} sdkType - Sdk type, e.g., 'core', 'extenal', etc.
+   * @param {String} module - Type of module, e.g., 'account', 'discovery', etc.
+   * @example
+   * getModuleMap('core', 'discovery')
+   * getModuleMap('core', 'discovery')
+   */
+  getModuleMap(sdkType, module) {
+    if (!MODULE_MAP[sdkType] || !MODULE_MAP[sdkType][module]) {
+      throw new Error(`Module ${module} from sdk ${sdkType} does not exist.`);
+    }
+    return MODULE_MAP[sdkType][module];
+  }
+}
+
+// 1.0 Implementation
+class EventRegistration extends EventRegistrationInterface {
+  // This method will listen to event and capture the event response after triggering
+  async registerEvent(moduleWithEventName, params) {
+    const paramlist = [];
+    const [sdkType, module] = this.parseEventNameAndModuleAndSDKType(moduleWithEventName);
+    const [schemaList, invokedSdk] = await dereferenceOpenRPC(sdkType);
+    const EventHandlerObject = new EventHandler(moduleWithEventName, schemaList);
+    const eventName = EventHandlerObject.getEventName();
+    let eventRegistrationID;
+    for (const key in params) {
+      paramlist.push(params[key]);
+    }
+    // To prevent uncaught exceptions when it received invalid eventName or module names.
+    try {
+      if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
+        if (moduleWithEventName.includes('_')) {
+          moduleWithEventName = moduleWithEventName.split('_')[1];
+        }
+
+        const { id, promise } = await this.registerEventInTransport(moduleWithEventName);
+        const result = await promise;
+        if (result && result.message) {
+          throw result.message;
+        }
+
+        // Recieving Event Response
+        const emit = (eventId, value) => {
+          if (id == eventId && !CONSTANTS.EXCLUDED_VALUES.includes(value)) {
+            EventHandlerObject.handleEvent(value);
+          }
+        };
+        Transport.addEventEmitter(emit);
+        eventRegistrationID = id;
+      } else if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
+        const resolvedModule = this.getModuleMap(sdkType, module);
+        if (!resolvedModule.listen || typeof resolvedModule.listen !== 'function') {
+          throw new Error(`Module ${module} from sdk ${module} does not support event listening.`);
+        }
+        eventRegistrationID = await resolvedModule.listen(eventName, (result) => {
+          if (!CONSTANTS.EXCLUDED_VALUES.includes(result)) {
+            EventHandlerObject.handleEvent(result);
+          }
+        });
+      }
+    } catch (err) {
+      logger.error('No listener Id :' + JSON.stringify(err), 'registerEvent');
+      return [err, null];
+    }
+
+    // Construct unique key for event handler. Using the event registration ID.
+    if (eventRegistrationID) {
+      const eventNameWithoutSDK = moduleWithEventName.includes('_') ? moduleWithEventName.split('_')[1] : moduleWithEventName;
+      const uniqueListenerKey = eventNameWithoutSDK + '-' + eventRegistrationID;
+      eventHandlerMap.set(uniqueListenerKey, EventHandlerObject);
+      return [eventRegistrationID, uniqueListenerKey];
+    } else {
+      logger.error('No listener Id received from SDK', 'registerEvent');
+      return ['No listener Id received from SDK', null];
+    }
+  }
+
+  eventListenerResponseHandler(moduleWithEventName, response) {
+    if (CONSTANTS.EXCLUDED_VALUES.includes(response)) {
+      response = [`No event listener response received for ${moduleWithEventName}`];
+    }
+    const [listenerResponse, uniqueListenerKey] = response;
+    const registrationResponse = {};
     if (process.env.STANDALONE == true) {
       registrationResponse['eventName'] = moduleWithEventName;
       registrationResponse['eventListenerId'] = uniqueListenerKey;
@@ -184,156 +380,20 @@ export class EventInvocation {
     }
   }
 
-  // This method will listen to event and capture the event response after triggering
-  async registerEvent(moduleWithEventName, params) {
-    const paramlist = [];
-    const [sdkType, module] = this.getSdkTypeAndModule(moduleWithEventName);
-    const [schemaList, invokedSdk] = await dereferenceOpenRPC(sdkType);
-    const EventHandlerObject = new EventHandler(moduleWithEventName, schemaList);
-    const eventName = EventHandlerObject.getEventName();
-    let eventRegistrationID;
-    for (const key in params) {
-      if (params.hasOwnProperty(key)) {
-        paramlist.push(params[key]);
-      }
-    }
-    // To prevent uncaught exceptions when it received invalid eventName or module names.
-    try {
-      if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
-        if (moduleWithEventName.includes('_')) {
-          moduleWithEventName = moduleWithEventName.split('_')[1];
-        }
-
-        const { id, promise } = await this.registerEventInTransport(moduleWithEventName);
-        const result = await promise;
-        if (result && result.message) {
-          throw result.message;
-        }
-
-        // Recieving Event Response
-        const emit = (eventId, value) => {
-          if (id == eventId && !CONSTANTS.EXCLUDED_VALUES.includes(value)) {
-            EventHandlerObject.handleEvent(value);
-          }
-        };
-        Transport.addEventEmitter(emit);
-        eventRegistrationID = id;
-      } else if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
-        const resolvedModule = MODULE_MAP[sdkType][module];
-        eventRegistrationID = await resolvedModule.listen(eventName, (result) => {
-          if (!CONSTANTS.EXCLUDED_VALUES.includes(result)) {
-            EventHandlerObject.handleEvent(result);
-          }
-        });
-      }
-    } catch (err) {
-      logger.error('No listener Id :' + JSON.stringify(err), 'registerEvent');
-      return [err, null];
-    }
-
-    // Construct unique key for event handler. A UUID can be added to the key to make it more unique.
-    if (eventRegistrationID) {
-      const eventNameWithoutSDK = moduleWithEventName.includes('_') ? moduleWithEventName.split('_')[1] : moduleWithEventName;
-      const uniqueListenerKey = eventNameWithoutSDK + '-' + eventRegistrationID;
-      eventHandlerMap.set(uniqueListenerKey, EventHandlerObject);
-      return [eventRegistrationID, uniqueListenerKey];
-    }
-  }
-
-  clearEventListeners(event) {
-    try {
-      const [sdkType, module] = this.getSdkTypeAndModule(event);
-      let eventName = event.split('.')[1];
-      eventName = eventName.slice(2);
-      eventName = eventName.charAt(0).toLowerCase() + eventName.slice(1);
-      if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
-        MODULE_MAP[sdkType][module].clear(eventName);
-      } else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
-        const args = Object.assign({ listen: false });
-        Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
-      }
-      return true;
-    } catch (err) {
-      logger.error('Error while clearing event listeners: ' + err.message);
-      const response = {
-        error: {
-          code: 'FCAError',
-          message: 'Error while clearing event listeners: ' + err.message,
-        },
-      };
-      return response;
-    }
-  }
-
-  // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
-  clearAllListeners() {
-    logger.info('Clearing registered listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
-    try {
-      if (eventHandlerMap.size >= 1) {
-        eventHandlerMap.forEach((EventHandlerObject, uniqueListenerKey) => {
-          // The key in the eventhHanldermap is in the format SDK_ModuleName-<registrationID>
-          const eventNameWithModuleName = EventHandlerObject.moduleWithEventName;
-          const eventName = EventHandlerObject.eventName;
-          const eventRegistrationID = uniqueListenerKey.split('-')[1];
-          const [sdkType, module] = this.getSdkTypeAndModule(eventNameWithModuleName);
-          logger.info('Unregister event ' + eventNameWithModuleName + ' registration ID ' + eventRegistrationID, 'clearAllListeners');
-
-          // Events are cleared using Firebolt SDK
-          if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
-            MODULE_MAP[sdkType][module].clear(eventName);
-          }
-          // Events are cleared by using Transport layer and thus bypassing SDK
-          else if (process.env.COMMUNICATION_MODE == CONSTANTS.TRANSPORT) {
-            const args = Object.assign({ listen: false });
-            Transport.send(module, 'on' + eventName[0].toUpperCase() + eventName.substr(1), args);
-          }
-        });
-        eventHandlerMap.clear();
-        logger.info('After clearing listeners' + JSON.stringify(eventHandlerMap), 'clearAllListeners');
-        return 'Cleared Listeners';
-      } else {
-        logger.info('No active Listeners', 'clearAllListeners');
-        return 'No active listeners';
-      }
-    } catch (err) {
-      logger.error('Error while clearing all event listeners' + err, 'clearAllListeners');
-      const response = { error: { code: 'FCAError', message: 'Error while clearing all event listeners: ' + err.message } };
-      return response;
-    }
-  }
-
-  // Check and assign SDK type from incoming params
-  getSdkTypeAndModule(moduleWithEventName) {
-    let sdkType;
-    let module;
-    if (!moduleWithEventName.includes('_')) {
-      sdkType = CONSTANTS.CORE.toLowerCase();
-      module = moduleWithEventName.split('.')[0].toLowerCase();
-    } else {
-      sdkType = moduleWithEventName.split('_')[0].toLowerCase();
-      module = moduleWithEventName.split('.')[0].toLowerCase();
-      module = module.split('_')[1];
-    }
-    sdkType = process.env.SDK_TYPE ? process.env.SDK_TYPE : sdkType;
-    return [sdkType, module];
-  }
-
-  // Return event history for the provided unique key
-  getHistory(eventKey, numberOfEvents) {
-    return eventHandlerMap.get(eventKey).getHistory(numberOfEvents);
-  }
-
   // Return the event response object for the eventName passed as the param
   getEventResponse(message) {
     try {
       let filteredEventDataObjectList;
       const eventName = message.params.event;
-      if (process.env.STANDALONE == true) {
-        filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
-      } else {
-        filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId.toString() == eventName.split('-').pop());
+      if (!eventName) {
+        throw new Error('Invalid parameters: event name is required');
       }
-      if (filteredEventDataObjectList.length) {
+      if (process.env.STANDALONE == true) {
+        filteredEventDataObjectList = eventHistoryMap.get(eventName.split('-')[0]);
+      } else {
+        filteredEventDataObjectList = eventHistoryMap.get(eventName);
+      }
+      if (filteredEventDataObjectList && filteredEventDataObjectList.length) {
         const eventDataObject = filteredEventDataObjectList[filteredEventDataObjectList.length - 1];
         return eventDataObject;
       } else {
@@ -345,11 +405,204 @@ export class EventInvocation {
     }
   }
 
+  // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
+  clearAllListeners() {
+    return super.clearAllListeners(eventHandlerMap);
+  }
+}
+
+// 2.0 Implementation
+class EventRegistrationV2 extends EventRegistrationInterface {
+  // This method will listen to an event and capture the event response after triggering
+  async registerEvent(moduleWithEventName, params) {
+    const [sdkType, module] = this.parseEventNameAndModuleAndSDKType(moduleWithEventName);
+    const [schemaList] = await dereferenceOpenRPC(sdkType);
+    const EventHandlerObject = new EventHandler(moduleWithEventName, schemaList);
+    const eventName = EventHandlerObject.getEventName();
+    let eventRegistrationID;
+
+    try {
+      if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
+        eventRegistrationID = await this.handleTransportEvent(moduleWithEventName, eventName, EventHandlerObject);
+      } else if (process.env.COMMUNICATION_MODE === CONSTANTS.SDK) {
+        eventRegistrationID = await this.handleSdkEvent(sdkType, module, eventName, moduleWithEventName, EventHandlerObject);
+      }
+    } catch (err) {
+      logger.error(`Error registering event: ${JSON.stringify(err)}`, 'registerEvent');
+      return err;
+    }
+
+    if (eventRegistrationID) {
+      eventHandlerMap.set(moduleWithEventName, EventHandlerObject);
+      return eventRegistrationID;
+    } else {
+      logger.error('No listener Id received from SDK', 'registerEvent v2');
+      return 'No listener Id received from SDK';
+    }
+  }
+
+  // Helper method to handle Transport events
+  async handleTransportEvent(moduleWithEventName, eventName, EventHandlerObject) {
+    const event = moduleWithEventName.charAt(0).toLowerCase() + moduleWithEventName.slice(1);
+    const args = { listen: true };
+    const emit = (value) => {
+      if (!CONSTANTS.EXCLUDED_VALUES.includes(value)) {
+        EventHandlerObject.handleEvent(value);
+      }
+    };
+    Transport.subscribe(event, emit);
+    return await Transport.request(event, args);
+  }
+
+  // Helper method to handle SDK events
+  async handleSdkEvent(sdkType, module, eventName, moduleWithEventName, EventHandlerObject) {
+    const resolvedModule = this.getModuleMap(sdkType, module);
+    if (!resolvedModule.listen || typeof resolvedModule.listen !== 'function') {
+      throw new Error(`Module ${module} from sdk ${module} does not support event listening.`);
+    }
+    return await resolvedModule.listen(eventName, (result) => {
+      if (!CONSTANTS.EXCLUDED_VALUES.includes(result)) {
+        EventHandlerObject.handleEvent(result);
+      }
+    });
+  }
+
+  // Return the event response object for the eventName passed as the param
+  getEventResponse(message) {
+    try {
+      const eventName = message.params.event;
+      if (!eventName) {
+        throw new Error('Invalid parameters: event name is required');
+      }
+      const filteredEvents = eventHistoryMap.get(eventName);
+      return filteredEvents && filteredEvents.length ? filteredEvents[filteredEvents.length - 1] : { [eventName]: null };
+    } catch (err) {
+      return { error: { code: 'FCAError', message: `Event response fetch error: ${err.message}` } };
+    }
+  }
+
+  eventListenerResponseHandler(moduleWithEventName, response) {
+    const registrationResponse = {};
+    registrationResponse['jsonrpc'] = '2.0';
+    if (response && Number.isInteger(response) && response > 0) {
+      registrationResponse['id'] = response;
+      registrationResponse['result'] = {
+        listening: true,
+        event: moduleWithEventName,
+      };
+      eventHandlerMap.get(moduleWithEventName).setEventListener(registrationResponse);
+    } else if (response && response.hasOwnProperty('listening') && response.listening) {
+      registrationResponse['jsonrpc'] = '2.0';
+      registrationResponse['id'] = null;
+      registrationResponse['result'] = response;
+      eventHandlerMap.get(moduleWithEventName).setEventListener(registrationResponse);
+    } else {
+      registrationResponse['error'] = response;
+      registrationResponse['id'] = null;
+    }
+    return registrationResponse;
+  }
+
+  // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
+  clearAllListeners() {
+    return super.clearAllListeners(eventHandlerMap);
+  }
+}
+
+function checkEventNameFormat(moduleWithEventName) {
+  if (!moduleWithEventName) {
+    throw new Error('Invalid parameters: event name is required');
+  }
+  const methodNameRegex = /^(?!.*\.$)[^.].*?\.[^_]*_?[^.]*$/;
+  if (!methodNameRegex.test(moduleWithEventName)) {
+    throw new Error(`Invalid event name format: ${moduleWithEventName}, expected format is 'moduleName.onEventName' or sdkType_moduleName.onEventName'`);
+  }
+}
+
+export class EventInvocation {
+  constructor() {
+    this.eventRegistration = this.initializeEventRegistration();
+  }
+
+  // Initialize Event Registration based on SDK version
+  initializeEventRegistration() {
+    if (process.env.IS_BIDIRECTIONAL_SDK === true || (typeof process.env.IS_BIDIRECTIONAL_SDK === 'string' && process.env.IS_BIDIRECTIONAL_SDK.toLowerCase() === 'true')) {
+      return new EventRegistrationV2();
+    } else {
+      return new EventRegistration();
+    }
+  }
+
+  async northBoundEventHandling(message) {
+    try {
+      if (!message || !message.params || !message.params.event) {
+        throw new Error('Invalid parameters: event name is required');
+      }
+      const { event: moduleWithEventName, params } = message.params;
+      checkEventNameFormat(moduleWithEventName);
+      const response = await this.eventRegistration.registerEvent(moduleWithEventName, params);
+      return this.eventRegistration.eventListenerResponseHandler(moduleWithEventName, response);
+    } catch (error) {
+      return this.handleError('northBoundEventHandling', error);
+    }
+  }
+
+  async clearEventListeners(event) {
+    try {
+      return await this.eventRegistration.clearEventListeners(event);
+    } catch (error) {
+      return this.handleError('clearEventListeners', error);
+    }
+  }
+
+  // This method will clear the eventListeners and the event hsitory for the listener as a part of FCA
+  clearAllListeners() {
+    try {
+      return this.eventRegistration.clearAllListeners();
+    } catch (error) {
+      return this.handleError('clearAllListeners', error);
+    }
+  }
+
+  // Check and assign SDK type from incoming params
+  parseEventNameAndModuleAndSDKType(moduleWithEventName) {
+    try {
+      return this.eventRegistration.parseEventNameAndModuleAndSDKType(moduleWithEventName);
+    } catch (error) {
+      return this.handleError('parseEventNameAndModuleAndSDKType', error);
+    }
+  }
+
+  // Return event history for the provided unique key
+  getHistory(eventKey, numberOfEvents) {
+    try {
+      return this.eventRegistration.getHistory(eventKey, numberOfEvents);
+    } catch (error) {
+      return this.handleError('getHistory', error);
+    }
+  }
+
+  // Return the event response object for the eventName passed as the param
+  getEventResponse(message) {
+    try {
+      return this.eventRegistration.getEventResponse(message);
+    } catch (error) {
+      return this.handleError('getEventResponse', error);
+    }
+  }
+
   // Registering the event in Transport mode
   async registerEventInTransport(methodName, params) {
-    const module = methodName.split('.')[0].toLowerCase();
-    const method = methodName.split('.')[1];
-    const args = Object.assign({ listen: true }, params);
-    return await Transport.listen(module, method, args);
+    try {
+      return await this.eventRegistration.registerEventInTransport(methodName, params);
+    } catch (error) {
+      return this.handleError('registerEventInTransport', error);
+    }
+  }
+
+  // Centralized error handling
+  handleError(methodName, error) {
+    console.error(`Error in ${methodName}:`, error.message);
+    return { error: { code: 'FCAError', message: `Error in ${methodName}: ${error.message}` } };
   }
 }

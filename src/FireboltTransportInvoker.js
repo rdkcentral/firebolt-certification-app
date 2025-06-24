@@ -16,8 +16,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import Transport from '@firebolt-js/sdk/dist/lib/Transport';
+import Transport from 'Transport';
+const logger = require('./utils/Logger')('FireboltTransportInvoker.js');
 let getInvoker;
+
 try {
   getInvoker = require('../plugins/FireboltExtensionInvoker').getInvoker;
 } catch (err) {
@@ -50,7 +52,10 @@ export default class FireboltTransportInvoker {
       const invoker = getInvoker(sdk);
       if (sdk && invoker) {
         return await invoker.send(module, method, jsonParams);
+      } else if (process.env.IS_BIDIRECTIONAL_SDK === true || (typeof process.env.IS_BIDIRECTIONAL_SDK === 'string' && process.env.IS_BIDIRECTIONAL_SDK.toLowerCase() === 'true')) {
+        return await Transport.request(`${module}.${method}`, jsonParams);
       } else {
+        // Default to transport
         return await Transport.send(module, method, jsonParams);
       }
     } else {

@@ -38,7 +38,7 @@ export default class clearEventHandler extends BaseHandler {
       process.env.SDK_TYPE = sdkType;
     }
     try {
-      const validationReport = eventInvokerInfo.clearEventListeners(message.params.event);
+      const validationReport = await eventInvokerInfo.clearEventListeners(message.params.event);
       return JSON.stringify({ report: validationReport });
     } catch (e) {
       const result = {

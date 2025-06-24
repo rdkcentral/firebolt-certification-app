@@ -34,26 +34,10 @@ jest.mock('../../src/utils/Utils', () => {
   };
 });
 
-jest.mock('@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
-  return {
-    send: () => {
-      return {};
-    },
-  };
-});
-
 jest.mock('../../src/FireboltExampleInvoker', () => {
   return {
     get: () => {
       return mockFireboltExampleInvoker;
-    },
-  };
-});
-
-jest.mock('../../src/FireboltTransportInvoker', () => {
-  return {
-    get: () => {
-      return mockFireboltTransportInvoker;
     },
   };
 });

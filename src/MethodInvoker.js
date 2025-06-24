@@ -29,6 +29,7 @@ const responseList = [];
 export class MethodInvoker {
   // This method accepts the message(method name, params) and return Api response with Schema validation result.
   async invoke(message) {
+    console.log('Divya MethodInvoker invoked with message:', message);
     let response, method, params, mode, err, paramNames, module, methodObj, schemaMap, schemaValidationResult;
     process.env.ID = process.env.ID + 1;
     process.env.COMMUNICATION_MODE = message.context.communicationMode;

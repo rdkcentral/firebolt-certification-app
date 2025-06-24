@@ -47,6 +47,7 @@ export default class FireboltTransportInvoker {
         // For each param, construct json using param name and value
         jsonParams[paramNamesArray[i]] = params[i];
       }
+      console.log('Divya FireboltTransportInvoker invoked with methodName:::', methodName, 'params::::', JSON.stringify(jsonParams));
       const invoker = getInvoker(sdk);
       if (sdk && invoker) {
         return await invoker.send(module, method, jsonParams);

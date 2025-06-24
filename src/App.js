@@ -91,10 +91,9 @@ export default class App extends Base {
       this.accessibilityCheck(voiceAnnouncement);
     });
     this.toastStates = [];
-    process.env.FCA_FIREBOLT_SDK_VERSION = packagejson.dependencies['@firebolt-js/sdk'];
-    console.log('process.env.FCA_FIREBOLT_SDK_VERSION-----:', process.env.FCA_FIREBOLT_SDK_VERSION);
+    const sdkVersionFromPackageJson = packagejson.dependencies['@firebolt-js/sdk'];
     const pattern = /(2|\d{2,})\.\d+\.\d+/;
-    process.env.IS_BIDIRECTIONAL_SDK = pattern.test(process.env.FCA_FIREBOLT_SDK_VERSION);
+    process.env.IS_BIDIRECTIONAL_SDK = pattern.test(sdkVersionFromPackageJson);
     this.overlayed = false;
     this.overlayDismissTimer = null;
     const appUrl = window.location;

@@ -39,6 +39,7 @@ import { withAnnouncer } from '@lightningjs/ui-components';
 const Base = withAnnouncer(lng.Application);
 import Toast, { eventEmitter } from './Toast';
 import IntentReader from 'IntentReader';
+const packagejson = require('../package.json');
 
 export default class App extends Base {
   static _template() {
@@ -92,7 +93,8 @@ export default class App extends Base {
     this.toastStates = [];
     // Setting the firebolt version by fetching it from open-rpc
     // Added the current firebolt version as default value, until the implementation of fetching the version is done
-    process.env.FCA_FIREBOLT_SDK_VERSION = '1.5.0';
+    process.env.FCA_FIREBOLT_SDK_VERSION = packagejson.dependencies['@firebolt-js/sdk'];
+    console.log('process.env.FCA_FIREBOLT_SDK_VERSION-----:', process.env.FCA_FIREBOLT_SDK_VERSION);
     const pattern = /(2|\d{2,})\.\d+\.\d+/;
     process.env.IS_BIDIRECTIONAL_SDK = pattern.test(process.env.FCA_FIREBOLT_SDK_VERSION);
     this.overlayed = false;

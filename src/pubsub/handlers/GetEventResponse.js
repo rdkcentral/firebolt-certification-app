@@ -26,11 +26,13 @@ export default class GetEventResponse extends BaseHandler {
   }
 
   async handle(message) {
+    console.log('Divya GetEventResponse handler(FCA) invoked with message:', message);
     const eventInvocation = new EventInvocation();
     const validationReport = eventInvocation.getEventResponse(message);
     if (process.env.STANDALONE == true) {
       return JSON.stringify({ report: validationReport });
     } else {
+      console.log('Divya Validation Report in GetEventResponse:', JSON.stringify(validationReport));
       const validationReportObject = { jsonrpc: '2.0', result: validationReport, id: process.env.ID + 1 };
       return JSON.stringify(validationReportObject);
     }

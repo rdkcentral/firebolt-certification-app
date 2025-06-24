@@ -91,8 +91,6 @@ export default class App extends Base {
       this.accessibilityCheck(voiceAnnouncement);
     });
     this.toastStates = [];
-    // Setting the firebolt version by fetching it from open-rpc
-    // Added the current firebolt version as default value, until the implementation of fetching the version is done
     process.env.FCA_FIREBOLT_SDK_VERSION = packagejson.dependencies['@firebolt-js/sdk'];
     console.log('process.env.FCA_FIREBOLT_SDK_VERSION-----:', process.env.FCA_FIREBOLT_SDK_VERSION);
     const pattern = /(2|\d{2,})\.\d+\.\d+/;

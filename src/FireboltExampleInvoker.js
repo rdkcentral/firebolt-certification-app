@@ -106,7 +106,10 @@ export default class FireboltExampleInvoker {
         if (typeof params === 'object' && !Array.isArray(params)) {
           params = this.getParamsListFromSDK(methodFn, params);
         }
-        return await methodFn(...params);
+        //return await methodFn(...params);
+        const resultSet = await methodFn(params);
+        console.log('Result:', resultSet);
+        return resultSet;
       } else if (method.match(/^on[A-Z][a-zA-Z]+$/) && moduleClass.listen) {
         let id;
         console.log('params:', params);

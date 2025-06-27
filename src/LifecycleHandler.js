@@ -42,9 +42,8 @@ const LIFE_CYCLE_HISTORY_MAP = {
 
 class LifecycleHandler {
   constructor() {
-    const version = (process.env.FCA_FIREBOLT_SDK_VERSION || '').split('.')[0];
-    this.version = version && version >= '2' ? 2 : 1;
-    logger.info(`LifecycleHandler initialized with version: ${process.env.FCA_FIREBOLT_SDK_VERSION}`, 'LifecycleHandler.js');
+    this.version = process.env.FCA_FIREBOLT_SDK_VERSION;
+    logger.info(`LifecycleHandler initialized with version: ${this.version}.x`, 'LifecycleHandler.js');
     this.LifeCycleHistory = LIFE_CYCLE_HISTORY_MAP[this.version];
     this.lifecycleVersionHandlerMap = {
       1: new LifecycleVersion1(this),

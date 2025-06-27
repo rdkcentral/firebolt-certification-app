@@ -48,12 +48,11 @@ const hasTag = (method, tag) => {
 export default class MenuBuilder {
   build() {
     this.methodFilters = new MethodFilters();
-    const version = (process.env.FCA_FIREBOLT_SDK_VERSION || '').split('.')[0];
     const lifecycleHistoryVersion = {
       1: LifeCycleHistoryV1,
       2: LifeCycleHistoryV2,
     };
-    const LifecycleHistoryClass = lifecycleHistoryVersion[version];
+    const LifecycleHistoryClass = lifecycleHistoryVersion[process.env.FCA_FIREBOLT_SDK_VERSION];
 
     this.menus = [];
 

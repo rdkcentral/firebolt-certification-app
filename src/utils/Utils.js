@@ -222,6 +222,45 @@ function pushReportToS3(report) {
 }
 
 /**
+ * @function testDataHandler
+ * @description Fetching and parsing params/content from external repo
+ * @param {String} requestType - Type of request. param or content. Currently only content is supported
+ * @param {String} dataIdentifier - Key to be used to fetch param or content data from external repo
+ */
+function testDataHandler(requestType, dataIdentifier) {
+  if (requestType == 'param') {
+    // Params are not used by FCA for now
+    logger.info('RequestType: params. Skipping repo fetch');
+    return;
+  } else if (requestType == 'content') {
+    const moduleName = dataIdentifier.toLowerCase();
+    if (moduleName) {
+      try {
+        const moduleImportPath = require(`../../plugins/external-test-data/fixtures/modules/${moduleName}.json`);
+        const stringifyData = JSON.stringify(eval(moduleImportPath));
+        const parsedData = JSON.parse(stringifyData);
+        if (parsedData) {
+          return parsedData;
+        } else {
+          logger.error('Error: Requested data not found in external repo');
+        }
+      } catch (err) {
+        logger.error('Test data repo error: ', err);
+      }
+    }
+  } else if (requestType == 'overrideParams') {
+    try {
+      const moduleImportPath = require(`../../plugins/external-test-data/fixtures/overrideParams.json`);
+      return moduleImportPath;
+    } catch (error) {
+      logger.error('Test data repo error: ', error);
+    }
+  } else {
+    throw CONSTANTS.INVALID_REQUEST_TYPE;
+  }
+}
+
+/**
  * @function filterExamples
  * @description Filltering the programlist based on programType and offeringType
  * @param {array} programlist - Contains the number of objects related to programs like movie, series etc
@@ -335,6 +374,38 @@ function findTypeInOneOF(schemaMap) {
     }
   }
   return false;
+}
+
+/**
+ * @function overrideParamsFromTestData
+ * @description To modify the params in openRPC from the external repo based on App.
+ * @param methodObj - Method object taken from OPEN-RPC
+ */
+async function overrideParamsFromTestData(methodObj) {
+  try {
+    const paramsJson = testDataHandler('overrideParams');
+    if (paramsJson && typeof paramsJson == 'object' && Object.keys(paramsJson).length) {
+      const appID = process.env.CURRENT_APPID;
+      // Checking if any data present for the passed appId
+      const parsedMethod = paramsJson[appID];
+      // Fetching the examples from the parsedMethod
+      if (parsedMethod) {
+        // Fetching the examples from the parsedMethod
+        const result = parsedMethod.find((res) => res.name == methodObj.name);
+        if (result) {
+          // Overriding the params of copy of OPENRPC from the testData
+          result.examples.forEach((example) => {
+            const extractedMethod = methodObj.examples.find((exampleName) => exampleName.name == example.name);
+            if (extractedMethod) {
+              extractedMethod.params = example.params;
+            }
+          });
+        }
+      }
+    }
+  } catch (error) {
+    logger.error(JSON.stringify(error), 'overrideParams');
+  }
 }
 
 /**
@@ -462,6 +533,7 @@ export {
   dereferenceOpenRPC,
   getschemaValidationDone,
   pushReportToS3,
+  testDataHandler,
   censorData,
   filterExamples,
   errorSchemaCheck,
@@ -469,6 +541,7 @@ export {
   getCurrentAppID,
   getMethodExcludedListBasedOnMode,
   findTypeInOneOF,
+  overrideParamsFromTestData,
   parseXACT,
   formatResponse,
   getGlobalSla,

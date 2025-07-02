@@ -33,6 +33,7 @@ import KeyboardProviderDelegater from './providers/KeyboardProviderDelegater';
 import AckChallengeProviderDelegater from './providers/AckChallengeDelegater';
 import UserInterestDelegater from './providers/UserInterestDelegater';
 const logger = require('./utils/Logger')('App.js');
+const baseLogger = require('./utils/Logger');
 import FireboltTransportInvoker from './FireboltTransportInvoker';
 import { handleAsyncFunction } from './utils/Utils';
 import { withAnnouncer } from '@lightningjs/ui-components';
@@ -83,6 +84,7 @@ export default class App extends Base {
 
   async _init() {
     Settings.setLogLevel('DEBUG');
+    baseLogger.promoteTempLog('Adi-123')
     eventEmitter.on('showToast', (message, state, tagName, color) => {
       this.showToast(message, state, tagName, color);
     });

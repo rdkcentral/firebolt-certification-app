@@ -23,7 +23,8 @@ import ValidationView from './ValidationView';
 import { CONSTANTS } from './constant';
 import MediaView from './MediaView';
 import LifeCycleHistoryView from './LifecycleHistoryView';
-import LifecycleHistory from './LifeCycleHistory';
+import LifeCycleHistoryV1 from './LifeCycleHistoryV1';
+import LifeCycleHistoryV2 from './LifeCycleHistoryV2';
 import Launchfca from './Launchfca';
 import modules from 'externalViews';
 
@@ -47,6 +48,11 @@ const hasTag = (method, tag) => {
 export default class MenuBuilder {
   build() {
     this.methodFilters = new MethodFilters();
+    const lifecycleHistoryVersion = {
+      1: LifeCycleHistoryV1,
+      2: LifeCycleHistoryV2,
+    };
+    const LifecycleHistoryClass = lifecycleHistoryVersion[process.env.FCA_FIREBOLT_SDK_VERSION];
 
     this.menus = [];
 
@@ -59,7 +65,7 @@ export default class MenuBuilder {
         title: 'Lifecycle History',
         view: LifeCycleHistoryView,
         params: {
-          history: LifecycleHistory.get().history,
+          history: LifecycleHistoryClass.get().history,
         },
       },
       {

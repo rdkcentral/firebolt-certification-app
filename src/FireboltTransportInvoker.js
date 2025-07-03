@@ -17,6 +17,7 @@
  */
 
 import Transport from '@firebolt-js/sdk/dist/lib/Transport';
+const logger = require('./utils/Logger')('FireboltTransportInvoker.js');
 let getInvoker;
 try {
   getInvoker = require('../plugins/FireboltExtensionInvoker').getInvoker;

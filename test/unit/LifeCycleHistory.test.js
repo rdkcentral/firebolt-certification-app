@@ -16,9 +16,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import LifecycleHistory from '../../src/LifeCycleHistory';
+import LifeCycleHistoryV1 from '../../src/LifeCycleHistoryV1';
 import { assignModuleCapitalization } from '../../src/utils/Utils';
-const logger = require('../../src/utils/Logger')('LifeCycleHistory.test.js');
+const logger = require('../../src/utils/Logger')('LifeCycleHistoryV1.test.js');
 const mockValidationResponse = {
   errors: ['error'],
 };
@@ -126,7 +126,7 @@ describe('#init', () => {
   });
 
   it('should init', async () => {
-    const instance = new LifecycleHistory();
+    const instance = new LifeCycleHistoryV1();
     await instance.init();
     mockValidationResponse.errors = [];
     await instance.init();
@@ -137,7 +137,7 @@ describe('#init', () => {
 
 describe('LifecycleHistory test cases', () => {
   beforeEach(() => {
-    lifecycleHistory = new LifecycleHistory();
+    lifecycleHistory = new LifeCycleHistoryV1();
   });
   test('validate _recordHistory', async () => {
     mockValidationResponse.errors = ['error'];
@@ -151,9 +151,9 @@ describe('LifecycleHistory test cases', () => {
     expect(result).toBeUndefined();
   });
   test('validate get', () => {
-    LifecycleHistory.get();
+    LifeCycleHistoryV1.get();
   });
   test('validate get history', () => {
-    LifecycleHistory.get().history;
+    LifeCycleHistoryV1.get().history;
   });
 });

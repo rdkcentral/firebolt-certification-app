@@ -23,7 +23,7 @@ jest.mock('../../src/pubsub/handlers/BaseHandler', () => {
   return jest.fn().mockImplementation(() => {});
 });
 
-jest.mock('../../src/LifeCycleHistory', () => {
+jest.mock('../../src/LifeCycleHistoryV1', () => {
   return {
     get: () => {
       return mockFireboltExampleInvoker;

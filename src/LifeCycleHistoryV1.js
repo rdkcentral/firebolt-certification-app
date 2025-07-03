@@ -21,7 +21,7 @@ import { BehaviorSubject } from 'rxjs';
 require('dotenv').config();
 import { CONSTANTS } from './constant';
 import { getschemaValidationDone, getCurrentAppID, assignModuleCapitalization } from './utils/Utils';
-const logger = require('./utils/Logger')('LifeCycleHistory.js');
+const logger = require('./utils/Logger')('LifeCycleHistoryV1.js');
 import FireboltExampleInvoker from './FireboltExampleInvoker';
 import IntentReader from 'IntentReader';
 import PubSubCommunication from './PubSubCommunication';
@@ -29,14 +29,14 @@ import PubSubCommunication from './PubSubCommunication';
 let instance = null;
 let lifecycleValidation;
 
-export default class LifecycleHistory {
+export default class LifecycleHistoryV1 {
   /**
    *
-   * @returns {LifecycleHistory}
+   * @returns {LifecycleHistoryV1}
    */
   static get() {
     if (instance == null) {
-      instance = new LifecycleHistory();
+      instance = new LifecycleHistoryV1();
     }
     return instance;
   }

@@ -19,8 +19,9 @@
 import lng from '@lightningjs/core';
 import Menu from './Menu';
 import MenuBuilder from './MenuBuilder';
-import LifecycleHistory from './LifeCycleHistory';
 import { Settings, Accessibility, Discovery } from '@firebolt-js/sdk';
+import LifeCycleHistoryV1 from './LifeCycleHistoryV1';
+import LifeCycleHistoryV2 from './LifeCycleHistoryV2';
 import FireboltExampleInvoker from './FireboltExampleInvoker';
 import Modal from './Modal';
 import PubSubCommunication from './PubSubCommunication';
@@ -39,6 +40,7 @@ import { withAnnouncer } from '@lightningjs/ui-components';
 const Base = withAnnouncer(lng.Application);
 import Toast, { eventEmitter } from './Toast';
 import IntentReader from 'IntentReader';
+const packagejson = require('../package.json');
 
 export default class App extends Base {
   static _template() {
@@ -126,7 +128,16 @@ export default class App extends Base {
     process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
     process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
     process.env.REGION = new URLSearchParams(appUrl.search).get('region');
-
+    // Set FCA_FIREBOLT_SDK_VERSION to major version (as string), defaulting to '1'
+    const sdkVersionRaw = packagejson.dependencies['@firebolt-js/sdk'];
+    let sdkMajorVersion = '1';
+    if (sdkVersionRaw) {
+      const match = sdkVersionRaw.match(/^(\d+)\./);
+      if (match && match[1]) {
+        sdkMajorVersion = match[1];
+      }
+    }
+    process.env.FCA_FIREBOLT_SDK_VERSION = sdkMajorVersion;
     if (platform) {
       process.env.PLATFORM = platform;
     } else {
@@ -225,7 +236,12 @@ export default class App extends Base {
             }
             process.env.APPOBJECT = this;
             const menusBuilder = new MenuBuilder();
-            LifecycleHistory.get().init(this);
+            const lifecycleHistoryVersion = {
+              1: LifeCycleHistoryV1,
+              2: LifeCycleHistoryV2,
+            };
+            const LifecycleHistoryClass = lifecycleHistoryVersion[process.env.FCA_FIREBOLT_SDK_VERSION];
+            LifecycleHistoryClass.get().init(this);
             const menu = new URLSearchParams(window.location.search).get('menu');
             this.tag('Main').patch({
               MainMenu: {

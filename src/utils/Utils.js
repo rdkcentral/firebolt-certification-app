@@ -472,7 +472,7 @@ export {
   parseXACT,
   formatResponse,
   getGlobalSla,
-  setSLAStatus,
   checkForEnum,
+  setSLAStatus,
   assignModuleCapitalization,
 };

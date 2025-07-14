@@ -28,7 +28,7 @@ export default class ClearEventListeners extends BaseHandler {
 
   async handle(message) {
     const eventInvokerInfo = new EventInvocation();
-    const validationReport = eventInvokerInfo.clearAllListeners();
+    const validationReport = await eventInvokerInfo.clearAllListeners();
     return JSON.stringify({ report: validationReport });
   }
 }

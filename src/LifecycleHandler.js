@@ -316,7 +316,47 @@ class LifecycleVersion2 {
   }
 
   async handle(methods) {
-    return 'Lifecycle 2.0 Implementation is pending.';
+    let response,
+      result = null,
+      error = null;
+    const method = methods.methodName;
+    switch (method) {
+      case CONSTANTS.LIFECYCLE_METHODS_V2.HISTORY:
+        try {
+          result = this.LifeCycleHistory.get();
+        } catch (err) {
+          error = err;
+        }
+        response = this.createResultObject(result, error);
+        break;
+    }
+    return response;
+  }
+  createResultObject(result, error) {
+    let resultObject;
+    if (process.env.STANDALONE == true) {
+      resultObject = {
+        result: result,
+        error: error,
+        schemaResult: schemaResult,
+        contentResult: contentResult,
+      };
+    } else {
+      if (error == null) {
+        resultObject = {
+          jsonrpc: '2.0',
+          result: result,
+          id: process.env.ID + 1,
+        };
+      } else {
+        resultObject = {
+          jsonrpc: '2.0',
+          error: error,
+          id: process.env.ID + 1,
+        };
+      }
+    }
+    return resultObject;
   }
 }
 

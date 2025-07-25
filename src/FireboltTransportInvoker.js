@@ -38,6 +38,7 @@ export default class FireboltTransportInvoker {
   }
 
   async invoke(methodName, params, paramNamesArray, sdk = null) {
+    console.log('Divya FireboltTransportInvoker invoke called with methodName: ', methodName, ' params: ', params, ' paramNamesArray: ', paramNamesArray);
     const module = methodName.split('.')[0];
     const method = methodName.split('.')[1];
     if (paramNamesArray) {

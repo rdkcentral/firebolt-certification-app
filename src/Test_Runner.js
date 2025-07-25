@@ -215,9 +215,13 @@ export class Test_Runner {
 
                 if (communicationMode == CONSTANTS.TRANSPORT) {
                   const paramNames = method.params ? method.params.map((p) => p.name) : [];
+                  console.log('Inside tetstRunner invoke, paramNames: ', paramNames);
                   result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk, paramNames);
+                  console.log('Inside testRunner invoke, result: ', result);
                 } else {
+                  console.log('Inside testRunner invoke, paramNames in the else: ', paramNames);
                   result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk);
+                  console.log('Inside testRunner invoke, result in the else: ', result);
                 }
 
                 const response = { result: result };
@@ -868,6 +872,7 @@ export class Test_Runner {
         formattedResponse = utils.formatResponse(parsedResponse, CONSTANTS.REPORT_STATUS.SKIPPED, null, params, schemaMap);
       }
     } else if (isExceptionMethod) {
+      console.log('Inside isExceptionMethod block');
       // Handle exception methods
       resultState = this.setResultState(CONSTANTS.REPORT_STATUS.FAILED);
       // Check if parsed response contains an error
@@ -877,15 +882,18 @@ export class Test_Runner {
         }
         testContext.error = parsedResponse.error;
         formattedError = { err: parsedResponse.error };
-
+        console.log('Parsed response error:', parsedResponse.error);
         if (schemaValidationResult.errors.length) {
+          console.log('Schema validation errors found:', schemaValidationResult.errors);
           // If the response is undefined and the response doesnot have a valid result or error field
           if (parsedResponse.error == CONSTANTS.UNDEFINED_RESPONSE_MESSAGE) {
+            console.log('Inside undefined response block');
             testContext.error = null;
             let message = CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
 
             // If slaValidation flag is set to true, add SLA Validation property with relevant fields to formatted response
             if (process.env.SLA_VALIDATION) {
+              console.log('SLA Validation is enabled');
               message =
                 slaValue === null
                   ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_SKIPPED_MESSAGE
@@ -893,11 +901,14 @@ export class Test_Runner {
                     ? CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE + '. ' + CONSTANTS.SLA_VALIDATION_FAILED_MESSAGE
                     : CONSTANTS.NO_RESULT_OR_ERROR_MESSAGE;
               formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, null, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
+              console.log('Formatted response:', formattedResponse);
             } else {
               // Else slaValidation flag is set to false, return formatted response without SLA Validation property
               formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, null, params, schemaMap);
+              console.log('Formatted response without SLA Validation:', formattedResponse);
             }
           } else {
+            console.log('Divya Inside error response block');
             // If the API is an exception method and expects error, but the error received is not as per expected error schema format
             let message = 'Expected error, incorrect error format';
             if (process.env.SLA_VALIDATION) {
@@ -949,6 +960,7 @@ export class Test_Runner {
           }
         }
       } else {
+        console.log('Inside else block for exception method for calling censorData');
         // If the API is an exception method expecting error but received result
         let message = 'Expected error, received result';
         parsedResponse = utils.censorData(methodObj.name, parsedResponse.result);
@@ -965,16 +977,20 @@ export class Test_Runner {
                 : 'Expected error, received result';
 
           formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, formattedParsedResponse, params, schemaMap, process.env.SLA_VALIDATION, apiInvocationDuration, slaValue);
+          console.log('Formatted response with SLA Validation:', formattedResponse);
         } else {
           // Else slaValidation flag is set to false, return formatted response without SLA Validation property
           formattedResponse = utils.formatResponse(message, CONSTANTS.REPORT_STATUS.FAILED, formattedParsedResponse, params, schemaMap);
+          console.log('Formatted response without SLA Validation:', formattedResponse);
         }
       }
     } else {
+      console.log('Inside non-exception method block');
       // Handle non-exception methods
       resultState = this.setResultState(CONSTANTS.REPORT_STATUS.PASSED);
       // Check if parsed response contains an error
       if (parsedResponse.error) {
+        console.log('Parsed response error inside if:', parsedResponse.error);
         if (parsedResponse.error instanceof Error) {
           parsedResponse.error = parsedResponse.error.message;
         }
@@ -1038,9 +1054,11 @@ export class Test_Runner {
           }
         }
       } else {
+        console.log('Parsed response result inside else of censor:', parsedResponse.result);
         // If no error is expected and received a response without error
         // Censor data in response
         parsedResponse = utils.censorData(methodObj.name, parsedResponse.result);
+        console.log('Parsed response after censoring:', parsedResponse);
         const formattedParsedResponse = { result: parsedResponse };
         testContext.result = parsedResponse;
         formattedError = { err: CONSTANTS.NO_ERROR_FOUND };

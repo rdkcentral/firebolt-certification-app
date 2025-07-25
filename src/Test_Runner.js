@@ -219,7 +219,6 @@ export class Test_Runner {
                   result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk, paramNames);
                   console.log('Inside testRunner invoke, result: ', result);
                 } else {
-                  console.log('Inside testRunner invoke, paramNames in the else: ', paramNames);
                   result = await this.apiInvoker(method.name, paramValues, executionMode, invokedSdk);
                   console.log('Inside testRunner invoke, result in the else: ', result);
                 }

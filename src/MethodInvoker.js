@@ -29,6 +29,7 @@ const responseList = [];
 export class MethodInvoker {
   // This method accepts the message(method name, params) and return Api response with Schema validation result.
   async invoke(message) {
+    console.log('Divya MethodInvoker invoke called with message: ', message);
     let response, method, params, mode, err, paramNames, module, methodObj, schemaMap, schemaValidationResult;
     process.env.ID = process.env.ID + 1;
     process.env.COMMUNICATION_MODE = message.context.communicationMode;
@@ -79,8 +80,10 @@ export class MethodInvoker {
           const methodFn = moduleClass[updatedMethod.split('.')[1]];
           if (methodFn && process.env.COMMUNICATION_MODE === CONSTANTS.SDK) {
             [response, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(invokedSdk, updatedMethod, params), process.env.TimeoutInMS);
+            console.log('Divya response from FireboltExampleInvoker: ', response);
           } else if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
             [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames), process.env.TimeoutInMS);
+            console.log('Divya response from FireboltTransportInvoker TRANSPORT: ', response);
           }
         } else if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
           [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames), process.env.TimeoutInMS);
@@ -119,6 +122,7 @@ export class MethodInvoker {
     if (process.env.STANDALONE == true) {
       return this.formatResult(message.task, response, err, schemaValidationResult, params, schemaMap);
     } else {
+      console.log('Divya response from Method Invoker: ', response);
       if (err === undefined) {
         return { jsonrpc: '2.0', result: response, id: process.env.ID };
       } else {

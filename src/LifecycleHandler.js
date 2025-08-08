@@ -315,6 +315,38 @@ class LifecycleVersion2 {
     return this.parent.LifeCycleHistory;
   }
 
+  getMethodSchema(method, apiSchema) {
+    const methodSchema = [];
+    for (let i = 0; i < apiSchema.length; i++) {
+      if (apiSchema[i].name == method) {
+        methodSchema.push(apiSchema[i]);
+      }
+    }
+    return methodSchema;
+  }
+
+  async lifecycleMethodCalls(method, params) {
+    let response, err;
+    const paramNames = params ? Object.keys(params) : [];
+    if (!(params && typeof params === CONSTANTS.OBJECT && !Array.isArray(params))) {
+      params = [];
+    }
+    try {
+      if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
+        [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames));
+      } else {
+        err = CONSTANTS.ERROR_MESSAGE_WRONG_METHOD_NAME;
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+      err = error;
+    }
+    return {
+      response: response === undefined ? CONSTANTS.UNDEFINED : response,
+      error: err === undefined ? null : err,
+    };
+  }
+
   async handle(methods) {
     let response,
       result = null,
@@ -329,7 +361,17 @@ class LifecycleVersion2 {
         }
         response = this.createResultObject(result, error);
         break;
+      case CONSTANTS.LIFECYCLE_METHODS_V2.READY:
+        try {
+          result = await this.lifecycleMethodCalls(method, params);
+        } catch (err) {
+          error = err;
+          result.error = error;
+        }
+        response = this.createResultObject(result.response, result.error);
+        break;
     }
+
     return response;
   }
   createResultObject(result, error) {

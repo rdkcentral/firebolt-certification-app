@@ -110,7 +110,10 @@ export default class MethodFilters {
    * This method has been used in Test_Runner.js > northBoundSchemaValidationAndReportGeneration()
    */
   isExceptionMethod(methodName, methodParams) {
+    console.log('Divya Method Exceptions', methodName, methodParams);
     const exceptionMethods = process.env.EXCEPTION_METHODS;
+    console.log('Divya Exception Methods:', JSON.stringify(exceptionMethods));
+    console.log('Divya Exception Methods Type:', exceptionMethods);
     let isException = false;
     if (exceptionMethods && Array.isArray(exceptionMethods)) {
       const methodInExceptionList = exceptionMethods.find((object) => {

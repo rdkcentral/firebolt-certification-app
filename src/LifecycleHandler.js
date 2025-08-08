@@ -314,17 +314,6 @@ class LifecycleVersion2 {
   get LifeCycleHistory() {
     return this.parent.LifeCycleHistory;
   }
-
-  getMethodSchema(method, apiSchema) {
-    const methodSchema = [];
-    for (let i = 0; i < apiSchema.length; i++) {
-      if (apiSchema[i].name == method) {
-        methodSchema.push(apiSchema[i]);
-      }
-    }
-    return methodSchema;
-  }
-
   async lifecycleMethodCalls(method, params) {
     let response, err;
     const paramNames = params ? Object.keys(params) : [];

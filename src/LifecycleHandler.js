@@ -314,9 +314,80 @@ class LifecycleVersion2 {
   get LifeCycleHistory() {
     return this.parent.LifeCycleHistory;
   }
+  async lifecycleMethodCalls(method, params) {
+    let response, err;
+    const paramNames = params ? Object.keys(params) : [];
+    if (!(params && typeof params === CONSTANTS.OBJECT && !Array.isArray(params))) {
+      params = [];
+    }
+    try {
+      if (process.env.COMMUNICATION_MODE === CONSTANTS.TRANSPORT) {
+        [response, err] = await handleAsyncFunction(FireboltTransportInvoker.get().invoke(method, params, paramNames));
+      } else {
+        err = CONSTANTS.ERROR_MESSAGE_WRONG_METHOD_NAME;
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+      err = error;
+    }
+    return {
+      response: response === undefined ? CONSTANTS.UNDEFINED : response,
+      error: err === undefined ? null : err,
+    };
+  }
 
   async handle(methods) {
-    return 'Lifecycle 2.0 Implementation is pending.';
+    let response,
+      result = null,
+      error = null;
+    const method = methods.methodName;
+    switch (method) {
+      case CONSTANTS.LIFECYCLE_METHODS_V2.HISTORY:
+        try {
+          result = this.LifeCycleHistory.get();
+        } catch (err) {
+          error = err;
+        }
+        response = this.createResultObject(result, error);
+        break;
+      case CONSTANTS.LIFECYCLE_METHODS_V2.READY:
+        try {
+          result = await this.lifecycleMethodCalls(method, params);
+        } catch (err) {
+          error = err;
+          result.error = error;
+        }
+        response = this.createResultObject(result.response, result.error);
+        break;
+    }
+
+    return response;
+  }
+  createResultObject(result, error) {
+    let resultObject;
+    if (process.env.STANDALONE == true) {
+      resultObject = {
+        result: result,
+        error: error,
+        schemaResult: schemaResult,
+        contentResult: contentResult,
+      };
+    } else {
+      if (error == null) {
+        resultObject = {
+          jsonrpc: '2.0',
+          result: result,
+          id: process.env.ID + 1,
+        };
+      } else {
+        resultObject = {
+          jsonrpc: '2.0',
+          error: error,
+          id: process.env.ID + 1,
+        };
+      }
+    }
+    return resultObject;
   }
 }
 

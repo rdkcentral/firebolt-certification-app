@@ -11,6 +11,7 @@ It has the following features -
 - Start: This feature enables a user to run Firebolt API's Sanity suite. Results of the suite run will be displayed in UI.
 - FCA can be launched as systemui by adding the url parameter systemui=true. When this parameter is added, system UI acts as the base app or UI in RIPPLE device.
 
+
 ## Table of Contents
 
 - [firebolt-certification-app](#firebolt-certification-app)

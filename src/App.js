@@ -92,7 +92,7 @@ export default class App extends Base {
     });
     this.toastStates = [];
     const sdkVersionFromPackageJson = packagejson.dependencies['@firebolt-js/sdk'];
-    const pattern = /(2|\d{2,})\.\d+\.\d+/;
+    const pattern = /^([2-9]|\d{2,})\.\d+\.\d+$|^1\.(8|9|\d{2,})\.\d+$/;
     process.env.IS_BIDIRECTIONAL_SDK = pattern.test(sdkVersionFromPackageJson);
     this.overlayed = false;
     this.overlayDismissTimer = null;

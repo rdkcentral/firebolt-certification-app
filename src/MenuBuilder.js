@@ -21,7 +21,6 @@ import Card from './Card';
 import MethodFilters from './MethodFilters';
 import ValidationView from './ValidationView';
 import { CONSTANTS } from './constant';
-import { overrideParamsFromTestData } from './utils/Utils';
 import MediaView from './MediaView';
 import LifeCycleHistoryView from './LifecycleHistoryView';
 import LifecycleHistory from './LifeCycleHistory';
@@ -254,9 +253,6 @@ export default class MenuBuilder {
             const method = OPEN_RPC.methods[i].name.split('.')[1];
             const methodObj = OPEN_RPC.methods[i];
 
-            if (methodObj) {
-              overrideParamsFromTestData(methodObj);
-            }
             if (IGNORE_MODULES.indexOf(module) === -1) {
               const moduleCap = module.charAt(0).toUpperCase() + module.slice(1);
               const find = menus.filter((m) => m.title === moduleCap);

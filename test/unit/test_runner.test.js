@@ -513,6 +513,16 @@ jest.mock('../../src/FireboltTransportInvoker', () => ({
   get: () => mockFireboltTransportInvoker,
 }));
 
+// Mock the logger module
+jest.mock('../../src/utils/Logger', () => {
+  const loggerMock = {
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  };
+  return jest.fn(() => loggerMock);
+});
+
 jest.mock('@firebolt-js/sdk', () => ({
   Accessibility: {},
   Account: {},

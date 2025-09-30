@@ -48,6 +48,16 @@ jest.mock('../../src/pubsub/handlers/RegisterProviderHandler', () => {
   }));
 });
 
+// Mock the logger module
+jest.mock('../../src/utils/Logger', () => {
+  const loggerMock = {
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  };
+  return jest.fn(() => loggerMock);
+});
+
 const mockCallBackRes = { state: 'foreground', source: '' };
 jest.mock('@firebolt-js/sdk', () => {
   return {

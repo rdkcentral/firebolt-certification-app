@@ -52,6 +52,16 @@ jest.mock('../../src/utils/Utils', () => {
   };
 });
 
+// Mock the logger module
+jest.mock('../../src/utils/Logger', () => {
+  const loggerMock = {
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  };
+  return jest.fn(() => loggerMock);
+});
+
 const methodsToBeExcluded = 'Mock.Method,module.mockMethod,event.onMockEvent';
 
 describe('RunTestHandler', () => {

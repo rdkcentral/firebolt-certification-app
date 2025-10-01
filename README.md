@@ -1,4 +1,4 @@
-# firebolt-certification-app    
+# firebolt-certification-app
 
 ## Brief overview
 

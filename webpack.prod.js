@@ -44,6 +44,30 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto',
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules\/(?!(@so-ric\/colorspace|@dabh\/diagnostics))/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    browsers: ['> 1%', 'last 2 versions'],
+                  },
+                },
+              ],
+            ],
+          },
+        },
+      },
+      {
         test: /\.(png|svg|jpg|gif)$/,
         use: ['file-loader'],
       },

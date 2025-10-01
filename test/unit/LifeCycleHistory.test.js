@@ -34,14 +34,6 @@ jest.mock('../../src/utils/Utils', () => {
   };
 });
 
-jest.mock('@firebolt-js/sdk/dist/lib/Transport/index.mjs', () => {
-  return {
-    send: () => {
-      return {};
-    },
-  };
-});
-
 jest.mock('../../src/FireboltExampleInvoker', () => {
   return {
     get: () => {
@@ -50,18 +42,20 @@ jest.mock('../../src/FireboltExampleInvoker', () => {
   };
 });
 
-jest.mock('../../src/FireboltTransportInvoker', () => {
-  return {
-    get: () => {
-      return mockFireboltTransportInvoker;
-    },
-  };
-});
-
 jest.mock('../../src/pubsub/handlers/RegisterProviderHandler', () => {
   return jest.fn().mockImplementation(() => ({
     handle: jest.fn().mockResolvedValue(JSON.stringify({ report: 'registered' })),
   }));
+});
+
+// Mock the logger module
+jest.mock('../../src/utils/Logger', () => {
+  const loggerMock = {
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  };
+  return jest.fn(() => loggerMock);
 });
 
 const mockCallBackRes = { state: 'foreground', source: '' };

@@ -39,6 +39,7 @@ import { withAnnouncer } from '@lightningjs/ui-components';
 const Base = withAnnouncer(lng.Application);
 import Toast, { eventEmitter } from './Toast';
 import IntentReader from 'IntentReader';
+const packagejson = require('../package.json');
 
 export default class App extends Base {
   static _template() {
@@ -90,6 +91,9 @@ export default class App extends Base {
       this.accessibilityCheck(voiceAnnouncement);
     });
     this.toastStates = [];
+    const sdkVersionFromPackageJson = packagejson.dependencies['@firebolt-js/sdk'];
+    const pattern = /^([2-9]|\d{2,})\.\d+\.\d+$|^1\.(8|9|\d{2,})\.\d+/;
+    process.env.IS_BIDIRECTIONAL_SDK = pattern.test(sdkVersionFromPackageJson);
     this.overlayed = false;
     this.overlayDismissTimer = null;
     const appUrl = window.location;
@@ -126,6 +130,7 @@ export default class App extends Base {
     process.env.PUBSUB_SUBSCRIBE_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubSubscribeSuffix');
     process.env.PUBSUB_PUBLISH_TOPIC_SUFFIX = new URLSearchParams(appUrl.search).get('pubSubPublishSuffix');
     process.env.REGION = new URLSearchParams(appUrl.search).get('region');
+    process.env.SDK_VERSION = new URLSearchParams(appUrl.search).get('sdkVersion');
 
     if (platform) {
       process.env.PLATFORM = platform;

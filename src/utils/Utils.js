@@ -455,6 +455,10 @@ async function assignModuleCapitalization(moduleName, execution = 'core') {
   return moduleName;
 }
 
+/**
+ * @function getOpenrpcUrl
+ * @description To create the open rpc url based on sdk version.
+ */
 function getOpenrpcUrl() {
   let sdkType;
   if (process.env.FIREBOLT_SDK_VERSION) {

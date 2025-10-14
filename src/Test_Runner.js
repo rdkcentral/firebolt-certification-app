@@ -83,6 +83,7 @@ export class Test_Runner {
     const validationViewMenu = [];
 
     await this.getFireboltVersionFromSDK();
+    process.env.OPENRPC_URL = utils.getOpenrpcUrl();
     if (sdkMode == 'undefined') {
       return { error: CONSTANTS.NOTPERFORMED };
     }
@@ -837,7 +838,7 @@ export class Test_Runner {
     let formattedResponse = null,
       testContext = { params, result: null, error: null },
       formattedError = null;
-    testContext.value = `Specification: ${CONSTANTS.OPENRPC_URL}`;
+    testContext.value = `Specification: ${process.env.OPENRPC_URL}`;
 
     // Check if the error message contains "Method not found"
     if (parsedResponse && parsedResponse.error && parsedResponse.error.message) {

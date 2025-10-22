@@ -150,7 +150,9 @@ function pushReportToS3(report) {
     try {
       const parser = new xml2js.Parser();
       let parsingSuccessful = false;
+      // Check if MAC address is provided via environment variable, otherwise fetch it from device
       if (!process.env.MACADDRESS) {
+        // Invoke Authentication.root to retrieve device MAC address from XML response
         [result, err] = await handleAsyncFunction(FireboltExampleInvoker.get().invoke(CONSTANTS.CORE.toLowerCase(), 'Authentication.root', []));
         if (result && result.value && !err) {
           const bufferObj = Buffer.from(result.value, 'base64');
@@ -175,6 +177,7 @@ function pushReportToS3(report) {
           });
         }
       } else {
+        // Use MAC address from environment variable if provided
         macAddress = process.env.MACADDRESS;
         parsingSuccessful = true;
       }
@@ -185,6 +188,10 @@ function pushReportToS3(report) {
         reportName = process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend;
       }
       if (typeof parsingSuccessful !== 'undefined' && !parsingSuccessful) {
+        // Determine report name based on environment configuration when parsing failed:
+        // 1. If REPORTINGID and STANDALONE are set, use REPORTINGID as prefix
+        // 2. Else if STANDALONE is set but no REPORTINGID, use generated uuid as prefix
+        // 3. Otherwise, use no prefix (default report name)
         reportName =
           process.env.REPORTINGID && process.env.STANDALONE
             ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend
@@ -194,15 +201,18 @@ function pushReportToS3(report) {
       }
     } catch (error) {
       logger.error(error, 'pushReportToS3');
+      // Fallback report name on error: use REPORTINGID if available in standalone mode, otherwise use generated uuid
       reportName = process.env.REPORTINGID && process.env.STANDALONE ? process.env.REPORTINGID + '-' + 'refAppExecReport' + '-' + fileNameAppend : uuid + '-' + 'refAppExecReport' + '-' + fileNameAppend;
     }
 
-    // Uplaods to standalone url if standalone param is passed in url
+    // Uploads to standalone url if standalone param is passed in url
     if (process.env.STANDALONE == 'true') {
       logger.debug('standalone', process.env.STANDALONE);
+      // Use custom prefix if STANDALONE_PREFIX is set, otherwise default to 'standaloneReports'
       const prefix = process.env.STANDALONE_PREFIX ? process.env.STANDALONE_PREFIX : 'standaloneReports';
-      const reportNameSplit = reportName.split('-');
-      const reportId = reportNameSplit[0];
+      // Extract reportId: Get everything before '-refAppExecReport' to handle UUIDs with dashes
+      const refAppIndex = reportName.indexOf('-refAppExecReport');
+      const reportId = refAppIndex !== -1 ? reportName.substring(0, refAppIndex) : reportName.split('-')[0];
       const restApiUrl = CONSTANTS.REPORT_PUBLISH_STANDALONE_URL + prefix + '-' + reportName + '.json';
       logger.info(`You will be able to access your report shortly at: ${CONSTANTS.REPORT_PUBLISH_STANDALONE_REPORT_URL}${prefix}/${reportId}/report.html`, 'pushReportToS3');
       request.open('POST', restApiUrl);

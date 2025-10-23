@@ -465,6 +465,26 @@ async function assignModuleCapitalization(moduleName, execution = 'core') {
   return moduleName;
 }
 
+/**
+ * @function getOpenrpcUrl
+ * @description To create the open rpc url based on sdk version.
+ */
+function getOpenrpcUrl() {
+  let sdkType;
+  if (process.env.FIREBOLT_SDK_VERSION) {
+    if (process.env.FIREBOLT_SDK_VERSION.includes('next') && !process.env.FIREBOLT_SDK_VERSION.includes('next-major')) {
+      sdkType = 'next';
+    } else if (process.env.FIREBOLT_SDK_VERSION.includes('next-major')) {
+      sdkType = 'next-major';
+    } else if (process.env.FIREBOLT_SDK_VERSION.includes('proposed')) {
+      sdkType = 'proposed';
+    } else {
+      sdkType = process.env.FIREBOLT_SDK_VERSION;
+    }
+  }
+  return `https://rdkcentral.github.io/firebolt/requirements/${sdkType}/specifications/firebolt-open-rpc.json`;
+}
+
 export {
   handleAsyncFunction,
   checkMockOSRestInterface,
@@ -485,4 +505,5 @@ export {
   checkForEnum,
   setSLAStatus,
   assignModuleCapitalization,
+  getOpenrpcUrl,
 };

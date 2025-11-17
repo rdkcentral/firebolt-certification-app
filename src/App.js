@@ -94,6 +94,7 @@ export default class App extends Base {
     const sdkVersionFromPackageJson = packagejson.dependencies['@firebolt-js/sdk'];
     const pattern = /^([2-9]|\d{2,})\.\d+\.\d+$|^1\.(8|9|\d{2,})\.\d+/;
     process.env.IS_BIDIRECTIONAL_SDK = pattern.test(sdkVersionFromPackageJson);
+    console.log('process.env.IS_BIDIRECTIONAL_SDK----:', process.env.IS_BIDIRECTIONAL_SDK);
     this.overlayed = false;
     this.overlayDismissTimer = null;
     const appUrl = window.location;

@@ -1,6 +1,6 @@
 # Sanity Suite Flow chart
 
-## Implementation
+## Implementation 
 ![Implementation Diagram](./images/testRunnerFlow.png)
 
 ## Generating Report Logs

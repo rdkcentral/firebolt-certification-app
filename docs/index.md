@@ -1,4 +1,4 @@
-# Sanity Suite Flow chart 
+# Sanity Suite Flow chart
 
 ## Implementation
 ![Implementation Diagram](./images/testRunnerFlow.png)

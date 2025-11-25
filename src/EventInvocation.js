@@ -274,7 +274,7 @@ class EventRegistration extends EventRegistrationInterface {
           moduleWithEventName = moduleWithEventName.split('_')[1];
         }
 
-        const { id, promise } = await this.registerEventInTransport(moduleWithEventName);
+        const { id, promise } = await this.registerEventInTransport(moduleWithEventName, params);
         const result = await promise;
         if (result && result.message) {
           throw result.message;

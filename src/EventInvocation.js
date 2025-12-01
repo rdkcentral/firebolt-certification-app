@@ -35,11 +35,11 @@ const eventHistoryMap = new Map();
 const logger = require('./utils/Logger')('EventInvocation.js');
 
 class EventHandler {
-  constructor(moduleWithEventName, schemaList) {
+  constructor(moduleWithEventName, schemaList, skipParsing = false) {
     this.moduleWithEventName = moduleWithEventName;
     const event = moduleWithEventName.split('.')[1];
     this.eventName = moduleWithEventName;
-    this.event = this.parseEventName(event);
+    this.event = skipParsing ? event : this.parseEventName(event);
     if (process.env.STANDALONE == true) {
       this.eventSchema = this.getSchema(moduleWithEventName, schemaList);
     }
@@ -417,7 +417,7 @@ class EventRegistrationV2 extends EventRegistrationInterface {
   async registerEvent(moduleWithEventName, params) {
     const [sdkType, module] = this.parseEventNameAndModuleAndSDKType(moduleWithEventName);
     const [schemaList] = await dereferenceOpenRPC(sdkType);
-    const EventHandlerObject = new EventHandler(moduleWithEventName, schemaList);
+    const EventHandlerObject = new EventHandler(moduleWithEventName, schemaList, true);
     const eventName = EventHandlerObject.getEventName();
     let eventRegistrationID;
 

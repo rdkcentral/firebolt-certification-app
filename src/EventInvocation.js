@@ -564,7 +564,7 @@ export class EventInvocation {
     }
   }
 
-  // Check and assign SDK type from incoming params
+  // Check and assign SDK type from incoming param
   parseEventNameAndModuleAndSDKType(moduleWithEventName) {
     try {
       return this.eventRegistration.parseEventNameAndModuleAndSDKType(moduleWithEventName);

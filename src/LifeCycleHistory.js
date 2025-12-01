@@ -48,11 +48,35 @@ export default class LifecycleHistory {
   async init(appInstance = null) {
     lifecycleValidation = process.env.LIFECYCLE_VALIDATION;
     const lifecycleModule = await assignModuleCapitalization('Lifecycle');
-    await Lifecycle.listen('inactive', this._recordHistory.bind(this, lifecycleModule + '.onInactive'));
-    await Lifecycle.listen('foreground', this._recordHistory.bind(this, lifecycleModule + '.onForeground'));
-    Lifecycle.listen('background', this._recordHistory.bind(this, lifecycleModule + '.onBackground'));
-    Lifecycle.listen('suspended', this._recordHistory.bind(this, lifecycleModule + '.onSuspended'));
-    Lifecycle.listen('unloading', async (event) => {
+    const isBidirectionalSdk = String(process.env.IS_BIDIRECTIONAL_SDK).toLowerCase() === 'true';
+    const eventNames = isBidirectionalSdk
+      ? {
+          inactive: 'onInactive',
+          foreground: 'onForeground',
+          background: 'onBackground',
+          suspended: 'onSuspended',
+          unloading: 'onUnloading',
+          navigateTo: 'onNavigateTo',
+        }
+      : {
+          inactive: 'inactive',
+          foreground: 'foreground',
+          background: 'background',
+          suspended: 'suspended',
+          unloading: 'unloading',
+          navigateTo: 'navigateTo',
+        };
+    const inactiveEvent = eventNames.inactive;
+    const foregroundEvent = eventNames.foreground;
+    const backgroundEvent = eventNames.background;
+    const suspendedEvent = eventNames.suspended;
+    const unloadingEvent = eventNames.unloading;
+    const navigateToEvent = eventNames.navigateTo;
+    await Lifecycle.listen(inactiveEvent, this._recordHistory.bind(this, lifecycleModule + '.onInactive'));
+    await Lifecycle.listen(foregroundEvent, this._recordHistory.bind(this, lifecycleModule + '.onForeground'));
+    Lifecycle.listen(backgroundEvent, this._recordHistory.bind(this, lifecycleModule + '.onBackground'));
+    Lifecycle.listen(suspendedEvent, this._recordHistory.bind(this, lifecycleModule + '.onSuspended'));
+    Lifecycle.listen(unloadingEvent, async (event) => {
       let schemaResult, validationResult;
       await getschemaValidationDone(lifecycleModule + '.onUnloading', event, 'core').then((res) => {
         schemaResult = res;
@@ -100,7 +124,7 @@ export default class LifecycleHistory {
       }
     }
     // register for Discovery.onNavigateTo event
-    Discovery.listen('navigateTo', async (event) => {
+    Discovery.listen(navigateToEvent, async (event) => {
       logger.info('Printing onNavigate To event received: ' + JSON.stringify(event));
 
       try {

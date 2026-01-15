@@ -19,6 +19,8 @@
 import { Test_Runner } from '../../src/Test_Runner';
 import { CONSTANTS } from '../../src/constant';
 const Validator = require('jsonschema').Validator;
+const { v4: uuidv4 } = require('uuid');
+
 /**
  * This is a moc stucture of the actual OPEN RPC document
  * returned by Firebolt SDK. We are just keeping 2 methods and its
@@ -832,16 +834,16 @@ describe('Test_Runner test cases', () => {
   describe('UUID Generation Validation', () => {
     let firstuuid, seconduuid;
     test('validate uuid when generated two uuid are different', () => {
-      firstuuid = runner.createUUID();
-      seconduuid = runner.createUUID();
+      firstuuid = uuidv4();
+      seconduuid = uuidv4();
       expect(firstuuid).not.toEqual(seconduuid);
     });
     test('validate uuid when uuid having length 36', () => {
-      result = runner.createUUID();
+      result = uuidv4();
       expect(result).toHaveLength(36);
     });
     test('validate uuid when uuid not to be undefined', () => {
-      result = runner.createUUID();
+      result = uuidv4();
       expect(result).not.toBe(undefined);
     });
   });

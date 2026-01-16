@@ -4,9 +4,9 @@
   "description": "Reference App to demonstrate Firebolt APIs and Lifecycle",
   "dependencies": {
     "@apidevtools/json-schema-ref-parser": "9.1.2",
-    "@firebolt-js/discovery-sdk": "1.7.0",
-    "@firebolt-js/manage-sdk": "1.7.0",
-    "@firebolt-js/sdk": "1.7.0",
+    "@firebolt-js/discovery-sdk": "1.8.0-next-major.4",
+    "@firebolt-js/manage-sdk": "1.8.0-next-major.4",
+    "@firebolt-js/sdk": "1.8.0-next-major.4",
     "@lightningjs/core": "2.11.0",
     "@lightningjs/sdk": "5.5.6",
     "@lightningjs/ui-components": "2.25.1",

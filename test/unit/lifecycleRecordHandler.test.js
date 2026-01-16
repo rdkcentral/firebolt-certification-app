@@ -31,6 +31,16 @@ jest.mock('../../src/LifeCycleHistory', () => {
   };
 });
 
+// Mock the logger module
+jest.mock('../../src/utils/Logger', () => {
+  const loggerMock = {
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  };
+  return jest.fn(() => loggerMock);
+});
+
 let LifecycleRecordHandler;
 
 describe('LifecycleRecordHandler Test Case', () => {

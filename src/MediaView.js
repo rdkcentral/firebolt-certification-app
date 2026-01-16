@@ -68,7 +68,19 @@ export default class MediaView extends lng.Component {
 
   _init() {
     const p = this.tag('Player');
-    Lifecycle.listen('inactive', (event) => {
+    const isBidirectionalSdk = String(process.env.IS_BIDIRECTIONAL_SDK).toLowerCase() === 'true';
+    const eventNames = isBidirectionalSdk
+      ? {
+          inactive: 'onInactive',
+          foreground: 'onForeground',
+        }
+      : {
+          inactive: 'inactive',
+          foreground: 'foreground',
+        };
+    const inactiveEvent = eventNames.inactive;
+    const foregroundEvent = eventNames.foreground;
+    Lifecycle.listen(inactiveEvent, (event) => {
       if (event.state && this.tag('Row.ToggleInactive').checked) {
         if (p.isPlaying()) {
           logger.info('Unpausing video', '_init');
@@ -76,7 +88,7 @@ export default class MediaView extends lng.Component {
         }
       }
     });
-    Lifecycle.listen('foreground', (event) => {
+    Lifecycle.listen(foregroundEvent, (event) => {
       if (event.state && this.tag('Row.ToggleInactive').checked) {
         const p = this.tag('Player');
         if (!p.isPlaying()) {

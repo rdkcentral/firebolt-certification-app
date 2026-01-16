@@ -183,6 +183,8 @@ jest.mock('../src/constant', () => {
     SLA_VALIDATION_INTENT: 'sla-validation',
     OPENRPC_URL: 'https://rdkcentral.github.io/firebolt/requirements/latest/specifications/firebolt-open-rpc.json',
     DEFAULT_SLA: 300,
+    CLEARED_LISTENERS: 'Cleared Listeners',
+    NO_ACTIVE_LISTENERS: 'No active listeners',
   };
 
   return { CONSTANTS };

@@ -40,6 +40,7 @@ export default class RegisterEventHandler extends BaseHandler {
     if (message.context) {
       process.env.COMMUNICATION_MODE = message.context.communicationMode;
     }
+    process.env.IS_NOT_SUPPORTED_API = message.isNotSupportedApi;
     const eventInvokerInfo = new EventInvocation();
     let sdkType;
     if (!message.params.event.includes('_')) {

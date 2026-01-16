@@ -36,6 +36,7 @@ module.exports = {
     '^CensorData$': '<rootDir>/../src/source/censorData.json',
     '^RunTestHandler$': '<rootDir>/../src/pubsub/handlers/RunTestHandler.js',
   },
+  resolver: '<rootDir>/jest.transport-resolver.js',
   transform: {
     '^.+\\.[tj]s$': 'babel-jest',
     '^.+\\.mjs$': 'babel-jest',

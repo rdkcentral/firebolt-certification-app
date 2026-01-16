@@ -227,6 +227,16 @@ jest.mock('../../src/FireboltExampleInvoker', () => {
   };
 });
 
+// Mock the logger module
+jest.mock('../../src/utils/Logger', () => {
+  const loggerMock = {
+    error: jest.fn(),
+    info: jest.fn(),
+    debug: jest.fn(),
+  };
+  return jest.fn(() => loggerMock);
+});
+
 jest.mock('../../src/utils/Utils', () => {
   const originalUtils = jest.requireActual('../../src/utils/Utils');
   return {

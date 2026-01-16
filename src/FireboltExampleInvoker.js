@@ -109,8 +109,12 @@ export default class FireboltExampleInvoker {
         return await methodFn(...params);
       } else if (method.match(/^on[A-Z][a-zA-Z]+$/) && moduleClass.listen) {
         let id;
+        let event = method[2].toLowerCase() + method.substr(3);
         console.log('params:', params);
-        const event = method[2].toLowerCase() + method.substr(3);
+        if (process.env.IS_BIDIRECTIONAL_SDK === true || (typeof process.env.IS_BIDIRECTIONAL_SDK === 'string' && process.env.IS_BIDIRECTIONAL_SDK.toLowerCase() === 'true')) {
+          event = method;
+        }
+
         if (params.length == 1 && params[0] === true) {
           id = await moduleClass.listen(event, (e) => {
             logger.error(e, 'invoke');

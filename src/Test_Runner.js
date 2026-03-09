@@ -42,6 +42,7 @@ const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 const logger = require('./utils/Logger')('Test_Runner.js');
 const _ = require('lodash');
+const { v4: uuidv4 } = require('uuid');
 const TAG = '[Test_Runner]: ';
 
 /**
@@ -71,7 +72,7 @@ export class Test_Runner {
     // Holds the reference to the de referenanced Schma from Open RPC.
     this.dereferenceSchemaList;
     this.methodFilters = new MethodFilters();
-    const suitesUuid = this.createUUID();
+    const suitesUuid = uuidv4();
     let execModes = [];
     let reportTitle;
     let innerReport;
@@ -134,7 +135,7 @@ export class Test_Runner {
         const module = this.dereferenceSchemaList.methods[methodIndex].name.split('.')[0];
         apiExecutionEndTime = 0;
         apiExecutionStartTime = 0;
-        let methodUuid = this.createUUID(); // uuid of this method
+        let methodUuid = uuidv4(); // uuid of this method
         const method = this.dereferenceSchemaList.methods[methodIndex];
         const methodObj = this.dereferenceSchemaList.methods[methodIndex];
         let schemaMap = methodObj.result;
@@ -162,7 +163,7 @@ export class Test_Runner {
             error: CONSTANTS.SKIPPED_MESSAGE,
             param: undefined,
             methodWithExampleName: methodObj.name,
-            methodUuid: this.createUUID(),
+            methodUuid: uuidv4(),
             schemaData: schemaMap.schema,
             apiExecutionStartTime: apiExecutionStartTime,
             apiExecutionEndTime: apiExecutionEndTime,
@@ -186,7 +187,7 @@ export class Test_Runner {
 
               try {
                 methodWithExampleName = methodObj.name + '.' + methodObj.examples[exampleIndex].name;
-                methodUuid = this.createUUID();
+                methodUuid = uuidv4();
                 example = method.examples[exampleIndex];
                 paramValues = example.params.map((p) => p.value);
 
@@ -394,7 +395,7 @@ export class Test_Runner {
   generateMochaReport(validationStartTime, validationEndTime, reportTitle, validationResultList, suitesUuid, successList, failureList, skippedList, pendingList, innerReport) {
     // Mocha Report
     // Below listed values are declared for the report generation
-    const reportUuid = this.createUUID();
+    const reportUuid = uuidv4();
     const reportValue = {
       uuid: '',
       title: '',
@@ -768,15 +769,6 @@ export class Test_Runner {
     return resultObject;
   }
 
-  createUUID() {
-    let dt = new Date().getTime();
-    const uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      const r = (dt + Math.random() * 16) % 16 | 0;
-      dt = Math.floor(dt / 16);
-      return (c == 'x' ? r : (r & 0x3) | 0x8).toString(16);
-    });
-    return uuid;
-  }
   /**
         Function to fetch Lifecycle API response and validate the schema
     */

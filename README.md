@@ -9,7 +9,7 @@ It has the following features -
 - Lifecycle History: Consists of lifecycle state transition of firecert app.
 - Demos: Having a media player with sample video.
 - Start: This feature enables a user to run Firebolt API's Sanity suite. Results of the suite run will be displayed in UI.
-- FCA can be launched as systemui by adding the url parameter systemui=true. When this parameter is added, system UI acts as the base app or UI in RIPPLE device.
+- FCA can be launched as systemui by adding the url parameter systemui=true. When this parameter is added, system UI acts as the base app or UI in RIPPLE de vice.
 
 ## Table of Contents
 

@@ -1,0 +1,24 @@
+{
+  "apiCalls": [
+    {
+        "jsonrpc": "2.0",
+        "method": "Accessibility.closedCaptionsSettings",
+        "params": {}
+      },
+    {
+        "jsonrpc": "2.0",
+        "method": "Localization.language",
+        "params": {}
+    },
+    {
+        "jsonrpc": "2.0",
+        "method": "Device.name",
+        "params": {}
+    },
+    {
+        "jsonrpc": "2.0",
+        "method": "Privacy.settings",
+        "params": {}
+    }
+  ]
+}

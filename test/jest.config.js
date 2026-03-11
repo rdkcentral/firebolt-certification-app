@@ -35,6 +35,7 @@ module.exports = {
     '^IntentReader$': '../src/IntentReader.js',
     '^CensorData$': '<rootDir>/../src/source/censorData.json',
     '^RunTestHandler$': '<rootDir>/../src/pubsub/handlers/RunTestHandler.js',
+    '^@firebolt-js/sdk/dist/lib/Transport$': '<rootDir>/__mocks__/@firebolt-js/sdk/dist/lib/Transport.js',
   },
   transform: {
     '^.+\\.[tj]s$': 'babel-jest',

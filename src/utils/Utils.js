@@ -118,6 +118,7 @@ async function getschemaValidationDone(name, response, sdkType) {
  */
 function censorData(methodName, response) {
   try {
+    console.log('Divya censorData called with methodName: ', methodName, ' response: ', response);
     const json = censorDataJson;
     methodName = methodName.charAt(0).toUpperCase() + methodName.slice(1);
     if (methodName in json) {
@@ -132,6 +133,7 @@ function censorData(methodName, response) {
       }
     }
   } catch (err) {
+    console.log('Divya error occurred in censorData: ', err);
     logger.error('err - missing censorData', err);
   }
   return response;

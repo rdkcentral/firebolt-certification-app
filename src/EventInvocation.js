@@ -72,6 +72,7 @@ class EventHandler {
 
   // Handle, parse and store the resolved event data from listener
   handleEvent(eventData) {
+    console.log('Divya(src/EvnetInvocation) inside Handling event for ' + this.eventName + ' with data: ' + JSON.stringify(eventData));
     let eventDataObject;
     if (process.env.STANDALONE == true) {
       const eventSchemaResponse = this.eventSchemaValidation(eventData);
@@ -90,7 +91,9 @@ class EventHandler {
         eventTime: new Date(),
       };
     }
+    console.log('Divya Event Data Object(src/EvnetInvocation): ' + JSON.stringify(eventDataObject));
     eventHistory.push(eventDataObject);
+    console.log('Divya Event History(src/EvnetInvocation): ' + JSON.stringify(eventHistory));
   }
   // Schema validation for resolved event data
   eventSchemaValidation(eventResponse) {
@@ -120,9 +123,11 @@ class EventHandler {
 export class EventInvocation {
   // This method accepts the message params and return the listener response and schema response
   async northBoundEventHandling(message) {
+    console.log('Divya Inside EventInvocation(src/EvnetInvocation) northBoundEventHandling with message: ' + JSON.stringify(message));
     const eventParams = message.params;
     const moduleWithEventName = eventParams.event;
     const params = eventParams.params;
+    console.log('Divya(src/EvnetInvocation) calling Register events');
     const [listenerResponse, uniqueListenerKey] = await this.registerEvent(moduleWithEventName, params);
     const registrationResponse = {};
 
@@ -186,6 +191,7 @@ export class EventInvocation {
 
   // This method will listen to event and capture the event response after triggering
   async registerEvent(moduleWithEventName, params) {
+    console.log('Divya Registering(src/EvnetInvocation) event for ' + moduleWithEventName + ' with params: ' + JSON.stringify(params));
     const paramlist = [];
     const [sdkType, module] = this.getSdkTypeAndModule(moduleWithEventName);
     const [schemaList, invokedSdk] = await dereferenceOpenRPC(sdkType);
@@ -233,6 +239,7 @@ export class EventInvocation {
 
     // Construct unique key for event handler. A UUID can be added to the key to make it more unique.
     if (eventRegistrationID) {
+      console.log('Divya(src/EvnetInvocation) Event Registration ID: ' + eventRegistrationID);
       const eventNameWithoutSDK = moduleWithEventName.includes('_') ? moduleWithEventName.split('_')[1] : moduleWithEventName;
       const uniqueListenerKey = eventNameWithoutSDK + '-' + eventRegistrationID;
       eventHandlerMap.set(uniqueListenerKey, EventHandlerObject);
@@ -277,7 +284,6 @@ export class EventInvocation {
           const eventRegistrationID = uniqueListenerKey.split('-')[1];
           const [sdkType, module] = this.getSdkTypeAndModule(eventNameWithModuleName);
           logger.info('Unregister event ' + eventNameWithModuleName + ' registration ID ' + eventRegistrationID, 'clearAllListeners');
-
           // Events are cleared using Firebolt SDK
           if (process.env.COMMUNICATION_MODE == CONSTANTS.SDK) {
             MODULE_MAP[sdkType][module].clear(eventName);
@@ -326,12 +332,16 @@ export class EventInvocation {
   // Return the event response object for the eventName passed as the param
   getEventResponse(message) {
     try {
+      console.log('Divya(src/EvnetInvocation) getEventResponse called with message: ' + JSON.stringify(message));
       let filteredEventDataObjectList;
       const eventName = message.params.event;
       if (process.env.STANDALONE == true) {
         filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId == eventName);
       } else {
+        console.log('Divya(src/EvnetInvocation) eventName: ' + eventName);
+
         filteredEventDataObjectList = eventHistory.filter((element) => element.eventListenerId.toString() == eventName.split('-').pop());
+        console.log('Divya(src/EvnetInvocation) filteredEventDataObjectList: ' + JSON.stringify(filteredEventDataObjectList));
       }
       if (filteredEventDataObjectList.length) {
         const eventDataObject = filteredEventDataObjectList[filteredEventDataObjectList.length - 1];

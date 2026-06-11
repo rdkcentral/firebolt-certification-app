@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebolt Web Comparison App</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0d1117;
+      color: #c9d1d9;
+      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #58a6ff;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #21262d;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #8b949e;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 20px 0 8px;
+    }
+
+    /* ── Status log ─────────────────────────────────────────────────────────── */
+    #log-panel {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 6px;
+      padding: 12px 16px;
+      max-height: 220px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+    }
+
+    .log-entry { padding: 2px 0; line-height: 1.5; }
+    .log-info   { color: #8b949e; }
+    .log-retry  { color: #d29922; }
+    .log-success{ color: #3fb950; }
+    .log-error  { color: #f85149; font-weight: bold; }
+
+    /* ── Results table ──────────────────────────────────────────────────────── */
+    #results-panel {
+      border: 1px solid #21262d;
+      border-radius: 6px;
+      overflow-y: auto;
+      max-height: 400px;
+      font-size: 0.82rem;
+    }
+
+    #results-panel .placeholder {
+      padding: 20px;
+      color: #484f58;
+      font-style: italic;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: flex-start;
+      border-bottom: 1px solid #21262d;
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-row:nth-child(odd)  { background: #161b22; }
+    .result-row:nth-child(even) { background: #0d1117; }
+
+    .result-method {
+      flex: 0 0 340px;
+      padding: 8px 14px;
+      color: #58a6ff;
+      word-break: break-all;
+      border-right: 1px solid #21262d;
+    }
+
+    .result-value {
+      flex: 1;
+      padding: 8px 14px;
+      color: #3fb950;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .result-value.null-val  { color: #6e7681; }
+    .result-value.error-val { color: #f85149; }
+
+    /* ── Summary bar ────────────────────────────────────────────────────────── */
+    #summary {
+      margin-top: 14px;
+      padding: 10px 16px;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    #summary .ok  { color: #3fb950; }
+    #summary .err { color: #f85149; }
+
+    /* ── TV Remote Navigation Buttons ─────────────────────────────────────── */
+    .button-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      flex: 0 1 180px;
+      padding: 12px 16px;
+      background: #21262d;
+      border: 2px solid #30363d;
+      border-radius: 6px;
+      color: #8b949e;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: #30363d;
+      border-color: #58a6ff;
+      color: #58a6ff;
+    }
+
+    .nav-btn:focus {
+      outline: none;
+      background: #0d1117;
+      border-color: #58a6ff;
+      color: #58a6ff;
+      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+    }
+
+    .nav-btn:active {
+      background: #161b22;
+      transform: scale(0.98);
+    }
+
+    .section-with-controls {
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h2::after {
+      content: '';
+      flex: 1;
+    }
+
+    .control-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .control-buttons .nav-btn {
+      flex: 0 1 auto;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Firebolt Service Manager Certification App</h1>
+
+  <div class="section-with-controls">
+    <h2>
+      Status Log
+      <div class="control-buttons">
+        <button id="log-up-btn" class="nav-btn">↑ Top</button>
+        <button id="log-down-btn" class="nav-btn">↓ Bottom</button>
+      </div>
+    </h2>
+    <div id="log-panel"></div>
+  </div>
+
+  <div class="section-with-controls">
+    <h2>
+      Method Results
+      <div class="control-buttons">
+        <button id="results-up-btn" class="nav-btn">↑ Top</button>
+        <button id="results-down-btn" class="nav-btn">↓ Bottom</button>
+      </div>
+    </h2>
+    <div id="results-panel">
+      <div class="placeholder">Waiting for FireboltServiceManager&hellip;</div>
+    </div>
+  </div>
+
+  <div id="summary"></div>
+
+  <script>
+  "use strict";
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Performance Metrics
+  // ──────────────────────────────────────────────────────────────────────────
+  var PERF = {
+    pageStartTime: Date.now(),
+    fsmAcquiredTime: null,
+    testStartTime: null,
+    testEndTime: null,
+    methodMetrics: [], // Array of { method, requestTime, responseTime, duration }
+
+    recordFsmAcquired: function() {
+      this.fsmAcquiredTime = Date.now();
+    },
+
+    recordMethodCall: function(method, requestTime, responseTime) {
+      this.methodMetrics.push({
+        method: method,
+        requestTime: requestTime,
+        responseTime: responseTime,
+        duration: responseTime - requestTime
+      });
+    },
+
+    recordTestStart: function() {
+      this.testStartTime = Date.now();
+    },
+
+    recordTestEnd: function() {
+      this.testEndTime = Date.now();
+    },
+
+    getPageLoadDuration: function() {
+      return this.fsmAcquiredTime ? this.fsmAcquiredTime - this.pageStartTime : null;
+    },
+
+    getTotalTestDuration: function() {
+      return this.testEndTime && this.testStartTime ? this.testEndTime - this.testStartTime : null;
+    },
+
+    getTotalElapsed: function() {
+      return Date.now() - this.pageStartTime;
+    }
+  };
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Navigation and scroll handlers
+  // ──────────────────────────────────────────────────────────────────────────
+
+  function setupNavigationButtons() {
+    var logUpBtn    = document.getElementById("log-up-btn");
+    var logDownBtn  = document.getElementById("log-down-btn");
+    var resultsUpBtn   = document.getElementById("results-up-btn");
+    var resultsDownBtn = document.getElementById("results-down-btn");
+    var logPanel    = document.getElementById("log-panel");
+    var resultsPanel   = document.getElementById("results-panel");
+
+    var SCROLL_INCREMENT = 50; // pixels to scroll per button press
+
+    // Scroll functions
+    function scrollUp(panel) {
+      panel.scrollBy({ top: -SCROLL_INCREMENT, behavior: "smooth" });
+    }
+
+    function scrollDown(panel) {
+      panel.scrollBy({ top: SCROLL_INCREMENT, behavior: "smooth" });
+    }
+
+    // Button event listeners
+    logUpBtn.addEventListener("click", function () { scrollUp(logPanel); });
+    logDownBtn.addEventListener("click", function () { scrollDown(logPanel); });
+    resultsUpBtn.addEventListener("click", function () { scrollUp(resultsPanel); });
+    resultsDownBtn.addEventListener("click", function () { scrollDown(resultsPanel); });
+
+    // Set Up Log button as focused by default
+    setTimeout(function () {
+      logUpBtn.focus();
+    }, 100);
+
+    // Optional: keyboard navigation between buttons
+    var allButtons = [logUpBtn, logDownBtn, resultsUpBtn, resultsDownBtn];
+    allButtons.forEach(function (btn) {
+      btn.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") {
+          var currentIdx = allButtons.indexOf(btn);
+          var nextIdx = (currentIdx + 1) % allButtons.length;
+          allButtons[nextIdx].focus();
+        } else if (e.key === "ArrowLeft") {
+          var currentIdx = allButtons.indexOf(btn);
+          var prevIdx = (currentIdx - 1 + allButtons.length) % allButtons.length;
+          allButtons[prevIdx].focus();
+        }
+      });
+    });
+  }
+
+  const isMock = new URLSearchParams(window.location.search).get("mock") === "true";
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Simulate the WPE extension injecting firebolt-inject.js after a delay.
+  // (Remove or adjust the timeout to test immediate availability.)
+  // ──────────────────────────────────────────────────────────────────────────
+  // inject only if mock is enabled
+  if (isMock) {
+     log("Mock mode enabled. Simulating delayed injection of firebolt-inject.js…", "log-info");
+     (function injectScriptAfterDelay() {
+        var delay = 3000; // 3 s — long enough to show several retry messages
+        setTimeout(function () {
+          var s = document.createElement("script");
+          s.src = "./firebolt-inject.js";
+          document.head.appendChild(s);
+        }, delay);
+      })();
+   } else {
+     log("Mock mode not enabled. Attempting to find real FireboltServiceManager…", "log-info");
+   }
+  
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Mock transport
+  // ──────────────────────────────────────────────────────────────────────────
+
+  /** Valid mock result for every method in _methodRegistry. */
+  var MOCK_RESPONSES = {
+    "Accessibility.audioDescription":             true,
+    "Accessibility.onAudioDescriptionChanged":    { event: "Accessibility.onAudioDescriptionChanged", listening: true },
+    "Accessibility.closedCaptionsSettings":       { enabled: true,  preferredLanguages: ["en", "es"] },
+    "Accessibility.onClosedCaptionsSettingsChanged": { event: "Accessibility.onClosedCaptionsSettingsChanged", listening: true },
+    "Accessibility.highContrastUI":               false,
+    "Accessibility.onHighContrastUIChanged":      { event: "Accessibility.onHighContrastUIChanged", listening: true },
+    "Accessibility.voiceGuidanceSettings":        { enabled: true, rate: 1.5, navigationHints: true },
+    "Accessibility.onVoiceGuidanceSettingsChanged": { event: "Accessibility.onVoiceGuidanceSettingsChanged", listening: true },
+    "Actions.start":                              null,
+    "Actions.intent":                             { intentId: 42,  intent: "play" },
+    "Actions.onIntent":                           { intentId: 43,  intent: "pause" },
+    "Advertising.advertisingId":                  { ifa: "mock-ifa-abc123", ifa_type: "sessionid", lmt: "0" },
+    "Device.uid":                                 "mock-device-uid-xyz-7890",
+    "Device.deviceClass":                         "stb",
+    "Device.hdr":                                 { hdr10: true, hdr10Plus: false, dolbyVision: false, hlg: true },
+    "Device.onHdrChanged":                        { event: "Device.onHdrChanged", listening: true },
+    "Device.dolbyAtmosExperienceAvailable":       false,
+    "Device.onDolbyAtmosExperienceAvailableChanged": { event: "Device.onDolbyAtmosExperienceAvailableChanged", listening: true },
+    "Discovery.watched":                          null,
+    "Display.colorimetry":                        "HDR",
+    "Display.videoResolutions":                   ["1920x1080", "3840x2160"],
+    "Localization.country":                       "US",
+    "Localization.onCountryChanged":              { event: "Localization.onCountryChanged", listening: true },
+    "Localization.preferredAudioLanguages":       ["en", "es", "fr"],
+    "Localization.onPreferredAudioLanguagesChanged": { event: "Localization.onPreferredAudioLanguagesChanged", listening: true },
+    "Localization.presentationLanguage":          "en",
+    "Localization.onPresentationLanguageChanged": { event: "Localization.onPresentationLanguageChanged", listening: true },
+    "Metrics.ready":                              null,
+    "Metrics.startContent":                       null,
+    "Metrics.stopContent":                        null,
+    "Metrics.page":                               null,
+    "Metrics.error":                              null,
+    "Metrics.mediaLoadStart":                     null,
+    "Metrics.mediaPlay":                          null,
+    "Metrics.mediaPlaying":                       null,
+    "Metrics.mediaPause":                         null,
+    "Metrics.mediaWaiting":                       null,
+    "Metrics.mediaSeeking":                       null,
+    "Metrics.mediaSeeked":                        null,
+    "Metrics.mediaRateChanged":                   null,
+    "Metrics.mediaRenditionChanged":              null,
+    "Metrics.mediaEnded":                         null,
+    "Metrics.event":                              null,
+    "Metrics.appInfo":                            null,
+    "Network.connected":                          true,
+    "Network.onConnectedChanged":                 { event: "Network.onConnectedChanged", listening: true },
+    "VideoOutput.resolution":                     "1920x1080",
+    "VideoOutput.onResolutionChanged":            { event: "VideoOutput.onResolutionChanged", listening: true }
+  };
+
+  /**
+   * Create Event emitters for registered event methods, which triggers event listeners when events occur.
+   */
+  var MOCK_EVENTS = {
+   "Accessibility.onAudioDescriptionChanged": { value: false },
+   "Accessibility.onClosedCaptionsSettingsChanged": { value: { enabled: false, preferredLanguages: ["en"] } },
+   "Accessibility.onHighContrastUIChanged": { value: true },
+   "Accessibility.onVoiceGuidanceSettingsChanged": { value: { enabled: false, rate: 1.0, navigationHints: false } },
+   "Actions.onIntent": { value: { intentId: 44, intent: "stop" } },
+   "Device.onHdrChanged": { value: { hdr10: false, hdr10Plus: true, dolbyVision: true, hlg: false } },
+   "Device.onDolbyAtmosExperienceAvailableChanged": { value: true },
+   "Localization.onCountryChanged": { value: "CA" },
+   "Localization.onPreferredAudioLanguagesChanged": { value: ["en", "de"] },
+   "Localization.onPresentationLanguageChanged": { value: "de" },
+   "Network.onConnectedChanged": { value: false },
+   "VideoOutput.onResolutionChanged": { value: "3840x2160" } 
+  }
+
+  /**
+   * Methods that require specific params (must satisfy their paramsSchema).
+   * All other methods are called with an empty params object {}.
+   */
+  var METHOD_PARAMS = {
+    "Actions.start":      { intent: "mock-intent-action" },
+    "Discovery.watched":  { entityId: "mock-entity-123" },
+    "Metrics.page":       { pageId: "MockHomePage" },
+    "Metrics.error":      { type: "network", code: "Some error message", description: "Some error description", visible: true },
+    "Metrics.event":      { eventName: "mock-custom-event" },
+    "Metrics.appInfo":     { build: "1.0.0" },
+    "Metrics.mediaLoadStart": { entityId: "someMediaId" },
+    "Metrics.mediaPlay": { entityId: "someMediaId" },
+    "Metrics.mediaPlaying": { entityId: "someMediaId" },
+    "Metrics.mediaPause": { entityId: "someMediaId" },
+    "Metrics.mediaWaiting": { entityId: "someMediaId" },
+    "Metrics.mediaSeeking": { entityId: "someMediaId" },
+    "Metrics.mediaSeeked": { entityId: "someMediaId" },
+    "Metrics.mediaRateChanged": { entityId: "someMediaId", rate: 1.5 },
+    "Metrics.mediaRenditionChanged": { entityId: "someMediaId", bitrate: 3000, width: 1920, height: 1080 },
+    "Metrics.mediaEnded": { entityId: "someMediaId" }
+  };
+
+  /**
+   * Ordered list of all methods matching _methodRegistry in firebolt-inject.js.
+   * Order is preserved so calls are made in sequence.
+   */
+  var ALL_METHODS = [
+    "Accessibility.audioDescription",
+    "Accessibility.closedCaptionsSettings",
+    "Accessibility.highContrastUI",
+    "Accessibility.voiceGuidanceSettings",
+    "Advertising.advertisingId",
+    "Device.uid",
+    "Device.hdr",
+    "Discovery.watched",
+    "Localization.country",
+    "Localization.preferredAudioLanguages",
+    "Localization.presentationLanguage",
+    "Metrics.startContent",
+    "Metrics.stopContent",
+    "Metrics.page",
+    "Metrics.error",
+    "Metrics.mediaLoadStart",
+    "Metrics.mediaPlay",
+    "Metrics.mediaPlaying",
+    "Metrics.mediaPause",
+    "Metrics.mediaWaiting",
+    "Metrics.mediaSeeking",
+    "Metrics.mediaSeeked",
+    "Metrics.mediaRateChanged",
+    "Metrics.mediaRenditionChanged",
+    "Metrics.mediaEnded",
+    "Metrics.appInfo"
+  ];
+
+  var unsubscribedEvents = {}; // To track events that have been emitted but not yet unsubscribed
+
+  function unsubscribeEvent(methodName) {
+    if (unsubscribedEvents[methodName]) {
+      unsubscribedEvents[methodName](); // Call the unsubscribe function returned by the event listener
+      delete unsubscribedEvents[methodName];
+      log("Unsubscribed from event: " + methodName, "log-info");
+    }
+  }
+
+  function createMockTransport() {
+    var _onMessageCb = null;
+    var _onStatusCb  = null;
+
+    return {
+      onMessage: function (cb) { _onMessageCb = cb; },
+      onConnectionStatus: function (cb) { _onStatusCb = cb; },
+
+      connect: function () {
+        // Simulate async TCP/WS connection establishment
+        setTimeout(function () {
+          if (_onStatusCb) { _onStatusCb("connected"); }
+        }, 150);
+      },
+
+      send: function (msg) {
+        var parsed  = JSON.parse(msg);
+        var id      = parsed.id;
+        var method  = parsed.method;
+
+        if ( parsed.params && parsed.params.listen === false) {
+          log("Received unsubscription for event: " + method, "log-info");
+          _onMessageCb(JSON.stringify({ jsonrpc: "2.0", id: id, result: { event: method, listening: false } }));
+          return { success: true };
+        }
+
+        var result  = MOCK_RESPONSES.hasOwnProperty(method) ? MOCK_RESPONSES[method] : null;
+
+        // Return the mock response asynchronously to honour the JSON-RPC async contract
+        setTimeout(function () {
+          if (_onMessageCb) {
+            _onMessageCb(JSON.stringify({ jsonrpc: "2.0", id: id, result: result }));
+          }
+        }, 0);
+
+        // method contains .on signature trigger the MOCK_EVENTS callback to simulate event emission from the service side
+        if (MOCK_EVENTS.hasOwnProperty(method)) {
+          setTimeout(function () {
+            _onMessageCb(JSON.stringify({ jsonrpc: "2.0", method: method, params: MOCK_EVENTS[method] }));
+          }, 10);
+        }
+
+        return { success: true };
+      },
+
+      disconnect: function () {
+        setTimeout(function () {
+          if (_onStatusCb) { _onStatusCb("disconnected"); }
+        }, 100);
+      }
+    };
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // UI helpers
+  // ──────────────────────────────────────────────────────────────────────────
+
+  function log(msg, cssClass) {
+    var panel = document.getElementById("log-panel");
+    var div   = document.createElement("div");
+    div.className = "log-entry " + (cssClass || "log-info");
+    div.textContent = "[" + new Date().toLocaleTimeString() + "] " + msg;
+    panel.appendChild(div);
+    panel.scrollTop = panel.scrollHeight;
+  }
+
+  function addResult(method, value, isError, duration) {
+    var panel = document.getElementById("results-panel");
+
+    // Remove placeholder on first real result
+    var placeholder = panel.querySelector(".placeholder");
+    if (placeholder) { panel.removeChild(placeholder); }
+
+    var row    = document.createElement("div");
+    row.className = "result-row";
+
+    var mCell  = document.createElement("div");
+    mCell.className = "result-method";
+    mCell.textContent = method + (duration !== undefined ? " [" + duration + "ms]" : "");
+
+    var vCell  = document.createElement("div");
+    if (isError) {
+      vCell.className = "result-value error-val";
+      vCell.textContent = "ERROR: " + value;
+    } else if (value === null || value === undefined) {
+      vCell.className = "result-value null-val";
+      vCell.textContent = "null";
+    } else {
+      vCell.className = "result-value";
+      if (typeof value === "function") {
+        vCell.textContent = "function() { … }";
+      } else if (typeof value === "object") {
+        vCell.textContent = JSON.stringify(value, null, 2);
+      } else {
+        vCell.textContent = String(value);
+      }
+    }
+
+    row.appendChild(mCell);
+    row.appendChild(vCell);
+    panel.appendChild(row);
+  }
+
+  function showSummary(ok, errors) {
+    var el = document.getElementById("summary");
+    var totalDuration = PERF.getTotalTestDuration();
+    var testDurationStr = totalDuration ? " in " + totalDuration + "ms" : "";
+    el.style.display = "block";
+    el.innerHTML =
+      "Done &mdash; " +
+      "<span class='ok'>" + ok + " passed</span>, " +
+      "<span class='err'>" + errors + " failed</span>" +
+      " out of " + (ok + errors) + " methods" + testDurationStr + ".";
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Core test runner
+  // ──────────────────────────────────────────────────────────────────────────
+
+  async function runAllMethods(firebolt) {
+    PERF.recordTestStart();
+    log("Firebolt instance ready. Invoking all " + ALL_METHODS.length + " methods in sequence…", "log-success");
+
+    var passed = 0;
+    var failed = 0;
+
+    for (var i = 0; i < ALL_METHODS.length; i++) {
+      var fullName   = ALL_METHODS[i];
+      var dot        = fullName.indexOf(".");
+      var modName    = fullName.slice(0, dot);
+      var methodName = fullName.slice(dot + 1);
+      var mod        = firebolt[modName];
+
+      if (!mod || typeof mod[methodName] !== "function") {
+        addResult(fullName, "method not found on firebolt object", true);
+        log("  " + fullName + " → method not found", "log-error");
+        failed++;
+        continue;
+      }
+
+      var params = METHOD_PARAMS[fullName] || {};
+      var methodStartTime = Date.now();
+      try {
+        var result = await mod[methodName](params);
+        var methodEndTime = Date.now();
+        var methodDuration = methodEndTime - methodStartTime;
+        PERF.recordMethodCall(fullName, methodStartTime, methodEndTime);
+        
+        if (typeof result === "function") {
+          unsubscribedEvents[fullName] = result; // mark this event for unsubscription later
+        }
+        addResult(fullName, result, false, methodDuration);
+        log("  " + fullName + " → ok (" + methodDuration + "ms)", "log-success");
+        passed++;
+      } catch (err) {
+        var methodEndTime = Date.now();
+        var methodDuration = methodEndTime - methodStartTime;
+        PERF.recordMethodCall(fullName, methodStartTime, methodEndTime);
+        addResult(fullName, err.message, true, methodDuration);
+        log("  " + fullName + " → FAILED: " + err.message + " (" + methodDuration + "ms)", "log-error");
+        failed++;
+      }
+    }
+
+    PERF.recordTestEnd();
+    showSummary(passed, failed);
+    log("All done. " + passed + " passed, " + failed + " failed.", failed > 0 ? "log-error" : "log-success");
+    
+    // Output performance metrics to console
+    outputPerformanceMetrics(passed, failed);
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+  // Startup: poll for FireboltServiceManager, then run tests
+  // ──────────────────────────────────────────────────────────────────────────
+
+  async function waitForFireboltServiceManager() {
+    var MAX_RETRIES = 10;
+
+    for (var i = 0; i <= MAX_RETRIES; i++) {
+      if (typeof window.FireboltServiceManager !== "undefined") {
+        PERF.recordFsmAcquired();
+        var pageLoadDuration = PERF.getPageLoadDuration();
+        log("FireboltServiceManager acquired in " + pageLoadDuration + "ms (attempt " + (i + 1) + ")", "log-success");
+        if (i === 0) {
+          log("FireboltServiceManager found immediately.", "log-success");
+        } else {
+          log("FireboltServiceManager found (attempt " + i + "/" + MAX_RETRIES + ").", "log-success");
+        }
+        return window.FireboltServiceManager;
+      }
+
+      if (i < MAX_RETRIES) {
+        log(
+          "FireboltServiceManager not available. Retry " + (i + 1) + "/" + MAX_RETRIES + " in 1 s…",
+          "log-retry"
+        );
+        await new Promise(function (resolve) { setTimeout(resolve, 1000); });
+      }
+    }
+
+    log(
+      "ERROR: FireboltServiceManager not available after " + MAX_RETRIES + " retries. Giving up.",
+      "log-error"
+    );
+    return null;
+  }
+
+  function outputPerformanceMetrics(passed, failed) {
+    var timestamp = new Date().toISOString();
+    var pageLoadTime = PERF.getPageLoadDuration();
+    var totalTestTime = PERF.getTotalTestDuration();
+    var totalElapsed = PERF.getTotalElapsed();
+    
+    console.log("\n" + "=".repeat(80));
+    console.log("FIREBOLT TEST PERFORMANCE METRICS");
+    console.log("=".repeat(80));
+    console.log("Timestamp: " + timestamp);
+    console.log("\n--- OVERALL TIMING ---");
+    console.log("Page Load to FSM Acquired: " + pageLoadTime + "ms");
+    console.log("Test Execution Time: " + totalTestTime + "ms");
+    console.log("Total Elapsed Time: " + totalElapsed + "ms");
+    console.log("\n--- TEST RESULTS ---");
+    console.log("Passed: " + passed);
+    console.log("Failed: " + failed);
+    console.log("Total Methods: " + (passed + failed));
+    
+    console.log("\n--- PER-METHOD TIMING ---");
+    var avgDuration = 0;
+    var minDuration = Infinity;
+    var maxDuration = 0;
+    
+    PERF.methodMetrics.forEach(function(metric) {
+      console.log(metric.method + ": " + metric.duration + "ms");
+      avgDuration += metric.duration;
+      minDuration = Math.min(minDuration, metric.duration);
+      maxDuration = Math.max(maxDuration, metric.duration);
+    });
+    
+    if (PERF.methodMetrics.length > 0) {
+      avgDuration = Math.round(avgDuration / PERF.methodMetrics.length);
+      console.log("\n--- STATISTICS ---");
+      console.log("Average Method Duration: " + avgDuration + "ms");
+      console.log("Min Method Duration: " + minDuration + "ms");
+      console.log("Max Method Duration: " + maxDuration + "ms");
+    }
+    
+    // CSV-style output for analysis
+    console.log("\n--- CSV FORMAT (for further analysis) ---");
+    console.log("Timestamp,PageLoadTime(ms),TestExecutionTime(ms),TotalElapsed(ms),Passed,Failed,Total,AvgMethodTime(ms),MinMethodTime(ms),MaxMethodTime(ms)");
+    console.log(timestamp + "," + pageLoadTime + "," + totalTestTime + "," + totalElapsed + "," + passed + "," + failed + "," + (passed + failed) + "," + avgDuration + "," + minDuration + "," + maxDuration);
+    
+    console.log("\n--- DETAILED METHOD BREAKDOWN (CSV) ---");
+    console.log("Method,Duration(ms),RequestTime,ResponseTime");
+    PERF.methodMetrics.forEach(function(metric) {
+      console.log(metric.method + "," + metric.duration + "," + (metric.requestTime - PERF.pageStartTime) + "," + (metric.responseTime - PERF.pageStartTime));
+    });
+    
+    console.log("=".repeat(80) + "\n");
+  }
+
+  async function main() {
+    console.log("\nTest page script started at " + new Date().toISOString());
+    console.log("Page start time: " + PERF.pageStartTime);
+    log("Page loaded. Checking for window.FireboltServiceManager…", "log-info");
+
+    // Setup navigation buttons
+    setupNavigationButtons();
+
+    var fsm = await waitForFireboltServiceManager();
+    if (!fsm) { return; }
+
+    if (isMock) {
+      log("Using mock transport for testing.", "log-info");
+      var mockTransport = createMockTransport();
+      fsm.transport(mockTransport);
+      log("Mock transport configured (version " + fsm.version + ").", "log-info");
+    }
+    
+    try {
+      log("Calling FireboltServiceManager.get()…", "log-info");
+      var firebolt = await fsm.get();
+      log("FireboltServiceManager.get() resolved successfully.", "log-success");
+      await runAllMethods(firebolt);
+    } catch (err) {
+      log("FireboltServiceManager.get() failed: " + err.message, "log-error");
+    }
+  }
+
+
+  if (document.readyState === "loading") {
+      // DOM not ready yet
+      window.addEventListener("DOMContentLoaded", main);
+  } else {
+      // DOM already ready
+      main();
+  }
+
+  </script>
+</body>
+</html>

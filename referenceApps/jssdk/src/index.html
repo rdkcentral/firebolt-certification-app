@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebolt JSSDK Test</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Courier New', monospace;
+      background: #0d1117;
+      color: #c9d1d9;
+      padding: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #58a6ff;
+      font-size: 1.5rem;
+      border-bottom: 2px solid #21262d;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #8b949e;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 20px 0 8px;
+    }
+
+    /* ── Status log ─────────────────────────────────────────────────────────── */
+    #log-panel {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 6px;
+      padding: 12px 16px;
+      max-height: 220px;
+      overflow-y: auto;
+      font-size: 0.85rem;
+    }
+
+    .log-entry { padding: 2px 0; line-height: 1.5; }
+    .log-info   { color: #8b949e; }
+    .log-retry  { color: #d29922; }
+    .log-success{ color: #3fb950; }
+    .log-error  { color: #f85149; font-weight: bold; }
+
+    /* ── Results table ──────────────────────────────────────────────────────── */
+    #results-panel {
+      border: 1px solid #21262d;
+      border-radius: 6px;
+      overflow-y: auto;
+      max-height: 400px;
+      font-size: 0.82rem;
+    }
+
+    #results-panel .placeholder {
+      padding: 20px;
+      color: #484f58;
+      font-style: italic;
+    }
+
+    .result-row {
+      display: flex;
+      align-items: flex-start;
+      border-bottom: 1px solid #21262d;
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-row:nth-child(odd)  { background: #161b22; }
+    .result-row:nth-child(even) { background: #0d1117; }
+
+    .result-method {
+      flex: 0 0 340px;
+      padding: 8px 14px;
+      color: #58a6ff;
+      word-break: break-all;
+      border-right: 1px solid #21262d;
+    }
+
+    .result-value {
+      flex: 1;
+      padding: 8px 14px;
+      color: #3fb950;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .result-value.null-val  { color: #6e7681; }
+    .result-value.error-val { color: #f85149; }
+
+    /* ── Summary bar ────────────────────────────────────────────────────────── */
+    #summary {
+      margin-top: 14px;
+      padding: 10px 16px;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      display: none;
+    }
+    #summary .ok  { color: #3fb950; }
+    #summary .err { color: #f85149; }
+
+    /* ── TV Remote Navigation Buttons ─────────────────────────────────────── */
+    .button-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      flex: 0 1 180px;
+      padding: 12px 16px;
+      background: #21262d;
+      border: 2px solid #30363d;
+      border-radius: 6px;
+      color: #8b949e;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      background: #30363d;
+      border-color: #58a6ff;
+      color: #58a6ff;
+    }
+
+    .nav-btn:focus {
+      outline: none;
+      background: #0d1117;
+      border-color: #58a6ff;
+      color: #58a6ff;
+      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+    }
+
+    .nav-btn:active {
+      background: #161b22;
+      transform: scale(0.98);
+    }
+
+    .section-with-controls {
+      margin-bottom: 24px;
+    }
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h2::after {
+      content: '';
+      flex: 1;
+    }
+
+    .control-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .control-buttons .nav-btn {
+      flex: 0 1 auto;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Firebolt JSSDK Test</h1>
+
+  <div class="section-with-controls">
+    <h2>
+      Status Log
+      <div class="control-buttons">
+        <button id="log-up-btn" class="nav-btn">↑ Top</button>
+        <button id="log-down-btn" class="nav-btn">↓ Bottom</button>
+      </div>
+    </h2>
+    <div id="log-panel"></div>
+  </div>
+
+  <div class="section-with-controls">
+    <h2>
+      Method Results
+      <div class="control-buttons">
+        <button id="results-up-btn" class="nav-btn">↑ Top</button>
+        <button id="results-down-btn" class="nav-btn">↓ Bottom</button>
+      </div>
+    </h2>
+    <div id="results-panel">
+      <div class="placeholder">Waiting for FireboltServiceManager&hellip;</div>
+    </div>
+  </div>
+
+  <div id="summary"></div>
+  <script type="module">
+    import { run } from './index.js';
+    run();
+  </script>
+</body>
+</html>

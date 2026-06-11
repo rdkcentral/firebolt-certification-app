@@ -216,10 +216,15 @@
   // ──────────────────────────────────────────────────────────────────────────
   var PERF = {
     pageStartTime: Date.now(),
+    fsmRequestedTime: null,
     fsmAcquiredTime: null,
     testStartTime: null,
     testEndTime: null,
     methodMetrics: [], // Array of { method, requestTime, responseTime, duration }
+
+    recordFsmRequested: function() {
+      this.fsmRequestedTime = Date.now();
+    },
 
     recordFsmAcquired: function() {
       this.fsmAcquiredTime = Date.now();
@@ -243,7 +248,7 @@
     },
 
     getPageLoadDuration: function() {
-      return this.fsmAcquiredTime ? this.fsmAcquiredTime - this.pageStartTime : null;
+      return this.fsmAcquiredTime ? this.fsmAcquiredTime - this.fsmRequestedTime : null;
     },
 
     getTotalTestDuration: function() {
@@ -646,7 +651,7 @@
 
   async function waitForFireboltServiceManager() {
     var MAX_RETRIES = 10;
-
+    PERF.recordFsmRequested();
     for (var i = 0; i <= MAX_RETRIES; i++) {
       if (typeof window.FireboltServiceManager !== "undefined") {
         PERF.recordFsmAcquired();

@@ -8,25 +8,27 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: 'Courier New', monospace;
-      background: #0d1117;
-      color: #c9d1d9;
-      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+      background: #f6f8fa;
+      color: #24292f;
+      padding: 32px;
       max-width: 1100px;
       margin: 0 auto;
     }
 
     h1 {
-      color: #58a6ff;
-      font-size: 1.5rem;
-      border-bottom: 2px solid #21262d;
+      color: #003d82;
+      font-weight: bold;
+      font-size: 2rem;
+      border-bottom: 2px solid #d0d7de;
       padding-bottom: 12px;
       margin-bottom: 20px;
     }
 
     h2 {
-      color: #8b949e;
-      font-size: 1rem;
+      color: #003d82;
+      font-weight: bold;
+      font-size: 1.3rem;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       margin: 20px 0 8px;
@@ -34,76 +36,78 @@
 
     /* ── Status log ─────────────────────────────────────────────────────────── */
     #log-panel {
-      background: #161b22;
-      border: 1px solid #21262d;
+      background: #ffffff;
+      border: 1px solid #d0d7de;
       border-radius: 6px;
       padding: 12px 16px;
       max-height: 220px;
       overflow-y: auto;
-      font-size: 0.85rem;
+      font-size: 1.5rem;
     }
 
     .log-entry { padding: 2px 0; line-height: 1.5; }
-    .log-info   { color: #8b949e; }
-    .log-retry  { color: #d29922; }
-    .log-success{ color: #3fb950; }
-    .log-error  { color: #f85149; font-weight: bold; }
+    .log-info   { color: #000000; }
+    .log-retry  { color: #d29922; font-weight: bold; }
+    .log-success{ color: #2da44e; font-weight: bold; }
+    .log-error  { color: #d1242f; font-weight: bold; }
 
     /* ── Results table ──────────────────────────────────────────────────────── */
     #results-panel {
-      border: 1px solid #21262d;
+      border: 1px solid #d0d7de;
       border-radius: 6px;
       overflow-y: auto;
       max-height: 400px;
-      font-size: 0.82rem;
+      font-size: 1.75rem;
     }
 
     #results-panel .placeholder {
       padding: 20px;
-      color: #484f58;
+      color: #6e7681;
       font-style: italic;
+      font-size: 1.5rem;
     }
 
     .result-row {
       display: flex;
       align-items: flex-start;
-      border-bottom: 1px solid #21262d;
+      border-bottom: 1px solid #d0d7de;
     }
     .result-row:last-child { border-bottom: none; }
-    .result-row:nth-child(odd)  { background: #161b22; }
-    .result-row:nth-child(even) { background: #0d1117; }
+    .result-row:nth-child(odd)  { background: #f6f8fa; }
+    .result-row:nth-child(even) { background: #ffffff; }
 
     .result-method {
       flex: 0 0 340px;
       padding: 8px 14px;
-      color: #58a6ff;
+      color: #000000;
+      font-weight: bold;
       word-break: break-all;
-      border-right: 1px solid #21262d;
+      border-right: 1px solid #d0d7de;
     }
 
     .result-value {
       flex: 1;
       padding: 8px 14px;
-      color: #3fb950;
+      color: #000000;
       white-space: pre-wrap;
       word-break: break-all;
     }
 
-    .result-value.null-val  { color: #6e7681; }
-    .result-value.error-val { color: #f85149; }
+    .result-value.null-val  { color: #000000; }
+    .result-value.error-val { color: #d1242f; font-weight: bold; }
 
     /* ── Summary bar ────────────────────────────────────────────────────────── */
     #summary {
       margin-top: 14px;
       padding: 10px 16px;
-      background: #161b22;
-      border: 1px solid #21262d;
+      background: #f6f8fa;
+      border: 1px solid #d0d7de;
       border-radius: 6px;
-      font-size: 0.9rem;
+      font-size: 1.5rem;
       display: none;
     }
-    #summary .ok  { color: #3fb950; }
-    #summary .err { color: #f85149; }
+    #summary .ok  { color: #2da44e; font-weight: bold; }
+    #summary .err { color: #d1242f; font-weight: bold; }
 
     /* ── TV Remote Navigation Buttons ─────────────────────────────────────── */
     .button-row {
@@ -115,29 +119,31 @@
 
     .nav-btn {
       flex: 0 1 180px;
-      padding: 12px 16px;
-      background: #21262d;
-      border: 2px solid #30363d;
+      padding: 16px 20px;
+      background: #f6f8fa;
+      border: 2px solid #d0d7de;
       border-radius: 6px;
-      color: #8b949e;
-      font-family: 'Courier New', monospace;
-      font-size: 0.9rem;
+      color: #000000;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Arial', sans-serif;
+      font-size: 1.3rem;
       cursor: pointer;
       transition: all 0.2s ease;
     }
 
     .nav-btn:hover {
-      background: #30363d;
-      border-color: #58a6ff;
-      color: #58a6ff;
+      background: #e1e4e8;
+      border-color: #000000;
+      color: #000000;
+      font-weight: bold;
     }
 
     .nav-btn:focus {
       outline: none;
-      background: #0d1117;
-      border-color: #58a6ff;
-      color: #58a6ff;
-      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.3);
+      background: #ffffff;
+      border-color: #000000;
+      color: #000000;
+      font-weight: bold;
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
     }
 
     .nav-btn:active {
@@ -167,8 +173,8 @@
 
     .control-buttons .nav-btn {
       flex: 0 1 auto;
-      padding: 8px 12px;
-      font-size: 0.85rem;
+      padding: 12px 16px;
+      font-size: 1.1rem;
     }
   </style>
 </head>

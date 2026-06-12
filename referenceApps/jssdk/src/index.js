@@ -7,10 +7,15 @@ import { Accessibility, Advertising, Device, Metrics, Localization } from './fir
   // ──────────────────────────────────────────────────────────────────────────
   var PERF = {
     pageStartTime: Date.now(),
+    fsmRequestedTime: null,
     fsmAcquiredTime: null,
     testStartTime: null,
     testEndTime: null,
     methodMetrics: [], // Array of { method, requestTime, responseTime, duration }
+
+    recordFsmRequested: function() {
+      this.fsmRequestedTime = Date.now();
+    },
 
     recordFsmAcquired: function() {
       this.fsmAcquiredTime = Date.now();
@@ -34,7 +39,7 @@ import { Accessibility, Advertising, Device, Metrics, Localization } from './fir
     },
 
     getPageLoadDuration: function() {
-      return this.fsmAcquiredTime ? this.fsmAcquiredTime - this.pageStartTime : null;
+      return this.fsmAcquiredTime ? this.fsmAcquiredTime - this.fsmRequestedTime : null;
     },
 
     getTotalTestDuration: function() {
@@ -267,10 +272,16 @@ import { Accessibility, Advertising, Device, Metrics, Localization } from './fir
 
     var passed = 0;
     var failed = 0;
-
+    
     for (var i = 0; i < ALL_METHODS.length; i++) {
       var m = ALL_METHODS[i];
+      if (i === 0) {
+        PERF.recordFsmRequested();
+      }
       var result = await internalCall(m.module, m.name, m.params);
+      if (i === 0) {
+        PERF.recordFsmAcquired();
+      }
       if (result.success) {
         passed++;
       } else {

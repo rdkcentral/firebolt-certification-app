@@ -69,6 +69,7 @@ export default class Transport {
       endpoint &&
       (endpoint.startsWith('ws://') || endpoint.startsWith('wss://'))
     ) {
+      console.log('Using WebSocket transport')
       transport = new WebsocketTransport(endpoint)
       transport.receive(this.receiveHandler.bind(this))
     } else if (
@@ -91,6 +92,7 @@ export default class Transport {
         },
       )
     } else {
+      console.log('Using mock transport')
       this.isMock = true
       transport = mock
       transport.receive(this.receiveHandler.bind(this))
@@ -236,6 +238,16 @@ export default class Transport {
 
   receiveHandler(message) {
     if (Settings.getLogLevel() === 'DEBUG') {
+      console.debug('Received message from transport: ' + message)
+    }
+    console.log('Processing message from transport');
+    if (!message) {
+      console.warn('Received empty message from transport');
+      return;
+    } else if (typeof message !== 'string') {
+      console.warn('Received non-string message from transport: ', JSON.stringify(message));
+      return;
+    } else {
       console.debug('Received message from transport: ' + message)
     }
     const json = JSON.parse(message)

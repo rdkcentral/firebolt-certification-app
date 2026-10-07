@@ -25,7 +25,7 @@ Use a recent version of node. At the time of writing, Node 24.21.0 was LTS. An `
 
 ### Run FCA Sanity on an RDK8 Build
 
-1. Clone this repository and check out the `FCA_OnRDK8` branch.
+1. Clone this repository and check out the `support/fca-rdk` branch.
 2. In `plugins/config.js`, configure the platform list and report-upload endpoints with the URLs for your report server. 
 
     ```js

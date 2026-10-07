@@ -36,6 +36,7 @@ class MyFileSystemEventHandler(FileSystemEventHandler):
 
 # Set up the filesystem event handler
 event_handler = MyFileSystemEventHandler()
+os.makedirs(os.path.join(directory, "json_reports"), exist_ok=True)
 observer = Observer()
 observer.schedule(event_handler, directory, recursive=False)
 observer.start()

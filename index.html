@@ -14,7 +14,7 @@ html, body {margin: 0; height: 100%; overflow: hidden}
         console.log('appVersion=' + window.APP_VERSION + ' commitHash=' + window.COMMITHASH)
     </script>
     <script type="text/javascript">
-        const fbEndpoint = new URLSearchParams(window.location.search).get('__firebolt_endpoint')
+        const fbEndpoint =(window.__firebolt && window.__firebolt.endpoint)
         if (fbEndpoint) {
             window.__firebolt = window.__firebolt || {}
             window.__firebolt.endpoint = fbEndpoint

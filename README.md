@@ -29,7 +29,6 @@ Use a recent version of node. At the time of writing, Node 24.21.0 was LTS. An `
 2. In `plugins/config.js`, configure the platform list and report-upload endpoints with the URLs for your report server. 
 
     ```js
-    PLATFORM_LIST: ['XCLASS', 'XRE_ThorXRE', 'default', 'mock-firebolt-os'],
     REPORT_PUBLISH_URL: '<report-upload-url>',
     REPORT_PUBLISH_STANDALONE_URL: '<report-upload-url>',
     REPORT_PUBLISH_STANDALONE_REPORT_URL: '<report-upload-url>',

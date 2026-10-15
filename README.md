@@ -42,6 +42,7 @@ Use a recent version of node. At the time of writing, Node 24.21.0 was LTS. An `
       METHODS_TO_BE_EXCLUDED: ['Accessory.pair', 'Device.provision', 'Power.sleep', 'Wifi.connect'],
       ```
 
+
 4. Install dependencies:
 
     ```sh
